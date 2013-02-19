@@ -41,6 +41,8 @@ PARAMS=\$(cat \$TASKS | head -n \$SGE_TASK_ID | tail -n 1)
 echo \$PARAMS | xargs $subjobs_script 
 ";
 
+print STDOUT "starting job assembly";
+
 my $nSequence = 0;
 my @subjobsLines = ();
 COLLECT: while($nSequence <= $totalSeqs){ 
@@ -48,16 +50,26 @@ COLLECT: while($nSequence <= $totalSeqs){
   
   my $nLast = $nSequence+$maxSeqPerSubjob;
   if ($nLast > $totalSeqs){$nLast = $totalSeqs};
-  my $subJobTasksLine = join " ", chomp(@seqs[$nSequence .. $nLast]);
+
+#  print STDOUT "next chunk: $nSequence ",  $seqs[$nSequence], " to $nLast",  $seqs[$nLast], " \n";
+  my @temp = (@seqs[$nSequence .. $nLast]);
+  chomp  @temp;
+
+  my $subJobTasksLine = join " ", @temp;
   $subJobTasksLine .= "\n";
-  push @subjobsLines, $subjobTasksLine;
+  push @subjobsLines, $subJobTasksLine;
   my $nJobsInCurrentArray = $#subjobsLines + 1;
   
   # if we have all the jobs for one array job (maximal number or every pdb file accounted for), then 
   if ( ($nJobsInCurrentArray >= $maxSubjobs) || ($nLast == $totalSeqs) ){
+
+    print STDOUT "$nJobsInCurrentArray jobs in current array, $nLast is last sequence in this list -> start submission process \n";
+    print STDOUT "$#subjobsLines subjob lines found \n";
+    print STDOUT "last subjob line: ", $subjobsLines[$#subjobsLines], "\n";
+
     # print the tasks-file
     open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
-    print SUB join @subjobsLines;
+    print SUB @subjobsLines;
     close SUB;
     @subjobsLines = ();
 
@@ -65,6 +77,8 @@ COLLECT: while($nSequence <= $totalSeqs){
     open (ARRAY, ">$arrayjob_file") or die "could not open $arrayjob_file for writing";
     print ARRAY $arrayJobTextBegin.$nJobsInCurrentArray."\n".$arrayJobTextEnd;
     close ARRAY;
+    
+    print STDOUT "wrote subjobTasks to $subjobs_file and array job script to $subjobs_file, now submitting! \n ";
 
     # and submit
     my $curr_log_dir = "$log_dir/to$nLast";
