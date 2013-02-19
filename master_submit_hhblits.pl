@@ -7,87 +7,79 @@
 use strict;
 use warnings;
 use POSIX;
+use File::Path qw(remove_tree);
 
-my $subjobs = 5000; #number of subjobs in one arrayjob
-my $seq = 30; #number of sequences to run in one subjob
-my $n = $subjobs * $seq; #portion of sequences to run in one arrayjob (= 150000)
+my $maxSubjobs = 5000; #number of subjobs in one arrayjob
+my $maxSeqPerSubjob = 30; #number of sequences to run in one subjob
+my $maxSeqPerArrayJob = $maxSubjobs * $maxSeqPerSubjob; #portion of sequences to run in one arrayjob (= 150000)
 
 my $pdb_full_dir = "/mnt/project/pssh/pdb_full"; 
 my $qstat_tmpfile = "$pdb_full_dir/work/qstat.out";
-my $tmp_file = "$pdb_full_dir/work/tmp.txt";
+my $subjobs_script = "$pdb_full_dir/scripts/hhblits_sge.sh";
 my $subjobs_file = "$pdb_full_dir/work/subjob_tasks.txt";
 my $arrayjob_file = "$pdb_full_dir/work/arrayjob.sh";
 my $pdbseq_file = "$pdb_full_dir/files/pdbseq_file"; #file with list of all query sequences (pdb sequences)
 
 my $log_dir = "$pdb_full_dir/work/hhblits_log";
-system("rm -r $log_dir 2>/dev/null");
-system("mkdir $log_dir 2>/dev/null");
-my $output_dir = "$pdb_full_dir/work/db";
+remove_tree($log_dir);
+mkdir $log_dir;
+my $output_dir = "$pdb_full_dir/db";
 
-my $size= `wc -l $pdbseq_file`; #actual size of $md5sums_uniq
+# PDB list is not toooo long, so we read in everything. Will not work for Swissprot or Trembl!
+open SEQS, $pdbseq_file;
+my @seqs = <SEQS>;
+close SEQS;
 
-#write the arrayjob script:
-open (WRITE, ">".$arrayjob_file) or die "could not open $arrayjob_file for writing";
-print WRITE "#!/bin/bash
+#my $size= `wc -l $pdbseq_file`; # size (line number) of $pdbseq_file
+my $totalSeqs = $#seqs; # always dealing with array indices here anyway, so don't add one! 
+
+my $arrayJobTextBegin = "#!/bin/bash
 # Execute commands parallelly on the cluster:
-#\$ -t 1-$subjobs
-TASKS=$subjobs_file
+#\$ -t 1-";
+my $arrayJobTextEnd = "TASKS=$subjobs_file
 PARAMS=\$(cat \$TASKS | head -n \$SGE_TASK_ID | tail -n 1)
-echo \$PARAMS | xargs /mnt/project/pssh/scripts/write_subjob.sh
+echo \$PARAMS | xargs $subjobs_script 
 ";
-close WRITE;
 
-my $i = $n; #defines end line of $pdbseq_file for the next portion of $n cmds
-my $subjob_nr = 0; #counts the subjobs
-while($i <= $size){ 
-	#submit the next $n sequences in one arrayjob in portions of $seq sequences in one subjob -> $n/$seq = $subjobs subjobs (5000 subjobs with 30 seq. in each; assume 1job = 4min -> 30jobs = 2h):
-	#first write the subjobs into the subjobs file:
-	system("cat $md5sums_uniq | head -n $i | tail -n $n | xargs -n $seq > $tmp_file"); # divide the $n md5sums into blocks of $seq=30 arguments, write to a temporary file
-	system("i=$subjob_nr; while read line; do let i=i+1; echo \"\$i \$line\"; done < $tmp_file > $subjobs_file");
-	#submit the arrayjob:
-	my $h = $i - $n + 1; #$h=first subjob, $i=last subjob in the block
-	my $curr_log_dir = "$log_dir/$h-$i";
-	system("mkdir $curr_log_dir");
-	system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file"); #TODO: nice in right way for trembl runs!!!
-   
-	$subjob_nr = $subjob_nr + $subjobs;
-  	$i = $i + $n;
-	waitUntilReady(); # wait with the submition of the next arrayjob until this is finished
-}
+my $nSequence = 0;
+my @subjobsLines = ();
+COLLECT: while($nSequence <= $totalSeqs){ 
+  #submit the next $maxSeqPerArrayJob sequences in one arrayjob in portions of $maxSeqPerSubjob sequences in one subjob -> $maxSeqPerArrayJob/$maxSeqPerSubjob = $maxSubjobs subjobs (5000 subjobs with 30 seq. in each; assume 1job = 4min -> 30jobs = 2h):
+  
+  my $nLast = $nSequence+$maxSeqPerSubjob;
+  if ($nLast > $totalSeqs){$nLast = $totalSeqs};
+  my $subJobTasksLine = join " ", chomp(@seqs[$nSequence .. $nLast]);
+  $subJobTasksLine .= "\n";
+  push @subjobsLines, $subjobTasksLine;
+  my $nJobsInCurrentArray = $#subjobsLines + 1;
+  
+  # if we have all the jobs for one array job (maximal number or every pdb file accounted for), then 
+  if ( ($nJobsInCurrentArray >= $maxSubjobs) || ($nLast == $totalSeqs) ){
+    # print the tasks-file
+    open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
+    print SUB join @subjobsLines;
+    close SUB;
+    @subjobsLines = ();
 
-# run the left sequences (less than $n)
-my $h = $i - $n + 1; #first subjob in the block
-my $last = $size - $h + 1; #number of sequences left to run
-if ($last > 0){
-	#run the remained sequences:
-        system("cat $md5sums_uniq | tail -n $last | xargs -n $seq > $tmp_file");
-	system("i=$subjob_nr; while read line; do let i=i+1; echo \"\$i \$line\"; done < $tmp_file > $subjobs_file");
-	system("rm $tmp_file");
-	$subjobs = ceil($last / $seq);
-	
-	#rewrite the arrayjob file because $subjobs_file number of lines ($subjobs) changed:	
-	open (WRITE, ">".$arrayjob_file) or die "could not open $arrayjob_file for writing";
-        print WRITE "#!/bin/bash
-# Execute commands parallelly on the cluster:
-#\$ -t 1-$subjobs
-CMDFILE=$subjobs_file
-PARAMS=\$(cat \$CMDFILE | head -n \$SGE_TASK_ID | tail -n 1)
-echo \$PARAMS | xargs /mnt/project/pssh/scripts/write_subjob.sh
-";
-        close WRITE;
-	#submit it:
-	my $curr_log_dir = "$log_dir/$h-$size";
-	system("mkdir $curr_log_dir");
-        system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file"); #TODO: nice in right way for trembl!!!
-	system("rm $qstat_tmpfile");
+    # print the array job file
+    open (ARRAY, ">$arrayjob_file") or die "could not open $arrayjob_file for writing";
+    print ARRAY $arrayJobTextBegin.$nJobsInCurrentArray."\n".$arrayJobTextEnd;
+    close ARRAY;
 
-	$subjob_nr = $subjob_nr + $subjobs;
-	print "last subjob nr $subjob_nr submitted\n";
-}
+    # and submit
+    my $curr_log_dir = "$log_dir/to$nLast";
+    mkdir $curr_log_dir;
+    system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file");
+    waitUntilReady(); # wait with the submission of the next arrayjob until this is finished
+
+  };    
+  $nSequence = $nLast+1; 
+  
+};
+
 
 sub waitUntilReady {
-	my $pssh_dir = "/mnt/project/pssh"; 
-	my $qstat_tmpfile = "$pssh_dir/scripts/qstat.out";
+	my $qstat_tmpfile = "$pdb_full_dir/work/qstat.out";
 	my $qstat_outstring = "";
 	do{
         	sleep(3600); #wait 1h
