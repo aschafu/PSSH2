@@ -18,6 +18,7 @@ my $qstat_tmpfile = "$pdb_full_dir/work/qstat.out";
 my $subjobs_script = "$pdb_full_dir/scripts/hhblits_sge.sh";
 my $subjobs_file = "$pdb_full_dir/work/subjob_tasks.txt";
 my $arrayjob_file = "$pdb_full_dir/work/arrayjob.sh";
+my $flag_file = "$pdb_full_dir/work/master_submit_hhblits.DO_NOT_REMOVE.flag";
 my $pdbseq_file = "$pdb_full_dir/files/pdbseq_file"; #file with list of all query sequences (pdb sequences)
 
 my $log_dir = "$pdb_full_dir/work/hhblits_log";
@@ -42,6 +43,9 @@ echo \$PARAMS | xargs $subjobs_script
 ";
 
 print STDOUT "starting job assembly";
+open FLAG ">$flag_file";
+print FLAG "processing $totalSeqs files";
+close FLAG;
 
 my $nSequence = 0;
 my @subjobsLines = ();
@@ -65,7 +69,6 @@ COLLECT: while($nSequence <= $totalSeqs){
 
     print STDOUT "$nJobsInCurrentArray jobs in current array, $nLast is last sequence in this list -> start submission process \n";
     print STDOUT "$#subjobsLines subjob lines found \n";
-    print STDOUT "last subjob line: ", $subjobsLines[$#subjobsLines], "\n";
 
     # print the tasks-file
     open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
@@ -90,6 +93,8 @@ COLLECT: while($nSequence <= $totalSeqs){
   $nSequence = $nLast+1; 
   
 };
+
+unlink $flag_file;
 
 
 sub waitUntilReady {

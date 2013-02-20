@@ -63,14 +63,13 @@ rm $tmp
 a3m_dir=/mnt/project/pssh/pdb_full/files/a3m/
 rm -r $a3m_dir 2>/dev/null #remove old a3m files
 mkdir $a3m_dir 2>/dev/null 
-/mnt/project/pssh/pdb_full/scripts/hhblits_submit.sh
+#/mnt/project/pssh/pdb_full/scripts/hhblits_submit.sh
+/mnt/project/pssh/pdb_full/scripts/master_submit_hhblits.pl 
 ## wait until all jobs are ready
-qstat_tmpfile="/mnt/project/pssh/pdb_full/scripts/qstat_final.out"
-qstat > $qstat_tmpfile
-while [ -s $qstat_tmpfile ] # if true a job is running
+flagfile="/mnt/project/pssh/pdb_full/work/master_submit_hhblits.DO_NOT_REMOVE.flag"
+while [ -s $flagfile ] # if true a job is running
 do
-    sleep 60
-    qstat > $qstat_tmpfile
+    sleep 600
 done
 # if nothing is running - go to the next step
 
