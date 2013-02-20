@@ -43,10 +43,6 @@ echo \$PARAMS | xargs $subjobs_script
 ";
 
 print STDOUT "starting job assembly";
-open FLAG ">$flag_file";
-print FLAG "processing $totalSeqs files";
-close FLAG;
-
 my $nSequence = 0;
 my @subjobsLines = ();
 COLLECT: while($nSequence <= $totalSeqs){ 

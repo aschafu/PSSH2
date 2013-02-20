@@ -64,9 +64,10 @@ a3m_dir=/mnt/project/pssh/pdb_full/files/a3m/
 rm -r $a3m_dir 2>/dev/null #remove old a3m files
 mkdir $a3m_dir 2>/dev/null 
 #/mnt/project/pssh/pdb_full/scripts/hhblits_submit.sh
-/mnt/project/pssh/pdb_full/scripts/master_submit_hhblits.pl 
-## wait until all jobs are ready
 flagfile="/mnt/project/pssh/pdb_full/work/master_submit_hhblits.DO_NOT_REMOVE.flag"
+touch $flagfile
+/mnt/project/pssh/pdb_full/scripts/master_submit_hhblits.pl 
+## wait until all jobs are ready (flag file is gone)
 while [ -s $flagfile ] # if true a job is running
 do
     sleep 600
