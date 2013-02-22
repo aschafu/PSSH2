@@ -9,6 +9,8 @@ use warnings;
 use File::chdir;
 use Getopt::Long;
 
+my $nRetain = 5;  # how many alignments to keep, regardless of e-value
+
 # Parse command line parameter
 our($i, $m, $o, $h, $v);
 
@@ -19,14 +21,19 @@ my $args_ok = GetOptions('i=s'  => \$i, #input hhr file
 			 'v'	=> \$v #verbosity mode
 );
 if($h){
-    print_help();
-    exit;
+  print_help();
+  exit;
 }
 if(!$i || !$m|| !$o){
-    print "Missing parameters!\n";
-    print_help();
-    exit;
+  print "Missing parameters!\n";
+  print_help();
+  exit;
 }
+
+my ($alis_ref) = read_hhr($i, $v);
+write_output($alis_ref, $m, $v);
+
+
 #-----------------------------------------------------------------------------------------------------------------------------------
 =head 1 Subroutine print_help
 Prints help.
@@ -38,6 +45,8 @@ sub print_help{
 	-o <output file>\twhere the parsed output should be written
 	-h\tprints this help screen\n";
 }
+
+
 #-----------------------------------------------------------------------------------------------------------------------------------
 =head 2 Subroutine read_hhr.
 Parses the hhr output file of hhblits/hhsearch. Uses mapping of pdb chains with identical SEQRES sequence, md5sum of the sequence 
@@ -45,6 +54,7 @@ and the sequence: /mnt/project/pssh/pdb_redundant_chains-md5-seq-mapping.
 input: ($i, $v)
 output: \@alis, @alis format: ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks)
 =cut
+
 sub read_hhr{
   my ($i, $v) = @_;
 
@@ -168,6 +178,8 @@ sub read_hhr{
 
   return \@alis;
 }
+
+
 #-----------------------------------------------------------------------------------------------------------------------------------
 =head 3 Subroutine parse_gapless_blocks
 Parses the aligned gapless blocks in format e.g: 1-5:2-7 7-9:8-10 ...
@@ -231,38 +243,49 @@ $gapless_blocks .= "$query_ali_block_start-$query_ali_block_end:$target_ali_bloc
 if ($v) {print "Gapless blocks: ".$gapless_blocks."\n\n";}
 return $gapless_blocks; 
 }
+
 #-----------------------------------------------------------------------------------------------------------------------------------
 =head 4 Subroutine write_output
 input: ($alis_ref, $m, $v) with $m the given query uniprot sequence md5sum
 output: file $o
 =cut
 sub write_output{
-my($alis_ref, $m, $v) = @_;
-if ($v) {print "Writing output to $o ...\n";}
+  my($alis_ref, $m, $v) = @_;
+  if ($v) {print "Writing output to $o ...\n";}
+  
+  my @alis = @{$alis_ref};
+  if ($v) {print "Alignments number: ".(scalar @alis)."\n";}
+  open(WRITE, ">".$o) or die "could not open file $o for writing";
+  # changed 21.2.2013: added a counter for how often we have seen this combination
+  # output format: "uniprot_sequence_md5sum,pdb_seqres_md5sum,repeat,probability,E-value,identity,alignment"
 
-my @alis = @{$alis_ref};
-if ($v) {print "Alignments number: ".(scalar @alis)."\n";}
-open(WRITE, ">".$o) or die "could not open file $o for writing";
-#output format: "uniprot_sequence_md5sum,pdb_seqres_md5sum,probability,E-value,identity,alignment"
-my $seqres_md5sum;
-my $probability;
-my $evalue;
-my $identity;
-my $gapless_blocks;
-my $ali_num = 0; #counter of the alignments
-foreach my $ali_values_ref (@alis){ #@alis: ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks)
+  my $seqres_md5sum;
+  my $probability;
+  my $evalue;
+  my $identity;
+  my $gapless_blocks;
+  my $ali_num = 0; #counter of the alignments
+
+  my %repeat = ();
+
+  foreach my $ali_values_ref (@alis){ #@alis: ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks)
     $ali_num++;
     my @ali_values = @{$ali_values_ref};
     $seqres_md5sum = $ali_values[0];
+    if (defined $repeat{$seqres_md5sum}){
+      $repeat{$seqres_md5sum} += 1;
+    }
+    else {
+      $repeat{$seqres_md5sum} = 1;      
+    }
+    $repeatVal = $repeat{$seqres_md5sum}; 
     $evalue = $ali_values[1];
     $identity = $ali_values[2];
     $gapless_blocks = $ali_values[3];
-    if ($ali_num == 1 || $evalue <= 10e-10){ #leave only alignments with E-value below 10e-10 or at least the first one 
-      print WRITE "$m,$seqres_md5sum,$evalue,$identity,$gapless_blocks\n";
+    # changed 21.2.2013: retain first $nRetain, regardless of eValue
+    if ($ali_num <= $nRetain || $evalue <= 10e-10){ #leave only alignments with E-value below 10e-10 or at least the first one 
+      print WRITE "$m,$seqres_md5sum,$repeatVal,$evalue,$identity,$gapless_blocks\n";
     }
+  }
+  close WRITE;
 }
-close WRITE;
-}
-#-----------------------------------------------------------------------------------------------------------------------------------
-my ($alis_ref) = read_hhr($i, $v);
-write_output($alis_ref, $m, $v);
