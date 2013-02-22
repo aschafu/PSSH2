@@ -2,49 +2,58 @@
 
 # master_submit.pl
 # Submits PSSH2 runs to the Rostlab cluster, to run parallelly in portions using arrayjobs.
-# Calls scripts/pssh2/write_subjob.sh
+# Calls scripts/pssh2/batch_run_generate_pssh.sh (was write_subjob.sh)
 
 use strict;
 use warnings;
 use POSIX;
+use File::Path qw(remove_tree);
 
 my $subjobs = 5000; #number of subjobs in one arrayjob
 my $seq = 30; #number of sequences to run in one subjob
-my $n = $subjobs * $seq; #portion of sequences to run in one arrayjob (= 150000)
+#my $n = $subjobs * $seq; #portion of sequences to run in one arrayjob (= 150000)
+my $maxSeqPerArrayJob = $maxSubjobs * $maxSeqPerSubjob; #portion of sequences to run in one arrayjob (= 150000)
 
 my $pssh_dir = "/mnt/project/pssh"; 
 my $qstat_tmpfile = "$pssh_dir/scripts/qstat.out";
-my $size_file = "$pssh_dir/scripts/md5sums_uniq_size";
-my $tmp_file = "$pssh_dir/scripts/tmp.txt";
-my $subjobs_file = "$pssh_dir/scripts/subjobs.sh";
-my $arrayjob_file = "$pssh_dir/scripts/arrayjob.sh";
+#my $size_file = "$pssh_dir/scripts/md5sums_uniq_size";
+my $subjobs_file = "$pssh_dir/work/subjob_tasks.txt";
+my $subjobs_script = "$pssh_dir/scripts/batch_run_generate_pssh.sh";  # TODO!
+my $arrayjob_file = "$pssh_dir/work/arrayjob.sh";
 
-my $log_dir = "$pssh_dir/pssh2_log";
-system("rm -r $log_dir 2>/dev/null");
-system("mkdir $log_dir 2>/dev/null");
+my $log_dir = "$pssh_dir/work/pssh2_log";
+remove_tree($log_dir);
+mkdir $log_dir;
 my $output_dir = "$pssh_dir/pssh2_files";
-system("rm -r $output_dir 2>/dev/null"); 
-system("mkdir $output_dir 2>/dev/null");
+if (-e $output_dir){
+  my $time = (stat($output_dir))[9];
+  rename $output_dir, $output_dir.".old.".$time;
+}
+mkdir $output_dir;
 
-#Generate anew the swissprot md5sums file "/mnt/project/pssh/sprot_md5sums_uniq" (like "/mnt/project/mamut/app/sprot")
+#Generate a new the swissprot md5sums file "/mnt/project/pssh/sprot_md5sums_uniq" (like "/mnt/project/mamut/app/sprot")
 my $sprot_fasta = "/mnt/project/rost_db/data/swissprot/uniprot_sprot.fasta";
 my $md5sums_all = "$pssh_dir/sprot_md5sums_all";
 my $md5sums_uniq = "$pssh_dir/sprot_md5sums_uniq";
 #system("cat $sprot_fasta | /mnt/project/mamut/bin/fasta_to_md5.rb > $md5sums_all"); 	#done already
 #system("cat $md5sums_all | sort | uniq > $md5sums_uniq"); 				#done already
 
-#Generate anew single FASTA files named by the md5sum of the sequence
+#Generate a new single FASTA files named by the md5sum of the sequence
 my $queries_dir = "$pssh_dir/sprot_fastas";
 system("mkdir $queries_dir 2>/dev/null");
 #system("cd $queries_dir");
 #system("cat $sprot_fasta | /mnt/project/mamut/bin/fasta_to_fastas.md5.rb");		#done already
 
-my $size; #actual size of $md5sums_uniq
-system("cat $md5sums_uniq | wc -l > $size_file");
-open FILE, $size_file or die "Couldn't open file $size_file\n"; 
-$size = join("", <FILE>);
-chomp($size); 
-close FILE;
+my $totalSeqs = `wc -l $md5sums_uniq `; # size (line number) of $md5sums_uniq
+
+
+my $arrayJobTextBegin = "#!/bin/bash
+# Execute commands parallelly on the cluster:
+#\$ -t 1-";
+my $arrayJobTextEnd = "TASKS=$subjobs_file
+PARAMS=\$(cat \$TASKS | head -n \$SGE_TASK_ID | tail -n 1)
+echo \$PARAMS | xargs $subjobs_script 
+";
 
 #write the arrayjob script:
 open (WRITE, ">".$arrayjob_file) or die "could not open $arrayjob_file for writing";
@@ -53,57 +62,66 @@ print WRITE "#!/bin/bash
 #\$ -t 1-$subjobs
 CMDFILE=$subjobs_file
 PARAMS=\$(cat \$CMDFILE | head -n \$SGE_TASK_ID | tail -n 1)
-echo \$PARAMS | xargs /mnt/project/pssh/scripts/write_subjob.sh
+echo \$PARAMS | xargs $subjobs_script 
 ";
-close WRITE;
 
-my $i = $n; #defines end line of $md5sums_uniq for the next portion of $n cmds
-my $subjob_nr = 0; #counts the subjobs
-while($i <= $size){ 
-	#submit the next $n sequences in one arrayjob in portions of $seq sequences in one subjob -> $n/$seq = $subjobs subjobs (5000 subjobs with 30 seq. in each; assume 1job = 4min -> 30jobs = 2h):
-	#first write the subjobs into the subjobs file:
-	system("cat $md5sums_uniq | head -n $i | tail -n $n | xargs -n $seq > $tmp_file"); # divide the $n md5sums into blocks of $seq=30 arguments, write to a temporary file
-	system("i=$subjob_nr; while read line; do let i=i+1; echo \"\$i \$line\"; done < $tmp_file > $subjobs_file");
-	#submit the arrayjob:
-	my $h = $i - $n + 1; #$h=first subjob, $i=last subjob in the block
-	my $curr_log_dir = "$log_dir/$h-$i";
-	system("mkdir $curr_log_dir");
-	system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file"); #TODO: nice in right way for trembl runs!!!
-   
-	$subjob_nr = $subjob_nr + $subjobs;
-  	$i = $i + $n;
-	waitUntilReady(); # wait with the submition of the next arrayjob until this is finished
-}
+open SEQS, $md5sums_uniq; 
 
-# run the left sequences (less than $n)
-my $h = $i - $n + 1; #first subjob in the block
-my $last = $size - $h + 1; #number of sequences left to run
-if ($last > 0){
-	#run the remained sequences:
-        system("cat $md5sums_uniq | tail -n $last | xargs -n $seq > $tmp_file");
-	system("i=$subjob_nr; while read line; do let i=i+1; echo \"\$i \$line\"; done < $tmp_file > $subjobs_file");
-	system("rm $tmp_file");
-	$subjobs = ceil($last / $seq);
-	
-	#rewrite the arrayjob file because $subjobs_file number of lines ($subjobs) changed:	
-	open (WRITE, ">".$arrayjob_file) or die "could not open $arrayjob_file for writing";
-        print WRITE "#!/bin/bash
-# Execute commands parallelly on the cluster:
-#\$ -t 1-$subjobs
-CMDFILE=$subjobs_file
-PARAMS=\$(cat \$CMDFILE | head -n \$SGE_TASK_ID | tail -n 1)
-echo \$PARAMS | xargs /mnt/project/pssh/scripts/write_subjob.sh
-";
-        close WRITE;
-	#submit it:
-	my $curr_log_dir = "$log_dir/$h-$size";
-	system("mkdir $curr_log_dir");
-        system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file"); #TODO: nice in right way for trembl!!!
-	system("rm $qstat_tmpfile");
+print STDOUT "starting job assembly";
+my $nSequence = 0;
+my @subjobsLines = ();
+COLLECT: while($nSequence <= $totalSeqs){ 
+ 
+ #submit the next $maxSeqPerArrayJob sequences in one arrayjob in portions of $maxSeqPerSubjob sequences in one subjob -> $maxSeqPerArrayJob/$maxSeqPerSubjob = $maxSubjobs subjobs (5000 subjobs with 30 seq. in each; assume 1job = 4min -> 30jobs = 2h):
+  
+  my $nLast = $nSequence+$maxSeqPerSubjob;
+  if ($nLast > $totalSeqs){$nLast = $totalSeqs};
 
-	$subjob_nr = $subjob_nr + $subjobs;
-	print "last subjob nr $subjob_nr submitted\n";
-}
+#  print STDOUT "next chunk: $nSequence to $nLast \n";
+  my $i = $nSequence;
+  my @temp = ();
+  while ($i <= $nLast){
+    $nextSeq = <SEQS>;
+    chomp $nextSeq;
+    push @temp, $nextSeq;
+  }
+
+  my $subJobNumber = $#subjobsLines + 2; 
+  my $subJobTasksLine =  $subJobNumber;
+  $subJobTasksLine .= join " ", @temp;
+  $subJobTasksLine .= "\n";
+  push @subjobsLines, $subJobTasksLine;
+
+  # if we have all the jobs for one array job (maximal number or every pdb file accounted for), then 
+  if ( ($subJobNumber >= $maxSubjobs) || ($nLast == $totalSeqs) ){
+
+    print STDOUT "$subJobNumber jobs in current array, $nLast is last sequence in this list -> start submission process \n";
+    print STDOUT "$#subjobsLines subjob lines found \n";
+
+    # print the tasks-file
+    open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
+    print SUB @subjobsLines;
+    close SUB;
+    @subjobsLines = ();
+
+    # print the array job file
+    open (ARRAY, ">$arrayjob_file") or die "could not open $arrayjob_file for writing";
+    print ARRAY $arrayJobTextBegin.$subJobNumber."\n".$arrayJobTextEnd;
+    close ARRAY;
+    
+    print STDOUT "wrote subjobTasks to $subjobs_file and array job script to $subjobs_file, now submitting! \n ";
+
+    # and submit
+    my $curr_log_dir = "$log_dir/to$nLast";
+    mkdir $curr_log_dir;
+    system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file");   #TODO: nice in right way for trembl runs!!!
+    waitUntilReady(); # wait with the submission of the next arrayjob until this is finished
+
+  };    
+  $nSequence = $nLast+1; 
+  
+};
+
 
 sub waitUntilReady {
 	my $pssh_dir = "/mnt/project/pssh"; 
