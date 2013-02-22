@@ -278,7 +278,7 @@ sub write_output{
     else {
       $repeat{$seqres_md5sum} = 1;      
     }
-    $repeatVal = $repeat{$seqres_md5sum}; 
+    my $repeatVal = $repeat{$seqres_md5sum}; 
     $evalue = $ali_values[1];
     $identity = $ali_values[2];
     $gapless_blocks = $ali_values[3];
