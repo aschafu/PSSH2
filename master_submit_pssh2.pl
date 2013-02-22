@@ -9,8 +9,8 @@ use warnings;
 use POSIX;
 use File::Path qw(remove_tree);
 
-my $subjobs = 5000; #number of subjobs in one arrayjob
-my $seq = 30; #number of sequences to run in one subjob
+my $maxSubjobs = 5000; #number of subjobs in one arrayjob
+my $maxSeqPerSubjob = 30; #number of sequences to run in one subjob
 #my $n = $subjobs * $seq; #portion of sequences to run in one arrayjob (= 150000)
 my $maxSeqPerArrayJob = $maxSubjobs * $maxSeqPerSubjob; #portion of sequences to run in one arrayjob (= 150000)
 
@@ -18,7 +18,7 @@ my $pssh_dir = "/mnt/project/pssh";
 my $qstat_tmpfile = "$pssh_dir/scripts/qstat.out";
 #my $size_file = "$pssh_dir/scripts/md5sums_uniq_size";
 my $subjobs_file = "$pssh_dir/work/subjob_tasks.txt";
-my $subjobs_script = "$pssh_dir/scripts/batch_run_generate_pssh.sh";  # TODO!
+my $subjobs_script = "$pssh_dir/scripts/batch_run_generate_pssh2.sh";  # TODO!
 my $arrayjob_file = "$pssh_dir/work/arrayjob.sh";
 
 my $log_dir = "$pssh_dir/work/pssh2_log";
@@ -44,8 +44,8 @@ system("mkdir $queries_dir 2>/dev/null");
 #system("cd $queries_dir");
 #system("cat $sprot_fasta | /mnt/project/mamut/bin/fasta_to_fastas.md5.rb");		#done already
 
-my $totalSeqs = `wc -l $md5sums_uniq `; # size (line number) of $md5sums_uniq
-
+my $totalSeqs_String = `wc -l $md5sums_uniq `; # size (line number) of $md5sums_uniq
+my ($totalSeqs, $fileName) = split /\s/, $totalSeqs_String;
 
 my $arrayJobTextBegin = "#!/bin/bash
 # Execute commands parallelly on the cluster:
@@ -55,39 +55,36 @@ PARAMS=\$(cat \$TASKS | head -n \$SGE_TASK_ID | tail -n 1)
 echo \$PARAMS | xargs $subjobs_script 
 ";
 
-#write the arrayjob script:
-open (WRITE, ">".$arrayjob_file) or die "could not open $arrayjob_file for writing";
-print WRITE "#!/bin/bash
-# Execute commands parallelly on the cluster:
-#\$ -t 1-$subjobs
-CMDFILE=$subjobs_file
-PARAMS=\$(cat \$CMDFILE | head -n \$SGE_TASK_ID | tail -n 1)
-echo \$PARAMS | xargs $subjobs_script 
-";
-
 open SEQS, $md5sums_uniq; 
 
-print STDOUT "starting job assembly";
-my $nSequence = 0;
+print STDOUT "starting job assembly \n";
+my $nSequence = 1;
 my @subjobsLines = ();
+# $totalSeqs counts from 1, so $nSequence has to start at 1, too
 COLLECT: while($nSequence <= $totalSeqs){ 
  
  #submit the next $maxSeqPerArrayJob sequences in one arrayjob in portions of $maxSeqPerSubjob sequences in one subjob -> $maxSeqPerArrayJob/$maxSeqPerSubjob = $maxSubjobs subjobs (5000 subjobs with 30 seq. in each; assume 1job = 4min -> 30jobs = 2h):
   
-  my $nLast = $nSequence+$maxSeqPerSubjob;
+  my $nLast = $nSequence+$maxSeqPerSubjob-1;
   if ($nLast > $totalSeqs){$nLast = $totalSeqs};
 
 #  print STDOUT "next chunk: $nSequence to $nLast \n";
   my $i = $nSequence;
   my @temp = ();
-  while ($i <= $nLast){
-    $nextSeq = <SEQS>;
+  READ: while ($i <= $nLast){
+    my $nextSeq = <SEQS>;
+    last READ unless $nextSeq;
     chomp $nextSeq;
     push @temp, $nextSeq;
+    $i++;
+  }
+  if ($i < $nLast){
+    print STDERR "Warning: found less sequences ($i) than expected ($nLast) \n";
+    $nLast = $i;
   }
 
   my $subJobNumber = $#subjobsLines + 2; 
-  my $subJobTasksLine =  $subJobNumber;
+  my $subJobTasksLine =  $subJobNumber." ";
   $subJobTasksLine .= join " ", @temp;
   $subJobTasksLine .= "\n";
   push @subjobsLines, $subJobTasksLine;
@@ -95,8 +92,8 @@ COLLECT: while($nSequence <= $totalSeqs){
   # if we have all the jobs for one array job (maximal number or every pdb file accounted for), then 
   if ( ($subJobNumber >= $maxSubjobs) || ($nLast == $totalSeqs) ){
 
-    print STDOUT "$subJobNumber jobs in current array, $nLast is last sequence in this list -> start submission process \n";
-    print STDOUT "$#subjobsLines subjob lines found \n";
+    print STDOUT "$subJobNumber jobs in current array ", $nLast, " is last sequence in this list -> start submission process \n";
+    print STDOUT $#subjobsLines+1, " subjob lines found \n";
 
     # print the tasks-file
     open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
@@ -125,7 +122,7 @@ COLLECT: while($nSequence <= $totalSeqs){
 
 sub waitUntilReady {
 	my $pssh_dir = "/mnt/project/pssh"; 
-	my $qstat_tmpfile = "$pssh_dir/scripts/qstat.out";
+	my $qstat_tmpfile = "$pssh_dir/work/qstat.out";
 	my $qstat_outstring = "";
 	do{
         	sleep(3600); #wait 1h
