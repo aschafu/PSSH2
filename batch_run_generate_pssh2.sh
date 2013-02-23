@@ -11,6 +11,10 @@ mkdir -p $tmp_pssh2 2>/dev/null
 out_pssh2="/mnt/project/pssh/pssh2_files"
 
 /mnt/project/pssh/pdb_full/scripts/fetch_pdb_full_hhblits_pssh.pl #(for pssh/pdb_full/db copy) ##for rost_db copy: /mnt/project/pssh/pdb_full/scripts/fetch_pdb_full_hhblits.pl
+if [ -e "$tmp_pssh2/$subjob_nr" ]
+then
+  rm  "$tmp_pssh2/$subjob_nr"
+fi
 
 # we do not need to check for the subjob_nr, since we shifted that away
 time (
@@ -21,5 +25,12 @@ for md5sum in $* ; do
 done
 )
 #gzip the subjob otput file and copy it to $out_pssh2
-gzip -c "$tmp_pssh2/$subjob_nr" > "$tmp_pssh2/$subjob_nr.gz"
+if [ -e "$tmp_pssh2/$subjob_nr.gz" ]
+then
+  rm  "$tmp_pssh2/$subjob_nr.gz"
+fi
+thisdate=`date +%s`
+zip_file="$tmp_pssh2/$subjob_nr.$thisdate.gz" 
+echo $zip_file
+gzip -c "$tmp_pssh2/$subjob_nr" > "zipfile"
 cp "$tmp_pssh2/$subjob_nr.gz" $out_pssh2
