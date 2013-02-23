@@ -95,6 +95,12 @@ COLLECT: while($nSequence <= $totalSeqs){
     print STDOUT "$subJobNumber jobs in current array ", $nLast, " is last sequence in this list -> start submission process \n";
     print STDOUT $#subjobsLines+1, " subjob lines found \n";
 
+    if (-e $subjobs_file){
+      my $curTime = (stat($output_dir))[9];
+      my $oldName = $subjobs_file.".".$curTime.".bkp";
+      rename $subjobs_file, $oldName;
+    };
+
     # print the tasks-file
     open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
     print SUB @subjobsLines;
