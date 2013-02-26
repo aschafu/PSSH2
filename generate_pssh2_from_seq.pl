@@ -70,11 +70,11 @@ my $parsed_ohhrs = $o."/".$m."-pssh2_db_entry";
 
 my $cmd_hhblits1 = "if [ ! -f $ohhm ] 
 then 
-	/usr/bin/time /usr/bin/hhblits -i $i -d $uniprot20 -ohhm $ohhm -o $ohhr1 
+	/usr/bin/time /usr/bin/hhblits -i $i -d $uniprot20 -ohhm $ohhm -o $ohhr1 -cpu 1 
 fi";
 my $cmd_hhblits2 = "if [ ! -f $ohhr ] 
 then 
-	/usr/bin/time /usr/bin/hhblits -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr
+	/usr/bin/time /usr/bin/hhblits -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr -cpu 1
 fi";
 
 my $cmd_parse_hhr = "/usr/bin/time /mnt/project/pssh/scripts/parse_hhr.pl -i $ohhr -m $m -o $parsed_ohhrs -v";
