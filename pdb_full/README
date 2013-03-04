@@ -1,0 +1,14 @@
+use renew_pdb_full.sh to generate a completely new pdb_full
+renew_pdb_full.sh has a number of dependencies:
+from HHLIB: (export HHLIB=/mnt/project/pssh/hhsuite-2.0.13)
+ /mnt/project/pssh/hhsuite-2.0.13/scripts/pdb2fasta.non_redundant_chains_AS.pl
+ /mnt/project/pssh/hhsuite-2.0.13/scripts/splitfasta.pl
+ /mnt/project/pssh/hhsuite-2.0.13/scripts/multithread.pl
+ /mnt/project/pssh/hhsuite-2.0.13/scripts/addss.pl
+ /mnt/project/pssh/hhsuite-2.0.13/scripts/hhblitsdb.pl
+locally:
+ pdb_redundant_chains-md5-seq-mapping.pl
+ master_submit_hhblits.pl
+
+update_pdb_full.sh is still work in progress!
+The other files in this directory are either defunct or work in progress.
