@@ -1,3 +1,18 @@
+Setup: Change paths in the scripts if you move to another place! 
+       (set in the beginning of renew_pdb_full.sh)
+
+Updating pdb_full:
+src/pdb_full/renew_pdb_full.sh -u -d <db_name> > & update_pdb_full.log &
+Redoing pdb_full from scratch:
+src/pdb_full/renew_pdb_full.sh -d <db_name> > & renew_pdb_full.log &
+
+Generating PSSH:
+.... TODO
+
+
+Background info
+---------------
+
 pdb_full creation steps:
 
 *don't forget: /mnt/project/aquaria/HHblits_Psi-BLAST_compare/scripts/hhsuite-2.0.13$ export HHLIB=$PWD
