@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# master_submit.pl
+# master_submit.pl <flag_file>
 # Submits HHblits runs for pdb_full to the Rostlab cluster, to run parallelly in portions using arrayjobs.
 # Calls scripts/pssh2/write_subjob.sh
 
@@ -9,19 +9,29 @@ use warnings;
 use POSIX;
 use File::Path qw(remove_tree);
 
+my $flag_file = "";
+$flag_file = $ARGV[0];
+unless (-w $flag_file){print STDERR "WARNING: $flag_file not writable! \n"};
+my $pdbseq_file = $project_dir."/data/pdb_derived/pdbseq_file"; #file with list of all query sequences (pdb sequences)
+if (defined $ARGV[1] && $ARGV[1]){
+    $pdbseq_file = $ARGV[1];
+}
+
+# PARAMETERS!
 my $maxSubjobs = 5000; #number of subjobs in one arrayjob
 my $maxSeqPerSubjob = 30; #number of sequences to run in one subjob
 my $maxSeqPerArrayJob = $maxSubjobs * $maxSeqPerSubjob; #portion of sequences to run in one arrayjob (= 150000)
 
-my $pdb_full_dir = "/mnt/project/pssh/pdb_full"; 
-my $qstat_tmpfile = "$pdb_full_dir/work/qstat.out";
-my $subjobs_script = "$pdb_full_dir/scripts/hhblits_sge.sh";
-my $subjobs_file = "$pdb_full_dir/work/subjob_tasks.txt";
-my $arrayjob_file = "$pdb_full_dir/work/arrayjob.sh";
-my $flag_file = "$pdb_full_dir/work/master_submit_hhblits.DO_NOT_REMOVE.flag";
-my $pdbseq_file = "$pdb_full_dir/files/pdbseq_file"; #file with list of all query sequences (pdb sequences)
+my $project_dir = "/mnt/project/pssh/pssh2_project"; 
+my $work_dir = $project_dir."/work";
+my $src_dir = $project_dir."/src/pdb_full";
+my $qstat_tmpfile = $src_dir."/qstat.out";
+my $subjobs_script = $src_dir."/hhblits_sge.sh";
+my $subjobs_file = $work_dir."/subjob_tasks.txt";
+my $arrayjob_file = $work_dir."arrayjob.sh";
+#my $flag_file = $work_dir."master_submit_hhblits.DO_NOT_REMOVE.flag";
 
-my $log_dir = "$pdb_full_dir/work/hhblits_log";
+my $log_dir = $project_dir."/work/hhblits_log";
 remove_tree($log_dir);
 mkdir $log_dir;
 my $output_dir = "$pdb_full_dir/db";

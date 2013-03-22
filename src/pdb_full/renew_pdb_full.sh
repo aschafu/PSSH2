@@ -1,16 +1,41 @@
 #!/bin/bash
 
-## renew_pdb_full.sh
-## Process for making a completely new pdb_full. Removes all old files and creates the database again. This ensures that alignments for not anymore existing PDB chains are removed and new uniprot20 sequences are included in all alignments.
-## This process should be run every 6 month at least.
+## renew_pdb_full.sh [-u|-r]  <-d dbName> (default: -r)
+## Process for making a completely new pdb_full (or updating, depending on parameters). 
+## Renew (-r) removes all old files and creates the database again. This ensures that alignments for not anymore existing PDB chains are removed and new uniprot20 sequences are included in all alignments.
+## Updating (-d) just adds new structures to the existing database.
+## Renew should be run every 6 month at least.
 
-if [[ ! ("$#" == 1 ) ]]
-    echo 'Please pass a name for the new pdb_full output directory (If you give an existing directory, the old content will be lost!) \n '
-    exit 1
-fi
-version=$1
+# get options
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-#version="db_new"    # this can be set to a diferent name here or we can add this as a parameter
+version="dbNew"    # this can be set to a diferent name here or as a parameter
+update=false
+verbose=false
+
+while getopts "h?urdv:" opt; do
+    case "$opt" in
+	h|\?)
+            echo "Usage:  renew_pdb_full.sh [-u|-r] (default: -r renew completely) [-v (verbose)] [-d dbName] (default: dbNew, if you give an existing directory name, the old content will be lost!) " 
+            exit 0
+            ;;
+	u)  update=true
+            ;;
+	r)  update=false
+            ;;
+	d)  version=$OPTARG
+            ;;
+	v)  verbose=true
+	    ;;
+	:)
+	    echo "Option -$OPTARG requires an argument." >&2
+	    exit 1
+	    ;;
+	\?)
+	    echo "Invalid option: -$OPTARG" >&2
+	    ;;
+    esac
+done
 
 # parameters
 rootDir="/mnt/project/pssh/pssh2_project/" 
@@ -18,7 +43,7 @@ export HHLIB=$rootDir'hhsuite-2.0.13'
 pdb_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
 pdb_derived_dir=$rootDir"data/pdb_derived/"
 pdb_full_dir=$rootDir"data/pdb_full/"
-source_dir=$rootDir"source/pdb_full/"
+source_dir=$rootDir"src/pdb_full/"
 
 ## 1. Creation of a non redundant FASTA file of PDB SEQRES records. Non redundant because IDs of chains with identical SEQRES sequence are mentioned in header of one record 
 ## (ID of the structure with the highest resolution is first).
@@ -28,78 +53,139 @@ pdb_links_dir=$rootDir"work/pdb_links/"
 rm -r $pdb_links_dir 2>/dev/null #remove all old links
 mkdir $pdb_links_dir 2>/dev/null
 for subdir in $(ls $pdb_entries_dir); do ln -s $pdb_entries_dir$subdir/* $pdb_links_dir; done
+if $verbose ;
+then
+    echo 'made links from $pdb_entries_dir to $pdb_links_dir'
+fi
+
 ## Then the non redundant file is created using the modified HH-suite script pdb2fasta.pl (pdb2fasta.non_redundant_chains_AS.pl).
 fasta_dir=$pdb_derived_dir"fasta/"
 mkdir $fasta_dir 2>/dev/null
 pdb_chains="pdb_non_redundant_chains.fas"
 $HHLIB'/scripts/pdb2fasta.non_redundant_chains_AS.pl' \'$pdb_links_dir'*.ent'\' $fasta_dir$pdb_chains
-
 ## Check if the output file was created:
+if $verbose ;
+then
+    echo 'made non redundant sequence file $fasta_dir$pdb_chains'
+fi
 if [ ! -s $fasta_dir$pdb_chains ]
 then
-	echo the file $pdb_chains does not exist or is empty
-	exit 1
+    echo the file $pdb_chains does not exist or is empty
+    exit 1
 fi
+
 ## Update the mapping of PDB IDs to md5sums:
 $source_dir'/pdb_redundant_chains-md5-seq-mapping.pl' > $pdb_derived_dir'pdb_redundant_chains-md5-seq-mapping'
- 
+if $verbose ;
+then
+    echo 'made mapping to md5sums $pdb_derived_dir pdb_redundant_chains-md5-seq-mapping'
+fi
 
 ## 2. Splitting of the FASTA file to separate ".seq" files for each sequence using HH-suite script splitfasta.pl.
 seq_dir=$pdb_derived_dir"seq/"
-rm -r $seq_dir 2>/dev/null #remove all old ".seq" files
+if $update ;
+then
+    seq_dir_old=$seq_dir
+    seq_dir=$pdb_derived_dir"seqNew/"
+else
+    rm -r $seq_dir 2>/dev/null #remove all old ".seq" files
+fi
 mkdir $seq_dir 2>/dev/null
+
 cd $seq_dir #change to this directory because splitfasta.pl writes output to the current directory
-$HHLIB'/scripts/splitfasta_removeXseq_MK.pl' $fasta_dir$pdb_chains
+$HHLIB'/scripts/splitfasta_removeXseq.pl' $fasta_dir$pdb_chains
+if $verbose ;
+then
+    echo 'made split sequences in $seq_dir'
+fi
 
-## Remove all sequences only with 'X' and create a file which lists all sequences.
-## Functionality moved to splitfasta_removeXseq_MK.pl
-#tmp="/mnt/project/pssh/pdb_full/files/tmp"
-#touch $tmp #create an empy temporary file
-#pdbseq_file="/mnt/project/pssh/pdb_full/files/pdbseq_file" #file with all PDB fasta input files to run
-#rm $pdbseq_file 2>/dev/null #delete the old file
+cd -
+if $update ;
+then
+    $source_dir"removeKnownSeqs.pl" $seq_dir_old $seq_dir
+    if $verbose ;
+    then
+	echo 'removed duplicates from $seq_dir_old in $seq_dir'
+    fi  
+fi
 
-# Do for each ".seq" file:
-#cd $seq_dir
-#for file in $(ls); do 
-#   tail -n +2 $file | grep -v 'X' > $tmp #overwrite into tmp all AA from the sequence in the current file that are NOT 'X'
-#   if [ ! -s $tmp ] #tmp is empty -> the sequence in the current file has only 'X' 
-#   then
-#       rm $file # -> remove the file with only 'X' in the sequence
-#	echo "The sequence in $file has only 'X' - $file removed."
-#   else # file OK
-#       echo $file >> $pdbseq_file # add the file name to pdbseq_file
-#   fi
-#done
-#rm $tmp
+## (Functionality to remove all sequences only with 'X' and create a file which lists all sequences moved to splitfasta_removeXseq_MK.pl)
 
+# make the list of files that HHblits will run on
+pdbseq_file=$pdb_derived_dir"/pdbseq_file" #file with all PDB fasta input files to run
+rm $pdbseq_file 2>/dev/null #delete the old file
+ls -1 $seq_dir > $pdbseq_file
+if $verbose ;
+then
+    echo 'made the list of files for HHblits: $pdbseq_file'
+fi  
 
 ## 3. Building profiles (a3m output) running HHblits against uniprot20 using the PDB sequences received in (2.) as input.
 ## The runs are submitted in portions on the cluster using hhblits_submit.sh, which uses hhblits_sge.sh to distribute the 
 ## jobs on several nodes and makes sure that each job is finished succesfully (outputs an a3m file).
 a3m_dir=$pdb_derived_dir"a3m/"
-rm -r $a3m_dir 2>/dev/null #remove old a3m files
+if $update ;
+then
+    a3m_dir_old=$a3m_dir
+    a3m_dir=$pdb_derived_dir"a3mNew/" 
+else
+    rm -r $a3m_dir 2>/dev/null #remove old a3m files
+fi
 mkdir $a3m_dir 2>/dev/null 
+
 #/mnt/project/pssh/pdb_full/scripts/hhblits_submit.sh
 flagfile=$root_dir"work/master_submit_hhblits.DO_NOT_REMOVE.flag"
 touch $flagfile
-$source_dir'master_submit_hhblits.pl'
+if $verbose ;
+then
+    echo 'calling $source_dir master_submit_hhblits.pl $flagfile $pdbseq_file'
+fi  
+$source_dir'master_submit_hhblits.pl' $flagfile $pdbseq_file
 ## wait until all jobs are ready (flag file is gone)
-while [ -s $flagfile ] # if true a job is running
+while [ -e $flagfile ] # if true a job is running
 do
-    sleep 600
+    sleep 60
 done
 # if nothing is running - go to the next step
+if $verbose ;
+then
+    echo 'finished $source_dir master_submit_hhblits.pl '
+fi  
 
 ## 4. Adding PSIPRED secondary structure prediction to all MSAs received in (3.) with HH-suite script addss.pl. 
 ## Output of a3ms with PSIPRED prediction is written to another directory psipred_a3m. Using multithread.pl.
 psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 #psipred_a3m_dir="/mnt/project/pssh/pdb_full/files/psipred_a3m/"
-rm -r $psipred_a3m_dir 2>/dev/null #remove all old a3m files with PSIPRED prediction
+if $update ;
+then
+    psipred_a3m_dir_old=$psipred_a3m_dir
+    psipred_a3m_dir=$pdb_derived_dir"a3mNew/" 
+else
+    rm -r $psipred_a3m_dir 2>/dev/null #remove all old a3m files with PSIPRED prediction
+fi
 mkdir $psipred_a3m_dir 2>/dev/null
 addss_log_dir=$root_dir"work/log_addss/"
 #addss_log_dir="/mnt/project/pssh/pdb_full/log/addss/"
-mkdir $addss_log_dir 2>/dev/null
+mkdir $addss_log_dir 2>/dev/nul
+if $verbose ;
+then
+    echo 'calling adss.pls via multithread on $psipred_a3m_dir (see log in $addss_log_dir) '
+fi  
 $HHLIB/scripts/multithread.pl \'$a3m_dir"*.a3m"\' \'$HHLIB/scripts/addss.pl $file $psipred_a3m_dir/$base".a3m" 1>$addss_log_dir$base".out" 2>$addss_log_dir$base".err"\' -cpu 10
+
+# now move the new stuff to the old directory
+if $update ;
+then
+    find $a3m_dir -name "*.seq" | xargs -0 mv -t $a3m_dir_old
+    find $psipred_a3m_dir -name "*.seq" | xargs -0 mv -t $psipred_a3m_dir_old
+    rmdir $a3m_dir
+    rmdir $psipred_a3m_dir
+    if $verbose ;
+    then
+	echo 'moved files from $a3m_dir to $a3m_dir_old and from $psipred_a3m_dir to $psipred_a3m_dir_old '
+    fi  
+fi
+
 
 ## 5. Generating pdb_full database files with HH-suite script hhblitsdb.pl and the MSAs with PSIPRED prediction received in (4.) as input 
 ## (runs on jobtest, as hhblitsdb.pl uses multithread.pl).
@@ -109,4 +195,8 @@ mkdir $db 2>/dev/null
 
 hhblitsdb_log_dir=$root_dir"work/log_hhblitsdb/"
 mkdir $hhblitsdb_log_dir 2>/dev/null
+if $verbose ;
+then
+    echo 'calling hhblitsdb.pl on $psipred_a3m_dir (see log in $hhblitsdb_log_dir) '
+fi  
 $HHLIB/scripts/hhblitsdb.pl -o \'$db"pdb_full"\' -ia3m \'$psipred_a3m_dir\' -cpu 10 -log $hhblitsdb_log_dir"hhblitsdb.log"   
