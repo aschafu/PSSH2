@@ -69,6 +69,7 @@ $|=1; # autoflush on
 
 my @files=glob($ARGV[0]); 
 my $command=$ARGV[1]; 
+print "command: $command \n";
 $SIG{'CHLD'}='IGNORE';
 $SIG{'USR1'}=\&ChildFinished;
 $SIG{'INT'} =\&KillAllProcesses;
