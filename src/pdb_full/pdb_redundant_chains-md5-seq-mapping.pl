@@ -12,54 +12,66 @@ use warnings;
 my $cluster_id;
 my $ids;
 my $sequence;
-my $tmp_md5sum_file = "/mnt/project/pssh/pdb_full/files/tmp_md5sum";   #TODO: adjust path!
+my $work_dir = "";
+my $work_file = "tmp_md5sum";
+#my $tmp_md5sum_file = "/mnt/project/pssh/pdb_full/files/tmp_md5sum";   #TODO: adjust path!
 my $md5sum;
 my $first_entry = 1;
 
 #TODO: take input as parameter, not hard-coded
+my $inFile = $ARGV[0];
+unless (-r $inFile){
+    die "ERROR: cannot read $inFile, please give input sequence file as parameter! \n";
+}
+if (defined $ARGV[1] && -d $ARGV[1]){
+    $work_dir = $ARGV[1];
+}
+my $tmp_md5sum_file = $work_dir.'/'.$work_file;
 
-open (IN, "</mnt/project/pssh/pdb_full/files/fasta/pdb_non_redundant_chains.fas") or die "could not open pdb_non_redundant_chains.fas for reading";
+open (IN, $inFile) or die "could not open $inFile for reading";
 for my $line (<IN>){
-	chomp $line;
-	if ($line =~ /^>(\w{4}_\w)/){
-		#print the previous entry details, if it is not the first entry
-		if(!$first_entry){
-			system("echo -n \"$sequence\"|md5sum > $tmp_md5sum_file");
-			open FILE, $tmp_md5sum_file or die "Couldn't open file $tmp_md5sum_file\n"; 
-   			$md5sum = join("", <FILE>);
-			if ($md5sum =~ /(\S*)\s/){ #cut off space and "-" after the md5sum
-				$md5sum = $1;
-			} 
-   			close FILE;
-   			system("rm $tmp_md5sum_file");
-  
-			print "$cluster_id $ids\t$md5sum\t$sequence\n";
-		}else{
-			$first_entry = 0;
-		}
-		#read the new entry
-		$cluster_id = $1;
-		if ($line =~ /PDB:(.*)/){
-			$ids = $1;
-			if ($ids =~ /\*/){
-                        	$ids =~ s/\*//g;
-                	}
-		}else{
-			$ids = "";
-		}
-		$sequence = "";
+    chomp $line;
+    if ($line =~ /^>(\w{4}_\w)/){
+	#print the previous entry details, if it is not the first entry
+	if(!$first_entry){
+	    printEntry($sequence, $cluster_id, $ids);
 	}else{
-		$sequence .= $line;
+	    $first_entry = 0;
 	}
+	#read the new entry
+	$cluster_id = $1;
+	if ($line =~ /PDB:(.*)/){
+	    $ids = $1;
+	    if ($ids =~ /\*/){
+		$ids =~ s/\*//g;
+	    }
+	}else{
+	    $ids = "";
+	}
+	$sequence = "";
+    }
+
+    else {
+	$sequence .= $line;
+    }
 }
 #print the last entry details
-system("echo -n \"$sequence\"|md5sum > $tmp_md5sum_file");
-open FILE, $tmp_md5sum_file or die "Couldn't open file $tmp_md5sum_file\n"; 
-$md5sum = join("", <FILE>);
-if ($md5sum =~ /(\S*)\s/){ #cut off space and "-" after the md5sum
-	$md5sum = $1;
-} 
-close FILE;
-system("rm $tmp_md5sum_file");
+printEntry($sequence, $cluster_id, $ids);
 
-print $cluster_id."".$ids."\t".$md5sum."\t".$sequence."\n";
+
+sub printEntry {
+
+    my ($sequence, $cluster_id, $ids) = @_;
+
+    system("echo -n \"$sequence\"|md5sum > $tmp_md5sum_file");
+    open FILE, $tmp_md5sum_file or die "Couldn't open file $tmp_md5sum_file\n"; 
+    $md5sum = join("", <FILE>);
+    if ($md5sum =~ /(\S*)\s/){ #cut off space and "-" after the md5sum
+	$md5sum = $1;
+    } 
+    close FILE;
+    system("rm $tmp_md5sum_file");
+    
+    print $cluster_id." ".$ids."\t".$md5sum."\t".$sequence."\n";
+
+}
