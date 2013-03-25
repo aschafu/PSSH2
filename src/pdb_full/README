@@ -11,6 +11,7 @@ from HHLIB: (export HHLIB=/mnt/project/pssh/hhsuite-2.0.13)
 locally:
  pdb_redundant_chains-md5-seq-mapping.pl
  master_submit_hhblits.pl
+ removeKnownSeqs.pl
 
 example command: 
 renew_pdb_full.sh -v -d db_2013_02_25 > & update_pdb_full.db_2013_02_25.log &
