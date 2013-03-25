@@ -12,9 +12,11 @@ use warnings;
 my $cluster_id;
 my $ids;
 my $sequence;
-my $tmp_md5sum_file = "/mnt/project/pssh/pdb_full/files/tmp_md5sum";
+my $tmp_md5sum_file = "/mnt/project/pssh/pdb_full/files/tmp_md5sum";   #TODO: adjust path!
 my $md5sum;
 my $first_entry = 1;
+
+#TODO: take input as parameter, not hard-coded
 
 open (IN, "</mnt/project/pssh/pdb_full/files/fasta/pdb_non_redundant_chains.fas") or die "could not open pdb_non_redundant_chains.fas for reading";
 for my $line (<IN>){

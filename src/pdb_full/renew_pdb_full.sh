@@ -50,23 +50,24 @@ source_dir=$rootDir"src/pdb_full/"
 
 ## First symbolic links to all PDB files in /mnt/project/rost_db/data/pdb/entries/*/ are remade, as the script needs all files in one directory.
 pdb_links_dir=$rootDir"work/pdb_links/"
+
 rm -r $pdb_links_dir 2>/dev/null #remove all old links
 mkdir $pdb_links_dir 2>/dev/null
 for subdir in $(ls $pdb_entries_dir); do ln -s $pdb_entries_dir$subdir/* $pdb_links_dir; done
 if $verbose ;
 then
-    echo 'made links from $pdb_entries_dir to $pdb_links_dir'
+    echo made links from $pdb_entries_dir to $pdb_links_dir
 fi
 
 ## Then the non redundant file is created using the modified HH-suite script pdb2fasta.pl (pdb2fasta.non_redundant_chains_AS.pl).
 fasta_dir=$pdb_derived_dir"fasta/"
 mkdir $fasta_dir 2>/dev/null
 pdb_chains="pdb_non_redundant_chains.fas"
-$HHLIB'/scripts/pdb2fasta.non_redundant_chains_AS.pl' \'$pdb_links_dir'*.ent'\' $fasta_dir$pdb_chains
+$HHLIB'/scripts/pdb2fasta.non_redundant_chains_AS.pl' $pdb_links_dir\*.ent $fasta_dir$pdb_chains
 ## Check if the output file was created:
 if $verbose ;
 then
-    echo 'made non redundant sequence file $fasta_dir$pdb_chains'
+    echo made non redundant sequence file $fasta_dir$pdb_chains with $pdb_links_dir\*.ent
 fi
 if [ ! -s $fasta_dir$pdb_chains ]
 then
@@ -76,9 +77,10 @@ fi
 
 ## Update the mapping of PDB IDs to md5sums:
 $source_dir'/pdb_redundant_chains-md5-seq-mapping.pl' > $pdb_derived_dir'pdb_redundant_chains-md5-seq-mapping'
+echo $source_dir'/pdb_redundant_chains-md5-seq-mapping.pl' > $pdb_derived_dir'pdb_redundant_chains-md5-seq-mapping'
 if $verbose ;
 then
-    echo 'made mapping to md5sums $pdb_derived_dir pdb_redundant_chains-md5-seq-mapping'
+    echo made mapping to md5sums $pdb_derived_dir pdb_redundant_chains-md5-seq-mapping
 fi
 
 ## 2. Splitting of the FASTA file to separate ".seq" files for each sequence using HH-suite script splitfasta.pl.
@@ -94,18 +96,20 @@ mkdir $seq_dir 2>/dev/null
 
 cd $seq_dir #change to this directory because splitfasta.pl writes output to the current directory
 $HHLIB'/scripts/splitfasta_removeXseq.pl' $fasta_dir$pdb_chains
+echo $HHLIB'/scripts/splitfasta_removeXseq.pl' $fasta_dir$pdb_chains
 if $verbose ;
 then
-    echo 'made split sequences in $seq_dir'
+    echo made split sequences in $seq_dir
 fi
 
 cd -
 if $update ;
 then
     $source_dir"removeKnownSeqs.pl" $seq_dir_old $seq_dir
+#    echo $source_dir"removeKnownSeqs.pl" $seq_dir_old $seq_dir
     if $verbose ;
     then
-	echo 'removed duplicates from $seq_dir_old in $seq_dir'
+	echo removed duplicates from $seq_dir_old in $seq_dir
     fi  
 fi
 
@@ -117,7 +121,7 @@ rm $pdbseq_file 2>/dev/null #delete the old file
 ls -1 $seq_dir > $pdbseq_file
 if $verbose ;
 then
-    echo 'made the list of files for HHblits: $pdbseq_file'
+    echo made the list of files for HHblits: $pdbseq_file
 fi  
 
 ## 3. Building profiles (a3m output) running HHblits against uniprot20 using the PDB sequences received in (2.) as input.
@@ -138,8 +142,9 @@ flagfile=$root_dir"work/master_submit_hhblits.DO_NOT_REMOVE.flag"
 touch $flagfile
 if $verbose ;
 then
-    echo 'calling $source_dir master_submit_hhblits.pl $flagfile $pdbseq_file'
+    echo calling $source_dir master_submit_hhblits.pl $flagfile $pdbseq_file
 fi  
+
 $source_dir'master_submit_hhblits.pl' $flagfile $pdbseq_file
 ## wait until all jobs are ready (flag file is gone)
 while [ -e $flagfile ] # if true a job is running
@@ -149,8 +154,9 @@ done
 # if nothing is running - go to the next step
 if $verbose ;
 then
-    echo 'finished $source_dir master_submit_hhblits.pl '
+    echo finished $source_dir master_submit_hhblits.pl 
 fi  
+
 
 ## 4. Adding PSIPRED secondary structure prediction to all MSAs received in (3.) with HH-suite script addss.pl. 
 ## Output of a3ms with PSIPRED prediction is written to another directory psipred_a3m. Using multithread.pl.
@@ -169,9 +175,10 @@ addss_log_dir=$root_dir"work/log_addss/"
 mkdir $addss_log_dir 2>/dev/nul
 if $verbose ;
 then
-    echo 'calling adss.pls via multithread on $psipred_a3m_dir (see log in $addss_log_dir) '
+    echo calling adss.pls via multithread on $psipred_a3m_dir (see log in $addss_log_dir) 
+    echo $HHLIB/scripts/multithread.pl $a3m_dir\*.a3m \'$HHLIB/scripts/addss.pl \$file $psipred_a3m_dir/\$base.a3m 1>$addss_log_dir\$base.out 2>$addss_log_dir\$base.err\' -cpu 10
 fi  
-$HHLIB/scripts/multithread.pl \'$a3m_dir"*.a3m"\' \'$HHLIB/scripts/addss.pl $file $psipred_a3m_dir/$base".a3m" 1>$addss_log_dir$base".out" 2>$addss_log_dir$base".err"\' -cpu 10
+$HHLIB/scripts/multithread.pl $a3m_dir\*.a3m \'$HHLIB/scripts/addss.pl \$file $psipred_a3m_dir/\$base.a3m 1>$addss_log_dir\$base.out 2>$addss_log_dir\$base.err\' -cpu 10
 
 # now move the new stuff to the old directory
 if $update ;
@@ -182,7 +189,7 @@ then
     rmdir $psipred_a3m_dir
     if $verbose ;
     then
-	echo 'moved files from $a3m_dir to $a3m_dir_old and from $psipred_a3m_dir to $psipred_a3m_dir_old '
+	echo moved files from $a3m_dir to $a3m_dir_old and from $psipred_a3m_dir to $psipred_a3m_dir_old 
     fi  
 fi
 
@@ -197,6 +204,7 @@ hhblitsdb_log_dir=$root_dir"work/log_hhblitsdb/"
 mkdir $hhblitsdb_log_dir 2>/dev/null
 if $verbose ;
 then
-    echo 'calling hhblitsdb.pl on $psipred_a3m_dir (see log in $hhblitsdb_log_dir) '
+    echo calling hhblitsdb.pl on $psipred_a3m_dir (see log in $hhblitsdb_log_dir) 
+    echo $HHLIB/scripts/hhblitsdb.pl -o $db"pdb_full" -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir"hhblitsdb.log"   
 fi  
-$HHLIB/scripts/hhblitsdb.pl -o \'$db"pdb_full"\' -ia3m \'$psipred_a3m_dir\' -cpu 10 -log $hhblitsdb_log_dir"hhblitsdb.log"   
+$HHLIB/scripts/hhblitsdb.pl -o $db"pdb_full" -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir"hhblitsdb.log"   
