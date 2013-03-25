@@ -132,7 +132,7 @@ if ($options=~s/ -v//) {$v=2;}
 if ($options=~s/ -all//) {$nr=0;} 
 if ($options=~s/ -t (\w\w\w)-(\d\d)//) {$date=($months{$1}-1)/12+$2+100*($2<50);} 
 if ($options=~s/^\s*([^- ]\S+)\s*//) {
-    if ($v>=2) {print("Globbing...")};
+    if ($v>=2) {print("Globbing (with $1)...")};
     @pdbfiles=glob($1);
     if ($v>=2) {print(" found ".scalar(@pdbfiles)." files\n")};
 }
