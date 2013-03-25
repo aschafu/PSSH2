@@ -1,4 +1,6 @@
-use renew_pdb_full.sh to generate a completely new pdb_full
+RENEW
+-----
+use renew_pdb_full.sh to generate a completely new pdb_full (or update: -u)
 renew_pdb_full.sh has a number of dependencies:
 from HHLIB: (export HHLIB=/mnt/project/pssh/hhsuite-2.0.13)
  /mnt/project/pssh/hhsuite-2.0.13/scripts/pdb2fasta.non_redundant_chains_AS.pl
@@ -10,5 +12,28 @@ locally:
  pdb_redundant_chains-md5-seq-mapping.pl
  master_submit_hhblits.pl
 
-update_pdb_full.sh is still work in progress!
+example command: 
+renew_pdb_full.sh -v -d db_2013_02_25 > & update_pdb_full.db_2013_02_25.log &
+
+
+UPDATE
+------
+update_pdb_full.sh is now obsolete, because the functionality has been
+moved into 'renew_pdb_full.sh -u' 
+
+The difference between update and renew is that for update the a3m and hmm
+files of the last process will be conserved. Update will only look for
+new pdb files and add them to the database. 
+
+example command:
+renew_pdb_full.sh -u -v -d db_2013_02_25 > & update_pdb_full.db_2013_02_25.log &
+
+DO NOT FORGET:
+Once renew has run successfully, move the seq files from
+.../data/pdb_derived/seqNew to .../data/pdb_derived/seq!
+The files listed in .../data/pdb_derived/seq define the list of known sequences.
+
+
+REST
+----
 The other files in this directory are either defunct or work in progress.
