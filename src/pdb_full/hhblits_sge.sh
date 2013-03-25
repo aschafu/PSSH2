@@ -4,11 +4,32 @@
 #$ -o /dev/null
 #$ -e /mnt/project/pssh/pdb_full/log/hhblits
 
-h=`hostname -s `
-I="/mnt/project/pssh/pdb_full/files/seq"
-O="/mnt/project/pssh/pdb_full/files/a3m"
-T="/mnt/project/pssh/pdb_full/files/hhr"
+# PARAMETER!
 db="/var/tmp/rost_db/data/hhblits/uniprot20_current"
+I=$1
+shift
+O=$1
+shift
+T=$1
+shift
+if [ ! -d $I ] 
+then
+    echo "ERROR: $I not a directory" 
+    exit 1
+fi
+if [ ! -d $O ] 
+then
+    echo "ERROR: $O not a directory" 
+    exit 1
+fi
+if [ ! -d $T ] 
+then
+    echo "ERROR: $T not a directory" 
+    exit 1
+fi
+echo "working with $I, $O, $T"
+
+h=`hostname -s `
 
 #fetch uniprot20_current to the cluster node
 echo "$h db ready?"
