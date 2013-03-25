@@ -30,9 +30,9 @@ our $ncbidir = "/usr/bin/";    # Where the NCBI programs have been installed (fo
 #our $pdbdir  =  ".../pdb/all";            # where are the pdb files? Used in hhmakemodel.pl.
 #our $dsspdir =  ".../dssp/data";          # where are the dssp files? Used in addss.pl.
 #our $dssp    =  ".../dssp/bin/dsspcmbi";  # where is the dssp binary? Used in addss.pl.
-our $pdbdir  =  "/cluster/databases/pdb/all";            # where are the pdb files? Used in hhmakemodel.pl
-our $dsspdir =  "/cluster/databases/dssp/data";          # where are the dssp files? Used in addss.pl
-our $dssp    =  "/cluster/databases/dssp/bin/dsspcmbi";  # where is the dssp binary? Used in addss.pl
+our $pdbdir  =  "/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_links/";     # where are the pdb files? Used in hhmakemodel.pl
+our $dsspdir =  "/mnt/project/pssh/pssh2_project/data/pdb_derived/dssp/";          # where are the dssp files? Used in addss.pl
+our $dssp    =  "/mnt/project/aquaria/PSSH_HSSP/bin/dsspcmbi";  # where is the dssp binary? Used in addss.pl
 ##############################################################################################
 
 # The lines below probably do not need to be changed
