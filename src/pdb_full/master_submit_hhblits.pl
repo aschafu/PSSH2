@@ -101,7 +101,7 @@ COLLECT: while($nSequence <= $totalSeqs){
     open (ARRAY, ">$arrayjob_file") or die "could not open $arrayjob_file for writing";
     print ARRAY $arrayJobTextBegin.$nJobsInCurrentArray."\n".$arrayJobTextEnd;
     close ARRAY;
-    
+
     print STDOUT "wrote subjobTasks to $subjobs_file and array job script to $subjobs_file, now submitting! \n ";
 
     # and submit
@@ -117,10 +117,9 @@ COLLECT: while($nSequence <= $totalSeqs){
 
 unlink $flag_file;
 
-
 sub waitUntilReady {
 
-    my ($qstat_tmpfile) = $@;
+    my ($qstat_tmpfile) = @_;
     my $qstat_outstring = "";
     do{
 	sleep(600); #wait 10 min
