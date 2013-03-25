@@ -8,7 +8,7 @@ our $opt;
 BEGIN {
   our $VERSION = "1.0";
 
-  my $Lok = GetOptions( $opt = { dataroot => '/mnt/project/pssh/pdb_full/db', prefix => '/var/tmp/rost_db/data/hhblits', scriptdir => '~rost_db/src' }, 'dataroot=s', 'debug!', 'man!', 'prefix=s', 'scriptdir=s' );
+  my $Lok = GetOptions( $opt = { dataroot => '/mnt/project/pssh/pssh2_project/data/pdb_full/db', prefix => '/var/tmp/rost_db/data/hhblits', scriptdir => '~rost_db/src' }, 'dataroot=s', 'debug!', 'man!', 'prefix=s', 'scriptdir=s' );
   if( !$Lok ){ die("Invalid arguments, please check man page.\n"); }
 }
 use lib glob($opt->{scriptdir});
