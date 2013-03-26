@@ -10,39 +10,69 @@ use strict;
 use File::chdir;
 use Getopt::Long;
 
-my $queries_dir = "/mnt/project/pssh/sprot_fastas";
-my $uniprot20 = "/var/tmp/rost_db/data/hhblits/uniprot20_current"; 
+# PARAMETERS
+my $rootDir = "/mnt/project/pssh/pssh2_project/";
+my $queries_dir = $rootDir."data/uniprot_derived/sprot_fastas";
+my $time_log = $rootDir."work/pssh2_log/time";
+my $localHhblitsDir = "/var/tmp/rost_db/data/hhblits/";
+my $uniprot20 = $localHhblitsDir."uniprot20_current"; 
+my $pdb_full = $localHhblitsDir."pdb_full";
 #cluster: "/var/tmp/rost_db/data/hhblits/uniprot20_current"; #jobtest: "/mnt/project/rost_db/data/hhblits/uniprot20_current"; # database for first HHblits run (to build the profile)
-my $pdb_full = "/var/tmp/rost_db/data/hhblits/pdb_full";
+my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
+my $hhblits_path = "/usr/bin/hhblits";
+my $cache_path = "/usr/bin/ppc_store";
+my $parser_path = $rootDir."src/pssh2/parse_hhr.pl";
+my $md5script_path = $rootDir."src/pssh2/fasta_to_md5.rb";
+
 
 # Parse command line parameter
-our($m, $t, $o, $h);
-
+my($m, $i, $t, $o, $h);
 my $args_ok = GetOptions(
-			 'm=s'	=> \$m, #md5sum of the input sequence
-			't=s' => \$t, #path to temporary output (hhm and two hhr files)
-			'o=s' => \$o, #path to final output (from parser)
-			 'h'    => \$h #print help
+    'i=s' => \$i, #file name of input sequence
+    'm=s' => \$m, #md5sum of the input sequence
+    't=s' => \$t, #path to temporary output (hhm and two hhr files)
+    'o=s' => \$o, #path to final output (from parser)
+    'h'   => \$h #print help
 );
 if($h){
     print_help();
     exit;
 }
-if(!$m){
+if(!($m || $i)){
     print_help();
     exit;	
 }
+if (defined $i && defined $m){
+    print STDERR "WARNING: You gave -i $i and -m $m, will only use $i \n";
+    undef $m;
+}
+if (defined $m){
+    $i = "$queries_dir/$m"; #input FASTA file named according to the sequence-md5sum 
+}
+if (defined $i){
+    my $tmp_md5sum = "tmp_md5sum";
+    system("cat $i | $md5script_path > $tmp_md5sum");
 
-my $i = "$queries_dir/$m"; #input FASTA file named according to the sequence-md5sum 
+    open FILE, $tmp_md5sum or die "Generating md5sum, but couldn't open file $tmp_md5sum\n";
+    $m = join("", <FILE>);
+    close FILE;
+    unlink $tmp_md5sum;
+    chomp $m;
+}
+unless (defined $t && -d $t){
+    die "temporary hhblits output path $t is not a directory! \n";
+}
+unless (defined $o && -d $o){
+    die "output path for parsed files $o is not a directory! \n";
+}
 
-print ("\nRunning $m.\n");
-my ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr) = init($i, $m, $t, $o);
-my $exit_run_hhblits1 = run_hhblits1($cmd_hhblits1);
+print ("\nRunning $m: $i \n");
+my ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc) = init($i, $m, $t, $o);
+my $exit_run_hhblits1 = run_hhblits1($cmd_hhblits1, $cmd_ppc);
 my $exit_run_hhblits2 = run_hhblits2($exit_run_hhblits1, $cmd_hhblits2);
 my $exit_parse_hhr = parse_hhr($exit_run_hhblits2, $cmd_parse_hhr);
 
 print "\nFinished successfully $m.\n";
-
 
 
 #-------------------------------------------------------------------------------
@@ -51,11 +81,13 @@ Prints usage help message.
 output: stdout
 =cut
 sub print_help {
-  print "Usage: /mnt/project/pssh/scripts/generate_pssh2.pl
--m <md5sum>\tmd5sum of the input sequence
-[-h\tprints this help]\n";
+    print "Usage: /mnt/project/pssh/scripts/generate_pssh2.pl
+<[-m md5sum]\tmd5sum of the input sequence OR
+ [-i fileName]>\tfile name containing input sequence
+[-h]\tprints this help
+[-t path]\tpath to temporary output (hhm and two hhr files)                                                                                                                                                                                                                               
+[-o path]\tpath to final output (from parser) \n";
 }
-
 #-------------------------------------------------------------------------------
 =head 2 Subroutine init
 Initiates parameters and HHblits system calls
@@ -63,21 +95,20 @@ input: ($in, $out)
 output: ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr)
 =cut
 sub init {
-  my ($i, $m, $t, $o) = @_;
-  print "\nExecuting sub init...\n";
+    my ($i, $m, $t, $o) = @_;
+    print "\nExecuting sub init...\n";
 
-  my $ohhm = $t."/".$m."-uniprot20.hhm";
-  my $ohhr1 = $t."/".$m."-uniprot20.hhr";
-  my $ohhr = $t."/".$m."-uniprot20-pdb_full.hhr";
-  my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
-  my $parsed_ohhrs = $o."/".$m."-pssh2_db_entry";
-  my $time_log = "/mnt/project/pssh/pssh2_log/time";
-  
-  my $cmd_hhblits1 = "(/usr/bin/time /usr/bin/hhblits -i $i -d $uniprot20 -ohhm $ohhm -o $ohhr1) 2>> $time_log"."_hhblits1";
-  my $cmd_hhblits2 = "(/usr/bin/time /usr/bin/hhblits -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
-  my $cmd_parse_hhr = "(/usr/bin/time /mnt/project/pssh/scripts/parse_hhr.pl -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
-  
-  return ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr); 
+    my $ohhm = $t."/".$m."-uniprot20.hhm";
+    my $ohhr1 = $t."/".$m."-uniprot20.hhr";
+    my $ohhr = $t."/".$m."-uniprot20-pdb_full.hhr";
+    my $parsed_ohhrs = $o."/".$m."-pssh2_db_entry";
+    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -o $ohhr1) 2>> $time_log"."_hhblits1";
+    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
+    my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
+    my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_hhblits_hhm=$ohhm";
+    
+    return ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc); 
+
 }
 
 #-------------------------------------------------------------------------------
@@ -87,11 +118,16 @@ input: $cmd_hhblits1
 output: HMM (hhm) output and exit status.
 =cut
 sub run_hhblits1 {
-  my ($cmd_hhblits1) = @_;
-  print "\nExecuting sub run_hhblits1...\n";
-  system($cmd_hhblits1) == 0
-    or die "Failed to execute $cmd_hhblits1: $?\n";
-  return $?;
+    my ($cmd_hhblits1,$cmd_ppc) = @_;
+    print "\nExecuting sub run_hhblits1...\n";
+    system($cmd_hhblits1) == 0
+	or die "Failed to execute $cmd_hhblits1: $?\n";
+# store the output hmm in ppcache
+    my $exitVal = $?;
+    print STDOUT $cmd_ppc, "\n";
+    system($cmd_ppc) == 0 
+	or  print STDERR "WARNING: caching failed: $cmd_ppc";
+    return $exitVal;
 }
 
 #-------------------------------------------------------------------------------
@@ -101,16 +137,16 @@ input: ($exit_run_hhblits1, $cmd_hhblits2)
 output: normal output file (hhr) and exit status.
 =cut
 sub run_hhblits2 {
-  my ($exit_run_hhblits1, $cmd_hhblits2) = @_;
-  print "\nExecuting sub run_hhblits2...\n";
-  if ($exit_run_hhblits1 == 0){
-    system($cmd_hhblits2) == 0
-      or die "Failed to execute $cmd_hhblits2: $?\n";
+    my ($exit_run_hhblits1, $cmd_hhblits2) = @_;
+    print "\nExecuting sub run_hhblits2...\n";
+    if ($exit_run_hhblits1 == 0){
+	system($cmd_hhblits2) == 0
+	    or die "Failed to execute $cmd_hhblits2: $?\n";
 	return $?;
-  }else{
-    die "run_hhblits1 already exited with an error\n";
-    return "-1";
-  }
+    }else{
+	die "run_hhblits1 already exited with an error\n";
+	return "-1";
+    }
 }
 
 #------------------------------------------------------------------------------
