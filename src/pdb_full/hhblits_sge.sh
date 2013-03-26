@@ -2,7 +2,7 @@
 ## to be executed by SGE on clusternodes
 ## this just needs the names of input pdb files *.ent
 #$ -o /dev/null
-#$ -e /mnt/project/pssh/pdb_full/log/hhblits
+#$ -e /mnt/project/pssh/pssh2_project/work/hhblits_log
 
 # PARAMETER!
 db="/var/tmp/rost_db/data/hhblits/uniprot20_current"
