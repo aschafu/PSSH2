@@ -14,11 +14,9 @@ my $ids;
 my $sequence;
 my $work_dir = "";
 my $work_file = "tmp_md5sum";
-#my $tmp_md5sum_file = "/mnt/project/pssh/pdb_full/files/tmp_md5sum";   #TODO: adjust path!
 my $md5sum;
 my $first_entry = 1;
 
-#TODO: take input as parameter, not hard-coded
 my $inFile = $ARGV[0];
 unless (-r $inFile){
     die "ERROR: cannot read $inFile, please give input sequence file as parameter! \n";
