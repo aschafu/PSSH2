@@ -2,7 +2,6 @@
 
 # master_submit.pl <flag_file> [pdbseq_file] [input_dir] [output_dir]
 # Submits HHblits runs for pdb_full to the Rostlab cluster, to run parallelly in portions using arrayjobs.
-# Calls scripts/pssh2/write_subjob.sh
 
 use strict;
 use warnings;
