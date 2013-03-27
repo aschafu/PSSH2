@@ -26,10 +26,11 @@ my $md5script_path = $rootDir."src/pssh2/fasta_to_md5.rb";
 
 
 # Parse command line parameter
-my($m, $i, $t, $o, $h);
+my($m, $i, $t, $o, $h, $d);
 my $args_ok = GetOptions(
     'i=s' => \$i, #file name of input sequence
     'm=s' => \$m, #md5sum of the input sequence
+    'd=s' => \$d, #directory where the md5sum-named sequence files are stored
     't=s' => \$t, #path to temporary output (hhm and two hhr files)
     'o=s' => \$o, #path to final output (from parser)
     'h'   => \$h #print help
@@ -47,7 +48,14 @@ if (defined $i && defined $m){
     undef $m;
 }
 if (defined $m){
+    if (defined $d){
+	$queries_dir = $d;
+    }
+    else {
+	print STDERR "WARNING: You did not provide a directory for the md5sum sequence files. Will use default: $queries_dir \n";
+    }
     $i = "$queries_dir/$m"; #input FASTA file named according to the sequence-md5sum 
+    unless (-r $i){die "Input sequence file $i not readable! \n"};
 }
 if (defined $i){
     my $tmp_md5sum = "tmp_md5sum";
@@ -82,11 +90,13 @@ output: stdout
 =cut
 sub print_help {
     print "Usage: /mnt/project/pssh/scripts/generate_pssh2.pl
-<[-m md5sum]\tmd5sum of the input sequence OR
- [-i fileName]>\tfile name containing input sequence
-[-h]\tprints this help
-[-t path]\tpath to temporary output (hhm and two hhr files)                                                                                                                                                                                                                               
-[-o path]\tpath to final output (from parser) \n";
+< [ <-m md5sum>  \t md5sum of the input sequence AND
+    <-d md5dir> ]\t directory where the md5sum-named sequence files are stored
+OR
+  [-i fileName] >\t file name containing input sequence
+[-t path]\t\t path to temporary output (hhm and two hhr files) 
+[-o path]\t\t path to final output (from parser)
+[-h]\t\t\t prints this help \n";
 }
 #-------------------------------------------------------------------------------
 =head 2 Subroutine init
