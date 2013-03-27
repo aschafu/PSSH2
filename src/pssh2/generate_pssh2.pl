@@ -67,9 +67,9 @@ unless (defined $o && -d $o){
 }
 
 print ("\nRunning $m: $i \n");
-my ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc) = init($i, $m, $t, $o);
+my ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppc2) = init($i, $m, $t, $o);
 my $exit_run_hhblits1 = run_hhblits1($cmd_hhblits1, $cmd_ppc);
-my $exit_run_hhblits2 = run_hhblits2($exit_run_hhblits1, $cmd_hhblits2);
+my $exit_run_hhblits2 = run_hhblits2($exit_run_hhblits1, $cmd_hhblits2, $cmd_ppc2);
 my $exit_parse_hhr = parse_hhr($exit_run_hhblits2, $cmd_parse_hhr);
 
 print "\nFinished successfully $m.\n";
@@ -100,14 +100,17 @@ sub init {
 
     my $ohhm = $t."/".$m."-uniprot20.hhm";
     my $ohhr1 = $t."/".$m."-uniprot20.hhr";
+    my $oa3m1 = $t."/".$m."-uniprot20.a3m";
     my $ohhr = $t."/".$m."-uniprot20-pdb_full.hhr";
-    my $parsed_ohhrs = $o."/".$m."-pssh2_db_entry";
-    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -o $ohhr1) 2>> $time_log"."_hhblits1";
+    my $oa3m = $t."/".$m."-uniprot20-pdb_full.a3m";
+    my $parsed_ohhrs = $o."/".$m.".pssh2";
+    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
     my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
     my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
-    my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_hhblits_hhm=$ohhm";
+    my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_hhblits_hhm=$ohhm,res_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
+    my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_hhblits_hhr=$ohhr";
     
-    return ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc); 
+    return ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppc2); 
 
 }
 
@@ -137,16 +140,21 @@ input: ($exit_run_hhblits1, $cmd_hhblits2)
 output: normal output file (hhr) and exit status.
 =cut
 sub run_hhblits2 {
-    my ($exit_run_hhblits1, $cmd_hhblits2) = @_;
+    my ($exit_run_hhblits1, $cmd_hhblits2,$cmd_ppc2) = @_;
+    my $exitVal;
     print "\nExecuting sub run_hhblits2...\n";
     if ($exit_run_hhblits1 == 0){
 	system($cmd_hhblits2) == 0
 	    or die "Failed to execute $cmd_hhblits2: $?\n";
-	return $?;
+	$exitVal = $?;
+	print STDOUT $cmd_ppc2, "\n";
+	system($cmd_ppc2) == 0
+	    or  print STDERR "WARNING: caching failed: $cmd_ppc2";
     }else{
 	die "run_hhblits1 already exited with an error\n";
 	return "-1";
     }
+    return $exitVal;
 }
 
 #------------------------------------------------------------------------------
