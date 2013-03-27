@@ -8,41 +8,82 @@ use strict;
 use warnings;
 use POSIX;
 use File::Path qw(remove_tree);
+use File::Basename;
+use Getopt::Long;
+use Cwd;
 
+# PARAMETERS!
 my $maxSubjobs = 5000; #number of subjobs in one arrayjob
 my $maxSeqPerSubjob = 30; #number of sequences to run in one subjob
 #my $n = $subjobs * $seq; #portion of sequences to run in one arrayjob (= 150000)
 my $maxSeqPerArrayJob = $maxSubjobs * $maxSeqPerSubjob; #portion of sequences to run in one arrayjob (= 150000)
 
-my $pssh_dir = "/mnt/project/pssh"; 
-my $qstat_tmpfile = "$pssh_dir/scripts/qstat.out";
+my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
+my $work_dir = $pssh_dir."/work";
+my $src_dir =  $pssh_dir."/src/pssh2";
+my $data_dir = $pssh_dir."/data";
+my $output_dir = $data_dir."/pssh2/";
+my $seq_dir = $data_dir."./uniprot_derived";
+my $qstat_tmpfile = "$work_dir/qstat.out";
 #my $size_file = "$pssh_dir/scripts/md5sums_uniq_size";
-my $subjobs_file = "$pssh_dir/work/subjob_tasks.txt";
-my $subjobs_script = "$pssh_dir/scripts/batch_run_generate_pssh2.sh";  # TODO!
-my $arrayjob_file = "$pssh_dir/work/arrayjob.sh";
+my $subjobs_file_path = "$work_dir/subjob_tasks";
+my $arrayjob_file = "$work_dir/arrayjob.sh";
+my $subjobs_script = "$src_dir/batch_run_generate_pssh2.sh";  # TODO!
+my $fasta_to_md5_script = "$src_dir/fasta_to_md5.rb";
+my $split_fasta_md5_script = "$src_dir/fasta_to_fastas.md5.rb";
+#my $sprot_fasta = "/mnt/project/rost_db/data/swissprot/uniprot_sprot.fasta";
 
-my $log_dir = "$pssh_dir/work/pssh2_log";
+
+my($d);
+my $args_ok = GetOptions(
+    'o=s' => \$o, #name of pssh2 output subdirectory
+    's=s' => \$s, #path of sequence database to work with
+    'h'   => \$h #print help
+    );
+if($h){
+    print_help();
+    exit;
+}
+unless (defined $o){
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    $year += 1900;
+    $mon += 1;
+    $o = $year.$mon.$mday;
+    print STDERR "WARNING: You did not give a name for the output subdir. Will use $o \n";
+}
+$output_dir .= $o;
+
+my $fasta_input;
+my $input_name;
+if (defined $s && -r $s){
+    $fasta_input = $s;
+    my ($path,$suffix);
+    ($input_name,$path,$suffix) = fileparse($fullname,qr/\.[^.]*/);
+}
+else {
+    die "Sequence input $s not defined or not readable! \n";
+};
+
+my $log_dir = "$work_dir/pssh2_log";
 remove_tree($log_dir);
 mkdir $log_dir;
-my $output_dir = "$pssh_dir/pssh2_files";
-if (-e $output_dir){
-  my $time = (stat($output_dir))[9];
-  rename $output_dir, $output_dir.".old.".$time;
-}
+
+print STDOUT "Will write output to $output_dir \n";
 mkdir $output_dir;
 
-#Generate a new the swissprot md5sums file "/mnt/project/pssh/sprot_md5sums_uniq" (like "/mnt/project/mamut/app/sprot")
-my $sprot_fasta = "/mnt/project/rost_db/data/swissprot/uniprot_sprot.fasta";
-my $md5sums_all = "$pssh_dir/sprot_md5sums_all";
-my $md5sums_uniq = "$pssh_dir/sprot_md5sums_uniq";
-#system("cat $sprot_fasta | /mnt/project/mamut/bin/fasta_to_md5.rb > $md5sums_all"); 	#done already
-#system("cat $md5sums_all | sort | uniq > $md5sums_uniq"); 				#done already
+#Generate a new the  md5sums file "$pssh_dir/sprot_md5sums_uniq" (like "/mnt/project/mamut/app/sprot")
+my $md5sums_all = $seq_dir."/".$input_name."_md5sums_all";
+my $md5sums_uniq = $seq_dir."/".$input_name."_md5sums_uniq";
+system("cat $fasta_input | $fasta_to_md5_script > $md5sums_all"); 
+system("cat $md5sums_all | sort | uniq > $md5sums_uniq"); 	
 
-#Generate a new single FASTA files named by the md5sum of the sequence
-my $queries_dir = "$pssh_dir/sprot_fastas";
-system("mkdir $queries_dir 2>/dev/null");
-#system("cd $queries_dir");
-#system("cat $sprot_fasta | /mnt/project/mamut/bin/fasta_to_fastas.md5.rb");		#done already
+#Generate a new single FASTA file named by the md5sum of the sequence
+my $queries_dir = $seq_dir."/".$input_name."_single_fastas";
+my $current_dir = getcwd();
+mkdir $queries_dir;
+chdir $queries_dir;
+system("cat $fasta_input | $split_fasta_md5_script ");	
+chdir $current_dir;
 
 my $totalSeqs_String = `wc -l $md5sums_uniq `; # size (line number) of $md5sums_uniq
 my ($totalSeqs, $fileName) = split /\s/, $totalSeqs_String;
@@ -50,15 +91,16 @@ my ($totalSeqs, $fileName) = split /\s/, $totalSeqs_String;
 my $arrayJobTextBegin = "#!/bin/bash
 # Execute commands parallelly on the cluster:
 #\$ -t 1-";
-my $arrayJobTextEnd = "TASKS=$subjobs_file
-PARAMS=\$(cat \$TASKS | head -n \$SGE_TASK_ID | tail -n 1)
-echo \$PARAMS | xargs $subjobs_script 
-";
+my $arrayJobTextMiddle = "TASKS=";
+#my $arrayJobTextEnd = "TASKS=$subjobs_file
+my $arrayJobTextEnd = "PARAMS=\$(cat \$TASKS | head -n \$SGE_TASK_ID | tail -n 1)
+echo \$PARAMS | xargs $subjobs_script $queries_dir $output_dir "; 
 
 open SEQS, $md5sums_uniq; 
 
 print STDOUT "starting job assembly \n";
 my $nSequence = 1;
+my $nArray = 0;
 my @subjobsLines = ();
 # $totalSeqs counts from 1, so $nSequence has to start at 1, too
 COLLECT: while($nSequence <= $totalSeqs){ 
@@ -92,34 +134,31 @@ COLLECT: while($nSequence <= $totalSeqs){
   # if we have all the jobs for one array job (maximal number or every pdb file accounted for), then 
   if ( ($subJobNumber >= $maxSubjobs) || ($nLast == $totalSeqs) ){
 
-    print STDOUT "$subJobNumber jobs in current array ", $nLast, " is last sequence in this list -> start submission process \n";
-    print STDOUT $#subjobsLines+1, " subjob lines found \n";
+      $nArray++;
+      print STDOUT "$subJobNumber jobs in current array (number $nArray); $nLast is last sequence in this list -> start submission process \n";
+      print STDOUT $#subjobsLines+1, " subjob lines found \n";
 
-    if (-e $subjobs_file){
-      my $curTime = (stat($output_dir))[9];
-      my $oldName = $subjobs_file.".".$curTime.".bkp";
-      rename $subjobs_file, $oldName;
-    };
+      $subjobs_file = $subjobs_file_path.".".$nArray.".txt";
 
-    # print the tasks-file
-    open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
-    print SUB @subjobsLines;
-    close SUB;
-    @subjobsLines = ();
+      # print the tasks-file
+      open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
+      print SUB @subjobsLines;
+      close SUB;
+      @subjobsLines = ();
+      
+      # print the array job file
+      open (ARRAY, ">$arrayjob_file") or die "could not open $arrayjob_file for writing";
+      print ARRAY $arrayJobTextBegin.$subJobNumber."\n".$arrayJobTextMiddle.$nArray."\n".$arrayJobTextEnd.$nArray."\n";
+      close ARRAY;
+      
+      print STDOUT "wrote subjobTasks to $subjobs_file and array job script to $arrayjob_file, now submitting! \n ";
 
-    # print the array job file
-    open (ARRAY, ">$arrayjob_file") or die "could not open $arrayjob_file for writing";
-    print ARRAY $arrayJobTextBegin.$subJobNumber."\n".$arrayJobTextEnd;
-    close ARRAY;
-    
-    print STDOUT "wrote subjobTasks to $subjobs_file and array job script to $subjobs_file, now submitting! \n ";
-
-    # and submit
-    my $curr_log_dir = "$log_dir/to$nLast";
-    mkdir $curr_log_dir;
-    system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file");   #TODO: nice in right way for trembl runs!!!
-    waitUntilReady(); # wait with the submission of the next arrayjob until this is finished
-
+      # and submit
+      my $curr_log_dir = "$log_dir/$nArray-subjobs_to$nLast";
+      mkdir $curr_log_dir;
+      system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file");   #TODO: nice in right way for trembl runs!!!
+      waitUntilReady(); # wait with the submission of the next arrayjob until this is finished
+      
   };    
   $nSequence = $nLast+1; 
   
@@ -127,16 +166,15 @@ COLLECT: while($nSequence <= $totalSeqs){
 
 
 sub waitUntilReady {
-	my $pssh_dir = "/mnt/project/pssh"; 
-	my $qstat_tmpfile = "$pssh_dir/work/qstat.out";
+	my $qstat_tmpfile = "$work_dir/pssh2_qstat.out";
 	my $qstat_outstring = "";
 	do{
-        	sleep(3600); #wait 1h
+        	sleep(600); #wait 10 min
 		system("qstat > $qstat_tmpfile");
 		open FILE, $qstat_tmpfile or die "Couldn't open file $qstat_tmpfile\n";
 		$qstat_outstring = join("", <FILE>);
 		chomp($qstat_outstring);
 		close FILE;
 	}
-   	while($qstat_outstring ne "");
+   	while($qstat_outstring =~ / qw /);
 }
