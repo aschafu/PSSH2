@@ -1,29 +1,40 @@
 #!/bin/bash
-## to be executed by SGE on cluster-nodes as a single arrayjob unit
-## this just needs the md5sums 
+## batch_run_generate_pssh2.sh <inputDirPath> <ouputDirPath> <subjob_nr> <arrayjob_nr> <list of md5sums> 
+## to be executed by SGE on cluster-nodes as a single arrayjob unit 
 
-subjob_nr=$1
+# PARAMETERS
+tmp_loc="/tmp/pssh2/" 
+script_path="/mnt/project/pssh/pssh2_project/src/"
+
+queries_dir=$1  # directory containing the fasta sequences named by md5 sum
 shift
-tmp_hhblits="/tmp/pssh/hhblits_files/$subjob_nr"
+out_pssh2=$1    # permanent output directory for pssh2 files of multiple sequences
+shift
+subjob_nr=$1    # number of currently running subjob
+shift
+arrayjob_nr=$1  # number of currently running arrayjob
+shift
+tmp_hhblits="$tmp_loc/hhblits_files/$subjob_nr"
 mkdir -p $tmp_hhblits 2>/dev/null
-tmp_pssh2="/tmp/pssh/pssh2_files/$subjob_nr"
+tmp_pssh2="$tmp_loc/pssh2_files/$arrayjob_nr"   
 mkdir -p $tmp_pssh2 2>/dev/null
-out_pssh2="/mnt/project/pssh/pssh2_files"
+#out_pssh2="/mnt/project/pssh/pssh2_files"
 
-/mnt/project/pssh/pdb_full/scripts/fetch_pdb_full_hhblits_pssh.pl 
+$script_path/pdb_full/fetch_pdb_full_hhblits_pssh.pl 
 #(for pssh/pdb_full/db copy) 
-thisdate=`date +%s`
-out_file="$tmp_pssh2/$subjob_nr.$thisdate"
-# we do not need to check for the subjob_nr, since we shifted that away
+#thisdate=`date +%s`
+
+out_file=$tmp_pssh2/$arrayjob_nr'_'$subjob_nr'.pssh2'  # name of concatenated pssh2 files of this subjob
 time (
 for md5sum in $* ; do
     echo $md5sum
-    /mnt/project/pssh/scripts/generate_pssh2.pl -m $md5sum -t $tmp_hhblits -o $tmp_pssh2
+    $script_path/pssh2/generate_pssh2.pl -m $md5sum -d $queries_dir -t $tmp_hhblits -o $tmp_pssh2
 # concatenate the parsed output files into one file with the subjob number
-    cat "$tmp_pssh2/$md5sum-pssh2_db_entry" >> $out_file 
+    cat $tmp_pssh2/$md5sum'.pssh2' >> $out_file 
 done
 )
+
 # gzip the subjob otput file and copy it to $out_pssh2
 zip_file="$out_file.gz" 
 gzip -c $out_file > $zip_file
-cp "$zip_file" $out_pssh2
+cp $zip_file $out_pssh2
