@@ -38,7 +38,7 @@ while ((a=s.gets)!=nil)
    #$stdout.puts a			## dbug what did i read?
    	if a =~ /(^>)/ then
 		if	o != nil then
-   			$stdout.puts @h.hexdigest  if o != nil
+#   			$stdout.puts @h.hexdigest  if o != nil
 			f=File.open( @h.hexdigest ,"w")	
 		#	f.puts m.to_ss(seq)
 			f.puts header;
@@ -60,7 +60,7 @@ while ((a=s.gets)!=nil)
 end
 ### finnally:
         if      o != nil then
-	    $stdout.puts @h.hexdigest  if o != nil
+#	    $stdout.puts @h.hexdigest  if o != nil
 	    f=File.open( @h.hexdigest ,"w")
 	#    f.puts m.to_ss(seq)
 	    f.puts header;
