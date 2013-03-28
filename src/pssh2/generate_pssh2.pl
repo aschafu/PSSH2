@@ -13,7 +13,7 @@ use Getopt::Long;
 # PARAMETERS
 my $rootDir = "/mnt/project/pssh/pssh2_project/";
 my $queries_dir = $rootDir."data/uniprot_derived/sprot_fastas";
-my $time_log = $rootDir."work/pssh2_log/time";
+#my $time_log = $rootDir."work/pssh2_log/time";
 my $localHhblitsDir = "/var/tmp/rost_db/data/hhblits/";
 my $uniprot20 = $localHhblitsDir."uniprot20_current"; 
 my $pdb_full = $localHhblitsDir."pdb_full";
@@ -24,9 +24,11 @@ my $cache_path = "/usr/bin/ppc_store";
 my $parser_path = $rootDir."src/pssh2/parse_hhr.pl";
 my $md5script_path = $rootDir."src/pssh2/fasta_to_md5.rb";
 
-
 # Parse command line parameter
 my($m, $i, $t, $o, $h, $d);
+$o = getcwd;
+$t = getcwd;
+
 my $args_ok = GetOptions(
     'i=s' => \$i, #file name of input sequence
     'm=s' => \$m, #md5sum of the input sequence
@@ -114,9 +116,12 @@ sub init {
     my $ohhr = $t."/".$m."-uniprot20-pdb_full.hhr";
     my $oa3m = $t."/".$m."-uniprot20-pdb_full.a3m";
     my $parsed_ohhrs = $o."/".$m.".pssh2";
-    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
-    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
-    my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
+#    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
+#    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
+#    my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
+    my $cmd_hhblits1 = $hhblits_path." -cpu 1 -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1";
+    my $cmd_hhblits2 = $hhblits_path." -cpu 1 -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr"; 
+    my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
     my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_hhblits_hhm=$ohhm,res_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
     my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_hhblits_hhr=$ohhr";
     
