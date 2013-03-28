@@ -10,11 +10,12 @@ use POSIX;
 use File::Path qw(remove_tree);
 use File::Basename;
 use Getopt::Long;
-use Cwd;
+#use Cwd 'abs_path';
+#use Cwd;
 
 # PARAMETERS!
 my $maxSubjobs = 5000; #number of subjobs in one arrayjob
-my $maxSeqPerSubjob = 30; #number of sequences to run in one subjob
+my $maxSeqPerSubjob = 20; #number of sequences to run in one subjob
 #my $n = $subjobs * $seq; #portion of sequences to run in one arrayjob (= 150000)
 my $maxSeqPerArrayJob = $maxSubjobs * $maxSeqPerSubjob; #portion of sequences to run in one arrayjob (= 150000)
 
@@ -23,7 +24,7 @@ my $work_dir = $pssh_dir."/work";
 my $src_dir =  $pssh_dir."/src/pssh2";
 my $data_dir = $pssh_dir."/data";
 my $output_dir = $data_dir."/pssh2/";
-my $seq_dir = $data_dir."./uniprot_derived";
+my $seq_dir = $data_dir."/uniprot_derived";
 my $qstat_tmpfile = "$work_dir/qstat.out";
 #my $size_file = "$pssh_dir/scripts/md5sums_uniq_size";
 my $subjobs_file_path = "$work_dir/subjob_tasks";
@@ -34,7 +35,7 @@ my $split_fasta_md5_script = "$src_dir/fasta_to_fastas.md5.rb";
 #my $sprot_fasta = "/mnt/project/rost_db/data/swissprot/uniprot_sprot.fasta";
 
 
-my($d);
+my($o,$s,$h);
 my $args_ok = GetOptions(
     'o=s' => \$o, #name of pssh2 output subdirectory
     's=s' => \$s, #path of sequence database to work with
@@ -56,9 +57,10 @@ $output_dir .= $o;
 my $fasta_input;
 my $input_name;
 if (defined $s && -r $s){
-    $fasta_input = $s;
+    $fasta_input = File::Spec->rel2abs($s);
     my ($path,$suffix);
-    ($input_name,$path,$suffix) = fileparse($fullname,qr/\.[^.]*/);
+    ($input_name,$path,$suffix) = fileparse($fasta_input,qr/\.[^.]*/);
+    print STDOUT "Parsed $fasta_input: ", join " ", ($input_name,$path,$suffix,"\n"); 
 }
 else {
     die "Sequence input $s not defined or not readable! \n";
@@ -72,21 +74,25 @@ print STDOUT "Will write output to $output_dir \n";
 mkdir $output_dir;
 
 #Generate a new the  md5sums file "$pssh_dir/sprot_md5sums_uniq" (like "/mnt/project/mamut/app/sprot")
-my $md5sums_all = $seq_dir."/".$input_name."_md5sums_all";
-my $md5sums_uniq = $seq_dir."/".$input_name."_md5sums_uniq";
+my $md5sums_all = $seq_dir."/".$input_name.".md5sums_all";
+my $md5sums_uniq = $seq_dir."/".$input_name.".md5sums_uniq";
+print STDOUT "Making md5sums files $md5sums_all, $md5sums_uniq \n";
 system("cat $fasta_input | $fasta_to_md5_script > $md5sums_all"); 
 system("cat $md5sums_all | sort | uniq > $md5sums_uniq"); 	
 
 #Generate a new single FASTA file named by the md5sum of the sequence
 my $queries_dir = $seq_dir."/".$input_name."_single_fastas";
-my $current_dir = getcwd();
+my $current_dir = getcwd;
+print STDOUT "Currently in $current_dir, changing to $queries_dir \n";
 mkdir $queries_dir;
 chdir $queries_dir;
 system("cat $fasta_input | $split_fasta_md5_script ");	
 chdir $current_dir;
+print STDOUT "Made split md5sum files in $queries_dir, changing back to $current_dir \n";
 
 my $totalSeqs_String = `wc -l $md5sums_uniq `; # size (line number) of $md5sums_uniq
 my ($totalSeqs, $fileName) = split /\s/, $totalSeqs_String;
+print STDOUT "Found $totalSeqs sequences to work with /n";
 
 my $arrayJobTextBegin = "#!/bin/bash
 # Execute commands parallelly on the cluster:
@@ -101,6 +107,7 @@ open SEQS, $md5sums_uniq;
 print STDOUT "starting job assembly \n";
 my $nSequence = 1;
 my $nArray = 0;
+#my $previous_lastSubjobNumber = 0;
 my @subjobsLines = ();
 # $totalSeqs counts from 1, so $nSequence has to start at 1, too
 COLLECT: while($nSequence <= $totalSeqs){ 
@@ -125,8 +132,9 @@ COLLECT: while($nSequence <= $totalSeqs){
     $nLast = $i;
   }
 
-  my $subJobNumber = $#subjobsLines + 2; 
-  my $subJobTasksLine =  $subJobNumber." ";
+  my $subJobNumber = $#subjobsLines + 2;
+  my $pretty_subJobNumber = sprintf("%04d", $subJobNumber);
+  my $subJobTasksLine =  $pretty_subJobNumber." ";
   $subJobTasksLine .= join " ", @temp;
   $subJobTasksLine .= "\n";
   push @subjobsLines, $subJobTasksLine;
@@ -135,10 +143,11 @@ COLLECT: while($nSequence <= $totalSeqs){
   if ( ($subJobNumber >= $maxSubjobs) || ($nLast == $totalSeqs) ){
 
       $nArray++;
-      print STDOUT "$subJobNumber jobs in current array (number $nArray); $nLast is last sequence in this list -> start submission process \n";
+      my $pretty_nArray = sprintf("%03d", $nArray );
+      print STDOUT "$subJobNumber jobs in current array (number $pretty_nArray); $nLast is last sequence in this list -> start submission process \n";
       print STDOUT $#subjobsLines+1, " subjob lines found \n";
 
-      $subjobs_file = $subjobs_file_path.".".$nArray.".txt";
+      my $subjobs_file = $subjobs_file_path.".".$pretty_nArray.".txt";
 
       # print the tasks-file
       open SUB, ">$subjobs_file"  or die "could not open $subjobs_file for writing";
@@ -148,13 +157,13 @@ COLLECT: while($nSequence <= $totalSeqs){
       
       # print the array job file
       open (ARRAY, ">$arrayjob_file") or die "could not open $arrayjob_file for writing";
-      print ARRAY $arrayJobTextBegin.$subJobNumber."\n".$arrayJobTextMiddle.$nArray."\n".$arrayJobTextEnd.$nArray."\n";
+      print ARRAY $arrayJobTextBegin.$subJobNumber."\n".$arrayJobTextMiddle.$subjobs_file."\n".$arrayJobTextEnd.$pretty_nArray."\n";
       close ARRAY;
       
       print STDOUT "wrote subjobTasks to $subjobs_file and array job script to $arrayjob_file, now submitting! \n ";
 
       # and submit
-      my $curr_log_dir = "$log_dir/$nArray-subjobs_to$nLast";
+      my $curr_log_dir = "$log_dir/$pretty_nArray-subjobs_to$nLast";
       mkdir $curr_log_dir;
       system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file");   #TODO: nice in right way for trembl runs!!!
       waitUntilReady(); # wait with the submission of the next arrayjob until this is finished
@@ -163,6 +172,7 @@ COLLECT: while($nSequence <= $totalSeqs){
   $nSequence = $nLast+1; 
   
 };
+print STDOUT "finished: all sequences submitted \n";
 
 
 sub waitUntilReady {
@@ -177,4 +187,14 @@ sub waitUntilReady {
 		close FILE;
 	}
    	while($qstat_outstring =~ / qw /);
+}
+
+sub print_help {
+
+    print "Usage: master_submit_pssh2.pl
+<-o outdir>  \t name of pssh2 output subdirectory
+<-s inputdir> ]\t path of sequence database to work with
+[-h]\t\t\t prints this help \n";
+
+
 }
