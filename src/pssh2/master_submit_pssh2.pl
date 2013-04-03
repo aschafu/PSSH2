@@ -32,18 +32,29 @@ my $arrayjob_file = "$work_dir/arrayjob.sh";
 my $subjobs_script = "$src_dir/batch_run_generate_pssh2.sh";  # TODO!
 my $fasta_to_md5_script = "$src_dir/fasta_to_md5.rb";
 my $split_fasta_md5_script = "$src_dir/fasta_to_fastas.md5.rb";
+my $big_option = " -q generic\@n37.rostclust";
 #my $sprot_fasta = "/mnt/project/rost_db/data/swissprot/uniprot_sprot.fasta";
 
-
-my($o,$s,$h);
+my($o,$s,$h,$r,$qb);
+$r = "";
+$qb = 0;
 my $args_ok = GetOptions(
     'o=s' => \$o, #name of pssh2 output subdirectory
     's=s' => \$s, #path of sequence database to work with
+    'r=s' => \$r, #resubmit
+    'qb'  => \$qb, # use queue for big jobs only
     'h'   => \$h #print help
     );
 if($h){
     print_help();
     exit;
+}
+if ($r){
+    print STDOUT "resubmitting -> will not regenerate the fasta sequences \n";
+    unless (-r $r){die "uniq md5 list $r not readable!"}
+}
+if ($qb){
+    print STDOUT "will add '$big_option' to the queue submission -> less nodes, but hopefully more memory per job \n";
 }
 unless (defined $o){
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
@@ -60,39 +71,55 @@ if (defined $s && -r $s){
     $fasta_input = File::Spec->rel2abs($s);
     my ($path,$suffix);
     ($input_name,$path,$suffix) = fileparse($fasta_input,qr/\.[^.]*/);
-    print STDOUT "Parsed $fasta_input: ", join " ", ($input_name,$path,$suffix,"\n"); 
+    print STDOUT "Parsed name $fasta_input: ", join " ", ($input_name,$path,$suffix,"\n"); 
 }
 else {
     die "Sequence input $s not defined or not readable! \n";
 };
 
 my $log_dir = "$work_dir/pssh2_log";
-remove_tree($log_dir);
-mkdir $log_dir;
+unless ($r){
+    remove_tree($log_dir);
+    mkdir $log_dir;
+};
 
 print STDOUT "Will write output to $output_dir \n";
-mkdir $output_dir;
+unless ($r){
+    mkdir $output_dir;
+}
 
 #Generate a new the  md5sums file "$pssh_dir/sprot_md5sums_uniq" (like "/mnt/project/mamut/app/sprot")
-my $md5sums_all = $seq_dir."/".$input_name.".md5sums_all";
-my $md5sums_uniq = $seq_dir."/".$input_name.".md5sums_uniq";
-print STDOUT "Making md5sums files $md5sums_all, $md5sums_uniq \n";
-system("cat $fasta_input | $fasta_to_md5_script > $md5sums_all"); 
-system("cat $md5sums_all | sort | uniq > $md5sums_uniq"); 	
+my $md5sums_uniq;
+if ($r){
+    $md5sums_uniq = $r;
+    print STDOUT "Working with md5sums files $md5sums_uniq; will assume that the single fasta sequences already exist! \n";
+}
+else {
+    my $md5sums_all = $seq_dir."/".$input_name.".md5sums_all";
+    $md5sums_uniq = $seq_dir."/".$input_name.".md5sums_uniq";
+    print STDOUT "Making md5sums files $md5sums_all, $md5sums_uniq \n";
+    system("cat $fasta_input | $fasta_to_md5_script > $md5sums_all"); 
+    system("cat $md5sums_all | sort | uniq > $md5sums_uniq"); 	
+}
 
 #Generate a new single FASTA file named by the md5sum of the sequence
 my $queries_dir = $seq_dir."/".$input_name."_single_fastas";
 my $current_dir = getcwd;
-print STDOUT "Currently in $current_dir, changing to $queries_dir \n";
-mkdir $queries_dir;
-chdir $queries_dir;
-system("cat $fasta_input | $split_fasta_md5_script ");	
-chdir $current_dir;
-print STDOUT "Made split md5sum files in $queries_dir, changing back to $current_dir \n";
+if ($r){
+    print STDOUT "Working with split md5sum files in $queries_dir, staying in $current_dir \n";
+}
+else {
+    print STDOUT "Currently in $current_dir, changing to $queries_dir \n";
+    mkdir $queries_dir;
+    chdir $queries_dir;
+    system("cat $fasta_input | $split_fasta_md5_script ");	
+    chdir $current_dir;
+    print STDOUT "Made split md5sum files in $queries_dir, changing back to $current_dir \n";
+};
 
 my $totalSeqs_String = `wc -l $md5sums_uniq `; # size (line number) of $md5sums_uniq
 my ($totalSeqs, $fileName) = split /\s/, $totalSeqs_String;
-print STDOUT "Found $totalSeqs sequences to work with /n";
+print STDOUT "Found $totalSeqs sequences to work with \n";
 
 my $arrayJobTextBegin = "#!/bin/bash
 # Execute commands parallelly on the cluster:
@@ -165,7 +192,12 @@ COLLECT: while($nSequence <= $totalSeqs){
       # and submit
       my $curr_log_dir = "$log_dir/$pretty_nArray-subjobs_to$nLast";
       mkdir $curr_log_dir;
-      system("qsub -e $curr_log_dir -o /dev/null $arrayjob_file");   #TODO: nice in right way for trembl runs!!!
+      my $qsub_cmd = "qsub -e $curr_log_dir -o /dev/null ";
+      if ($qb){
+	  $qsub_cmd .= $big_option;
+      }
+      $qsub_cmd .= " ".$arrayjob_file;
+      system($qsub_cmd);   #TODO: nice in right way for trembl runs!!!
       waitUntilReady(); # wait with the submission of the next arrayjob until this is finished
       
   };    
@@ -194,6 +226,8 @@ sub print_help {
     print "Usage: master_submit_pssh2.pl
 <-o outdir>  \t name of pssh2 output subdirectory
 <-s inputdir> ]\t path of sequence database to work with
+[-r md5sumsUniq]\t path of file containing uniq md5sums to resubmit
+[-qb]\t use only 'big' nodes, so the jobs can have lots of memory
 [-h]\t\t\t prints this help \n";
 
 
