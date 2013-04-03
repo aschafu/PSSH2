@@ -38,17 +38,17 @@ while ((a=s.gets)!=nil)
    #$stdout.puts a			## dbug what did i read?
    	if a =~ /(^>)/ then
 		if	o != nil then
-#   			$stdout.puts @h.hexdigest  if o != nil
+   			$stdout.puts @h.hexdigest  if o != nil
 			f=File.open( @h.hexdigest ,"w")	
 		#	f.puts m.to_ss(seq)
 			f.puts header;
 			f.puts seq
 			f.close();
-
+		end		### moved the end up ... else the first seq wint have a header
 			@h = Digest::MD5.new
 			seq=""
 			header=a
-		end
+	#	end
 
 	else
 		@h.update(a.strip)
@@ -60,7 +60,7 @@ while ((a=s.gets)!=nil)
 end
 ### finnally:
         if      o != nil then
-#	    $stdout.puts @h.hexdigest  if o != nil
+	    $stdout.puts @h.hexdigest  if o != nil
 	    f=File.open( @h.hexdigest ,"w")
 	#    f.puts m.to_ss(seq)
 	    f.puts header;
