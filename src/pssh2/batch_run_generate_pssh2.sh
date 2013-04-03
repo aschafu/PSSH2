@@ -30,12 +30,18 @@ $script_path/pdb_full/fetch_pdb_full_hhblits_pssh.pl
 #thisdate=`date +%s`
 
 out_file=$tmp_pssh2/$arrayjob_nr'_'$subjob_nr'.pssh2'  # name of concatenated pssh2 files of this subjob
+out_file_failed=$out_file'.failed_md5'
 time (
 for md5sum in $* ; do
     echo $md5sum
     $script_path/pssh2/generate_pssh2.pl -m $md5sum -d $queries_dir -t $tmp_hhblits -o $tmp_pssh2
 # concatenate the parsed output files into one file with the subjob number
-    cat $tmp_pssh2/$md5sum'.pssh2' >> $out_file 
+    if [ -r $tmp_pssh2/$md5sum'.pssh2' ] ;
+    then
+	cat $tmp_pssh2/$md5sum'.pssh2' >> $out_file 
+    else
+	echo $md5sum >> $out_file_failed
+    fi
 done
 )
 
@@ -43,3 +49,7 @@ done
 zip_file="$out_file.gz" 
 gzip -c $out_file > $zip_file
 cp $zip_file $out_pssh2
+if [ -s $out_file_failed ] ; 
+then
+    cp $out_file_failed $out_pssh2
+fi
