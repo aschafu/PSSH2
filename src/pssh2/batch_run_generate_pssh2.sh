@@ -11,9 +11,9 @@ queries_dir=$1  # directory containing the fasta sequences named by md5 sum
 shift
 out_pssh2=$1    # permanent output directory for pssh2 files of multiple sequences
 shift
-arrayjob_nr=$1  # number of currently running arrayjob
+arrayjob_nr=$1  # number of currently running arrayjob (nicely formatted)
 shift
-subjob_nr=$1    # number of currently running subjob
+subjob_nr=$1    # number of currently running subjob (nicely formatted)
 shift
 tmp_hhblits="$tmp_loc/hhblits_files/$arrayjob_nr"
 mkdir -p $tmp_hhblits 2>/dev/null
@@ -36,7 +36,7 @@ for md5sum in $* ; do
     echo $md5sum
     $script_path/pssh2/generate_pssh2.pl -m $md5sum -d $queries_dir -t $tmp_hhblits -o $tmp_pssh2
 # concatenate the parsed output files into one file with the subjob number
-    if [ -r $tmp_pssh2/$md5sum'.pssh2' ] ;
+    if [ -s $tmp_pssh2/$md5sum'.pssh2'  ] ;
     then
 	cat $tmp_pssh2/$md5sum'.pssh2' >> $out_file 
     else
