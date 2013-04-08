@@ -292,7 +292,7 @@ sub write_output{
     }
   }
   if ($ali_num == 0){
-      print STDERR "WARNING: Did not find any PDB alignments for $m ";
+      print STDERR "WARNING: Did not find any PDB alignments for $m \n";
   };
   close WRITE;
 }
