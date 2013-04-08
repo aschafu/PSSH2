@@ -9,7 +9,11 @@ use warnings;
 use File::chdir;
 use Getopt::Long;
 
+# Parameters! 
 my $nRetain = 5;  # how many alignments to keep, regardless of e-value
+my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
+my $pdb_derived_dir = $pssh_dir.'/data/pdb_derived/';
+my $mapping = $pdb_derived_dir.'pdb_redundant_chains-md5-seq-mapping';
 
 # Parse command line parameter
 our($i, $m, $o, $h, $v);
@@ -50,7 +54,7 @@ sub print_help{
 #-----------------------------------------------------------------------------------------------------------------------------------
 =head 2 Subroutine read_hhr.
 Parses the hhr output file of hhblits/hhsearch. Uses mapping of pdb chains with identical SEQRES sequence, md5sum of the sequence 
-and the sequence: /mnt/project/pssh/pdb_redundant_chains-md5-seq-mapping.
+and the sequence: pdb_redundant_chains-md5-seq-mapping.
 input: ($i, $v)
 output: \@alis, @alis format: ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks)
 =cut
@@ -60,7 +64,7 @@ sub read_hhr{
 
   ## read the mapping and make a hash, which refers target PDB ID to its SEQRES md5sum:
   if ($v) {print "Creating a hash of PDB IDs and SEQRES MD5-sums ...\n";}
-  my $mapping = "/mnt/project/pssh/pdb_redundant_chains-md5-seq-mapping"; 
+
   my %id_md5sum = ();
   open (READ, "$mapping") or die "could not open $mapping";
   for my $line (<READ>) {
@@ -287,5 +291,8 @@ sub write_output{
       print WRITE "$m,$seqres_md5sum,$repeatVal,$evalue,$identity,$gapless_blocks\n";
     }
   }
+  if ($ali_num == 0){
+      print STDERR "WARNING: Did not find any PDB alignments for $m ";
+  };
   close WRITE;
 }
