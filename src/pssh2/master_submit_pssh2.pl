@@ -55,9 +55,10 @@ if ($r){
 }
 my $big_hhblits = " s ";
 if ($qb){
-    print STDOUT "will add '$big_option' to the queue submission -> less nodes, but hopefully more memory per job \n";
+    print STDOUT "will add '$big_option' to the queue submission -> less nodes, but hopefully more memory per job, fewer squences per job \n";
     print STDOUT "will pass on -b to generate_pssh.pl (via $subjobs_script ) \n";
     $big_hhblits = " b ";
+    $maxSeqPerSubjob = 5;
 }
 unless (defined $o){
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
