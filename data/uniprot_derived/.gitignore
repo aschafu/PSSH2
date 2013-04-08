@@ -1,3 +1,6 @@
 sprot_fastas/*
 sprot_md5sums_all
 sprot_md5sums_uniq
+uniprot_sprot_single_fastas/*
+uniprot_sprot.md5sums_all
+uniprot_sprot.md5sums_uniq
