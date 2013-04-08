@@ -31,7 +31,7 @@ my $parser_path = $rootDir."src/pssh2/parse_hhr.pl";
 my $md5script_path = $rootDir."src/pssh2/fasta_to_md5.rb";
 
 # Parse command line parameter
-my($m, $i, $t, $o, $h, $d);
+my($m, $i, $t, $o, $h, $d, $b);
 $o = getcwd();
 $t = getcwd();
 
@@ -41,6 +41,7 @@ my $args_ok = GetOptions(
     'd=s' => \$d, #directory where the md5sum-named sequence files are stored
     't=s' => \$t, #path to temporary output (hhm and two hhr files)
     'o=s' => \$o, #path to final output (from parser)
+    'b'   => \$b, #use extra parameter for big hhblits job
     'h'   => \$h #print help
 );
 if($h){
@@ -90,7 +91,7 @@ my $pdb_age = -M $pdb_full.$hhblits_check_suffix;
 my $uniprot_age = -M $uniprot20.$hhblits_check_suffix;
 
 print ("\nRunning $m: $i \n");
-my ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2) = init($i, $m, $t, $o);
+my ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2) = init($i, $m, $t, $o, $b);
 my $exit_pp_get = run_get_ppcache($t, $uniprot_age, $pdb_age, $cmd_ppg, $cmd_ppg2);
 my ($exit_run_hhblits1, $exit_run_hhblits2);
 if ($exit_pp_get == 0){
@@ -122,6 +123,7 @@ OR
   [-i fileName] >\t file name containing input sequence
 [-t path]\t\t path to temporary output (hhm and two hhr files) 
 [-o path]\t\t path to final output (from parser)
+[-b]\t\t\t    use extra parameter for big hhblits job      
 [-h]\t\t\t prints this help \n";
 }
 #-------------------------------------------------------------------------------
@@ -131,7 +133,7 @@ input: ($in, $out)
 output: ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2)
 =cut
 sub init {
-    my ($i, $m, $t, $o) = @_;
+    my ($i, $m, $t, $o, $b) = @_;
     print "\nExecuting sub init...\n";
 
     my $ohhm = $t."/".$m."-uniprot20.hhm";
@@ -143,6 +145,9 @@ sub init {
 #    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
 #    my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
     my $cmd_hhblits1 = $hhblits_path." -cpu 1 -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1";
+    if ($b){
+	$cmd_hhblits1 .= " -maxmem 5";
+    }
     my $cmd_hhblits2 = $hhblits_path." -cpu 1 -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr"; 
     my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
     my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
@@ -165,6 +170,7 @@ sub run_get_ppcache {
     my ($t, $uniprot_age, $pdb_age, $cmd_ppg, $cmd_ppg2) = @_;
     my $exitVal;
     print "\nChecking the PP chache...\n";   
+    print $cmd_ppg2, "\n";
 
     # first check if we get the pdb result from the cache
     system($cmd_ppg2);
@@ -178,6 +184,7 @@ sub run_get_ppcache {
 	my $pp_ohhm = $t."/".$m.".".$pp_hhblits_hhm;
 	# now check if we get the uniprot20 result from the cache
 	system($cmd_ppg);
+	print $cmd_ppg, "\n";
 	if (-e $pp_ohhm && -M $pp_ohhm < $uniprot_age){
 	    my $ohhm = $t."/".$m."-uniprot20.hhm";
 	    rename $pp_ohhm, $ohhm;

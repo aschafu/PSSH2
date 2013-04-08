@@ -53,8 +53,11 @@ if ($r){
     print STDOUT "resubmitting -> will not regenerate the fasta sequences \n";
     unless (-r $r){die "uniq md5 list $r not readable!"}
 }
+my $big_hhblits = " s ";
 if ($qb){
     print STDOUT "will add '$big_option' to the queue submission -> less nodes, but hopefully more memory per job \n";
+    print STDOUT "will pass on -b to generate_pssh.pl (via $subjobs_script ) \n";
+    $big_hhblits = " b ";
 }
 unless (defined $o){
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
@@ -127,7 +130,7 @@ my $arrayJobTextBegin = "#!/bin/bash
 my $arrayJobTextMiddle = "TASKS=";
 #my $arrayJobTextEnd = "TASKS=$subjobs_file
 my $arrayJobTextEnd = "PARAMS=\$(cat \$TASKS | head -n \$SGE_TASK_ID | tail -n 1)
-echo \$PARAMS | xargs $subjobs_script $queries_dir $output_dir "; 
+echo \$PARAMS | xargs $subjobs_script $big_hhblits $queries_dir $output_dir "; 
 
 open SEQS, $md5sums_uniq; 
 
