@@ -45,7 +45,7 @@ my $args_ok = GetOptions(
     'qb'  => \$qb, # use queue for big jobs only
     'h'   => \$h #print help
     );
-if($h){
+if($h||!$s || !$o){
     print_help();
     exit;
 }
