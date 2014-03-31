@@ -40,6 +40,7 @@ fi
 
 out_file=$tmp_pssh2/$arrayjob_nr'_'$subjob_nr'.pssh2'  # name of concatenated pssh2 files of this subjob
 out_file_failed=$out_file'.failed_md5'
+rm $out_file   # make sure there are no left-overs from last time we ran this!
 time (
 for md5sum in $* ; do
     echo $md5sum
