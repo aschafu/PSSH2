@@ -14,7 +14,10 @@ locally:
  removeKnownSeqs.pl
 
 example command: 
-renew_pdb_full.sh -v -d db_2013_02_25 > & update_pdb_full.db_2013_02_25.log &
+renew_pdb_full.sh -v -r -d db_2013_02_25 > & update_pdb_full.db_2013_02_25.log &
+
+CAVE: update is default! So if you want to renew completely you need
+to have -r !
 
 
 UPDATE
