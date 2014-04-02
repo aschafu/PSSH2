@@ -6,10 +6,13 @@
 $u20 = '/var/tmp/rost_db/data/hhblits/uniprot20_current';
 $big = '';
 
-usage() { echo "Usage: $0 -f <fasta sequence file> -m <hmm file name> -a <a3m file name> -r <results file name> [-b (for much memory)]" 1>&2; exit 1; }
+usage() { 
+	echo "Usage: $0 -f <fasta sequence file> -m <hmm file name> -a <a3m file name> -r <results file name>" 
+	echo "             [-b (for much memory)] [-u /path/to/uniprot_20 (without extensions)]" 1>&2
+	exit 1; }
 
 
-while getopts "f:m:a:r:bh" option;
+while getopts "f:m:a:r:bu:h" option;
 do
  case $option in
   f)
@@ -27,6 +30,10 @@ do
   r)
    # name of output file for hhblits results  
    $hhr = $OPTARG;
+   ;;
+  u)
+   # path for uniprot_20 for hhblits
+   $u20 = $OPTARG;
    ;;
   b)
 	echo 'received -b, setting option -maxmem 5'
