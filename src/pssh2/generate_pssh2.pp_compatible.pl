@@ -143,11 +143,22 @@ OR
 #-------------------------------------------------------------------------------
 =head 2 Subroutine init
 Initiates parameters and HHblits system calls
-input: ($in, $out)
+input: 
+  i: file name of input sequence
+  m: md5sum of the input sequence
+  t: path to temporary output (hhm and two hhr files)
+  o: path to final output (from parser)
+
 output: ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2)
 =cut
 sub init {
     my ($i, $m, $t, $o, $b) = @_;
+#   i: file name of input sequence
+#    'm=s' => \$m, #md5sum of the input sequence
+#    'd=s' => \$d, #directory where the md5sum-named sequence files are stored
+#    't=s' => \$t, #path to temporary output (hhm and two hhr files)
+#    'o=s' => \$o, #path to final output (from parser)
+
     print "\nExecuting sub init...\n";
 
     my $ohhm = $t."/".$m."-uniprot20.hhm";
@@ -155,6 +166,14 @@ sub init {
     my $oa3m1 = $t."/".$m."-uniprot20.a3m";
     my $ohhr = $t."/".$m."-uniprot20-pdb_full.hhr";
     my $parsed_ohhrs = $o."/".$m.".pssh2";
+    
+    # my $pp_hhblits_hhr = "uniprot20.hhr";
+	# my $pp_hhblits_hhm = "uniprot20.hhm";
+	# my $pp_hhblits_a3m = "uniprot20.a3m";
+	# my $pp_hhblits_pdb_hhr = "uniprot20.pdb.full.hhr";
+	# my $pp_hhblits_pdb_a3m = "uniprot20.pdb.full.a3m";
+
+    
 #    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
 #    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
 #    my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
