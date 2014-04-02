@@ -158,10 +158,16 @@ sub init {
 #    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
 #    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
 #    my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
-    my $cmd_hhblits1 = $hhblits_path." -cpu 1 -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1";
-    if ($b){
-	$cmd_hhblits1 .= " -maxmem 5";
-    }
+
+#    my $cmd_hhblits1 = $hhblits_path." -cpu 1 -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1";
+#    if ($b){
+#	$cmd_hhblits1 .= " -maxmem 5";
+#    }
+
+	# now with wrapper: 
+	my $cmd_hhblits1 = $build_profile."-f $i -u $uniprot20 -m $ohhm -a $oa3m1 -r $ohhr1";
+    if ($b){$cmd_hhblits1 .= " -b"};
+
     my $cmd_hhblits2 = $hhblits_path." -cpu 1 -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr"; 
     my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
     my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
