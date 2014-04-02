@@ -143,12 +143,12 @@ OR
 #-------------------------------------------------------------------------------
 =head 2 Subroutine init
 Initiates parameters and HHblits system calls
-input: 
+input: ($i, $m, $t, $o, $b) 
   i: file name of input sequence
   m: md5sum of the input sequence
   t: path to temporary output (hhm and two hhr files)
   o: path to final output (from parser)
-
+  b: flag to run with more memory
 output: ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2)
 =cut
 sub init {
