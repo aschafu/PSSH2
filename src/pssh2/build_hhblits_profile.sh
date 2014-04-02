@@ -54,7 +54,7 @@ do
  esac
 done
 
-if  [!$fasta || !$hhm ||!$a3m || !$hhr]; 
+if  [ -z $fasta || -z $hhm || -z $a3m || -z $hhr]; 
 then
 	usage
 fi
