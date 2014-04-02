@@ -23,10 +23,10 @@ my $hhblits_check_suffix = "_hhm_db";
 my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
 # my $hhblits_path = "/usr/bin/hhblits"; # this is handled by the shell script
 
-my $script_path = $rootDir."src/pssh2/";   # we might not need this, if the package scripts are on the default path
+#my $script_path = $rootDir."src/pssh2/";   # we might not need this, if the package scripts are on the default path
 my $build_profile = "build_hhblits_profile.sh"; 
 my $scan_structures = "scan_structures.sh"; 
-my $parse_structures = "parse_structures.pl";
+my $parse_structures = "parse_hhr.pl";
 my $md5script = "fasta_to_md5.rb";
 
 #my $parser_path = $script_path.$parser;
@@ -143,31 +143,58 @@ OR
 #-------------------------------------------------------------------------------
 =head 2 Subroutine init
 Initiates parameters and HHblits system calls
-input: ($in, $out)
+input: ($i, $m, $t, $o, $b) 
+  i: file name of input sequence
+  m: md5sum of the input sequence
+  t: path to temporary output (hhm and two hhr files)
+  o: path to final output (from parser)
+  b: flag to run with more memory
 output: ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2)
 =cut
 sub init {
     my ($i, $m, $t, $o, $b) = @_;
+
     print "\nExecuting sub init...\n";
 
-    my $ohhm = $t."/".$m."-uniprot20.hhm";
-    my $ohhr1 = $t."/".$m."-uniprot20.hhr";
-    my $oa3m1 = $t."/".$m."-uniprot20.a3m";
-    my $ohhr = $t."/".$m."-uniprot20-pdb_full.hhr";
-    my $parsed_ohhrs = $o."/".$m.".pssh2";
+	my $baseName = "query";
+	# outside PP we can use the md5 sum instead of "query"
+#	my $baseName = $m;
+    my $ohhm = $t."/".$baseName.".$pp_hhblits_hhm";
+    my $ohhr1 = $t."/".$baseName.".$pp_hhblits_hhr";
+    my $oa3m1 = $t."/".$baseName.".$pp_hhblits_a3m";
+    my $ohhr = $t."/".$baseName.".$pp_hhblits_pdb_hhr";
+    my $parsed_ohhrs = $o."/".$baseName.".$pp_pssh2";    
+    
 #    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
 #    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
 #    my $cmd_parse_hhr = "(/usr/bin/time ".$parser_path." -i $ohhr -m $m -o $parsed_ohhrs) 2>> $time_log"."_parse_hhr";
-    my $cmd_hhblits1 = $hhblits_path." -cpu 1 -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1";
-    if ($b){
-	$cmd_hhblits1 .= " -maxmem 5";
-    }
-    my $cmd_hhblits2 = $hhblits_path." -cpu 1 -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr"; 
-    my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
-    my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
-    my $cmd_ppg = $get_path." --seqfile $i --method=hhblits,db=uniprot20 -o $t -p $m";
-    my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_$pp_hhblits_hhr=$ohhr";
-    my $cmd_ppg2 = $get_path." --seqfile $i --method=hhblits,db=pdb_full -o $t -p $m";
+
+#    my $cmd_hhblits1 = $hhblits_path." -cpu 1 -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1";
+#    if ($b){
+#	$cmd_hhblits1 .= " -maxmem 5";
+#    }
+	# now with wrapper: 
+	my $cmd_hhblits1 = $build_profile."-f $i -u $uniprot20 -m $ohhm -a $oa3m1 -r $ohhr1";
+    if ($b){$cmd_hhblits1 .= " -b"};
+
+#    my $cmd_hhblits2 = $hhblits_path." -cpu 1 -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr"; 
+	# now with wrapper: 
+	my $cmd_hhblits2 = $scan_structures."-p $pdb_full -m $ohhm -r $ohhr";
+
+#    my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
+	my $cmd_parse_hhr = $parse_structures." -i $ohhr -m $m -o $parsed_ohhrs";
+
+#  old cache structure
+#    my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
+#    my $cmd_ppg = $get_path." --seqfile $i --method=hhblits,db=uniprot20 -o $t -p $m";
+#    my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_$pp_hhblits_hhr=$ohhr";
+#    my $cmd_ppg2 = $get_path." --seqfile $i --method=hhblits,db=pdb_full -o $t -p $m";
+
+#  new cache structure
+    my $cmd_ppc = $cache_path." --seqfile $i --method=PredictProtein,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
+    my $cmd_ppg = $get_path." --seqfile $i --method=PredictProtein -o $t -p $m";
+    my $cmd_ppc2 = $cache_path." --seqfile $i --method=PredictProtein,res_$pp_hhblits_hhr=$ohhr";
+    my $cmd_ppg2 = $get_path." --seqfile $i --method=PredictProtein -o $t -p $m";
     
     return ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2); 
 

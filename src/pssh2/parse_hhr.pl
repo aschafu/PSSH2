@@ -20,7 +20,7 @@ our($i, $m, $o, $h, $v);
 
 my $args_ok = GetOptions('i=s'  => \$i, #input hhr file
 			 'm=s'	=> \$m, #md5sum of the query sequence used to produce the hhr file 
-                         'o=s'  => \$o, #output file
+             'o=s'  => \$o, #output file
 			 'h'	=> \$h, #print help
 			 'v'	=> \$v #verbosity mode
 );
