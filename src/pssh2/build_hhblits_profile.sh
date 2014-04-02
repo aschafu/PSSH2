@@ -9,7 +9,7 @@ reportedHits=" -B 10000 -Z 10000"
 
 usage() { 
 	echo "Usage: $0 -f <fasta sequence file> -m <hmm file name> -a <a3m file name> -r <results file name>" 
-	echo "             [-b (for much memory)] [-u /path/to/uniprot_20 (without extensions)]" 1>&2
+	echo "                           [-b (for much memory)] [-u /path/to/uniprot_20 (without extensions)]" 1>&2
 	exit 1; }
 
 
