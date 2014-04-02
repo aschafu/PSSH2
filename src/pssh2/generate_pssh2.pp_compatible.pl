@@ -191,10 +191,10 @@ sub init {
 #    my $cmd_ppg2 = $get_path." --seqfile $i --method=hhblits,db=pdb_full -o $t -p $m";
 
 #  new cache structure
-    my $cmd_ppc = $cache_path." --seqfile $i --method=,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
-    my $cmd_ppg = $get_path." --seqfile $i --method=hhblits,db=uniprot20 -o $t -p $m";
-    my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_$pp_hhblits_hhr=$ohhr";
-    my $cmd_ppg2 = $get_path." --seqfile $i --method=hhblits,db=pdb_full -o $t -p $m";
+    my $cmd_ppc = $cache_path." --seqfile $i --method=PredictProtein,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
+    my $cmd_ppg = $get_path." --seqfile $i --method=PredictProtein -o $t -p $m";
+    my $cmd_ppc2 = $cache_path." --seqfile $i --method=PredictProtein,res_$pp_hhblits_hhr=$ohhr";
+    my $cmd_ppg2 = $get_path." --seqfile $i --method=PredictProtein -o $t -p $m";
     
     return ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2); 
 
