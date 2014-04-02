@@ -54,8 +54,7 @@ do
  esac
 done
 
-if  [ -z "$fasta" ];
-#|| -z $hhm || -z $a3m || -z $hhr]; 
+if  [ -z "$fasta" -o -z "$hhm" -o -z "$a3m" -o -z "$hhr" ]; 
 then
 	usage
 fi
