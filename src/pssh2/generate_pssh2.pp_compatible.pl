@@ -23,7 +23,7 @@ my $hhblits_check_suffix = "_hhm_db";
 my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
 # my $hhblits_path = "/usr/bin/hhblits"; # this is handled by the shell script
 
-my $script_path = $rootDir."src/pssh2/";   # we might not need this, if the package scripts are on the default path
+#my $script_path = $rootDir."src/pssh2/";   # we might not need this, if the package scripts are on the default path
 my $build_profile = "build_hhblits_profile.sh"; 
 my $scan_structures = "scan_structures.sh"; 
 my $parse_structures = "parse_structures.pl";
@@ -178,7 +178,9 @@ sub init {
 	# now with wrapper: 
 	my $cmd_hhblits2 = $scan_structures."-p $pdb_full -m $ohhm -r $ohhr";
 
-    my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
+#    my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
+	my $cmd_parse_hhr = $parse_structures." -i $ohhr -m $m -o $parsed_ohhrs";
+
     my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
     my $cmd_ppg = $get_path." --seqfile $i --method=hhblits,db=uniprot20 -o $t -p $m";
     my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_$pp_hhblits_hhr=$ohhr";
