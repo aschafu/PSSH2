@@ -159,11 +159,11 @@ sub init {
 	my $baseName = "query";
 	# outside PP we can use the md5 sum instead of "query"
 #	my $baseName = $m;
-    my $ohhm = $t."/".$m.".$pp_hhblits_hhm";
-    my $ohhr1 = $t."/".$m.".$pp_hhblits_hhr";
-    my $oa3m1 = $t."/".$m.".$pp_hhblits_a3m";
-    my $ohhr = $t."/".$m.".$pp_hhblits_pdb_hhr";
-    my $parsed_ohhrs = $o."/".$m.".$pp_pssh2";    
+    my $ohhm = $t."/".$baseName.".$pp_hhblits_hhm";
+    my $ohhr1 = $t."/".$baseName.".$pp_hhblits_hhr";
+    my $oa3m1 = $t."/".$baseName.".$pp_hhblits_a3m";
+    my $ohhr = $t."/".$baseName.".$pp_hhblits_pdb_hhr";
+    my $parsed_ohhrs = $o."/".$baseName.".$pp_pssh2";    
     
 #    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
 #    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
