@@ -69,28 +69,28 @@ if (defined $i && defined $m){
     print STDERR "WARNING: You gave -i $i and -m $m, will assume that $m is the md5 hash of $i \n";
 }
 if (defined $m){
-    unless (defined $i){
-	if (defined $d){
-	    $queries_dir = $d;
-	}
-	else {
-	    print STDERR "WARNING: You did not provide a directory for the md5sum sequence files. Will use default: $queries_dir \n";
-	}
-	$i = "$queries_dir/$m"; #input FASTA file named according to the sequence-md5sum 
-	unless (-r $i){die "Input sequence file $i not readable! \n"};
+	unless (defined $i){
+		if (defined $d){
+	    	$queries_dir = $d;
+		}
+		else {
+	    	print STDERR "WARNING: You did not provide a directory for the md5sum sequence files. Will use default: $queries_dir \n";
+		}
+		$i = "$queries_dir/$m"; #input FASTA file named according to the sequence-md5sum 
+		unless (-r $i){die "Input sequence file $i not readable! \n"};
     }
 }
 if (defined $i){
     unless (defined $m){
-	my $random_string = int rand(1000);
-	my $tmp_md5sum = "md5sum.".$random_string.".tmp";
-	system("cat $i | $md5script_path > $tmp_md5sum");
+		my $random_string = int rand(1000);
+		my $tmp_md5sum = "md5sum.".$random_string.".tmp";
+		system("cat $i | $md5script_path > $tmp_md5sum");
 	
-	open FILE, $tmp_md5sum or die "Generating md5sum, but couldn't open file $tmp_md5sum\n";
-	$m = join("", <FILE>);
-	close FILE;
-	unlink $tmp_md5sum;
-	chomp $m;
+		open FILE, $tmp_md5sum or die "Generating md5sum, but couldn't open file $tmp_md5sum\n";
+		$m = join("", <FILE>);
+		close FILE;
+		unlink $tmp_md5sum;
+		chomp $m;
     }
 }
 unless (defined $t && -d $t){
