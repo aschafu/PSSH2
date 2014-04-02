@@ -22,15 +22,25 @@ my $hhblits_check_suffix = "_hhm_db";
 #cluster: "/var/tmp/rost_db/data/hhblits/uniprot20_current"; #jobtest: "/mnt/project/rost_db/data/hhblits/uniprot20_current"; # database for first HHblits run (to build the profile)
 my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
 # my $hhblits_path = "/usr/bin/hhblits"; # this is handled by the shell script
-my $build_profile_path = $rootDir."src/pssh2/build_hhblits_profile.sh"; # might be needed unless this is in the path anyway (package install?)
-my $scan_structures_path = $rootDir."src/pssh2/scan_structures.sh"; # might be needed unless this is in the path anyway (package install?)
+
+my $script_path = $rootDir."src/pssh2/";
+my $build_profile = "build_hhblits_profile.sh"; 
+my $scan_structures = "scan_structures.sh"; 
+my $parse_structures = "parse_hhr.pl";
+my $md5script = "fasta_to_md5.rb";
+
+#my $parser_path = $script_path.$parser;
+#my $md5script_path = $rootDir."src/pssh2/fasta_to_md5.rb";
+
 my $cache_path = "/usr/bin/ppc_store";
 my $get_path = "/usr/bin/ppc_fetch";
-my $pp_hhblits_hhr = "hhblits_hhr";
-my $pp_hhblits_hhm = "hhblits_hhm";
-my $pp_hhblits_a3m = "hhblits_a3m";
-my $parser_path = $rootDir."src/pssh2/parse_hhr.pl";
-my $md5script_path = $rootDir."src/pssh2/fasta_to_md5.rb";
+
+# set file endings like in PP Makefile (MakefilePP.mk)
+my $pp_hhblits_hhr = "uniprot20.hhr";
+my $pp_hhblits_hhm = "uniprot20.hhm";
+my $pp_hhblits_a3m = "uniprot20.a3m";
+my $pp_hhblits_pdb_hhr = "uniprot20.pdb.full.hhr";
+my $pp_hhblits_pdb_a3m = "uniprot20.pdb.full.a3m";
 
 # Parse command line parameter
 my($m, $i, $t, $o, $h, $d, $b);
