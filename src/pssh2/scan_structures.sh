@@ -46,7 +46,7 @@ do
  esac
 done
 
-if  [ -z "$fasta" -o -z "$hhm" -o -z "$a3m" -o -z "$hhr" ]; 
+if  [ -z "$hhm" -o -z "$hhr" ]; 
 then
 	usage
 fi
