@@ -41,6 +41,7 @@ my $pp_hhblits_hhm = "uniprot20.hhm";
 my $pp_hhblits_a3m = "uniprot20.a3m";
 my $pp_hhblits_pdb_hhr = "uniprot20.pdb.full.hhr";
 my $pp_hhblits_pdb_a3m = "uniprot20.pdb.full.a3m";
+my $pp_pssh = "pssh2";
 
 # Parse command line parameter
 my($m, $i, $t, $o, $h, $d, $b);
