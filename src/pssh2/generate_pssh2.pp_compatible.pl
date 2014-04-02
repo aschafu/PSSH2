@@ -26,7 +26,7 @@ my $hit_list = 10000; # used for -B (maximum number of alignments in alignment l
 #my $script_path = $rootDir."src/pssh2/";   # we might not need this, if the package scripts are on the default path
 my $build_profile = "build_hhblits_profile.sh"; 
 my $scan_structures = "scan_structures.sh"; 
-my $parse_structures = "parse_structures.pl";
+my $parse_structures = "parse_hhr.pl";
 my $md5script = "fasta_to_md5.rb";
 
 #my $parser_path = $script_path.$parser;
