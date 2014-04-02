@@ -20,7 +20,8 @@ my $uniprot20 = $localHhblitsDir."uniprot20_current";
 my $pdb_full = $localHhblitsDir."pdb_full";
 my $hhblits_check_suffix = "_hhm_db";
 #cluster: "/var/tmp/rost_db/data/hhblits/uniprot20_current"; #jobtest: "/mnt/project/rost_db/data/hhblits/uniprot20_current"; # database for first HHblits run (to build the profile)
-my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
+#my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
+# -> parameter moved to build_profile and scan_structures
 # my $hhblits_path = "/usr/bin/hhblits"; # this is handled by the shell script
 
 my $script_path = $rootDir."src/pssh2/";   # we might not need this, if the package scripts are on the default path
