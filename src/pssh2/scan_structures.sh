@@ -13,24 +13,20 @@ usage() {
 	exit 1; }
 
 
-while getopts "f:m:a:r:bu:h" option;
+while getopts "m:a:r:bu:h" option;
 do
  case $option in
   m)
-   # name of input hmm profile (generated e.g. with bul
+   # name of input hmm profile (generated e.g. with bild_hhblits_profile.sh)
    hhm=$OPTARG;
-   ;;
-  a)
-   # name of output file for a3m 
-   a3m=$OPTARG;
    ;;
   r)
    # name of output file for hhblits results  
    hhr=$OPTARG;
    ;;
-  u)
-   # path for uniprot_20 for hhblits
-   u20=$OPTARG;
+  p)
+   # path for pdb_full for hhblits
+   pdb_full=$OPTARG;
    ;;
   b)
 	echo 'received -b, setting option -maxmem 5'
