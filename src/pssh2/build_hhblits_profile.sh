@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# this script is used to sum up the parameters for a structure database (pdb_full) scanning hhblits in one place
+# this script is used to sum up the parameters for a profile building hhblits in one place
 # it is used by the PredictProtein make file and by the generate_pssh2 perl script
 
 pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
