@@ -53,7 +53,7 @@ do
  esac
 done
 
-hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b;
+hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits;
 
 
 
