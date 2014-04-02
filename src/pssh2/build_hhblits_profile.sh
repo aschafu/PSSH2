@@ -54,7 +54,7 @@ do
  esac
 done
 
-if  [[-z $fasta]];
+if  [[! $fasta]];
 #|| -z $hhm || -z $a3m || -z $hhr]; 
 then
 	usage
