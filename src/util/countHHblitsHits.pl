@@ -78,6 +78,11 @@ for my $line (<STDIN>) {
 
 } # end of input
 
+# initialise counter
+foreach $cut(@evalCutoffs){
+	$count{$cut} = 0;
+}
+
 foreach $id(keys %evalues){
 	my $eVal = $evalues{$id};
 	foreach $cut(@evalCutoffs){

@@ -46,6 +46,11 @@ while (my $result = $blast_in->next_result) {
 	
 }
 
+# initialise counter
+foreach $cut(@evalCutoffs){
+	$count{$cut} = 0;
+}
+
 foreach $id(keys %evalues){
 	my $eVal = $evalues{$id};
 	foreach $cut(@evalCutoffs){
