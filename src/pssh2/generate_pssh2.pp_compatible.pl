@@ -156,6 +156,9 @@ sub init {
 
     print "\nExecuting sub init...\n";
 
+	my $baseName = "query";
+	# outside PP we can use the md5 sum instead of "query"
+#	my $baseName = $m;
     my $ohhm = $t."/".$m.".$pp_hhblits_hhm";
     my $ohhr1 = $t."/".$m.".$pp_hhblits_hhr";
     my $oa3m1 = $t."/".$m.".$pp_hhblits_a3m";
@@ -181,7 +184,14 @@ sub init {
 #    my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
 	my $cmd_parse_hhr = $parse_structures." -i $ohhr -m $m -o $parsed_ohhrs";
 
-    my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
+#  old cache structure
+#    my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
+#    my $cmd_ppg = $get_path." --seqfile $i --method=hhblits,db=uniprot20 -o $t -p $m";
+#    my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_$pp_hhblits_hhr=$ohhr";
+#    my $cmd_ppg2 = $get_path." --seqfile $i --method=hhblits,db=pdb_full -o $t -p $m";
+
+#  new cache structure
+    my $cmd_ppc = $cache_path." --seqfile $i --method=,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
     my $cmd_ppg = $get_path." --seqfile $i --method=hhblits,db=uniprot20 -o $t -p $m";
     my $cmd_ppc2 = $cache_path." --seqfile $i --method=hhblits,db=pdb_full,res_$pp_hhblits_hhr=$ohhr";
     my $cmd_ppg2 = $get_path." --seqfile $i --method=hhblits,db=pdb_full -o $t -p $m";
