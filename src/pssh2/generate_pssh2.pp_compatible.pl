@@ -104,6 +104,7 @@ my $pdb_age = -M $pdb_full.$hhblits_check_suffix;
 my $uniprot_age = -M $uniprot20.$hhblits_check_suffix;
 
 print ("\nRunning $m: $i \n");
+# set the commands based on the parameters (input file name, output directories, etc.)
 my ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_ppc2, $cmd_ppg2) = init($i, $m, $t, $o, $b);
 my $exit_pp_get = run_get_ppcache($t, $uniprot_age, $pdb_age, $cmd_ppg, $cmd_ppg2);
 my ($exit_run_hhblits1, $exit_run_hhblits2);
