@@ -169,7 +169,7 @@ sub init {
 
 #    my $cmd_hhblits2 = $hhblits_path." -cpu 1 -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr"; 
 	# now with wrapper: 
-	my $cmd_hhblits2 = $scan_structures."-f $i -u $pdb_full -m $ohhm -a $oa3m1 -r $ohhr1";
+	my $cmd_hhblits2 = $scan_structures."-u $pdb_full -i $ohhm -r $ohhr";
 
     my $cmd_parse_hhr = $parser_path." -i $ohhr -m $m -o $parsed_ohhrs";
     my $cmd_ppc = $cache_path." --seqfile $i --method=hhblits,db=uniprot20,res_$pp_hhblits_hhm=$ohhm,res_$pp_hhblits_hhr=$ohhr1,res_hhblits_a3m=$oa3m1";
