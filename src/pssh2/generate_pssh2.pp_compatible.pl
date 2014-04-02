@@ -156,18 +156,11 @@ sub init {
 
     print "\nExecuting sub init...\n";
 
-    my $ohhm = $t."/".$m."-uniprot20.hhm";
-    my $ohhr1 = $t."/".$m."-uniprot20.hhr";
-    my $oa3m1 = $t."/".$m."-uniprot20.a3m";
-    my $ohhr = $t."/".$m."-uniprot20-pdb_full.hhr";
-    my $parsed_ohhrs = $o."/".$m.".pssh2";
-    
-    # my $pp_hhblits_hhr = "uniprot20.hhr";
-	# my $pp_hhblits_hhm = "uniprot20.hhm";
-	# my $pp_hhblits_a3m = "uniprot20.a3m";
-	# my $pp_hhblits_pdb_hhr = "uniprot20.pdb.full.hhr";
-	# my $pp_hhblits_pdb_a3m = "uniprot20.pdb.full.a3m";
-
+    my $ohhm = $t."/".$m.".$pp_hhblits_hhm";
+    my $ohhr1 = $t."/".$m.".$pp_hhblits_hhr";
+    my $oa3m1 = $t."/".$m.".$pp_hhblits_a3m";
+    my $ohhr = $t."/".$m.".$pp_hhblits_pdb_hhr";
+    my $parsed_ohhrs = $o."/".$m.".$pp_pssh2";    
     
 #    my $cmd_hhblits1 = "(/usr/bin/time ".$hhblits_path." -i $i -d $uniprot20 -ohhm $ohhm -oa3m $oa3m1 -o $ohhr1) 2>> $time_log"."_hhblits1";
 #    my $cmd_hhblits2 = "(/usr/bin/time ".$hhblits_path." -i $ohhm -d $pdb_full -n 1 -B $hit_list -Z $hit_list -o $ohhr) 2>> $time_log"."_hhblits2"; 
