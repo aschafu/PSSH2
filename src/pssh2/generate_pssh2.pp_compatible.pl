@@ -23,6 +23,7 @@ my $hhblits_check_suffix = "_hhm_db";
 my $hit_list = 10000; # used for -B (maximum number of alignments in alignment list) and -Z (maximum number of lines in summary hit list) parameters in the hhr output of the second HHblits run (against pdb_full)
 # my $hhblits_path = "/usr/bin/hhblits"; # this is handled by the shell script
 my $build_profile_path = $rootDir."src/pssh2/build_hhblits_profile.sh"; # might be needed unless this is in the path anyway (package install?)
+my $scan_structures_path = $rootDir."src/pssh2/scan_structures.sh"; # might be needed unless this is in the path anyway (package install?)
 my $cache_path = "/usr/bin/ppc_store";
 my $get_path = "/usr/bin/ppc_fetch";
 my $pp_hhblits_hhr = "hhblits_hhr";
