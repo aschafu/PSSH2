@@ -54,7 +54,7 @@ do
  esac
 done
 
-if  [!$fasta || !$hhm ||!$a3m || !$hhr] 
+if  [!$fasta || !$hhm ||!$a3m || !$hhr]; 
 then
 	usage
 elif
