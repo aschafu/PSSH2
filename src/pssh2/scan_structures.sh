@@ -13,7 +13,7 @@ usage() {
 	exit 1; }
 
 
-while getopts "m:a:r:bu:h" option;
+while getopts "m:r:bu:h" option;
 do
  case $option in
   m)
@@ -51,8 +51,8 @@ then
 	usage
 fi
 
-echo "running hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits"
-#hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits
+echo "running hhblits -cpu 1 -i $hmm -d $pdb_full  -n 1 -o $hhr $b $reportedHits"
+#hhblits -cpu 1 -i $hmm -d $pdb_full  -n 1 -o $hhr $b $reportedHits
 
 
 
