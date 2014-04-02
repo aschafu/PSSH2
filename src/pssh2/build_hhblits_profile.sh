@@ -54,7 +54,10 @@ do
  esac
 done
 
-if  [!$fasta || !$hhm ||!$a3m || !$hhr] usage
+if  [!$fasta || !$hhm ||!$a3m || !$hhr] 
+then
+	usage
+elif
 
 echo "running hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits"
 hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits
