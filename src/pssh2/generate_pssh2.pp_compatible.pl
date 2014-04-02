@@ -153,11 +153,6 @@ output: ($cmd_hhblits1, $cmd_hhblits2, $cmd_parse_hhr, $cmd_ppc, $cmd_ppg, $cmd_
 =cut
 sub init {
     my ($i, $m, $t, $o, $b) = @_;
-#   i: file name of input sequence
-#    'm=s' => \$m, #md5sum of the input sequence
-#    'd=s' => \$d, #directory where the md5sum-named sequence files are stored
-#    't=s' => \$t, #path to temporary output (hhm and two hhr files)
-#    'o=s' => \$o, #path to final output (from parser)
 
     print "\nExecuting sub init...\n";
 
