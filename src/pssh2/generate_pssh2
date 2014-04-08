@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# generate_pssh2.pl
+# generate_pssh2
 # Makes the two subsequent HHblits runs:
 # 1) UniProt Sequence against the UniProt with HHM output (HMM-profile)
 # 2) Starting with the HHM output from step 1 against the pdb_full database of profiles with HHR ouput

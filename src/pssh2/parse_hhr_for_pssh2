@@ -12,10 +12,11 @@ use Getopt::Long;
 # Parameters! 
 my $nRetain = 5;  # how many alignments to keep, regardless of e-value
 # setting default path for mapping
-my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
-my $pdb_derived_dir = $pssh_dir.'/data/pdb_derived/';
+#my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
+my $pssh_dir = "/usr/share/pssh2/";
+my $pdb_derived_dir = $pssh_dir.'/pdb_derived/';
 my $mapping = $pdb_derived_dir.'pdb_redundant_chains-md5-seq-mapping';
-my $md5script = "fasta_to_md5"; # ruby script
+my $md5script = "fasta_to_md5"; # ruby script (expect to find this on the path after installing the package)
 
 # Parse command line parameter
 our($i, $m, $o, $s, $p, $h, $v);
@@ -42,7 +43,7 @@ if(!$i || !($m || $s)|| !$o){
 if ($p){
 	if (-r $p){$mapping = $p}
 	else {
-		print STDERR "Received unreadable mapping file $p (default: $mapping) \n"; 
+		print STDERR "Received unreadable mapping file $p (default would be: $mapping). Stopping now! \n"; 
 		print_help();
 		exit;
 	}
