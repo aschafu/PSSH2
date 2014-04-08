@@ -57,7 +57,7 @@ unless ($m){
 	}
 	my $random_string = int rand(1000);
 	my $tmp_md5sum = "md5sum.".$random_string.".tmp";
-	system("cat $s | $md5script_path > $tmp_md5sum");
+	system("cat $s | $md5script > $tmp_md5sum");
 	
 	open FILE, $tmp_md5sum or die "Generating md5sum, but couldn't open file $tmp_md5sum\n";
 	$m = join("", <FILE>);
@@ -77,9 +77,10 @@ Prints help.
 sub print_help{
     print "Usage: parse_hhr.pl 
 	-i <input hhr file>\tstandard \".hhr\" HHblits/HHsearch output file
-	-m <md5sum>\tmd5sum of the query sequence used to produce the hhr file
-	-s <seqfile>\tquery sequence used to produce the hhr file (if not giving the md5sum directly)
+	<[-m <md5sum>\tmd5sum of the query sequence used to produce the hhr file] OR
+	 [-s <seqfile>\tquery sequence used to produce the hhr file (if not giving the md5sum directly)]>
 	-o <output file>\twhere the parsed output should be written
+	-p <mappingFile>\t/path/to/pdb_redundant_chains-md5-seq-mapping
 	-h\tprints this help screen\n";
 }
 
@@ -101,9 +102,22 @@ sub read_hhr{
   my %id_md5sum = ();
   open (READ, "$mapping") or die "could not open $mapping";
   for my $line (<READ>) {
-	if ($line =~ /^(\S*).*\t(\S*)\t/){
-		$id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
+  	# CAVE: If the mapping file we use for evaluating a hhr file 
+  	# does not fit the pdb_full database that was used for generating the hhr file
+  	# this might fail (because the id of the representative might have changed)!
+#  	if ($line =~ /^(\S*).*\t(\S*)\t/){
+#		$id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
+#	}
+  	if ($line =~ /^(\S*).*\t(\S*)\t/){
+  		my $md5 = $2;
+		my @cols = split /\t/, $line;
+		my @ids = split /\s/, $cols[0];
+		foreach my $id(@ids){
+			$id_md5sum{$id} = $md5; # $1=target_id, $2=seqres_md5sum
+		}
 	}
+
+
   } 
   close READ;
   if ($v) {print "\%id_md5sum size: ".scalar(keys(%id_md5sum))."\n";}
@@ -195,7 +209,7 @@ sub read_hhr{
         	$seqres_md5sum = $id_md5sum{$target_id};
         	if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
         }else{
-        	print "Error: SEQRES md5sum of ".$target_id." not initialized!\n";
+        	print "Error: SEQRES md5sum of '".$target_id."' not initialized!\n";
         	exit(1);
         }
 
