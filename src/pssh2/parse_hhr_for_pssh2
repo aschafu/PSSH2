@@ -11,27 +11,59 @@ use Getopt::Long;
 
 # Parameters! 
 my $nRetain = 5;  # how many alignments to keep, regardless of e-value
-my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
-my $pdb_derived_dir = $pssh_dir.'/data/pdb_derived/';
+# setting default path for mapping
+#my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
+my $pssh_dir = "/usr/share/pssh2/";
+my $pdb_derived_dir = $pssh_dir.'/pdb_derived/';
 my $mapping = $pdb_derived_dir.'pdb_redundant_chains-md5-seq-mapping';
+my $md5script = "fasta_to_md5"; # ruby script (expect to find this on the path after installing the package)
 
 # Parse command line parameter
-our($i, $m, $o, $h, $v);
+our($i, $m, $o, $s, $p, $h, $v);
 
-my $args_ok = GetOptions('i=s'  => \$i, #input hhr file
-			 'm=s'	=> \$m, #md5sum of the query sequence used to produce the hhr file 
-             'o=s'  => \$o, #output file
-			 'h'	=> \$h, #print help
-			 'v'	=> \$v #verbosity mode
+my $args_ok = GetOptions(
+	'i=s'  => \$i, #input hhr file
+	'm=s'	=> \$m, #md5sum of the query sequence used to produce the hhr file 
+	's=s'	=> \$s, #query sequence file (to work out the the md5 sum ourselves)  
+    'o=s'  => \$o, #output file
+	'p=s'  => \$p, # pdb_redundant_chains-md5-seq-mapping
+	'h'	=> \$h, #print help
+	'v'	=> \$v #verbosity mode
 );
 if($h){
   print_help();
   exit;
 }
-if(!$i || !$m|| !$o){
+if(!$i || !($m || $s)|| !$o){
   print "Missing parameters!\n";
   print_help();
   exit;
+}
+
+if ($p){
+	if (-r $p){$mapping = $p}
+	else {
+		print STDERR "Received unreadable mapping file $p (default would be: $mapping). Stopping now! \n"; 
+		print_help();
+		exit;
+	}
+}
+
+unless ($m){
+	unless (-r $s){
+		print "Sequence $s not readable!\n";
+		print_help();
+		exit;
+	}
+	my $random_string = int rand(1000);
+	my $tmp_md5sum = "md5sum.".$random_string.".tmp";
+	system("cat $s | $md5script > $tmp_md5sum");
+	
+	open FILE, $tmp_md5sum or die "Generating md5sum, but couldn't open file $tmp_md5sum\n";
+	$m = join("", <FILE>);
+	close FILE;
+	unlink $tmp_md5sum;
+	chomp $m;
 }
 
 my ($alis_ref) = read_hhr($i, $v);
@@ -45,8 +77,10 @@ Prints help.
 sub print_help{
     print "Usage: parse_hhr.pl 
 	-i <input hhr file>\tstandard \".hhr\" HHblits/HHsearch output file
-	-m <md5sum>\tmd5sum of the query sequence used to produce the hhr file
+	<[-m <md5sum>\tmd5sum of the query sequence used to produce the hhr file] OR
+	 [-s <seqfile>\tquery sequence used to produce the hhr file (if not giving the md5sum directly)]>
 	-o <output file>\twhere the parsed output should be written
+	-p <mappingFile>\t/path/to/pdb_redundant_chains-md5-seq-mapping
 	-h\tprints this help screen\n";
 }
 
@@ -68,9 +102,22 @@ sub read_hhr{
   my %id_md5sum = ();
   open (READ, "$mapping") or die "could not open $mapping";
   for my $line (<READ>) {
-	if ($line =~ /^(\S*).*\t(\S*)\t/){
-		$id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
+  	# CAVE: If the mapping file we use for evaluating a hhr file 
+  	# does not fit the pdb_full database that was used for generating the hhr file
+  	# this might fail (because the id of the representative might have changed)!
+#  	if ($line =~ /^(\S*).*\t(\S*)\t/){
+#		$id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
+#	}
+  	if ($line =~ /^(\S*).*\t(\S*)\t/){
+  		my $md5 = $2;
+		my @cols = split /\t/, $line;
+		my @ids = split /\s/, $cols[0];
+		foreach my $id(@ids){
+			$id_md5sum{$id} = $md5; # $1=target_id, $2=seqres_md5sum
+		}
 	}
+
+
   } 
   close READ;
   if ($v) {print "\%id_md5sum size: ".scalar(keys(%id_md5sum))."\n";}
@@ -162,7 +209,7 @@ sub read_hhr{
         	$seqres_md5sum = $id_md5sum{$target_id};
         	if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
         }else{
-        	print "Error: SEQRES md5sum of ".$target_id." not initialized!\n";
+        	print "Error: SEQRES md5sum of '".$target_id."' not initialized!\n";
         	exit(1);
         }
 

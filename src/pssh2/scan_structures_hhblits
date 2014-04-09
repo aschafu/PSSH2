@@ -3,9 +3,11 @@
 # this script is used to sum up the parameters for a structure database (pdb_full) scanning hhblits in one place
 # it is used by the PredictProtein make file and by the generate_pssh2 perl script
 
-pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
+#pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
+pdb_full='/usr/share/hhblits/pdb_full'
 big=''
 reportedHits=" -B 10000 -Z 10000"
+hhblitsLog='hhblits.log'
 
 usage() { 
 	echo "Usage: $0 -m <hmm input file name> -r <results file name>" 
@@ -13,12 +15,13 @@ usage() {
 	exit 1; }
 
 
-while getopts "m:r:bu:h" option;
+while getopts "m:r:p:bu:hs" option;
 do
  case $option in
   m)
    # name of input hmm profile (generated e.g. with bild_hhblits_profile.sh)
    hhm=$OPTARG;
+   hhblitsLog=$hhm.$hhblitsLog
    ;;
   r)
    # name of output file for hhblits results  
@@ -39,6 +42,9 @@ do
   h)
    usage  	
    ;;
+  s)
+   hhblitsLog='/dev/null'
+   ;;
   *)
    echo "invalid option -$OPTARG" 
    usage
@@ -51,8 +57,8 @@ then
 	usage
 fi
 
-echo "running hhblits -cpu 1 -i $hmm -d $pdb_full  -n 1 -o $hhr $b $reportedHits"
-#hhblits -cpu 1 -i $hmm -d $pdb_full  -n 1 -o $hhr $b $reportedHits
+#echo "running hhblits -cpu 1 -i $hhm -d $pdb_full  -n 1 -o $hhr $b $reportedHits"
+hhblits -cpu 1 -i $hhm -d $pdb_full  -n 1 -o $hhr $b $reportedHits >> $hhblitsLog
 
 
 
