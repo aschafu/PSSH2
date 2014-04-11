@@ -26,7 +26,7 @@ my $hit_list = 10000; # used for -B (maximum number of alignments in alignment l
 #my $script_path = $rootDir."src/pssh2/";   # we might not need this, if the package scripts are on the default path
 my $build_profile = "build_hhblits_profile"; 
 my $scan_structures = "scan_structures_hhblits"; 
-my $parse_structures = "parse_hhr.pl";
+my $parse_structures = "parse_hhr";
 my $md5script = "fasta_to_md5.rb";
 
 #my $parser_path = $script_path.$parser;
@@ -41,7 +41,7 @@ my $pp_hhblits_hhm = "uniprot20.hhm";
 my $pp_hhblits_a3m = "uniprot20.a3m";
 my $pp_hhblits_pdb_hhr = "uniprot20.pdb.full.hhr";
 my $pp_hhblits_pdb_a3m = "uniprot20.pdb.full.a3m";
-my $pp_pssh = "pssh2";
+my $pp_pssh2 = "pssh2";
 
 # Parse command line parameter
 my($m, $i, $t, $o, $h, $d, $b);
@@ -84,7 +84,7 @@ if (defined $i){
     unless (defined $m){
 		my $random_string = int rand(1000);
 		my $tmp_md5sum = "md5sum.".$random_string.".tmp";
-		system("cat $i | $md5script_path > $tmp_md5sum");
+		system("cat $i | $md5script > $tmp_md5sum");
 	
 		open FILE, $tmp_md5sum or die "Generating md5sum, but couldn't open file $tmp_md5sum\n";
 		$m = join("", <FILE>);
@@ -156,9 +156,9 @@ sub init {
 
     print "\nExecuting sub init...\n";
 
-	my $baseName = "query";
+	my $baseName = $m;
+#	my $baseName = "query";
 	# outside PP we can use the md5 sum instead of "query"
-#	my $baseName = $m;
     my $ohhm = $t."/".$baseName.".$pp_hhblits_hhm";
     my $ohhr1 = $t."/".$baseName.".$pp_hhblits_hhr";
     my $oa3m1 = $t."/".$baseName.".$pp_hhblits_a3m";
