@@ -12,8 +12,8 @@ use Getopt::Long;
 # Parameters! 
 my $nRetain = 5;  # how many alignments to keep, regardless of e-value
 # setting default path for mapping
-#my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
-my $pssh_dir = "/usr/share/pssh2/";
+my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
+#my $pssh_dir = "/usr/share/pssh2/";
 my $pdb_derived_dir = $pssh_dir.'/pdb_derived/';
 my $mapping = $pdb_derived_dir.'pdb_redundant_chains-md5-seq-mapping';
 my $md5script = "fasta_to_md5"; # ruby script (expect to find this on the path after installing the package)
@@ -80,7 +80,7 @@ sub print_help{
 	<[-m <md5sum>\tmd5sum of the query sequence used to produce the hhr file] OR
 	 [-s <seqfile>\tquery sequence used to produce the hhr file (if not giving the md5sum directly)]>
 	-o <output file>\twhere the parsed output should be written
-	-p <mappingFile>\t/path/to/pdb_redundant_chains-md5-seq-mapping
+	-p <mappingFile>\t/path/to/pdb_redundant_chains-md5-seq-mapping (default: $mapping)
 	-h\tprints this help screen\n";
 }
 
