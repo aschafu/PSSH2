@@ -3,15 +3,16 @@
 # this script is used to sum up the parameters for a profile building hhblits in one place
 # it is used by the PredictProtein make file and by the generate_pssh2 perl script
 
-#u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
-u20='/usr/share/hhblits/uniprot20_current'
+u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
+#u20='/usr/share/hhblits/uniprot20_current'
 big=''
 reportedHits=" -B 10000 -Z 10000"
 hhblitsLog='hhblits.log'
 
 usage() { 
 	echo "Usage: $0 -f <fasta sequence file> -m <hmm file name> -a <a3m file name> -r <results file name>" 
-	echo "                           [-b (for much memory)] [-u /path/to/uniprot_20 (without extensions)] [-s (silent)]" 1>&2
+	echo "                           [-b (for much memory)] [-u /path/to/uniprot_20 (without extensions)] [-s (silent)]"
+	echo "                           (default path: $u20)" 1>&2
 	exit 1; }
 
 

@@ -3,15 +3,16 @@
 # this script is used to sum up the parameters for a structure database (pdb_full) scanning hhblits in one place
 # it is used by the PredictProtein make file and by the generate_pssh2 perl script
 
-#pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
-pdb_full='/usr/share/hhblits/pdb_full'
+pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
+#pdb_full='/usr/share/hhblits/pdb_full'
 big=''
 reportedHits=" -B 10000 -Z 10000"
 hhblitsLog='hhblits.log'
 
 usage() { 
 	echo "Usage: $0 -m <hmm input file name> -r <results file name>" 
-	echo "                           [-b (for much memory)] [-p /path/to/pdb_full (without extensions)]" 1>&2
+	echo "                           [-b (for much memory)] [-p /path/to/pdb_full (without extensions)]"
+	echo "                           (default path: $pdb_full)" 1>&2
 	exit 1; }
 
 
