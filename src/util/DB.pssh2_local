@@ -1,0 +1,4 @@
+#!/bin/bash
+##db interface
+
+echo "$* ;"|mysql -u update_d --password=Aquaria4ever! -haquaria-mysql -Dpssh2_local --local-infile=1 

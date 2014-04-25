@@ -1,0 +1,22 @@
+#!/bin/bash
+## run the necessary things for pssh2 predictions
+
+### run and parse hhblits
+
+ time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
+ time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $*
+ time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
+
+### add output to the db
+ DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.pssh2_pp columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,Identity_Score,Alignment) "
+ n=`cat query.pssh2 |wc -l`
+ s=`date +%s`
+ md5=`cat query.fasta | fasta_to_md5`
+ DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$i\" , count=$n ,stamp=$s "
+ 
+### compress things / delete
+### TODO: discuss whether we really want to delete -- and discuss where this should happen
+#  rm query.uniprot20.a3m  
+#  rm query.uniprot20.pdb.full.hhr
+#  gzip query.uniprot20.hhr
+#  gzip query.pssh2
