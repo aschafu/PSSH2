@@ -3,7 +3,148 @@
 ## or pipe in (multi) fasta format to get md5s one per sequence 
 ### @author: roos@rostlab.org 
 
-require 'digest/md5'
+require 'digest/md5';
+require 'digest/sha1';
+
+
+if /\/?([^\/]+)$/ =~ $0
+@me = $1
+a=$1.to_s
+#$stderr.puts @me + "\n"
+#@me=0 if a<=>(  "fasta_to_md5_ppc_seq.rb")
+$me=0 if a== (  "fasta_to_md5_pphash+sequence.rb")
+
+$me=0 if a== (  "fasta_to_md5_ppc_seq")
+$me=1 if a== (  "fasta_to_md5_seq")
+$me=2 if a== (  "fasta_to_md5_header")
+$me=3 if a== (  "fasta_to_md5")
+$me=4 if a== (  "fasta_to_ppc")
+$me=5 if a== (  "fasta_to_muts")
+$me=6 if a== (  "fasta_to_mut20")
+$me=7 if a== (  "fasta_to_many")
+$me=8 if a== (  "fasta_to_md5_ppc_len_seq")
+
+#@me=1 if a .casecmp( "fasta_to_md5_seq.rb")
+#@me=2 if a .casecmp( "fasta_to_md5_header.rb")
+#$stderr.puts $1 + " "+ $me.to_s  + "\n"
+   # check if we have a mapping
+#   unless @destinations[@me]
+#     puts <<EOF
+#     ERROR! This host group has no members: #{@me}
+#     Maybe you should call me via a symlink?
+# EOF
+    exit 0 if $me <0 ||$me>8
+end
+class H
+
+	$header=""
+
+	$seq=""#MNAKYDTDQGVGRMLFLGTIGLAVVVGGLMAYGYYYDGKTPSSGTSFHTASPSFSSRYRY"
+
+	$s=""# (Digest::SHA1.new).update(seq.downcase+"|").hexdigest
+	$m=""# (Digest::MD5.new).update(seq.upcase).hexdigest
+
+	def  initialize( )
+	  $seq=""
+	  $header=""
+	end
+
+	def header(h) 
+		$header=h.strip;
+	end
+	def seq_(h)
+		$seq=h.strip.upcase.delete " ", "\t"
+		
+	end
+	def add(h)
+		#seq=seq+h.strip 
+		if $seq!=nil then $seq=$seq+h.strip ; else $seq=h.strip ; end
+		$seq=$seq.upcase
+	#	$stderr.puts  $seq
+	#	$seq=$seq.delete " ", "	"
+		$seq=$seq.gsub(/\s+/,"");
+	#	 $stderr.puts  $seq
+
+	end
+	def to_s()
+	  
+		hexdigest();
+		case $me
+		when 0
+		  return $m+"\t"+$s+"\t"+$seq+"\n"
+	#	return $m+"\t"+$s+"\t"+$seq+"\n" 	if $me==0		## the input for db.mamut.big_md5_ppc_seq
+		when 1
+		  return $m+"\t"+$seq+"\n"		#if $me==1		## md5 + seq for andrea
+		when 2
+		  return $m+"\t"+$header+"\n"   		#if $me==2		## the input for db.mamut.md5_header
+		when 3
+		  return $m+"\n"             		#if $me==3             
+		when 4
+		  return $ppc+"\n"                       # if $me==4
+		when 5
+		  return to_muts() 			#if $me==5
+		when 6
+		  return to_mamut_muts()                #  if $me==6
+		when 7
+		  return to_many()			#if $me==7
+		when 8
+		  return $m+"\t"+$s+"\t"+($seq.length).to_s+"\t"+$seq+"\n" 	#if $me==8		## the input for DB.idmapper.md5_ppc_len_seq
+		else
+		  abort("$0 aint a recognized version of my name")
+		end
+#		return $m+"\t"+$s+"\t"+$seq+"\n"  
+	end
+
+        def to_mamut_muts()
+	        f=File.open( "/tmp/mamut/"+ $m +"/" +$m + ".muts" ,"w")
+		f.puts to_ss($seq)
+		f.close()
+	end
+
+	def to_muts()
+		f=File.open( $m ,"w")
+		f.puts to_ss($seq)
+		f.close()
+	end
+        def to_many()
+		f=File.open( $m + ".fasta" ,"w")
+		f.puts $header + "\n" + $seq + "\n"
+		f.close()
+	end
+
+	def print()
+		hexdigest();
+#		print "md5: "+m+" ppc: "+s+" seq: "+seq +"\n"
+	end
+	def hexdigest()
+		$s= (Digest::SHA1.new).update($seq.downcase+"|").hexdigest.to_s;
+		$m= (Digest::MD5.new).update($seq.upcase).hexdigest.to_s;
+		## place for more digests f.e. crc64
+	end
+
+	
+
+
+
+	T="ACDEFGHIKLMNPQRSTVWY" #'A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y') 
+	def to_ss (s)
+		k=""
+		l=0
+		s.each_char do |i | # for i in s  do #0..(s.size) do
+		  #               k=k+ " " + i 
+			l=l+1
+	 		T.each_char do |j|
+	 			k=k+i+l.to_s+j+"\n"
+	       		end
+		end
+	 return k
+	end
+end # class
+
+
+
+############################################
+
 o="stdin"
 s=(ARGV[0]!=nil && File.exist?(ARGV[0]))?File.open(o=ARGV[0],"r"): $stdin ;	## we have defaults: stdin as input
 
@@ -11,21 +152,34 @@ c=0
 o=nil
 count=0
 @h=nil
-
+b=""
+hh=nil
 while ((a=s.gets)!=nil)
    #$stdout.puts a			## dbug what did i read?
-   if a =~ /(>)/  then  		## if a =~ /(^>)/  then 
-   	$stdout.puts @h.hexdigest  if o != nil
-
-	@h = Digest::MD5.new
+   	if a =~ /(>)/  then  		## if a =~ /(^>)/  then 
+		$stdout.puts hh.to_s() if hh != nil
+		hh=H.new;
+		hh.header(a);
+   	#	$stdout.puts @h.hexdigest + "\t" + b  if o != nil
+##
+#		@h = Digest::MD5.new
+#		b=""
+#
 	else
-	@h.update(a.strip)
-end
-	o=a
+		hh=H.new if hh == nil
+		hh.add(a); 
+#		@h.update(a.strip)
+#		b= b+ a.strip
+	end
+#	o=a
     	c=c+1 # count
-	$stderr.puts c if (c.to_i%100==0)
+	$stderr.puts c if (c.to_i%1000==0)
 end
 
-$stdout.puts @h.hexdigest  if o != nil
+$stdout.puts hh.to_s() if hh != nil
+
+#$stdout.puts @h.hexdigest + "\t" + b  if o != nil
 
 ### this schould work just fine on fasta files, to test you may use cat original.fasta|sort|md5sum and compare to cat original.fasta_part_*|sort|md5sum
+#
+#
