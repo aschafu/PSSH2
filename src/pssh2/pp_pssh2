@@ -3,17 +3,38 @@
 
 ### run and parse hhblits
 
+ fail=0
  time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
- time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $*
- time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
+ if [-s query.uniprot20.hhm] 
+ then
+ 	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $*
+ else
+	fail=-1
+ fi
+ if [-s query.uniprot20.pdb.full.hhr]
+ then
+ 	time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
+ elif [$fail==0]
+ 	fail=-2	
+ fi
+	
 
 ### add output to the db
- DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.pssh2_pp columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,Identity_Score,Alignment) "
- n=`cat query.pssh2 |wc -l`
  s=`date +%s`
  md5=`cat query.fasta | fasta_to_md5`
- DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$i\" , count=$n ,stamp=$s "
- 
+ if [-s query.pssh2] 
+ then
+	 DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.pssh2_pp columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,Identity_Score,Alignment) "
+ 	n=`cat query.pssh2 |wc -l`
+ 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$n , stamp=$s "
+ else
+ 	if [$fail==0]
+ 	then
+ 		fail=-2
+ 	fi
+ 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s " 		
+ fi
+  
 ### compress things / delete
 ### TODO: discuss whether we really want to delete -- and discuss where this should happen
 #  rm query.uniprot20.a3m  
