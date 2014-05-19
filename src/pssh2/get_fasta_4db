@@ -1,0 +1,30 @@
+#!/bin/bash
+### get fasta files from the db.mamut.big_md5_ppc_seq   works on md5s and ppc ids
+M="/mnt/project/mamut"  ## project home dir
+T="/tmp/mamut"
+#mkdir $T 2>/dev/null
+
+for i in $* ; do
+	mkdir -p $T/$i  2>/dev/null
+      l=`echo -ne "$i"|wc -c`
+    ### get it from the DB
+      [ 32 -eq $l ] && seq=`/mnt/home/roos/bin/dbn "select seq from big_md5_ppc_seq where md5=\"$i\" " `
+      [ 40 -eq $l ] && seq=`/mnt/home/roos/bin/dbn "select seq from big_md5_ppc_seq where ppc=\"$i\" " `
+   ### if that fails try nfs:mamut/md5/fasta/$i
+      [ "$seq" = ""  -a -s /mnt/project/mamut/md5/fasta/$i ] && (
+	cat /mnt/project/mamut/md5/fasta/$i |tee $T/$i/$i.fasta | ~/m/bin/fasta_to_md5_ppc_seq >/tmp/$i.md5_ppc_seq 
+       ### add the damn thing to the database
+	/mnt/home/roos/bin/db.fill_big.md5_ppc_seq.pl /tmp/$i.md5_ppc_seq 
+	### now we got it 
+	echo "$T/$i/$i.fasta"
+      ) 
+  ### here is a bulletproof method missing to get the sequence ... maybe from PPC?
+
+  [ -n "$seq" ] && ( 
+	(echo ">$i" ; echo "$seq" )> $T/$i/$i.fasta 
+	echo "$T/$i/$i.fasta"
+  )
+	#(echo ">$i" ;	/mnt/home/roos/bin/db "select seq from big_md5_ppc_seq where md5=\"$i\""|grep -v "^seq$" )> $T/$i/$i.fasta
+	#cp $M/md5/fasta/$i $T/$i/$i.fasta && 
+	#echo "$T/$i/$i.fasta"
+done
