@@ -1,7 +1,41 @@
 #!/bin/bash
 ## run the necessary things for pssh2 predictions
-
 ### run and parse hhblits
+
+usage()
+{
+cat << EOT
+NAME
+  pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
+SYNOPSIS
+  pp_pssh2 [-s] [-h]
+DESCRIPTION
+  pp_pssh2 takes an input sequence and generates sequence-to-structure alignments 
+  for this sequence. 
+  To this end, it starts the two subsequent HHblits runs:
+  1) build_hhblits_profile: search against uniprot20 database of HMMs and generate a 
+      HHM output (HMM-profile)
+  2) scan_structures_hhblits: starting with the HHM output from step 1,
+      search against the pdb_full database of HMMs and generate a HHR ouput
+  Subsequently, it parses the HHR output from the second run using the "parse_hhr_for_pssh2" 
+  perl script and generates a .pssh2 file.
+  Finally, this outputfile is read into the MySQL database pssh2_local, 
+  using "DB.pssh2_local" to retrieve the access parameters.
+OPTIONS
+  -h          The option -h displays help.
+  -s          Operate silently (passed on to the child scripts.)
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+}
+
+while getopts :hs opt
+do
+	case $opt in
+	s) s=1;;
+	*) usage; exit;;
+	esac
+done
 
  fail=0
  time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
