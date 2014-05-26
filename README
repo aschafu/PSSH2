@@ -1,5 +1,29 @@
-Setup: Change paths in the scripts if you move to another place! 
-       (set in the beginning of renew_pdb_full.sh)
+Summary
+-------
+PSSH2 is a collection of tools for creating the sequence-to-structure alignment database PSSH2.
+
+For convenience, the hhsuite, that is used in PSSH2, is also included in this repository. 
+The hhsuite is developed and maintained by Soeding and his team at ftp://toolkit.genzentrum.lmu.de/pub/HH-suite/
+or as a debian package.
+
+In this repository, the data directory contains all the PSSH2 data that is small enough
+to be distributed in a git repository. For the rest, there are just stubs to indicate 
+which directories exist at Rostlab.
+
+The src directory contains two main subdirectories, the one for generating and updating pdb_full,
+and the one for generating and updating pssh2. 
+
+
+Setup
+------
+
+For pdb_full: Change paths in the scripts if you move to another place! 
+(set in the beginning of renew_pdb_full.sh)
+
+
+
+Usage
+------
 
 Updating pdb_full:
 src/pdb_full/renew_pdb_full.sh -u -d <db_name> > & update_pdb_full.log &
