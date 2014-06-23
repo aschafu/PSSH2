@@ -216,6 +216,7 @@ sub read_hhr{
         $gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
 
         my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks);
+        if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, gapless_blocks):", join ", ", @ali_values, "\n";} 
         push (@alis, \@ali_values);      
       }
     }
