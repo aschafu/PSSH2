@@ -334,7 +334,7 @@ sub write_output{
     $identity = $ali_values[2];
     $gapless_blocks = $ali_values[3];
     # changed 21.2.2013: retain first $nRetain, regardless of eValue
-    if ($ali_num <= $nRetain || $evalue <= 10e-10){ #leave only alignments with E-value below 10e-10 or at least the first one 
+    if ($ali_num <= $nRetain || $evalue <= 10e-10 || $identity >= 99){ #leave only alignments with E-value below 10e-10 or at least the first one(s) 
       print WRITE "$m,$seqres_md5sum,$repeatVal,$evalue,$identity,$gapless_blocks\n";
       $ali_num++;
     }
