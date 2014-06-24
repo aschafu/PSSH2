@@ -336,6 +336,7 @@ sub write_output{
     $identity = $ali_values[2];
     $gapless_blocks = $ali_values[3];
     # changed 21.2.2013: retain first $nRetain, regardless of eValue
+    # changed 24.6.2014: retain if the sequence identity is >= identityCutoff (95%) 
     if ($ali_num <= $nRetain || $evalue <= $evalCutoff || $identity >= $identityCutoff){ #leave only alignments with E-value below 10e-10 or at least the first one(s) or if it is almost identical in sequence
       print WRITE "$m,$seqres_md5sum,$repeatVal,$evalue,$identity,$gapless_blocks\n";
       $ali_num++;
