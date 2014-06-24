@@ -321,7 +321,6 @@ sub write_output{
   my %repeat = ();
 
   foreach my $ali_values_ref (@alis){ #@alis: ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks)
-    $ali_num++;
     my @ali_values = @{$ali_values_ref};
     $seqres_md5sum = $ali_values[0];
     if (defined $repeat{$seqres_md5sum}){
@@ -337,6 +336,7 @@ sub write_output{
     # changed 21.2.2013: retain first $nRetain, regardless of eValue
     if ($ali_num <= $nRetain || $evalue <= 10e-10){ #leave only alignments with E-value below 10e-10 or at least the first one 
       print WRITE "$m,$seqres_md5sum,$repeatVal,$evalue,$identity,$gapless_blocks\n";
+      $ali_num++;
     }
   }
   if ($ali_num == 0){
