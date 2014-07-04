@@ -1,0 +1,39 @@
+
+#Read the data:
+vL30_h = read.table("hhsearch_2_0.001_0.35_last_iter_pdb_eval_tpr_precision.length_filtered_TP", header=TRUE)
+log_evalL30_h = -log10(as.numeric(vL30_h$Evalue))
+log_evalL30_h[is.infinite(log_evalL30_h)] <- max(log_evalL30_h[is.finite(log_evalL30_h)])+1 
+
+vL30_b = read.table("psiblast_2_0.002_final_iter_pdb_eval_tpr_precision.length_filtered_TP", header=TRUE)
+log_evalL30_b = -log10(as.numeric(vL30_b$Evalue))
+log_evalL30_b[is.infinite(log_evalL30_b)] <- max(log_evalL30_b[is.finite(log_evalL30_b)])+1 
+
+#HHblits plot:
+png("hhblits_eval_reall_precision_zoomed.lenFil_TP.png")
+
+plot(log_evalL30_h, vL30_h$TPR * 100, ylim=c(0, 100), xlim=c(0,150), main="", xlab="-log(E-value)", ylab="%", cex.lab=1, type="l", col="black", lwd=2)
+lines(log_evalL30_h, vL30_h$precision * 100, col="blue", lty=1, lwd=2)
+
+abline(h=seq(0, 100, by=5), lty=1, col="lightgray")
+abline(v=seq(-10, 330, by=10), lty=1, col="lightgray")
+
+legend("bottomright",c("recall HHblits","precision HHblits"),cex=1,col=c("black","blue"),lty=c(1,1), lwd=c(2,2))
+
+dev.off()
+
+	
+#PSI-Blast plot:
+png("psiblast_eval_reall_precision_zoomed.lenFil_TP.png")
+
+plot(log_evalL30_b, vL30_b$TPR * 100, ylim=c(0, 100), xlim=c(0,150),
+main="", xlab="-log(E-value)", ylab="%", cex.lab=1, type="l",
+col="black", lwd=2)
+lines(log_evalL30_b, vL30_b$precision * 100, col="blue", lty=1, lwd=2)
+
+abline(h=seq(0, 100, by=5), lty=1, col="lightgray")
+abline(v=seq(-10, 330, by=10), lty=1, col="lightgray")
+
+legend("bottomright",c("recall PSI-Blast","precision
+PSI-Blast"),cex=1,col=c("black","blue"),lty=c(1,1), lwd=c(2,2))
+
+dev.off()

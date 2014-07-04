@@ -1,0 +1,62 @@
+#test
+create table marias_family_sizes as select protein_sequence_hash md5,count(PDB_chain_hash) c  from (select * from pssh2_swissprot where E_value<10e-80 limit 350) a group by protein_sequence_hash  ;
+
+#error came and I cannot write in pssh2_local
+create table swissprot_pdb_count_10e_10 as select protein_sequence_hash md5,count(PDB_chain_hash) c  from (select * from pssh2_swissprot where E_value<10e-10) a group by protein_sequence_hash  ;
+
+#where I can write - error
+time ~/bin/DB_pssh2_local "create table marialign.pssh2_swissprot_family_sizes as select protein_sequence_hash md5, count(PDB_chain_hash) count from (select * from pssh2_swissprot where E_value<10e-10) a group by protein_sequence_hash;"
+ERROR 126 (HY000) at line 1: Incorrect key file for table '/var/tmp/mysql/#sql_49c7_0.MYI'; try to repair it
+
+real    1m31.913s
+user    0m0.004s
+sys     0m0.000s
+
+#where I can write - no error
+time ~/bin/DB_pssh2_local "create table marialign.pssh2_swissprot_family_sizes as select protein_sequence_hash md5, count(PDB_chain_hash) count from pssh2_swissprot where E_value<10e-10 group by protein_sequence_hash;"
+~/bin/DB_marialign "select * from pssh2_swissprot_family_sizes;" > ~/DB/pssh2_swissprot_family_sizes
+#395441 lines without header 
+
+#rename table a to b;
+~/bin/DB_marialign "rename table pssh2_swissprot_family_sizes to pssh2_swissprot_family_sizes_eval_less_10e_10;"
+~/bin/DB_marialign "select sum(count) from pssh2_swissprot_family_sizes_eval_less_10e_10;"
+#= 48753157
+mv ~/DB/pssh2_swissprot_family_sizes ~/DB/pssh2_swissprot_family_sizes_eval_less_10e_10
+#drop table c;
+
+#correct call
+time ~/bin/DB_pssh2_local "create table marialign.pssh2_swissprot_family_sizes_eval_equal_or_less_10e_10 as select protein_sequence_hash md5, count(PDB_chain_hash) count from pssh2_swissprot where E_value<=10e-10 group by protein_sequence_hash;"
+~/bin/DB_marialign "select * from pssh2_swissprot_family_sizes_eval_equal_or_less_10e_10;" > ~/DB/pssh2_swissprot_family_sizes_eval_equal_or_less_10e-10
+#395479 lines without header -> 395479/452584*100 = 87.38245 coverage
+~/bin/DB_pssh2_local "select distinct(protein_sequence_hash) from pssh2_swissprot where E_value<=10e-10;" > ~/DB/pssh2_swissprot_distinct_query_md5_eval_equal_or_less_10e-10
+#395479 lines without header
+~/bin/DB_pssh2_local "select distinct(protein_sequence_hash) from pssh2_swissprot;" > ~/DB/pssh2_swissprot_distinct_query_md5
+#452584 lines without header
+~/bin/DB_marialign "select sum(count) from pssh2_swissprot_family_sizes_eval_equal_or_less_10e_10;"
+#= 48816595
+~/bin/DB_pssh2_local "select count(*) from pssh2_swissprot where E_value<=10e-10;"
+#= 48816595
+~/bin/DB_pssh2_local "select count(*) from pssh2_swissprot;"
+#= 49229223
+
+#-------------------
+# Andrea
+#-------------------
+# on Sean's databases:
+select count(*) from protein_sequence where `Source_Database`='swissprot';
+# 542782
+# on pssh2_local:
+CREATE table pssh2_swissprot_family_sizes_eval_10em72 as select protein_sequence_hash md5, count(PDB_chain_hash) count from pssh2_swissprot where E_value<=10e-72 group by protein_sequence_hash;
+# 151737 lines -> 27.96% coverage
+# export as: pssh2_local_pssh2_swissprot_family_sizes_eval_10em72.tsv
+select protein_sequence_hash md5, count(PDB_chain_hash) count from pssh2_swissprot where E_value<=10e-10 group by protein_sequence_hash;   
+# 395479 lines -> 72.85% coverage
+#
+CREATE table pssh2_swissprot_minEval as select protein_sequence_hash md5, min(E_value) min_E_Values from pssh2_swissprot group by protein_sequence_hash;
+# export as: pssh2_local_pssh2_swissprot_minEval.tsv
+
+
+
+
+
+

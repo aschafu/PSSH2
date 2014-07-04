@@ -1,0 +1,10 @@
+data <- read.csv("pssh2_local__pssh2_swissprot_minEval.csv", header=TRUE)
+lg_Eval <- -log10(as.numeric(data$min_E_Values)) 
+lg_Eval[is.infinite(lg_Eval)] <- max(lg_Eval[is.finite(lg_Eval)])+10
+png("pssh2_swissprot_minEval_ecdf.png")
+plot(ecdf(lg_Eval), verticals=TRUE, do.p=FALSE, main="Cumulative Evalue
+distribution for PSSH2 SwissProt", xlab="-log(Eval)", ylab="Cumulative Percent",lty="dotted", col="blue")
+abline(h=seq(0, 1.0, by=0.1), lty=1, col="lightgray")
+abline(v=seq(0, 300, by=50), lty=1, col="lightgray")
+abline(v=72, lty=1, col="red")
+dev.off()

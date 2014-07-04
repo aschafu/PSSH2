@@ -1,0 +1,16 @@
+data <- read.csv("pssh2_local_swissprot_complete_minEval_20140519.csv", header=TRUE)
+lg_Eval <- -log10(as.numeric(data$min_E_Values)) 
+lg_Eval[is.infinite(lg_Eval)] <- max(lg_Eval[is.finite(lg_Eval)])+10
+a=9.7919039869903424E-01
+b=5.3864368767014570E+00
+c=3.5296849968513557E+00
+d=-3.0057625342403336E+00;
+precision <- a*exp(-0.5 * ( (log(lg_Eval - d) - b) / c)^2.0)
+png("pssh2_swissprot_complete_maxPrecision_ecdf.png")
+plot(ecdf(precision), verticals=TRUE, do.p=FALSE, 
+main="Cumulative Precision distribution for PSSH2 SwissProt", xlab="precision", ylab="Cumulative Percent",lty="dotted", col="blue")
+abline(h=seq(0, 1.0, by=0.1), lty=1, col="lightgray")
+abline(v=seq(0, 1.0, by=0.1), lty=1, col="lightgray")
+abline(v=0.95, lty=1, col="green")
+abline(v=0.7, lty=1, col="red")
+dev.off()

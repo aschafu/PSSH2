@@ -1,0 +1,40 @@
+
+#Read the data:
+vL30_h = read.table("hhsearch_2_0.001_0.35_last_iter_pdb_roc.length_filtered", header=TRUE)
+#log_evalL30_h = -log10(as.numeric(vL30_h$Evalue))
+#log_evalL30_h[is.infinite(log_evalL30_h)] <- max(log_evalL30_h[is.finite(log_evalL30_h)])+1 
+
+vL30_b = read.table("psiblast_2_0.002_final_iter_pdb_roc.length_filtered", header=TRUE)
+#log_evalL30_b = -log10(as.numeric(vL30_b$Evalue))
+#log_evalL30_b[is.infinite(log_evalL30_b)] <- max(log_evalL30_b[is.finite(log_evalL30_b)])+1 
+
+#ROC plot:
+png("hhblits-psiblast_roc_fpr_tpr.lenFil.png")
+
+plot(vL30_h$FPR * 100, vL30_h$TPR * 100, xlim=c(0,100), ylim=c(0,100), main="", xlab="FPR (%)", ylab="TPR (%)", cex.lab=1, type="l", col="black", lwd=2)
+lines(vL30_b$FPR * 100, vL30_b$TPR * 100, xlim=c(0,100), ylim=c(0,100), col="firebrick4", lty=1, lwd=2)
+
+abline(h=seq(0, 100, by=5), lty=1, col="lightgray")
+abline(v=seq(0,100, by=5), lty=1, col="lightgray")
+
+legend("bottomright",c("HHblits","PSI-BLAST"),cex=1,col=c("black","firebrick4"),lty=c(1,1), lwd=c(2,2))
+
+dev.off() 
+	
+
+#ROC plot zooomed:
+png("hhblits-psiblast_roc_fpr_tpr_zoomed.lenFil.png")
+
+plot(vL30_h$FPR * 100, vL30_h$TPR * 100, xlim=c(0,0.2), ylim=c(0,100),
+main="", xlab="FPR (%)", ylab="TPR (%)", cex.lab=1, type="l",
+col="black", lwd=2)
+lines(vL30_b$FPR * 100, vL30_b$TPR * 100, xlim=c(0,0.2),
+ylim=c(0,100), col="firebrick4", lty=1, lwd=2)
+
+abline(h=seq(0, 100, by=5), lty=1, col="lightgray")
+abline(v=seq(0,1, by=0.05), lty=1, col="lightgray")
+
+legend("bottomright",c("HHblits","PSI-BLAST"),cex=1,col=c("black","firebrick4"),lty=c(1,1),
+lwd=c(2,2))
+
+dev.off()

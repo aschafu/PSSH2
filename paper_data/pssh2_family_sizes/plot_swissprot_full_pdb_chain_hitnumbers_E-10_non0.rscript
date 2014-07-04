@@ -1,0 +1,21 @@
+data <- read.csv("pssh2_local_swissprot_10coverage_20140520_non0.csv", header=TRUE)
+sizes <- data$count 
+#mean, median:
+print("Mean:")
+mean(sizes)
+print("Median:")
+median(sizes)
+#plot:
+#png("pssh2_local_swissprot_10coverage_20140520_hist.png")
+#hist(sizes, breaks=100, col="blue", xlab="# hits", main="Distribution of PSSH2 SwissProt profile sizes -\nnumber of distinct PDB chains with E-value <= 10e-10")
+#dev.off()
+png("pssh2_local_swissprot_10coverage_20140520_non0_ecdf.png")
+plot(ecdf(sizes), verticals=TRUE, do.p=FALSE, 
+main="Cumulative hit number distribution \n of PSSH2 SwissProt with >= 1 model @ E<=10e-10", xlab="# hits", 
+ylab="Cumulative Percent",lty="dotted", col="blue")
+dev.off()
+png("pssh2_local_swissprot_10coverage_20140520_non0_ecdf_zoom.png")
+plot(ecdf(sizes), verticals=TRUE, xlim=range(0,1000), do.p=FALSE,
+main="Cumulative hit number distribution \n of PSSH2 SwissProt with >= 1 model @ E<=10e-10", xlab="# hits",
+ylab="Cumulative Percent",lty="dotted", col="blue")
+dev.off()
