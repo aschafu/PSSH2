@@ -36,7 +36,7 @@ while getopts :hs opt
 do
 	case $opt in
 	s) s=1;;
-	*) usage; exit;;
+	h) usage; exit;;
 	esac
 done
 
