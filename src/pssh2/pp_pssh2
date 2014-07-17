@@ -79,6 +79,6 @@ done
 ### TODO: discuss whether we really want to delete -- and discuss where this should happen
  rm query.uniprot20.a3m  
 # rm query.uniprot20.pdb.full.hhr
-# gzip query.uniprot20.pdb.full.hhr
+ gzip query.uniprot20.pdb.full.hhr
  gzip query.uniprot20.hhr
 # gzip query.pssh2
