@@ -27,6 +27,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help.
   -s          Operate silently (passed on to the child scripts.)
+  -d          Debug option: do not remove or zip output files
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -35,12 +36,17 @@ EOT
 while getopts :hs opt
 do
 	case $opt in
-	s) s=1;;
+	s) silent=1;;
+	d) debug=1;;
 	h) usage; exit;;
 	esac
 done
 
  fail=0
+ 
+ if [ -r query.uniprot20.hhm ] 
+ 
+ 
  time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
 
  if [ -s query.uniprot20.hhm ] 
