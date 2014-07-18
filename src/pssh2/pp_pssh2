@@ -34,7 +34,7 @@ AUTHOR
 EOT
 }
 
-while getopts :hsd opt
+while getopts hsd opt
 do
 	case $opt in
 	s) silent=1;;
@@ -43,14 +43,15 @@ do
 	esac
 done
 
- fail=0
+fail=0
  
- if [ -s query.uniprot20.hhm ] 
- then 
+# check whether we already have a uniprot20 hmm
+if [ -s query.uniprot20.hhm ] 
+then 
     # bla
- else
+else
     # bla
- fi	
+fi	
  
  
  time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
