@@ -69,7 +69,7 @@ then
 	if [ -s query.uniprot20.hhm ] 
 	then 
     	skip=1
-    	if [ $silent -eq 0]
+    	if [ $silent -eq 0 ]
     	then
 	    	echo "HMM already made."
 		fi
