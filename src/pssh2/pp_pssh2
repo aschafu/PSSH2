@@ -47,7 +47,7 @@ do
 	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
 	h) usage; exit;;
 #	s) passOpt=" -s ";;
-	*) passOpt="$passOpt -$opt";;
+	*) passOpt="$passOpt $opt";;
 	esac
 done
 
