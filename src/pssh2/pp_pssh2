@@ -38,7 +38,7 @@ EOT
 
 force=1
 debug=0
-passOpt=" "
+passOpt=" " 
 while getopts :sDFRh opt
 do
 	case $opt in
