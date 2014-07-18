@@ -37,8 +37,9 @@ while getopts :hs opt
 do
 	case $opt in
 	s) silent=1;;
-	d) echo "debug mode: do not change output files"; debug=1;;
+	d) echo -e "debug mode: do not change output files \n"; debug=1;;
 	h) usage; exit;;
+	*) usage;
 	esac
 done
 
