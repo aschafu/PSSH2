@@ -54,7 +54,7 @@ done
 fail=0
 skip=0
  
-if [ $force==0 ] 
+if [ $force -eq 0 ] 
 then
 	# check whether we already have a uniprot20 hmm
 	if [ -s query.uniprot20.hhm ] 
@@ -64,7 +64,7 @@ then
 	fi
 fi
 
-if [ $skip==0 ]
+if [ $skip -eq 0 ]
 then
 	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 fi
@@ -79,7 +79,7 @@ fi
 if [ -s query.uniprot20.pdb.full.hhr ]
 then
  	time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
-elif [ $fail==0 ]
+elif [ $fail -eq 0 ]
 then
  	fail=-2	
 fi
@@ -94,7 +94,7 @@ then
  	n=`cat query.pssh2 |wc -l`
  	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$n , stamp=$s "
 else
-	if [ $fail==0 ]
+	if [ $fail -eq 0 ]
  	then
  		fail=-3
  	fi
@@ -103,7 +103,7 @@ fi
   
 ### compress things / delete
 ### TODO: discuss whether we really want to delete -- and discuss where this should happen
-if [ $debug==0 ]
+if [ $debug -eq 0 ]
 then
 	rm query.uniprot20.a3m  
 #   rm query.uniprot20.pdb.full.hhr
