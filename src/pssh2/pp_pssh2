@@ -59,7 +59,8 @@ then
 	# check whether we already have a uniprot20 hmm
 	if [ -s query.uniprot20.hhm ] 
 	then 
-    	echo "HMM already made. Skip this step."; skip=1;
+    	echo "HMM already made. Skip this step."
+    	skip=1
 	fi
 fi
 
