@@ -64,7 +64,7 @@ then
 	fi
 fi
 
-if [ $skip -eq 0 ]
+if [ $skip -eq 0 ] 
 then
 	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 fi
