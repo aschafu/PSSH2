@@ -28,6 +28,7 @@ OPTIONS
   -h          The option -h displays help.
   -s          Operate silently (passed on to the child scripts.)
   -d          Debug option: do not remove or zip output files
+  all parameters are passed on to the child scripts
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
