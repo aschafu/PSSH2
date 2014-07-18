@@ -27,7 +27,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
-  -F          Force remaking of HMM profile (run build_hhblits_profile)
+  -F          Force remaking of HMM profile (run build_hhblits_profile) (is default behaviour)
   -R          Retain (DO NOT remake) the HMM profile (do not run build_hhblits_profile unless necessary)
   -s          Operate silently (passed on to the child scripts.)
   any other parameters are also passed on to the child scripts
