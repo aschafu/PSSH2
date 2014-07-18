@@ -34,11 +34,12 @@ AUTHOR
 EOT
 }
 
-while getopts hsd opt
+while getopts hsdf opt
 do
 	case $opt in
 	s) silent=1;;
 	d) echo -e "debug mode: do not change output files \n"; debug=1;;
+	f) force=1;;
 	h) usage; exit;;
 	esac
 done
@@ -48,7 +49,7 @@ fail=0
 # check whether we already have a uniprot20 hmm
 if [ -s query.uniprot20.hhm ] 
 then 
-    # bla
+    echo ""
 else
     # bla
 fi	
