@@ -109,13 +109,13 @@ if [ -s query.pssh2 ]
 then
 	DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.pssh2_pp columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,Alignment) set Identity_Score=@var_id_score*100 "
  	n=`cat query.pssh2 |wc -l`
- 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$n , stamp=$s "
+ 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$n , stamp=$s ON DUPLICATE KEY UPDATE count=$n , stamp=$s "
 else
 	if [ $fail -eq 0 ]
  	then
  		fail=-3
  	fi
- 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s " 		
+ 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s ON DUPLICATE KEY UPDATE count=$fail , stamp=$s " 		
 fi
   
 ### compress things / delete
