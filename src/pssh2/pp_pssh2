@@ -55,6 +55,10 @@ do
 	esac
 done
 
+if [ $debug -eq 1 ]
+	set -x
+fi
+
 fail=0
 skip=0
  
