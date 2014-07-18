@@ -38,6 +38,7 @@ EOT
 
 force=1
 debug=0
+silent=0
 passOpt=" " 
 while getopts :sDFRh opt
 do
@@ -46,7 +47,7 @@ do
 	F) echo -e "force mode: remake the HMM profile  \n"; force=1;;
 	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
 	h) usage; exit;;
-#	s) passOpt=" -s ";;
+	s) silent=1; passOpt="$passOpt $opt";;
 	*) passOpt="$passOpt $opt";;
 	esac
 done
@@ -60,7 +61,10 @@ then
 	if [ -s query.uniprot20.hhm ] 
 	then 
     	skip=1
-    	echo "HMM already made."
+    	if [ $silent -eq 0]
+    	then
+	    	echo "HMM already made."
+		fi
 	fi
 fi
 
