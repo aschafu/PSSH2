@@ -28,6 +28,7 @@ OPTIONS
   -h          The option -h displays help and exits.
   -d          Debug option: do not remove or zip output files
   -f          Force remaking of HMM profile (run build_hhblits_profile)
+  -r		  DO NOT remake the HMM profile (do not run build_hhblits_profile unless necessary)
   -s          Operate silently (passed on to the child scripts.)
   any other parameters are also passed on to the child scripts
 AUTHOR
@@ -35,14 +36,15 @@ AUTHOR
 EOT
 }
 
-force=0;
+force=1;
 debug=0;
-while getopts hsdf opt
+while getopts sdfr opt
 do
 	case $opt in
 	s) silent=1;;
 	d) echo -e "debug mode: do not change output files \n"; debug=1;;
 	f) echo -e "force mode: remake the HMM profile  \n"; force=1;;
+	r) echo -e "reuse mode: no not remake the HMM profile  \n"; force=1;;
 	h) usage; exit;;
 	esac
 done
