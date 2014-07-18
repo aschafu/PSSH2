@@ -38,7 +38,7 @@ EOT
 
 force=1;
 debug=0;
-while getopts sdfr opt
+while getopts :sDFRh opt
 do
 	case $opt in
 	s) silent=1;;
