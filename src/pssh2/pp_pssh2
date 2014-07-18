@@ -27,6 +27,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -d          Debug option: do not remove or zip output files
+  -f          Force remaking of HMM profile (run build_hhblits_profile)
   -s          Operate silently (passed on to the child scripts.)
   any other parameters are also passed on to the child scripts
 AUTHOR
@@ -34,65 +35,74 @@ AUTHOR
 EOT
 }
 
+force=0;
+debug=0;
 while getopts hsdf opt
 do
 	case $opt in
 	s) silent=1;;
 	d) echo -e "debug mode: do not change output files \n"; debug=1;;
-	f) force=1;;
+	f) echo -e "force mode: remake the HMM profile  \n"; force=1;;
 	h) usage; exit;;
 	esac
 done
 
-fail=0
+fail=0;
+skip=0;
  
-# check whether we already have a uniprot20 hmm
-if [ -s query.uniprot20.hhm ] 
-then 
-    echo ""
-else
-    # bla
-fi	
- 
- 
- time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
+if [ $force==0 ] 
+then
+	# check whether we already have a uniprot20 hmm
+	if [ -s query.uniprot20.hhm ] 
+	then 
+    	echo "HMM already made. Skip this step. \n"; skip=1;
+	fi
+fi
 
- if [ -s query.uniprot20.hhm ] 
- then
+if [ $skip==0 ]
+then
+	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
+fi
+
+if [ -s query.uniprot20.hhm ] 
+then
  	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $*
- else
+else
 	fail=-1
- fi
+fi
  
- if [ -s query.uniprot20.pdb.full.hhr ]
- then
+if [ -s query.uniprot20.pdb.full.hhr ]
+then
  	time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
- elif [ $fail==0 ]
- then
+elif [ $fail==0 ]
+then
  	fail=-2	
- fi
+fi
 	
 
 ### add output to the db
- s=`date +%s`
- md5=`cat query.fasta | fasta_to_md5`
- if [ -s query.pssh2 ] 
- then
-	 DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.pssh2_pp columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,Alignment) set Identity_Score=@var_id_score*100 "
+s=`date +%s`
+md5=`cat query.fasta | fasta_to_md5`
+if [ -s query.pssh2 ] 
+then
+	DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.pssh2_pp columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,Alignment) set Identity_Score=@var_id_score*100 "
  	n=`cat query.pssh2 |wc -l`
  	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$n , stamp=$s "
- else
- 	if [ $fail==0 ]
+else
+	if [ $fail==0 ]
  	then
  		fail=-3
  	fi
  	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s " 		
- fi
+fi
   
 ### compress things / delete
 ### TODO: discuss whether we really want to delete -- and discuss where this should happen
- rm query.uniprot20.a3m  
-# rm query.uniprot20.pdb.full.hhr
- gzip query.uniprot20.pdb.full.hhr
- gzip query.uniprot20.hhr
-# gzip query.pssh2
+if [ $debug==0 ]
+then
+	rm query.uniprot20.a3m  
+#   rm query.uniprot20.pdb.full.hhr
+ 	gzip query.uniprot20.pdb.full.hhr
+ 	gzip query.uniprot20.hhr
+# 	gzip query.pssh2
+fi
