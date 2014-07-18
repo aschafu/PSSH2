@@ -37,14 +37,19 @@ while getopts :hs opt
 do
 	case $opt in
 	s) silent=1;;
-	d) debug=1;;
+	d) echo "debug mode: do not change output files"; debug=1;;
 	h) usage; exit;;
 	esac
 done
 
  fail=0
  
- if [ -r query.uniprot20.hhm ] 
+ if [ -s query.uniprot20.hhm ] 
+ then 
+    # bla
+ else
+    # bla
+ fi	
  
  
  time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
