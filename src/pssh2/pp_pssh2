@@ -118,6 +118,8 @@ fi
 if [ $debug -eq 0 ]
 then
 	rm query.uniprot20.a3m  
+	rm query.fasta.hhblits.log
+	rm query.uniprot20.hhm.hhblits.log
 #   rm query.uniprot20.pdb.full.hhr
  	gzip query.uniprot20.pdb.full.hhr
  	gzip query.uniprot20.hhr
