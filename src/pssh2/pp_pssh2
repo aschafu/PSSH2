@@ -65,12 +65,12 @@ fi
 
 if [ $skip==0 ]
 then
-	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $*
+	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 fi
 
 if [ -s query.uniprot20.hhm ] 
 then
- 	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $*
+ 	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $passOpt
 else
 	fail=-1
 fi
