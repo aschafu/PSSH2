@@ -36,9 +36,9 @@ AUTHOR
 EOT
 }
 
-force=1;
-debug=0;
-passOpt=" ";
+force=1
+debug=0
+passOpt=" "
 while getopts :sDFRh opt
 do
 	case $opt in
@@ -51,16 +51,16 @@ do
 	esac
 done
 
-fail=0;
-skip=0;
+fail=0
+skip=0
  
 if [ $force==0 ] 
 then
 	# check whether we already have a uniprot20 hmm
 	if [ -s query.uniprot20.hhm ] 
 	then 
-    	echo "HMM already made. Skip this step."
     	skip=1
+    	echo "HMM already made. Skip this step."
 	fi
 fi
 
