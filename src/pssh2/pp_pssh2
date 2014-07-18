@@ -25,22 +25,21 @@ DESCRIPTION
   The databases to search with hhblits should be available under /var/tmp/rost_db/data/hhblits/
   unless .
 OPTIONS
-  -h          The option -h displays help.
-  -s          Operate silently (passed on to the child scripts.)
+  -h          The option -h displays help and exits.
   -d          Debug option: do not remove or zip output files
-  all parameters are passed on to the child scripts
+  -s          Operate silently (passed on to the child scripts.)
+  any other parameters are also passed on to the child scripts
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
 }
 
-while getopts :hs opt
+while getopts :hsd opt
 do
 	case $opt in
 	s) silent=1;;
 	d) echo -e "debug mode: do not change output files \n"; debug=1;;
 	h) usage; exit;;
-	*) usage;
 	esac
 done
 
