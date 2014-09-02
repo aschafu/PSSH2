@@ -101,6 +101,7 @@ then
  	fail=-2	
 fi
 	
+runtime = $SECONDS
 
 ### add output to the db
 s=`date +%s`
@@ -115,7 +116,7 @@ else
  	then
  		fail=-3
  	fi
- 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s ON DUPLICATE KEY UPDATE count=$fail , stamp=$s " 		
+ 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$fail , stamp=$s, runtime=$runtime " 		
 fi
   
 ### compress things / delete
