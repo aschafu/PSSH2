@@ -78,8 +78,7 @@ fi
 
 if [ $skip -eq 0 ] 
 then
-	echo skip	
-#	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
+	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 else 
     if [ $silent -eq 0 ]
     then
@@ -89,16 +88,14 @@ fi
 
 if [ -s query.uniprot20.hhm ] 
 then
-	echo skip
-# 	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $passOpt
+ 	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $passOpt
 else
 	fail=-1
 fi
  
 if [ -s query.uniprot20.pdb.full.hhr ]
 then
-	echo skip
-# 	time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
+ 	time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
 elif [ $fail -eq 0 ]
 then
  	fail=-2	
