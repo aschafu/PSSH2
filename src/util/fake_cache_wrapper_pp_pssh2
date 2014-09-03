@@ -5,7 +5,8 @@
 
 #$ -o /dev/null
 #$ -e /dev/null
-set -x
+
+#set -x
 
 ### base path to all caches
 #### ex /mnt/project/snapcache/andrea_pssh/ppcache22/bd/38/
@@ -55,7 +56,7 @@ for i in $* ; do
 
 	    
 		else 
-			echo "was not able to work on cache for $CC please go fix"
+			echo "ERROR: was not able to work on cache for $CC please go fix"
 		fi
 	
 	else
