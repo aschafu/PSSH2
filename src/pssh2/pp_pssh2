@@ -101,7 +101,7 @@ then
  	fail=-2	
 fi
 	
-runtime = $SECONDS
+runtime=$SECONDS
 
 ### add output to the db
 s=`date +%s`
