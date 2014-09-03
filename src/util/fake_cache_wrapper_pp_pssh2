@@ -22,6 +22,7 @@ for i in $* ; do
     [ -s $T/$i/$i.fasta ] ||    $M/bin/get_fasta_4db $i
 
     if [ -s $T/$i/$i.fasta ] ; then
+    
 ### get seq/md5/ppc from db	
 		seq=`/mnt/home/roos/bin/DB.idmapper "select seq from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^seq$"`
 		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
@@ -45,7 +46,7 @@ for i in $* ; do
 ### now start the real work
 	    	ls -lahtr
 	    	cp  $T/$i/$i.fasta query.fasta
-	    	/usr/bin/pp_pssh2 
+#	    	/usr/bin/pp_pssh2 
 
 ### just singe cores:
 #time nice /mnt/home/roos/bin/predictprotein_1.1.08 --cache-merge --seqfile $T/$i/$i.fasta  -c 1 --blast-processors 1            --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot
