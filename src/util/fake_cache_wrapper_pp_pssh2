@@ -36,8 +36,8 @@ for i in $* ; do
 
 ### full path to cachedir
 		CC="$C$P/$P2/$ppc"
-
 		echo $CC
+
 ### create cachedir if not existent
 		mkdir -p $CC
 		if [ -d $CC ] ; then
