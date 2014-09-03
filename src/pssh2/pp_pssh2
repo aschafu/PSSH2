@@ -21,6 +21,10 @@ DESCRIPTION
   perl script and generates a .pssh2 file.
   Finally, this outputfile is read into the MySQL database pssh2_local, 
   using "DB.pssh2_local" to retrieve the access parameters.
+  The database pssh2_local_counts keeps track of the generation date of the data, the runtime
+  and the number of hits found for the sequence. Negative count number indicate error states:
+    -1 -> build_hhblits_profile, -2 -> scan_structures_hhblits, -3 -> parse_hhr_for_pssh2, 
+    -99 -> sequence not found
   Any input not mentioned in options is passed on to 1) and 2). 
   The databases to search with hhblits should be available under /var/tmp/rost_db/data/hhblits/
   unless they are explicitly given in the input.
