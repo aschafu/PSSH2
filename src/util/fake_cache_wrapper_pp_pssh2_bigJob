@@ -48,7 +48,7 @@ for i in $* ; do
 			ls -lahtr
 			cp  $T/$i/$i.fasta query.fasta
 #	    	/usr/bin/pp_pssh2 
-			/mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2
+			/mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2 -b
 			cd $T
 ### just singe cores:
 #time nice /mnt/home/roos/bin/predictprotein_1.1.08 --cache-merge --seqfile $T/$i/$i.fasta  -c 1 --blast-processors 1            --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot
