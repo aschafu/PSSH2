@@ -82,7 +82,7 @@ fi
 
 if [ $skip -eq 0 ] 
 then
-	time nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
+	time -f "\t%U user,\t%S system,\t%E elapsed,\t(%Xtext+%Ddata %Mmax)k" nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 else 
     if [ $silent -eq 0 ]
     then
