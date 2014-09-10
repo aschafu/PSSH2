@@ -15,12 +15,14 @@ C="/mnt/project/snapcache/andrea_pssh/all_caches/"
 M="/mnt/project/mamut";
 DB="/var/tmp/rost_db/data";
 T="/tmp/mamut"
+PS="/mnt/project/pssh/pssh2_project/work/sequences_missingInMamut_20140910/"
 
 for i in $* ; do
 ### get fasta and tmpdir block
 	mkdir -p $T/$i  2>/dev/null
 	chmod 777 $T  $T/$i 
-	[ -s $T/$i/$i.fasta ] ||    $M/bin/get_fasta_4db $i
+#	[ -s $T/$i/$i.fasta ] ||    $M/bin/get_fasta_4db $i
+	[ -s $T/$i/$i.fasta ] ||    cp $PS/$i.fasta $T/$i/
 
 	if [ -s $T/$i/$i.fasta ] ; then
     
