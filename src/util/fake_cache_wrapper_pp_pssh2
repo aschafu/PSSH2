@@ -21,8 +21,7 @@ for i in $* ; do
 ### get fasta and tmpdir block
 	mkdir -p $T/$i  2>/dev/null
 	chmod 777 $T  $T/$i 
-#	[ -s $T/$i/$i.fasta ] ||    $M/bin/get_fasta_4db $i
-	[ -s $T/$i/$i.fasta ] ||    cp $PS/$i.fasta $T/$i/
+	[ -s $T/$i/$i.fasta ] ||    $M/bin/get_fasta_4db $i
 
 	if [ -s $T/$i/$i.fasta ] ; then
     
