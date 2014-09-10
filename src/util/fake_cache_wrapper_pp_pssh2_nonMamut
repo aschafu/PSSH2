@@ -10,7 +10,7 @@
 
 ### base path to all caches
 #### ex /mnt/project/snapcache/andrea_pssh/ppcache22/bd/38/
-C="/mnt/project/snapcache/andrea_pssh/all_caches/"
+C="/mnt/project/snapcache/andrea_pssh/all_caches/missing"
 
 M="/mnt/project/mamut";
 DB="/var/tmp/rost_db/data";
@@ -27,17 +27,19 @@ for i in $* ; do
 	if [ -s $T/$i/$i.fasta ] ; then
     
 ### get seq/md5/ppc from db	
-		seq=`/mnt/home/roos/bin/DB.idmapper "select seq from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^seq$"`
-		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
-		md5=`/mnt/home/roos/bin/DB.idmapper "select md5 from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^md5$"`
+#		seq=`/mnt/home/roos/bin/DB.idmapper "select seq from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^seq$"`
+#		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
+#		md5=`/mnt/home/roos/bin/DB.idmapper "select md5 from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^md5$"`
+		md5=$i
 
 ### build prefixes for ppc/extracache
-		P=`echo $ppc|cut -b1,2`
-		P2=`echo $ppc|cut -b3,4`
-		echo $ppc $md5 $P $P2
-
+#		P=`echo $ppc|cut -b1,2`
+#		P2=`echo $ppc|cut -b3,4`
+#		echo $ppc $md5 $P $P2
+		echo $md5
+		
 ### full path to cachedir
-		CC="$C$P/$P2/$ppc"
+		CC="$C/$md5"
 		echo $CC
 
 ### create cachedir if not existent
