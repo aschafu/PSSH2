@@ -127,10 +127,22 @@ fi
 ### TODO: discuss whether we really want to delete -- and discuss where this should happen
 if [ $debug -eq 0 ]
 then
-	rm query.uniprot20.a3m  
-	rm query.fasta.hhblits.log
-	rm query.uniprot20.hhm.hhblits.log
+	if [ -s query.uniprot20.a3m ] 
+	then
+		rm query.uniprot20.a3m  
+	elif	
+	if [ -s query.fasta.hhblits.log ]
+	then
+		rm query.fasta.hhblits.log
+	elif
+	if [ -s query.uniprot20.hhm.hhblits.log ]
+	then
+		rm query.uniprot20.hhm.hhblits.log
+	elif
+	if [ -s query.uniprot20.hhr ]
+	then
+	 	gzip -f query.uniprot20.hhr
+	elif
  	gzip -f query.uniprot20.pdb.full.hhr
- 	gzip -f query.uniprot20.hhr
 # 	gzip query.pssh2
 fi
