@@ -14,7 +14,7 @@ C="/mnt/project/snapcache/andrea_pssh/all_caches/"
 H="/mnt/project/pssh/pssh2_project/data/uniprot_derived/hhblits_hmms/
 
 M="/mnt/project/mamut";
-DB="/var/tmp/rost_db/data";
+#DB="/var/tmp/rost_db/data";
 T="/tmp/mamut"
 PS="/mnt/project/pssh/pssh2_project/work/sequences_missingInMamut_20140910/"
 
