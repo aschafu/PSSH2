@@ -37,12 +37,12 @@ for i in $* ; do
 ### build prefixes for md5/extracache
 		M=`echo $md5|cut -b1,2`
 		M2=`echo $md5|cut -b3,4`
-		echo $ppc $P $P2 $md5 $M $M2
+#		echo $ppc $P $P2 $md5 $M $M2
 
 ### full path to cachedir
 		CC="$C$P/$P2/$ppc"
 		HH="$H$M/$M2"
-		echo $CC $HH
+#		echo $CC $HH
 
 		hhm_file="$CC/query.uniprot20.hhm" 
 
