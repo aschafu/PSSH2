@@ -48,7 +48,7 @@ for i in $* ; do
 		mkdir -p $HH
 		if [ -d $HH ] ; then
 			$hhm_file="$CC/query.uniprot20.hhm" 
-			if [ -s $hmm_file ] ; then
+			if [ -s $hhm_file ] ; then
 				timeStamp=`stat -c%Y $hhm_file`  
 				DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$timeStamp , hhm_path=\"$CC\" " 
 				ln -s $hhm_file $HH/$md5.hhm
