@@ -11,6 +11,7 @@
 ### base path to all caches
 #### ex /mnt/project/snapcache/andrea_pssh/ppcache22/bd/38/
 C="/mnt/project/snapcache/andrea_pssh/all_caches/"
+H="/mnt/project/pssh/pssh2_project/data/uniprot_derived/hhblits_hmms/
 
 M="/mnt/project/mamut";
 DB="/var/tmp/rost_db/data";
@@ -33,11 +34,15 @@ for i in $* ; do
 ### build prefixes for ppc/extracache
 		P=`echo $ppc|cut -b1,2`
 		P2=`echo $ppc|cut -b3,4`
-		echo $ppc $md5 $P $P2
+### build prefixes for md5/extracache
+		M=`echo $md5|cut -b1,2`
+		M2=`echo $md5|cut -b3,4`
+		echo $ppc $P $P2 $md5 $M $M2
 
 ### full path to cachedir
 		CC="$C$P/$P2/$ppc"
-		echo $CC
+		HH="$C$M/$M2/$md5"
+		echo $CC $HH
 
 ### create cachedir if not existent
 		mkdir -p $CC
