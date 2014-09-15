@@ -1,0 +1,69 @@
+#!/bin/bash
+
+### uses a different cache dir root than predictprotein but the same tree/prefix structure
+### runs things that should be integrated into PP soon but withoout polluting the ppcache
+
+#$ -o /dev/null
+#$ -e /dev/null
+
+#set -x
+
+### base path to all caches
+#### ex /mnt/project/snapcache/andrea_pssh/ppcache22/bd/38/
+C="/mnt/project/snapcache/andrea_pssh/all_caches/"
+
+M="/mnt/project/mamut";
+DB="/var/tmp/rost_db/data";
+T="/tmp/mamut"
+PS="/mnt/project/pssh/pssh2_project/work/sequences_missingInMamut_20140910/"
+
+for i in $* ; do
+### get fasta and tmpdir block
+	mkdir -p $T/$i  2>/dev/null
+	chmod 777 $T  $T/$i 
+	[ -s $T/$i/$i.fasta ] ||    $M/bin/get_fasta_4db $i
+
+	if [ -s $T/$i/$i.fasta ] ; then
+    
+### get seq/md5/ppc from db	
+		seq=`/mnt/home/roos/bin/DB.idmapper "select seq from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^seq$"`
+		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
+		md5=`/mnt/home/roos/bin/DB.idmapper "select md5 from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^md5$"`
+
+### build prefixes for ppc/extracache
+		P=`echo $ppc|cut -b1,2`
+		P2=`echo $ppc|cut -b3,4`
+		echo $ppc $md5 $P $P2
+
+### full path to cachedir
+		CC="$C$P/$P2/$ppc"
+		echo $CC
+
+### create cachedir if not existent
+		mkdir -p $CC
+		if [ -d $CC ] ; then
+			cd $CC
+			pwd
+
+### now start the real work
+			ls -lahtr
+			cp  $T/$i/$i.fasta query.fasta
+#	    	/usr/bin/pp_pssh2 
+			/mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2
+			cd $T
+### just singe cores:
+#time nice /mnt/home/roos/bin/predictprotein_1.1.08 --cache-merge --seqfile $T/$i/$i.fasta  -c 1 --blast-processors 1            --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot
+#	time nice /mnt/home/roos/bin/predictprotein_1.1.08 --cache-merge --seqfile $T/$i/$i.fasta  -c 4 --blast-processors 1            --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot
+
+	    
+		else 
+			echo "ERROR: was not able to work on cache for $CC please go fix"
+		fi
+	
+	else
+		s=`date +%s`
+		DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$i\" , count=-99 , stamp=$s , runtime=$SECONDS" 
+		echo "ERROR: could not find sequence: $T/$i/$i.fasta"
+	fi
+
+done
