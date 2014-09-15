@@ -46,7 +46,7 @@ for i in $* ; do
 
 ### create hmmdir if not existent
 		mkdir -p $HH
-		if [ -d $HH] ; then
+		if [ -d $HH ] ; then
 			$hhm_file="$CC/query.hhm" 
 			if [ -s $hmm_file ] ; then
 				timeStamp=`stat -c%Y $hhm_file`  
