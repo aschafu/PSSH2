@@ -48,16 +48,15 @@ for i in $* ; do
 		mkdir -p $HH
 		if [ -d $HH] ; then
 			$hhm_file="$CC/query.hhm" 
-			ln -s $hhm_file $HH/$md5.hhm
-			timeStamp=`stat -c%Y  
-			DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$s , hhm_path=\"$CC\"" 
+			if [ -s $hmm_file ] ; then
+				timeStamp=`stat -c%Y $hhm_file`  
+				DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$timeStamp , hhm_path=\"$CC\"" 
+				ln -s $hhm_file $HH/$md5.hhm
+			fi
 		else 
 			echo "ERROR: was not able to write to $HH please go fix"
 		fi
-	
 	else
-		s=`date +%s`
-		DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$i\" , count=-99 , stamp=$s , runtime=$SECONDS" 
 		echo "ERROR: could not find sequence: $T/$i/$i.fasta"
 	fi
 
