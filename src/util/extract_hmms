@@ -48,11 +48,11 @@ for i in $* ; do
 		mkdir -p $HH
 		if [ -d $HH] ; then
 			$hhm_file="$CC/query.hhm" 
-#			if [ -s $hmm_file ] ; then
-#				timeStamp=`stat -c%Y $hhm_file`  
-#				DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$timeStamp , hhm_path=\"$CC\" " 
-#				ln -s $hhm_file $HH/$md5.hhm
-#			fi
+			if [ -s $hmm_file ] ; then
+				timeStamp=`stat -c%Y $hhm_file`  
+				DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$timeStamp , hhm_path=\"$CC\" " 
+				ln -s $hhm_file $HH/$md5.hhm
+			fi
 		else 
 			echo "ERROR: was not able to write to $HH please go fix"
 		fi
