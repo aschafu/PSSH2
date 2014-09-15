@@ -50,7 +50,7 @@ for i in $* ; do
 			$hhm_file="$CC/query.uniprot20.hhm" 
 			if [ -s $hhm_file ] ; then
 				timeStamp=`stat -c%Y $hhm_file`  
-				DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$timeStamp , hhm_path=\"$CC\" " 
+				DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$timeStamp , hhm_path=\"$CC\"  ON DUPLICATE KEY UPDATE stamp=$timeStamp , hhm_path=\"$CC\" " 
 				ln -s $hhm_file $HH/$md5.hhm
 			fi
 		else 
