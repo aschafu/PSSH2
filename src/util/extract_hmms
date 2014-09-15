@@ -41,28 +41,18 @@ for i in $* ; do
 
 ### full path to cachedir
 		CC="$C$P/$P2/$ppc"
-		HH="$C$M/$M2/$md5"
+		HH="$H$M/$M2"
 		echo $CC $HH
 
-### create cachedir if not existent
-		mkdir -p $CC
-		if [ -d $CC ] ; then
-			cd $CC
-			pwd
-
-### now start the real work
-			ls -lahtr
-			cp  $T/$i/$i.fasta query.fasta
-#	    	/usr/bin/pp_pssh2 
-			/mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2
-			cd $T
-### just singe cores:
-#time nice /mnt/home/roos/bin/predictprotein_1.1.08 --cache-merge --seqfile $T/$i/$i.fasta  -c 1 --blast-processors 1            --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot
-#	time nice /mnt/home/roos/bin/predictprotein_1.1.08 --cache-merge --seqfile $T/$i/$i.fasta  -c 4 --blast-processors 1            --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot
-
-	    
+### create hmmdir if not existent
+		mkdir -p $HH
+		if [ -d $HH] ; then
+			$hhm_file="$CC/query.hhm" 
+			ln -s $hhm_file $HH/$md5.hhm
+			timeStamp=`stat -c%Y  
+			DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$md5\" , stamp=$s , hhm_path=\"$CC\"" 
 		else 
-			echo "ERROR: was not able to work on cache for $CC please go fix"
+			echo "ERROR: was not able to write to $HH please go fix"
 		fi
 	
 	else
