@@ -13,7 +13,7 @@ set -x
 C="/mnt/project/snapcache/andrea_pssh/all_caches/"
 H="/mnt/project/pssh/pssh2_project/data/uniprot_derived/hhblits_hmms/"
 
-M="/mnt/project/mamut";
+M_path="/mnt/project/mamut";
 #DB="/var/tmp/rost_db/data";
 T="/tmp/mamut"
 PS="/mnt/project/pssh/pssh2_project/work/sequences_missingInMamut_20140910/"
@@ -22,7 +22,7 @@ for i in $* ; do
 ### get fasta and tmpdir block
 	mkdir -p $T/$i  2>/dev/null
 	chmod 777 $T  $T/$i 
-	[ -s $T/$i/$i.fasta ] ||    $M/bin/get_fasta_4db $i
+	[ -s $T/$i/$i.fasta ] ||    $M_path/bin/get_fasta_4db $i
 
 	if [ -s $T/$i/$i.fasta ] ; then
     
