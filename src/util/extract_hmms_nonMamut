@@ -10,7 +10,7 @@
 
 ### base path to all caches
 #### ex /mnt/project/snapcache/andrea_pssh/ppcache22/bd/38/
-C="/mnt/project/snapcache/andrea_pssh/all_caches/"
+C="/mnt/project/snapcache/andrea_pssh/all_caches/missing"
 H="/mnt/project/pssh/pssh2_project/data/uniprot_derived/hhblits_hmms/"
 
 M_path="/mnt/project/mamut";
