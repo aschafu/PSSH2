@@ -56,7 +56,8 @@ for i in $* ; do
 				echo "ERROR [3]: was not able to write to $HH "
 			fi
 		else
-			echo "ERROR [2]: could not find hhm file $hhm_file "			
+			echo "ERROR [2]: could not find hhm file $hhm_file "
+			DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$i\" , stamp=0 , hhm_path=\"unknown\"  "
 		fi
 	else
 		echo "ERROR [1]: could not find sequence: $T/$i/$i.fasta"
