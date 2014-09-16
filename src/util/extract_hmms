@@ -16,7 +16,6 @@ H="/mnt/project/pssh/pssh2_project/data/uniprot_derived/hhblits_hmms/"
 M_path="/mnt/project/mamut";
 #DB="/var/tmp/rost_db/data";
 T="/tmp/mamut"
-PS="/mnt/project/pssh/pssh2_project/work/sequences_missingInMamut_20140910/"
 
 for i in $* ; do
 ### get fasta and tmpdir block
