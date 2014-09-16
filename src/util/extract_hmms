@@ -16,32 +16,31 @@ H="/mnt/project/pssh/pssh2_project/data/uniprot_derived/hhblits_hmms/"
 M_path="/mnt/project/mamut";
 #DB="/var/tmp/rost_db/data";
 T="/tmp/mamut"
+PS="/mnt/project/pssh/pssh2_project/work/sequences_missingInMamut_20140910/"
 
 for i in $* ; do
 ### get fasta and tmpdir block
-#	mkdir -p $T/$i  2>/dev/null
-#	chmod 777 $T  $T/$i 
-#	[ -s $T/$i/$i.fasta ] ||    $M_path/bin/get_fasta_4db $i
+	mkdir -p $T/$i  2>/dev/null
+	chmod 777 $T  $T/$i 
+	[ -s $T/$i/$i.fasta ] ||    $M_path/bin/get_fasta_4db $i
 
-#	if [ -s $T/$i/$i.fasta ] ; then
+	if [ -s $T/$i/$i.fasta ] ; then
     
 ### get seq/md5/ppc from db	
-#		seq=`/mnt/home/roos/bin/DB.idmapper "select seq from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^seq$"`
-#		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
-#		md5=`/mnt/home/roos/bin/DB.idmapper "select md5 from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^md5$"`
-		md5=$i
+		seq=`/mnt/home/roos/bin/DB.idmapper "select seq from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^seq$"`
+		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
+		md5=`/mnt/home/roos/bin/DB.idmapper "select md5 from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^md5$"`
 
 ### build prefixes for ppc/extracache
-#		P=`echo $ppc|cut -b1,2`
-#		P2=`echo $ppc|cut -b3,4`
-
+		P=`echo $ppc|cut -b1,2`
+		P2=`echo $ppc|cut -b3,4`
 ### build prefixes for md5/extracache
 		M=`echo $md5|cut -b1,2`
 		M2=`echo $md5|cut -b3,4`
 #		echo $ppc $P $P2 $md5 $M $M2
 
 ### full path to cachedir
-		CC="$C$/$md5"
+		CC="$C$P/$P2/$ppc"
 		HH="$H$M/$M2"
 #		echo $CC $HH
 
@@ -60,9 +59,9 @@ for i in $* ; do
 		else
 			echo "ERROR [2]: could not find hhm file $hhm_file "			
 		fi
-#	else
-#		echo "ERROR [1]: could not find sequence: $T/$i/$i.fasta"
-#		DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$i\" , stamp=0 , hhm_path=\"unknown\"  " 
-#	fi
+	else
+		echo "ERROR [1]: could not find sequence: $T/$i/$i.fasta"
+		DB.pssh2_local "insert into pssh2_local.swissprot_hhm set md5=\"$i\" , stamp=0 , hhm_path=\"unknown\"  " 
+	fi
 
 done
