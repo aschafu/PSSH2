@@ -41,7 +41,7 @@ for i in $* ; do
 #		echo $ppc $P $P2 $md5 $M $M2
 
 ### full path to cachedir
-		CC="$C$/$md5"
+		CC="$C/$md5"
 		HH="$H$M/$M2"
 #		echo $CC $HH
 
