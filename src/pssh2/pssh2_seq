@@ -8,7 +8,7 @@ cat << EOT
 NAME
   pssh2_seq - generate pssh2 type sequence-to-structrue alignments 
 SYNOPSIS
-  pssh2_seq [-s] [-h] [-D] [-F] [-R]
+  pssh2_seq [-s] [-h] [-D] [-F] [-R] [-t tableName]
 DESCRIPTION
   pssh2_seq takes an input sequence (query.fasta) and generates sequence-to-structure alignments 
   for this sequence. 
