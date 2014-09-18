@@ -32,6 +32,7 @@ AUTHOR
 EOT
 }
 
+debug=0
 passOpt=" " 
 while getopts:hm: opt
 do
