@@ -41,20 +41,12 @@ OPTIONS
   -a          output file name for multiple sequence alignment (a3m format)
   -r          output file name for hhblits result file (hhr format)
   -b          big job -> run with more memory ($bigMem) 
-  -u          /path/to/uniprot_20_files (without extensions, default: $u20)
+  -u          /path/to/uniprot_20_files (without extensions)
+  -s          operate silently
 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
-}
-
-
-
-usage() { 
-	echo "Usage: $0 -f <fasta sequence file> -m <hmm file name> -a <a3m file name> -r <results file name>" 
-	echo "                           [-b (for much memory)] [-u /path/to/uniprot_20 (without extensions)] [-s (silent)]"
-	echo "                           (default path: $u20)" 1>&2
-	exit 1; 
 }
 
 
