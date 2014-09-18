@@ -1,0 +1,148 @@
+#!/bin/bash
+## run the necessary things for pssh2 predictions
+### run and parse hhblits
+
+usage()
+{
+cat << EOT
+NAME
+  pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
+SYNOPSIS
+  pp_pssh2 [-s] [-h] [-D] [-F] [-R]
+DESCRIPTION
+  pp_pssh2 takes an input sequence (query.fasta) and generates sequence-to-structure alignments 
+  for this sequence. 
+  To this end, it starts the two subsequent HHblits runs:
+  1) build_hhblits_profile: search against uniprot20 database of HMMs and generate a 
+      HHM output (HMM-profile)
+  2) scan_structures_hhblits: starting with the HHM output from step 1,
+      search against the pdb_full database of HMMs and generate a HHR ouput
+  Subsequently, it parses the HHR output from the second run using the "parse_hhr_for_pssh2" 
+  perl script and generates a .pssh2 file.
+  Finally, this outputfile is read into the MySQL database pssh2_local, 
+  using "DB.pssh2_local" to retrieve the access parameters.
+  The database pssh2_local_counts keeps track of the generation date of the data, the runtime
+  and the number of hits found for the sequence. Negative count number indicate error states:
+    -1 -> build_hhblits_profile, -2 -> scan_structures_hhblits, -3 -> parse_hhr_for_pssh2, 
+    -99 -> sequence not found
+  Any input not mentioned in options is passed on to 1) and 2). 
+  The databases to search with hhblits should be available under /var/tmp/rost_db/data/hhblits/
+  unless they are explicitly given in the input.
+OPTIONS
+  -h          The option -h displays help and exits.
+  -D          Debug option: do not remove or zip output files
+  -F          Force remaking of HMM profile (run build_hhblits_profile) (is default behaviour)
+  -R          Retain (DO NOT remake) the HMM profile (do not run build_hhblits_profile unless necessary)
+  -s          Operate silently (passed on to the child scripts.)
+  any other parameters are also passed on to the child scripts
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+}
+
+force=1
+debug=0
+silent=0
+passOpt=" " 
+while getopts :sDFRh opt
+do
+	case $opt in
+#	D) echo -e "debug mode: do not change output files \n"; debug=1;;
+#	F) echo -e "force mode: remake the HMM profile  \n"; force=1;;
+#	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
+	D) debug=1;;
+	F) force=1;;
+	R) force=0;;
+	h) usage; exit;;
+	s) silent=1; passOpt="$passOpt $opt";;
+	*) passOpt="$passOpt $opt";;
+	esac
+done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+fail=0
+skip=0
+ 
+if [ $force -eq 0 ] 
+then
+	# check whether we already have a uniprot20 hmm
+	if [ -s query.uniprot20.hhm ] 
+	then 
+    	skip=1
+    	if [ $silent -eq 0 ]
+    	then
+	    	echo "HMM already made."
+		fi
+	fi
+fi
+
+if [ $skip -eq 0 ] 
+then
+	/usr/bin/time -f "\t%U user,\t%S system,\t%E elapsed\t(%Mresident_max;%tresident_avrg,%Ktotal_avrg)k" nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
+else 
+    if [ $silent -eq 0 ]
+    then
+		echo "skip making HMM."
+	fi
+fi
+
+if [ -s query.uniprot20.hhm ] 
+then
+ 	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $passOpt
+else
+	fail=-1
+fi
+ 
+if [ -s query.uniprot20.pdb.full.hhr ]
+then
+ 	time nice parse_hhr_for_pssh2 -i  query.uniprot20.pdb.full.hhr -s  query.fasta -o query.pssh2
+elif [ $fail -eq 0 ]
+then
+ 	fail=-2	
+fi
+	
+runtime=$SECONDS
+
+### add output to the db
+s=`date +%s`
+md5=`cat query.fasta | fasta_to_md5`
+if [ -s query.pssh2 ] 
+then
+	DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.pssh2_pp columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,Alignment) set Identity_Score=@var_id_score*100 "
+ 	n=`cat query.pssh2 |wc -l`
+ 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$n , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$n , stamp=$s , runtime=$runtime "
+else
+	if [ $fail -eq 0 ]
+ 	then
+ 		fail=-3
+ 	fi
+ 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$fail , stamp=$s, runtime=$runtime " 		
+fi
+  
+### compress things / delete
+### TODO: discuss whether we really want to delete -- and discuss where this should happen
+if [ $debug -eq 0 ]
+then
+	if [ -s query.uniprot20.a3m ] 
+	then
+		rm query.uniprot20.a3m  
+	elif	
+	if [ -s query.fasta.hhblits.log ]
+	then
+		rm query.fasta.hhblits.log
+	elif
+	if [ -s query.uniprot20.hhm.hhblits.log ]
+	then
+		rm query.uniprot20.hhm.hhblits.log
+	elif
+	if [ -s query.uniprot20.hhr ]
+	then
+	 	gzip -f query.uniprot20.hhr
+	elif
+ 	gzip -f query.uniprot20.pdb.full.hhr
+# 	gzip query.pssh2
+fi
