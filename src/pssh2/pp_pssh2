@@ -13,6 +13,7 @@ DESCRIPTION
   wrapper around pssh2_seq: 
   operates silently (sets -s) 
   and writes to table pssh2_pp (sets tableName to pssh2_pp)
+  any options are passed on to pssh2_seq
   see pssh2_seq for more help
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
