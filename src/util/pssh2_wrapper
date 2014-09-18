@@ -11,39 +11,38 @@ usage()
 {
 cat << EOT
 NAME
-  pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
+  pssh2_wrapper - generate pssh2 type sequence-to-structrue alignments for many sequences given md5 sums
 SYNOPSIS
-  pp_pssh2 [-s] [-h] [-D] [-F] [-R]
+  pssh2_wrapper [-h] [-D] [-F] [-R] -m \"md5 input list\"
 DESCRIPTION
-  pp_pssh2 takes an input sequence (query.fasta) and generates sequence-to-structure alignments
-  for this sequence.
-  To this end, it starts the two subsequent HHblits runs:
-  1) build_hhblits_profile: search against uniprot20 database of HMMs and generate a
-      HHM output (HMM-profile)
-  2) scan_structures_hhblits: starting with the HHM output from step 1,
-      search against the pdb_full database of HMMs and generate a HHR ouput
-  Subsequently, it parses the HHR output from the second run using the "parse_hhr_for_pssh2"
-  perl script and generates a .pssh2 file.
-  Finally, this outputfile is read into the MySQL database pssh2_local,
-  using "DB.pssh2_local" to retrieve the access parameters.
-  The database pssh2_local_counts keeps track of the generation date of the data, the runtime
-  and the number of hits found for the sequence. Negative count number indicate error states:
-    -1 -> build_hhblits_profile, -2 -> scan_structures_hhblits, -3 -> parse_hhr_for_pssh2,
-    -99 -> sequence not found
-  Any input not mentioned in options is passed on to 1) and 2).
-  The databases to search with hhblits should be available under /var/tmp/rost_db/data/hhblits/
-  unless they are explicitly given in the input.
+  pssh2_wrapper takes md5 sums from the command line,
+  gets the associated sequence from the database,
+  and runs pssh2 for each of the sequences (which adds the alignment to the database).
+  See pssh2_seq -h for more details on pssh2_seq
 OPTIONS
   -h          The option -h displays help and exits.
-  -D          Debug option: do not remove or zip output files
+  important options passed on to pssh2_seq:
+  -D          Debug option: do not remove or zip output files 
   -F          Force remaking of HMM profile (run build_hhblits_profile) (is default behaviour)
   -R          Retain (DO NOT remake) the HMM profile (do not run build_hhblits_profile unless necessary)
-  -s          Operate silently (passed on to the child scripts.)
+  -s          Operate silently
   any other parameters are also passed on to the child scripts
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
 }
+
+passOpt=" " 
+while getopts:hm: opt
+do
+	case $opt in
+#	D) echo -e "debug mode: do not change output files \n"; debug=1;;
+#	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
+	h) usage; exit;;
+	m) md5list=$OPTARG;;
+	*) passOpt="$passOpt $opt";;
+	esac
+done
 
 
 
@@ -53,20 +52,19 @@ p_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
 DB="/var/tmp/rost_db/data";
 T="/tmp/pssh2"
 
-for i in $* ; do
-### get fasta and tmpdir block
-	md5=$i
+for md5 in $md5list ; do
 
-	mkdir -p $T/$i  2>/dev/null
-	chmod 777 $T  $T/$i 
-	if [ -s $T/$i/$i.fasta ] 
+### get fasta and tmpdir block
+	mkdir -p $T/$md5  2>/dev/null
+	chmod 777 $T  $T/$md5
+	if [ -s $T/$md5/$md5.fasta ] 
 	then
-		ls -l $T/$i/$i.fasta
+		ls -l $T/$md5/$md5.fasta
 	else
-		get_fasta_from_db $i
+		get_fasta_from_db $md5
 	fi
 
-	if [ -s $T/$i/$i.fasta ] 
+	if [ -s $T/$md5/$md5.fasta ] 
 	then
 		# get subdir names for cache structure
 		M=`echo $md5|cut -b1,2`
@@ -81,13 +79,13 @@ for i in $* ; do
 		mkdir -p $CC
 		if [ -d $CC ] ; then
 			cd $CC
-			pwd
-
-### now start the real work
-			ls -lahtr
-			cp  $T/$i/$i.fasta query.fasta
+#			pwd
+#			ls -lahtr
+			cp  $T/$md5/$md5.fasta query.fasta
 #	    	/usr/bin/pp_pssh2 
-			/mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2
+#			/mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2
+			/mnt/project/pssh/pssh2_project/src/pssh2/pssh2_seq $passOpt
+			pssh2_seq
 			cd $T
 		else 
 			echo "ERROR: was not able to work on cache for $CC please go fix"
@@ -96,8 +94,8 @@ for i in $* ; do
 	else
 	
 		s=`date +%s`
-		DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$i\" , count=-99 , stamp=$s , runtime=$SECONDS" 
-		echo "ERROR: could not find sequence: $T/$i/$i.fasta"
+		DB.pssh2_local "insert into pssh2_local.pssh2_counts set md5=\"$i\" , count=-99 , stamp=$s , runtime=$SECONDS" 
+		echo "ERROR: could not find sequence: $T/$md5/$md5.fasta"
 
 	fi
 
