@@ -9,7 +9,7 @@ u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
 ### amount of memory to use for big jobs
 bigMem=5
 ### parallel runs
-$n_cpu=1
+n_cpu=1
 
 reportedHits=" -B 10000 -Z 10000"
 hhblitsLog='hhblits.log'
