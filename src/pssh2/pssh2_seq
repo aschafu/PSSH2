@@ -6,9 +6,9 @@ usage()
 {
 cat << EOT
 NAME
-  pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
+  pssh2_seq - generate pssh2 type sequence-to-structrue alignments 
 SYNOPSIS
-  pp_pssh2 [-s] [-h] [-D] [-F] [-R]
+  pssh2_seq [-s] [-h] [-D] [-F] [-R]
 DESCRIPTION
   pp_pssh2 takes an input sequence (query.fasta) and generates sequence-to-structure alignments 
   for this sequence. 
