@@ -45,7 +45,7 @@ force=1
 debug=0
 silent=0
 passOpt=" " 
-while getopts :sDFRh opt
+while getopts :sDFRht: opt
 do
 	case $opt in
 #	D) echo -e "debug mode: do not change output files \n"; debug=1;;
@@ -54,6 +54,7 @@ do
 	D) debug=1;;
 	F) force=1;;
 	R) force=0;;
+	t) tableName=$OPTARG;;
 	h) usage; exit;;
 	s) silent=1; passOpt="$passOpt $opt";;
 	*) passOpt="$passOpt $opt";;
