@@ -1,7 +1,6 @@
 #!/bin/bash
 
-### uses a different cache dir root than predictprotein but the same tree/prefix structure
-### runs things that should be integrated into PP soon but withoout polluting the ppcache
+# create links from fake pp_cache to local pssh2 directory
 
 #$ -o /dev/null
 #$ -e /dev/null
