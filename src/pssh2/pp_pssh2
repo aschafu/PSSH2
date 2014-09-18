@@ -10,7 +10,10 @@ NAME
 SYNOPSIS
   pp_pssh2 [-h] [-D] [-F] [-R]
 DESCRIPTION
-  wrapper around pssh2_seq: sets silent to 1 and tableName to pssh2_pp
+  wrapper around pssh2_seq: 
+  operates silently (sets -s) 
+  and writes to table pssh2_pp (sets tableName to pssh2_pp)
+  see pssh2_seq for more help
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
