@@ -41,6 +41,8 @@ OPTIONS
   -a          output file name for multiple sequence alignment (a3m format)
   -r          output file name for hhblits result file (hhr format)
   -b          big job -> run with more memory ($bigMem) 
+  -u          /path/to/uniprot_20_files (without extensions)
+
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
