@@ -15,9 +15,8 @@ usage() {
 	echo "                           (default path: $pdb_full)" 1>&2
 	exit 1; }
 
-### uniprot20 location
-u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
-#u20='/usr/share/hhblits/uniprot20_current'
+### pdb_full location
+pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
 ### amount of memory to use for big jobs
 bigMem=5
 ### parallel runs
