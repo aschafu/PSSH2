@@ -104,7 +104,7 @@ for md5 in $md5list ; do
 	else
 	
 		s=`date +%s`
-		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$i\" , count=-99 , stamp=$s , runtime=$SECONDS" 
+		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
 		echo "ERROR: could not find sequence: $temp_work/$md5/$md5.fasta"
 
 	fi
