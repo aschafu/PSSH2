@@ -11,9 +11,9 @@ usage()
 {
 cat << EOT
 NAME
-  pssh2_wrapper - generate pssh2 type sequence-to-structrue alignments for many sequences given md5 sums
+  pssh2_multi_md5 - generate pssh2 type sequence-to-structrue alignments for many sequences given md5 sums
 SYNOPSIS
-  pssh2_wrapper [-h] [-D] [-F] [-R] -m \"md5 input list\"
+  pssh2_multi_md5 [-h] [-D] [-F] [-R] -m \"md5 input list\"
 DESCRIPTION
   pssh2_wrapper takes md5 sums from the command line,
   gets the associated sequence from the database,
