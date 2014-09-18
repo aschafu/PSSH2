@@ -78,7 +78,7 @@ do
    # path for uniprot_20 for hhblits
    u20=$OPTARG;
    ;;
-  p)
+  c)
    # number of cpus to run on
    p=$OPTARG;
    ;;
