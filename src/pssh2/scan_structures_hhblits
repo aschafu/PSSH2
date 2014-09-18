@@ -43,9 +43,7 @@ SYNOPSIS
 DESCRIPTION
   scan_structures_hhblits takes an input HMM profile (hhm from hhblits),
   searches against the pdb_full database of HMMs 
-  and generates a HHM output (HMM-profile) as well as 
-  an a3m file of the alignment and
-  a result file containing details of the search
+  and generates a result file containing details of the search (hhr)
   The databases to search with hhblits should be available under $u20
   unless they are explicitly given in the input.
 OPTIONS
