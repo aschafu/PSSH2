@@ -40,6 +40,7 @@ AUTHOR
 EOT
 }
 
+tableName='pssh2_active'
 force=1
 debug=0
 silent=0
