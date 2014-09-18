@@ -3,17 +3,57 @@
 # this script is used to sum up the parameters for a profile building hhblits in one place
 # it is used by pp_pssh2 (for PredictProtein) and by the generate_pssh2 perl script
 
+conf_file='/etc/pssh2.conf'
+
+### uniprot20 location
 u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
 #u20='/usr/share/hhblits/uniprot20_current'
-big=''
+### amount of memory to use for big jobs
+bigMem=5
+### parallel runs
+n_cpu=1
+
 reportedHits=" -B 10000 -Z 10000"
 hhblitsLog='hhblits.log'
 
-usage() { 
-	echo "Usage: $0 -f <fasta sequence file> -m <hmm file name> -a <a3m file name> -r <results file name>" 
-	echo "                           [-b (for much memory)] [-u /path/to/uniprot_20 (without extensions)] [-s (silent)]"
-	echo "                           (default path: $u20)" 1>&2
-	exit 1; }
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  build_hhblits_profile - generate a hhblits HHM (called hhm) by scanning against uniprot_20 
+SYNOPSIS
+  build_hhblits_profile <-f fasta_sequence_file> <-m hmm_file_name> <-a a3m_file_name> 
+          <-r results_file_name> [-b] [-u /path/to/uniprot_20] [-s] [-c number_of_cpus]
+DESCRIPTION
+  build_hhblits_profile takes an input sequence,
+  searches against the uniprot20 database of HMMs 
+  and generates a HHM output (HMM-profile) as well as 
+  an a3m file of the alignment and
+  a result file containing details of the search
+  The databases to search with hhblits should be available under $u20
+  unless they are explicitly given in the input.
+  Defaults are configured in $conf_file.
+OPTIONS
+  -h          The option -h displays help and exits.
+  -s          Operate silently 
+  -f          input sequence file (fasta format)
+  -m          output file name for HMM (hhm format)
+  -a          output file name for multiple sequence alignment (a3m format)
+  -r          output file name for hhblits result file (hhr format)
+  -b          big job -> run with more memory ($bigMem) 
+  -u          /path/to/uniprot_20_files (without extensions)
+  -c          number of cpus hhblits should run in parallel (default $n_cpu)
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
 
 
 while getopts "f:m:a:r:bu:hs" option;
@@ -40,9 +80,13 @@ do
    # path for uniprot_20 for hhblits
    u20=$OPTARG;
    ;;
+  c)
+   # number of cpus to run on
+   n_cpu=$OPTARG;
+   ;;
   b)
-	echo 'received -b, setting option -maxmem 5'
-  	b='-maxmem 5 '
+	echo 'received -b, setting option -maxmem $bigMem'
+  	b='-maxmem $bigMem '
    ;;
   :)
    echo "option -$OPTARG needs an argument"
@@ -67,7 +111,7 @@ then
 fi
 
 #echo "running hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits"
-hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits >> $hhblitsLog
+hhblits -cpu $n_cpu -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits >> $hhblitsLog
 
 
 

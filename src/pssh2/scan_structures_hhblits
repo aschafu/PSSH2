@@ -1,19 +1,58 @@
 #!/bin/bash
 
 # this script is used to sum up the parameters for a structure database (pdb_full) scanning hhblits in one place
-# it is used by the PredictProtein make file and by the generate_pssh2 perl script
+# it is used by the PredictProtein make file, the generate_pssh2 perl script and the pssh2_multi_md5 wrapper
 
+conf_file='/etc/pssh2.conf'
+
+### pdb_full location
 pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
 #pdb_full='/usr/share/hhblits/pdb_full'
+### amount of memory to use for big jobs
+bigMem=5
+### parallel runs
+$n_cpu=1
+
 big=''
 reportedHits=" -B 10000 -Z 10000"
 hhblitsLog='hhblits.log'
 
-usage() { 
-	echo "Usage: $0 -m <hmm input file name> -r <results file name>" 
-	echo "                           [-b (for much memory)] [-p /path/to/pdb_full (without extensions)]"
-	echo "                           (default path: $pdb_full)" 1>&2
-	exit 1; }
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  scan_structures_hhblits - scan a HHM against pdb_full to find matching structures  
+SYNOPSIS
+  scan_structures_hhblits <-m hmm_input_file_name> <-r results_file_name> 
+  [-b] [-p /path/to/c] [-s]  [-c number_of_cpus]
+DESCRIPTION
+  scan_structures_hhblits takes an input HMM profile (hhm from hhblits),
+  searches against the pdb_full database of HMMs 
+  and generates a result file containing details of the search (hhr)
+  The databases to search with hhblits should be available under $pdb_full
+  unless they are explicitly given in the input.
+  Defaults are configured in $conf_file.
+OPTIONS
+  -h          The option -h displays help and exits.
+  -s          Operate silently 
+  -f          input sequence file (fasta format)
+  -m          input file name for HMM (hhm format)
+  -r          output file name for hhblits result file (hhr format)
+  -b          big job -> run with more memory ($bigMem) 
+  -p          /path/to/pdb_full_files (without extensions)
+  -c          number of cpus hhblits should run in parallel (default $n_cpu)
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
+
 
 
 while getopts "m:r:p:bu:hs" option;
@@ -32,9 +71,13 @@ do
    # path for pdb_full for hhblits
    pdb_full=$OPTARG;
    ;;
+  c)
+   # number of cpus to run on
+   n_cpu=$OPTARG;
+   ;;
   b)
-	echo 'received -b, setting option -maxmem 5'
-  	b='-maxmem 5 '
+	echo 'received -b, setting option -maxmem $bigMem'
+  	b='-maxmem $bigMem '
    ;;
   :)
    echo "option -$OPTARG needs an argument"
