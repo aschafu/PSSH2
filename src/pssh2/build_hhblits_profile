@@ -75,8 +75,8 @@ do
    u20=$OPTARG;
    ;;
   b)
-	echo 'received -b, setting option -maxmem 5'
-  	b='-maxmem 5 '
+	echo 'received -b, setting option -maxmem $bigMem'
+  	b='-maxmem $bigMem '
    ;;
   :)
    echo "option -$OPTARG needs an argument"
