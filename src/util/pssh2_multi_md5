@@ -37,9 +37,9 @@ temp_work="/tmp/pssh2"
 status_table="pssh2_counts"
 
 # get configurable options, e.g. local file paths
-if [ -s pssh2.conf ]
+if [ -s $conf_file ]
 then
-	source pssh2.conf
+	source $conf_file
 fi
 
 debug=0
