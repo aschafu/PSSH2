@@ -13,7 +13,7 @@ cat << EOT
 NAME
   pssh2_multi_md5 - generate pssh2 type sequence-to-structrue alignments for many sequences given md5 sums
 SYNOPSIS
-  pssh2_multi_md5 [-h] [-m \"md5 input list\"]
+  pssh2_multi_md5 [-h] [-D] [-m \"md5 input list\"]
 DESCRIPTION
   pssh2_multi_md5 takes md5 sums from the command line (behind -m),
   gets the associated sequences from the database,
@@ -21,11 +21,7 @@ DESCRIPTION
   See pssh2_seq -h for more details on pssh2_seq
 OPTIONS
   -h          The option -h displays help and exits.
-  important options passed on to pssh2_seq:
-  -D          Debug option: do not remove or zip output files 
-  -F          Force remaking of HMM profile (run build_hhblits_profile) (is default behaviour)
-  -R          Retain (DO NOT remake) the HMM profile (do not run build_hhblits_profile unless necessary)
-  -s          Operate silently
+  -D          Debug option: do not remove or zip output files (passed on to pssh2_seq)
   any other parameters are also passed on to the child scripts
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
