@@ -36,13 +36,13 @@ usage()
 {
 cat << EOT
 NAME
-  build_hhblits_profile - generate a hhblits HHM (called hhm) by scanning against uniprot_20 
+  scan_structures_hhblits - scan a HHM against pdb_full to find matching structures  
 SYNOPSIS
-  pssh2_seq <-f fasta sequence file> <-m hmm file name> <-a a3m file name> <-r results file name> 
-  [-b] [-u /path/to/uniprot_20] [-s] [-p number_of_cpus]
+  scan_structures_hhblits <-m hmm_input_file_name> <-r results_file_name> 
+  [-b] [-p /path/to/pdb_full] [-s]
 DESCRIPTION
-  build_hhblits_profile takes an input sequence,
-  searches against the uniprot20 database of HMMs 
+  scan_structures_hhblits takes an input HMM profile (hhm from hhblits),
+  searches against the pdb_full database of HMMs 
   and generates a HHM output (HMM-profile) as well as 
   an a3m file of the alignment and
   a result file containing details of the search
