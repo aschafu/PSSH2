@@ -15,6 +15,57 @@ usage() {
 	echo "                           (default path: $pdb_full)" 1>&2
 	exit 1; }
 
+### uniprot20 location
+u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
+#u20='/usr/share/hhblits/uniprot20_current'
+### amount of memory to use for big jobs
+bigMem=5
+### parallel runs
+$n_cpu=1
+
+reportedHits=" -B 10000 -Z 10000"
+hhblitsLog='hhblits.log'
+
+# get configurable options, e.g. local file paths
+if [ -s pssh2.cfg ]
+then
+	source pssh2.cfg
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  build_hhblits_profile - generate a hhblits HHM (called hhm) by scanning against uniprot_20 
+SYNOPSIS
+  pssh2_seq <-f fasta sequence file> <-m hmm file name> <-a a3m file name> <-r results file name> 
+  [-b] [-u /path/to/uniprot_20] [-s] [-p number_of_cpus]
+DESCRIPTION
+  build_hhblits_profile takes an input sequence,
+  searches against the uniprot20 database of HMMs 
+  and generates a HHM output (HMM-profile) as well as 
+  an a3m file of the alignment and
+  a result file containing details of the search
+  The databases to search with hhblits should be available under $u20
+  unless they are explicitly given in the input.
+OPTIONS
+  -h          The option -h displays help and exits.
+  -s          Operate silently 
+  -f          input sequence file (fasta format)
+  -m          output file name for HMM (hhm format)
+  -a          output file name for multiple sequence alignment (a3m format)
+  -r          output file name for hhblits result file (hhr format)
+  -b          big job -> run with more memory ($bigMem) 
+  -u          /path/to/uniprot_20_files (without extensions)
+  -s          operate silently
+  -p          number of cpus hhblits should run in parallel (default $n_cpu)
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
+
+
 
 while getopts "m:r:p:bu:hs" option;
 do
