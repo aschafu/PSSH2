@@ -32,6 +32,8 @@ AUTHOR
 EOT
 }
 
+source pssh2.cfg
+
 debug=0
 passOpt=" " 
 while getopts:Dhm: opt
