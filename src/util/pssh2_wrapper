@@ -32,6 +32,7 @@ AUTHOR
 EOT
 }
 
+# get configurable options, e.g. local file paths
 source pssh2.cfg
 
 debug=0
