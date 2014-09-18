@@ -17,13 +17,15 @@ usage()
 {
 cat << EOT
 NAME
-  get_fasta_for_md5 - generate pssh2 type sequence-to-structrue alignments 
+  get_fasta_for_md5 - create a md5.fasta file for each given md5 hash 
 SYNOPSIS
-  get_fasta_for_md5 md5_hash
+  get_fasta_for_md5 md5_hash1 [ md5_hash2 ... ] 
 DESCRIPTION
-  get_fasta_for_md5 takes an input sequence md5 hash and writes out a fasta file. 
-  The information comes from the protein_sequence table in the aquaria mysql database.
-  The credentials for querying the database are stored in DB.pssh2_local script.
+  get_fasta_for_md5 takes one or more input sequence md5 hash(es) and writes out 
+  one or more fasta files in dedicated subdirectories $temp_work/md5/. 
+  The sequence information comes from the protein_sequence table in the aquaria mysql 
+  database.
+  The credentials for querying the database are stored in DB.aquaria_local script.
   The input scripts for the aquaria database is found in the Aquaria project.
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
@@ -31,39 +33,10 @@ EOT
 }
 
 
-for i in $* ; do
-	mkdir -p $temp_work/$i  2>/dev/null
-      l=`echo -ne "$i"|wc -c`
-    ### get it from the DB
-      [ 32 -eq $l ] && seq=`/mnt/home/roos/bin/dbn "select seq from big_md5_ppc_seq where md5=\"$i\" " `
-      [ 40 -eq $l ] && seq=`/mnt/home/roos/bin/dbn "select seq from big_md5_ppc_seq where ppc=\"$i\" " `
-   ### if that fails try nfs:mamut/md5/fasta/$i
-      [ "$seq" = ""  -a -s /mnt/project/mamut/md5/fasta/$i ] && (
-	cat /mnt/project/mamut/md5/fasta/$i |tee $temp_work/$i/$i.fasta | ~/m/bin/fasta_to_md5_ppc_seq >/tmp/$i.md5_ppc_seq
-       ### add the damn thing to the database
-	/mnt/home/roos/bin/db.fill_big.md5_ppc_seq.pl /tmp/$i.md5_ppc_seq
-	### now we got it
-	echo "$temp_work/$i/$i.fasta"
-      )
-      ## try getting the seq from aquaria:
-      [ "$seq" = "" ]  && (
-	seq=`/mnt/home/roos/bin/DB.idmapper "select seq from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^seq$"`
-	[ -n "$seq" ] && (
-	## write fasta file
-	echo -e ">$i\n$seq"|tee $temp_work/$i/$i.fasta |~/m/bin/fasta_to_md5_ppc_seq >/tmp/$i.md5_ppc_seq
-	## ad to seq db
-	/mnt/home/roos/bin/db.fill_big.md5_ppc_seq.pl /tmp/$i.md5_ppc_seq
-	echo "$temp_work/$i/$i.fasta"
-	)
-      )
-  ### here is a bulletproof method missing to get the sequence ... maybe from PPC?
-
-  [ -n "$seq" ] && (
-  ### make sure its uppercase
-	(echo ">$i" ; echo "$seq"|tr -C -d "[A-Z]";echo "" )> $temp_work/$i/$i.fasta
-	echo "$temp_work/$i/$i.fasta"
-  )
-	#(echo ">$i" ;	/mnt/home/roos/bin/db "select seq from big_md5_ppc_seq where md5=\"$i\""|grep -v "^seq$" )> $T/$i/$i.fasta
-	#cp $M/md5/fasta/$i $T/$i/$i.fasta &&
-	#echo "$T/$i/$i.fasta"
+for md5 in $* 
+do
+	mkdir -p $temp_work/$md5  2>/dev/null
+	seq = `DB.aquaria_local "select Sequence from protein_sequence where MD5_hash =\"$md5\" " `
+	echo -e ">$md5\n$seq" > $temp_work/$md5/$md5.fasta 
+	echo "$temp_work/$md5/$md5.fasta"
 done
