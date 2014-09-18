@@ -40,7 +40,21 @@ AUTHOR
 EOT
 }
 
+### base path to cache
+pssh2_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
+### work directory
+temp_work="/tmp/pssh2"
+### table to store pssh2 calculation status in
+status_table="pssh2_counts"
+### table to store pssh2 calculation results in
 tableName='pssh2_active'
+
+# get configurable options, e.g. local file paths
+if [ -s pssh2.cf ]
+then
+	source pssh2.cfg
+fi
+
 force=1
 debug=0
 silent=0
