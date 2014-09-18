@@ -16,9 +16,9 @@ reportedHits=" -B 10000 -Z 10000"
 hhblitsLog='hhblits.log'
 
 # get configurable options, e.g. local file paths
-if [ -s pssh2.cfg ]
+if [ -s $conf_file ]
 then
-	source pssh2.cfg
+	source $conf_file
 fi
 
 usage()
