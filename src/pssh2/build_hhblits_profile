@@ -27,7 +27,7 @@ NAME
   build_hhblits_profile - generate a hhblits HHM (called hhm) by scanning against uniprot_20 
 SYNOPSIS
   build_hhblits_profile <-f fasta_sequence_file> <-m hmm_file_name> <-a a3m_file_name> 
-          <-r results_file_name> [-b] [-u /path/to/uniprot_20] [-s] [-p number_of_cpus]
+          <-r results_file_name> [-b] [-u /path/to/uniprot_20] [-s] [-c number_of_cpus]
 DESCRIPTION
   build_hhblits_profile takes an input sequence,
   searches against the uniprot20 database of HMMs 
@@ -46,7 +46,7 @@ OPTIONS
   -b          big job -> run with more memory ($bigMem) 
   -u          /path/to/uniprot_20_files (without extensions)
   -s          operate silently
-  -p          number of cpus hhblits should run in parallel (default $n_cpu)
+  -c          number of cpus hhblits should run in parallel (default $n_cpu)
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
