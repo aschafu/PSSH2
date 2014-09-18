@@ -27,8 +27,7 @@ DESCRIPTION
   unless they are explicitly given in the input.
 OPTIONS
   -h          The option -h displays help and exits.
-  -s          Operate silently (passed on to the child scripts.)
-  any other parameters are also passed on to the child scripts
+  -s          Operate silently 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
