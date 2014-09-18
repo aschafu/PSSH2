@@ -47,7 +47,7 @@ temp_work="/tmp/pssh2"
 ### table to store pssh2 calculation status in
 status_table="pssh2_counts"
 ### table to store pssh2 calculation results in
-table_Name='pssh2_active'
+table_name='pssh2_active'
 
 # get configurable options, e.g. local file paths
 if [ -s pssh2.cf ]
