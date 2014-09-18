@@ -39,24 +39,24 @@ NAME
   scan_structures_hhblits - scan a HHM against pdb_full to find matching structures  
 SYNOPSIS
   scan_structures_hhblits <-m hmm_input_file_name> <-r results_file_name> 
-  [-b] [-p /path/to/pdb_full] [-s]
+  [-b] [-p /path/to/pdb_full] [-s]  [-c number_of_cpus]
 DESCRIPTION
   scan_structures_hhblits takes an input HMM profile (hhm from hhblits),
   searches against the pdb_full database of HMMs 
   and generates a result file containing details of the search (hhr)
   The databases to search with hhblits should be available under $pdb_full
   unless they are explicitly given in the input.
+  Defaults are configured in $conf_file.
 OPTIONS
   -h          The option -h displays help and exits.
   -s          Operate silently 
   -f          input sequence file (fasta format)
-  -m          output file name for HMM (hhm format)
+  -m          input file name for HMM (hhm format)
   -a          output file name for multiple sequence alignment (a3m format)
   -r          output file name for hhblits result file (hhr format)
   -b          big job -> run with more memory ($bigMem) 
   -u          /path/to/uniprot_20_files (without extensions)
-  -s          operate silently
-  -p          number of cpus hhblits should run in parallel (default $n_cpu)
+  -c          number of cpus hhblits should run in parallel (default $n_cpu)
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
