@@ -8,9 +8,9 @@ cat << EOT
 NAME
   pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
 SYNOPSIS
-  pp_pssh2 [-s] [-h] [-D] [-F] [-R]
+  pp_pssh2 [-h] [-D] [-F] [-R]
 DESCRIPTION
-  wrapper around pssh2_seq
+  wrapper around pssh2_seq: sets silent to 1 and tableName to pssh2_pp
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -18,7 +18,7 @@ EOT
 
 force=1
 debug=0
-silent=0
+silent=1
 passOpt=" " 
 while getopts :sDFRh opt
 do
