@@ -50,6 +50,7 @@ OPTIONS
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
+exit 1
 }
 
 
