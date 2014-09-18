@@ -15,13 +15,14 @@ cat << EOT
 NAME
   build_hhblits_profile - generate a hhblits HHM (called hhm) by scanning against uniprot_20 
 SYNOPSIS
-  pssh2_seq [-s] [-h] [-D] [-F] [-R] [-t tableName]
+  pssh2_seq <-f fasta sequence file> <-m hmm file name> <-a a3m file name> <-r results file name> 
+  [-b] [-u /path/to/uniprot_20] [-s (silent)]
 DESCRIPTION
-  pssh2_seq takes an input sequence (query.fasta) and generates sequence-to-structure alignments 
-  for this sequence. 
-  To this end, it starts the two subsequent HHblits runs:
-  1) build_hhblits_profile: search against uniprot20 database of HMMs and generate a 
-      HHM output (HMM-profile)
+  build_hhblits_profile takes an input sequence,
+  searches against the uniprot20 database of HMMs 
+  and generates a HHM output (HMM-profile) as well as 
+  an a3m file of the alignment and
+  a result file containing details of the search
   2) scan_structures_hhblits: starting with the HHM output from step 1,
       search against the pdb_full database of HMMs and generate a HHR ouput
   Subsequently, it parses the HHR output from the second run using the "parse_hhr_for_pssh2" 
