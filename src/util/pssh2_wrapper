@@ -32,8 +32,16 @@ AUTHOR
 EOT
 }
 
+### base path to cache
+pssh2_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
+temp_DB="/var/tmp/rost_db/data";
+temp_work="/tmp/pssh2"
+
 # get configurable options, e.g. local file paths
-source pssh2.cfg
+if [ -s pssh2.cf ]
+then
+	source pssh2.cfg
+fi
 
 debug=0
 passOpt=" " 
@@ -53,11 +61,6 @@ then
 fi
 
 
-### base path to cache
-p_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
-
-DB="/var/tmp/rost_db/data";
-T="/tmp/pssh2"
 
 for md5 in $md5list ; do
 
