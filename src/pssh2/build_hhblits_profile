@@ -80,7 +80,7 @@ do
    ;;
   c)
    # number of cpus to run on
-   p=$OPTARG;
+   n_cpu=$OPTARG;
    ;;
   b)
 	echo 'received -b, setting option -maxmem $bigMem'
