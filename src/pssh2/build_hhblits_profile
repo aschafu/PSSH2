@@ -34,6 +34,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -s          Operate silently 
+  -f          input sequence file (fasta format)
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
