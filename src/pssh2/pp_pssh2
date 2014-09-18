@@ -14,7 +14,7 @@ DESCRIPTION
   operates silently (sets -s) 
   and writes to table pssh2_pp (sets tableName to pssh2_pp)
   any options are passed on to pssh2_seq
-  see pssh2_seq for more help
+  see pssh2_seq for more help on options
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -24,7 +24,7 @@ force=1
 debug=0
 silent=1
 passOpt=" " 
-while getopts :sDFRh opt
+while getopts :h opt
 do
 	case $opt in
 #	D) echo -e "debug mode: do not change output files \n"; debug=1;;
