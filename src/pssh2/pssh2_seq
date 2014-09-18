@@ -16,9 +16,9 @@ table_name="pssh2_active"
 local_data="/var/tmp/rost_db/data/"
 
 # get configurable options, e.g. local file paths
-if [ -s pssh2.conf ]
+if [ -s $conf_file ]
 then
-	source pssh2.conf
+	source $conf_file
 fi
 
 usage()
