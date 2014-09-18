@@ -16,7 +16,7 @@ SYNOPSIS
   pssh2_multi_md5 [-h] [-D] [-F] [-R] -m \"md5 input list\"
 DESCRIPTION
   pssh2_multi_md5 takes md5 sums from the command line (behind -m),
-  gets the associated sequence from the database,
+  gets the associated sequences from the database,
   and runs pssh2 for each of the sequences (which adds the alignment to the database).
   See pssh2_seq -h for more details on pssh2_seq
 OPTIONS
