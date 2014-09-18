@@ -24,6 +24,7 @@ DESCRIPTION
   get_fasta_for_md5 takes an input sequence md5 hash and writes out a fasta file. 
   The information comes from the protein_sequence table in the aquaria mysql database.
   The credentials for querying the database are stored in DB.pssh2_local script.
+  The input scripts for the aquaria database is found in the Aquaria project.
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
