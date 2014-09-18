@@ -77,6 +77,10 @@ do
    # path for uniprot_20 for hhblits
    u20=$OPTARG;
    ;;
+  p)
+   # path for uniprot_20 for hhblits
+   p=$OPTARG;
+   ;;
   b)
 	echo 'received -b, setting option -maxmem $bigMem'
   	b='-maxmem $bigMem '
