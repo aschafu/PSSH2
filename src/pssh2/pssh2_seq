@@ -2,6 +2,23 @@
 ## run the necessary things for pssh2 predictions
 ### run and parse hhblits
 
+conf_file='/etc/pssh2.conf'
+
+### base path to cache
+pssh2_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
+### work directory
+temp_work="/tmp/pssh2"
+### table to store pssh2 calculation status in
+status_table="pssh2_counts"
+### table to store pssh2 calculation results in
+table_name="pssh2_active"
+
+# get configurable options, e.g. local file paths
+if [ -s pssh2.conf ]
+then
+	source pssh2.conf
+fi
+
 usage()
 {
 cat << EOT
@@ -26,7 +43,7 @@ DESCRIPTION
     -1 -> build_hhblits_profile, -2 -> scan_structures_hhblits, -3 -> parse_hhr_for_pssh2, 
     -99 -> sequence not found
   Any input not mentioned in options is passed on to 1) and 2). 
-  The databases to search with hhblits should be available under /var/tmp/rost_db/data/hhblits/
+  The databases to search with hhblits should be available under $local_data
   unless they are explicitly given in the input.
 OPTIONS
   -h          The option -h displays help and exits.
@@ -39,21 +56,6 @@ AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
 }
-
-### base path to cache
-pssh2_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
-### work directory
-temp_work="/tmp/pssh2"
-### table to store pssh2 calculation status in
-status_table="pssh2_counts"
-### table to store pssh2 calculation results in
-table_name="pssh2_active"
-
-# get configurable options, e.g. local file paths
-if [ -s pssh2.conf ]
-then
-	source pssh2.conf
-fi
 
 force=1
 debug=0
