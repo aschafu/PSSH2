@@ -38,6 +38,7 @@ DESCRIPTION
   a result file containing details of the search
   The databases to search with hhblits should be available under $u20
   unless they are explicitly given in the input.
+  Defaults are configured in $conf_file.
 OPTIONS
   -h          The option -h displays help and exits.
   -s          Operate silently 
