@@ -68,7 +68,7 @@ do
 	D) debug=1;;
 	F) force=1;;
 	R) force=0;;
-	t) tableName=$OPTARG;;
+	t) table_name=$OPTARG;;
 	h) usage; exit;;
 	s) silent=1; passOpt="$passOpt $opt";;
 	*) passOpt="$passOpt $opt";;
