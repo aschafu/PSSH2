@@ -50,7 +50,7 @@ status_table="pssh2_counts"
 table_name="pssh2_active"
 
 # get configurable options, e.g. local file paths
-if [ -s pssh2.cf ]
+if [ -s pssh2.cfg ]
 then
 	source pssh2.cfg
 fi
