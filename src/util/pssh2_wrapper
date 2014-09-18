@@ -61,7 +61,7 @@ for md5 in $md5list ; do
 	then
 		ls -l $T/$md5/$md5.fasta
 	else
-		get_fasta_from_db $md5
+		get_fasta_for_md5 $md5
 	fi
 
 	if [ -s $T/$md5/$md5.fasta ] 
