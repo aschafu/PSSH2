@@ -38,7 +38,7 @@ do
 	case $opt in
 #	D) echo -e "debug mode: do not change output files \n"; debug=1;;
 #	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
-	D) debug=1;  passOpt="$passOpt $opt";; 
+	D) debug=1; passOpt="$passOpt $opt";; 
 	h) usage; exit;;
 	m) md5list=$OPTARG;;
 	*) passOpt="$passOpt $opt";;
