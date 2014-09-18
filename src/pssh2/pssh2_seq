@@ -47,8 +47,8 @@ DESCRIPTION
     -99 -> sequence not found
   Any input not mentioned in options is passed on to 1) and 2). 
   The databases to search with hhblits should be available under $local_data
-  unless they are explicitly given in the input. -- See $conf_file for more configuration 
-  details.
+  unless they are explicitly given in the input.
+  Defaults are configured in $conf_file.
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
