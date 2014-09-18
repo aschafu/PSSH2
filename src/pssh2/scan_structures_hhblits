@@ -52,7 +52,6 @@ OPTIONS
   -s          Operate silently 
   -f          input sequence file (fasta format)
   -m          input file name for HMM (hhm format)
-  -a          output file name for multiple sequence alignment (a3m format)
   -r          output file name for hhblits result file (hhr format)
   -b          big job -> run with more memory ($bigMem) 
   -u          /path/to/uniprot_20_files (without extensions)
@@ -82,8 +81,8 @@ do
    pdb_full=$OPTARG;
    ;;
   b)
-	echo 'received -b, setting option -maxmem 5'
-  	b='-maxmem 5 '
+	echo 'received -b, setting option -maxmem $bigMem'
+  	b='-maxmem $bigMem '
    ;;
   :)
    echo "option -$OPTARG needs an argument"
