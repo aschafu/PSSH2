@@ -29,31 +29,33 @@ NAME
 SYNOPSIS
   pssh2_seq [-s] [-h] [-D] [-F] [-R] [-t tableName]
 DESCRIPTION
-  pssh2_seq takes an input sequence (query.fasta) and generates sequence-to-structure alignments 
-  for this sequence. 
+  pssh2_seq takes an input sequence (query.fasta) and generates sequence-to-structure 
+  alignments for this sequence. 
   To this end, it starts the two subsequent HHblits runs:
   1) build_hhblits_profile: search against uniprot20 database of HMMs and generate a 
       HHM output (HMM-profile)
   2) scan_structures_hhblits: starting with the HHM output from step 1,
       search against the pdb_full database of HMMs and generate a HHR ouput
-  Subsequently, it parses the HHR output from the second run using the "parse_hhr_for_pssh2" 
-  perl script and generates a .pssh2 file.
+  Subsequently, it parses the HHR output from the second run using the 
+  "parse_hhr_for_pssh2" perl script and generates a .pssh2 file.
   Finally, this outputfile is read into the MySQL database pssh2_local, 
   using "DB.pssh2_local" to retrieve the access parameters.
-  The database pssh2_local_counts keeps track of the generation date of the data, the runtime
-  and the number of hits found for the sequence. Negative count number indicate error states:
+  The database pssh2_local_counts keeps track of the generation date of the data, the 
+  runtime and the number of hits found for the sequence. Negative count number indicate 
+  error states:
     -1 -> build_hhblits_profile, -2 -> scan_structures_hhblits, -3 -> parse_hhr_for_pssh2, 
     -99 -> sequence not found
   Any input not mentioned in options is passed on to 1) and 2). 
   The databases to search with hhblits should be available under $local_data
-  unless they are explicitly given in the input. -- See $conf_file for more configuration details.
+  unless they are explicitly given in the input. -- See $conf_file for more configuration 
+  details.
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
-  -F          Force remaking of HMM profile (run build_hhblits_profile) (is default behaviour)
-  -R          Retain (DO NOT remake) the HMM profile (do not run build_hhblits_profile unless necessary)
+  -F          Force remaking of HMM profile (run build_hhblits_profile - default behaviour)
+  -R          Retain (DO NOT remake) the HMM profile (do not make profile unless necessary)
   -s          Operate silently (passed on to the child scripts.)
-  any other parameters are also passed on to the child scripts
+  Any other parameters are also passed on to the child scripts
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
