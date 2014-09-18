@@ -20,8 +20,6 @@ AUTHOR
 EOT
 }
 
-force=1
-debug=0
 silent=1
 passOpt=" " 
 while getopts :h opt
@@ -30,11 +28,7 @@ do
 #	D) echo -e "debug mode: do not change output files \n"; debug=1;;
 #	F) echo -e "force mode: remake the HMM profile  \n"; force=1;;
 #	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
-	D) debug=1;;
-	F) force=1;;
-	R) force=0;;
-	h) usage; exit;;
-	s) silent=1; passOpt="$passOpt $opt";;
+	h) usage; pssh2_seq -h; exit;;
 	*) passOpt="$passOpt $opt";;
 	esac
 done
