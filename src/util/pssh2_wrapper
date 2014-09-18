@@ -84,7 +84,7 @@ for md5 in $md5list ; do
 		echo $md5 $M $M2
 
 ### full path to cachedir
-		CC="$pssh2_cache$M/$M2/"
+		CC="$pssh2_cache$M/$M2/$md5"
 		echo $CC
 
 ### create cachedir if not existent
