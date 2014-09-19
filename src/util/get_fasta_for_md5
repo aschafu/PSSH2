@@ -19,14 +19,18 @@ cat << EOT
 NAME
   get_fasta_for_md5 - create a md5.fasta file for each given md5 hash 
 SYNOPSIS
-  get_fasta_for_md5 md5_hash1 [ md5_hash2 ... ] 
+  get_fasta_for_md5 [-h] md5_hash1 [ md5_hash2 ... md5_hashN ] 
 DESCRIPTION
   get_fasta_for_md5 takes one or more input sequence md5 hash(es) and writes out 
   one or more fasta files in dedicated subdirectories $temp_work/md5/. 
+  The file names with full path are returned on STDOUT.
   The sequence information comes from the protein_sequence table in the aquaria mysql 
   database.
   The credentials for querying the database are stored in DB.aquaria_local script.
   The input scripts for the aquaria database is found in the Aquaria project.
+  Defaults are configured in $conf_file.
+OPTIONS
+  -h          The option -h displays help and exits.
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT

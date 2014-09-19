@@ -1,0 +1,4 @@
+#!/bin/bash
+##db interface (stores the access parameters for the pssh2_local database)
+
+echo "$* ;"|mysql -u update_d --password=Aquaria4ever! -haquaria-mysql -Dpssh2_local --local-infile=1 
