@@ -25,7 +25,7 @@ do
 			# check we have the right kind of data
 			if [ -s $hmmfile ]
 			then
-				# since query.fast is not there, get the sequence out of the hmm
+				# since query.fasta is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 				hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 				
