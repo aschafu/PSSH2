@@ -33,7 +33,7 @@ do
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 				hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 
-				if [ $seq_begin -gt 0]
+				if [ $seq_begin -gt 0 ]
 				then
 					echo 'WARNING: no >query in $hmmfile'
 				else
@@ -44,7 +44,7 @@ do
 				md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
 			fi
 			
-			if [ $md5 -gt 0]
+			if [ $md5 -gt 0 ]
 			then
 				### build prefixes for md5 (hhblits/pssh cache)
 				M=`echo $md5|cut -b1,2`
