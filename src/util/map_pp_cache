@@ -23,6 +23,7 @@ do
 			# check we have the right kind of data
 			if [ -s $hmmfile ]
 			then
+				seq_begin = grep -n '^>query' $hmmfile | cut -d ':' -f 1
 				seqfile=$ppp/query.fasta
 				# get the md5 sum of the sequence
 				md5=`cat $seqfile | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5`
