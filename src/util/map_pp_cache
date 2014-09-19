@@ -53,11 +53,13 @@ do
 						mv $ppp/*uniprot20* $HH/
 						# move output file
 						mv $ppp/query.pssh2 $HH/
-#						ln -s $HH/* $ppp
+						ln -s $HH/* $ppp
+
+#  for testing:
 #						cp $ppp/query.fasta $HH/
 #						cp $ppp/*uniprot20* $HH/
 #						cp $ppp/query.pssh2 $HH/
-						echo "ln -s $HH/* $ppp/"
+#						echo "ln -s $HH/* $ppp/"
 					else 
 						echo "ERROR: was not able to write to $HH "
 					fi
