@@ -33,7 +33,7 @@ do
 				M=`echo $md5|cut -b1,2`
 				M2=`echo $md5|cut -b3,4`
 				# echo $pp $md5 $M $M2
-				HH="$h_cache$M/$M2/md5"
+				HH="$h_cache$M/$M2/$md5"
 
 				if [ -d $HH ]
 				then
