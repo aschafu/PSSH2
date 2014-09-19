@@ -23,8 +23,8 @@ do
 			# check we have the right kind of data
 			if [ -s $hmmfile ]
 			then
-				seq_begin = `grep -n '^>query' $hmmfile | cut -d ':' -f 1`
-				hmm_begin = `grep -n '^#' $hmmfile | cut -d ':' -f 1`
+				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
+				hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 				
 				# get the md5 sum of the sequence
 				md5=`head -$hmm_begin $hmmfile | tail -n $seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
