@@ -9,14 +9,8 @@ set -x
 
 ### base path to all caches
 #### ex /mnt/project/snapcache/andrea_pssh/ppcache22/bd/38/
-fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
+fake_cache="/mnt/project/snapcache/andrea_pssh/test_caches/"
 h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
-
-# H="/mnt/project/pssh/pssh2_project/data/uniprot_derived/hhblits_hmms/"
-
-M_path="/mnt/project/mamut";
-#DB="/var/tmp/rost_db/data";
-T="/tmp/mamut"
 
 # crawl over fake_cache to get out pssh results
 for $p in $fake_cache/??/
@@ -28,36 +22,14 @@ do
 		if [ -s $seqfile ] && [ -s $pp/query.uniprot20.hhm ]
 		then
 			# get the md5 sum of the sequence
-			md5=`cat $seqfile | fasta_to_md5`
+			md5=`cat $seqfile | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5`
 
-for md5 in $*  
-do
-### get fasta and tmpdir block
-	mkdir -p $T/$md5  2>/dev/null
-	chmod 777 $T  $T/$i 
-	[ -s $T/$md5/$md5.fasta ] ||    $M_path/bin/get_fasta_4db $md5
+			### build prefixes for md5 (hhblits/pssh cache)
+			M=`echo $md5|cut -b1,2`
+			M2=`echo $md5|cut -b3,4`
+			# echo $pp $md5 $M $M2
+			HH="$h_cache$M/$M2/md5"
 
-	if [ -s $T/$i/$md5.fasta ] 
-	then
-    
-### get ppc from db	
-		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
-
-### build prefixes for ppc/extracache
-		P=`echo $ppc|cut -b1,2`
-		P2=`echo $ppc|cut -b3,4`
-### build prefixes for md5 (hhblits/pssh cache)
-		M=`echo $md5|cut -b1,2`
-		M2=`echo $md5|cut -b3,4`
-#		echo $ppc $P $P2 $md5 $M $M2
-
-### full path to cachedirs
-		PP="$fake_cache$P/$P2/$ppc"
-		HH="$h_cache$M/$M2/md5"
-#		echo $PP $HH
-
-		if [ -d $PP] 
-		then
 			if [ -d $HH ]
 			then
 				echo "WARINING: $HH already exists, skipping $PP $md5 to avoid overwriting"
@@ -66,22 +38,24 @@ do
 				if [ -d $HH ]
 				then
 					# move input file
-					mv $PP/query.fasta $HH/
+#					mv $PP/query.fasta $HH/
 					# move intermediary files
-					mv $PP/*uniprot20* $HH/
+#					mv $PP/*uniprot20* $HH/
 					# move output file
-					mv $PP/query.pssh2 $HH/
-					ln -s $HH/* $PP
-					ln -s $hhm_file $HH/$md5.hhm
+#					mv $PP/query.pssh2 $HH/
+#					ln -s $HH/* $PP
+#					ln -s $hhm_file $HH/$md5.hhm
+					echo "mv $PP/query.fasta $HH/"
+					echo "mv $PP/*uniprot20* $HH/"
+					echo "mv $PP/query.pssh2 $HH/"
+					echo "ln -s $HH/* $PP"
+					echo "ln -s $hhm_file $HH/$md5.hhm"
 				else 
-					echo "ERROR [3]: was not able to write to $HH "
+					echo "ERROR: was not able to write to $HH "
 				fi
 			fi
 		else
-			echo "ERROR [2]: PP directory $PP does not exist for $md5 "
+			echo "INFO: $pp does not contain pssh2 output -> skipping"
 		fi
-	else
-		echo "ERROR [1]: could not find sequence: $T/$md5/$md5.fasta"
-	fi
-
+	done
 done
