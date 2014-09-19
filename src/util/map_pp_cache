@@ -22,7 +22,10 @@ do
 		for ppp in $pp/*/ 
 		do		
 			hmmfile=$ppp/query.uniprot20.hhm
+			psshfile=$ppp/query.pssh2
 			# check we have the right kind of data
+			if [ -s 
+
 			if [ -s $hmmfile ]
 			then
 				# since query.fasta is not there, get the sequence out of the hmm
