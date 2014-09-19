@@ -55,7 +55,7 @@ do
 						mv $ppp/query.pssh2 $HH/
 						ln -s $HH/* $ppp
 
-#  for testing:
+#  for testing (comment out above, uncomment this):
 #						cp $ppp/query.fasta $HH/
 #						cp $ppp/*uniprot20* $HH/
 #						cp $ppp/query.pssh2 $HH/
