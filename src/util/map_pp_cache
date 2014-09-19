@@ -32,9 +32,13 @@ do
 				# since query.fasta is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 				hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
+
+				if [ $seq_begin -gt 0 ]
+				then
+					
 				
 				# get the md5 sum of the sequence
-				md5=`head -$hmm_begin $hmmfile | tail -n $seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
+				md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
 			fi
 			
 			if [ $md5 -gt 0]
