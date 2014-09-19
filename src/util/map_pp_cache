@@ -49,7 +49,7 @@ do
 					echo "mv $ppp/query.fasta $HH/"
 					echo "mv $ppp/*uniprot20* $HH/"
 					echo "mv $ppp/query.pssh2 $HH/"
-					echo "ln -s $HH/* $ppp"
+					echo "ln -s $HH/* $ppp/"
 				else 
 					echo "ERROR: was not able to write to $HH "
 				fi
