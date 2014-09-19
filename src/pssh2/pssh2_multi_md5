@@ -75,41 +75,36 @@ do
 	input_seq_file=$CC/query.fasta
 	
 	# check whether an input file exists in $CC
-	if [ -s $CC/query.fasta ] 
+	if [ -s $input_seq_file ] 
 	then
-		ls -l $temp_work/$md5/$md5.fasta
+		old_md5=`cat $input_seq_file|fasta_to_md5`
+		echo 'working with old file $input_seq_file, with md5: $old_md5'
 	else
 		temp_fasta_file=`get_fasta_for_md5 $md5`
-		if [ -d $CC ]
-		then
-			ls -l $CC
-		else
-			
+		if [ -s $temp_fasta_file ]
+		then	
+			### create cachedir if not existent
+			mkdir -p $CC
+			if [ -d $CC ] 
+			then
+				cp $temp_fasta_file $input_seq_file
+			else 
+				echo "ERROR: was not able to work on cache for $CC please go fix"
+			fi
 		fi
 	fi
 
-	if [ -s $temp_work/$md5/$md5.fasta ] 
+	if [ -s $input_seq_file ] 
 	then
-
-### create cachedir if not existent
-		mkdir -p $CC
-		if [ -d $CC ] ; then
-			cd $CC
-#			pwd
-#			ls -lahtr
-			cp  $temp_work/$md5/$md5.fasta query.fasta
-			pssh2_seq $passOpt
-			cd $temp_work
-		else 
-			echo "ERROR: was not able to work on cache for $CC please go fix"
-		fi
-	
-	else
-	
+		cd $CC
+#		pwd
+#		ls -lahtr
+		pssh2_seq $passOpt
+		cd $temp_work
+	else 
 		s=`date +%s`
 		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
-		echo "ERROR: could not find sequence: $temp_work/$md5/$md5.fasta"
-
+		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
 	fi
 
 done
