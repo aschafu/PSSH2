@@ -5,7 +5,7 @@
 #$ -o /dev/null
 #$ -e /dev/null
 
-# set -x
+set -x
 
 ### base path to all caches
 #### ex /mnt/project/snapcache/andrea_pssh/ppcache22/bd/38/
@@ -18,6 +18,18 @@ M_path="/mnt/project/mamut";
 #DB="/var/tmp/rost_db/data";
 T="/tmp/mamut"
 
+# crawl over fake_cache to get out pssh results
+for $p in $fake_cache/??/
+do
+	for $pp in $p/??/
+	do
+		seqfile=$pp/query.fasta
+		# check we have the right kind of data
+		if [ -s $seqfile ] && [ -s $pp/query.uniprot20.hhm ]
+		then
+			# get the md5 sum of the sequence
+			md5=`cat $seqfile | fasta_to_md5`
+
 for md5 in $*  
 do
 ### get fasta and tmpdir block
@@ -28,9 +40,8 @@ do
 	if [ -s $T/$i/$md5.fasta ] 
 	then
     
-### get seq/md5/ppc from db	
+### get ppc from db	
 		ppc=`/mnt/home/roos/bin/DB.idmapper "select ppc from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^ppc$"`
-		md5=`/mnt/home/roos/bin/DB.idmapper "select md5 from idmapper.md5_ppc_len_seq where  md5=\"$i\" or  ppc=\"$i\" "|grep -v "^md5$"`
 
 ### build prefixes for ppc/extracache
 		P=`echo $ppc|cut -b1,2`
@@ -40,7 +51,7 @@ do
 		M2=`echo $md5|cut -b3,4`
 #		echo $ppc $P $P2 $md5 $M $M2
 
-### full path to cachedir
+### full path to cachedirs
 		PP="$fake_cache$P/$P2/$ppc"
 		HH="$h_cache$M/$M2/md5"
 #		echo $PP $HH
@@ -49,7 +60,7 @@ do
 		then
 			if [ -d $HH ]
 			then
-				echo "WARINING: $HH already exists, skipping $PP to avoid overwriting"
+				echo "WARINING: $HH already exists, skipping $PP $md5 to avoid overwriting"
 			else
 				mkdir -p $HH
 				if [ -d $HH ]
