@@ -42,8 +42,8 @@ do
 					mkdir -p $HH
 					if [ -d $HH ]
 					then
-						# move input file
-						mv $ppp/query.fasta $HH/
+						# move input file -- not copied to fake cache
+#						mv $ppp/query.fasta $HH/
 						# move intermediary files
 						mv $ppp/*uniprot20* $HH/
 						# move output file
