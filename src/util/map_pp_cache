@@ -24,9 +24,10 @@ do
 			hmmfile=$ppp/query.uniprot20.hhm
 			psshfile=$ppp/query.pssh2
 			# check we have the right kind of data
-			if [ -s 
-
-			if [ -s $hmmfile ]
+			if [ -s $psshfile ]
+			then 
+				md5=`head -1 $psshfile | cut -d ',' -f 1 `
+			elif [ -s $hmmfile ]
 			then
 				# since query.fasta is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
@@ -34,7 +35,10 @@ do
 				
 				# get the md5 sum of the sequence
 				md5=`head -$hmm_begin $hmmfile | tail -n $seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
-
+			fi
+			
+			if [ $md5 -gt 0]
+			then
 				### build prefixes for md5 (hhblits/pssh cache)
 				M=`echo $md5|cut -b1,2`
 				M2=`echo $md5|cut -b3,4`
@@ -66,6 +70,8 @@ do
 					else 
 						echo "ERROR: was not able to write to $HH "
 					fi
+				else
+					echo "ERROR: no md5 found for $ppp "
 				fi
 			else
 				echo "INFO: $pp does not contain pssh2 output -> skipping"
