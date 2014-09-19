@@ -62,28 +62,34 @@ fi
 
 
 
-for md5 in $md5list ; do
+for md5 in $md5list 
+do
 
-### get fasta and tmpdir block
-	mkdir -p $temp_work/$md5  2>/dev/null
-	chmod 777 $temp_work  $temp_work/$md5
-	if [ -s $temp_work/$md5/$md5.fasta ] 
+	# get subdir names for cache structure
+	M=`echo $md5|cut -b1,2`
+	M2=`echo $md5|cut -b3,4`
+
+### full path to cachedir
+	CC="$pssh2_cache$M/$M2/$md5"
+	echo $CC
+	input_seq=$CC/query.fasta
+	
+	# check whether an input file exists in $CC
+	if [ -s $CC/query.fasta ] 
 	then
 		ls -l $temp_work/$md5/$md5.fasta
 	else
-		get_fasta_for_md5 $md5
+		temp_fasta_file=`get_fasta_for_md5 $md5`
+		if [ -d $CC ]
+		then
+			ls -l $CC
+		else
+			
+		fi
 	fi
 
 	if [ -s $temp_work/$md5/$md5.fasta ] 
 	then
-		# get subdir names for cache structure
-		M=`echo $md5|cut -b1,2`
-		M2=`echo $md5|cut -b3,4`
-		echo $md5 $M $M2
-
-### full path to cachedir
-		CC="$pssh2_cache$M/$M2/$md5"
-		echo $CC
 
 ### create cachedir if not existent
 		mkdir -p $CC
