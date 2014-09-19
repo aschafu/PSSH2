@@ -25,10 +25,10 @@ do
 			then
 				seq_begin = `grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 				hmm_begin = `grep -n '^#' $hmmfile | cut -d ':' -f 1`
-				head -$hmm_begin $hmmfile | tail -n $seq_begin > $tmp_seqfile
+				
 				# get the md5 sum of the sequence
-				md5=`cat $seqfile | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
-	
+				md5=`cat head -$hmm_begin $hmmfile | tail -n $seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
+
 				### build prefixes for md5 (hhblits/pssh cache)
 				M=`echo $md5|cut -b1,2`
 				M2=`echo $md5|cut -b3,4`
