@@ -25,6 +25,7 @@ do
 			# check we have the right kind of data
 			if [ -s $hmmfile ]
 			then
+				# since query.fast is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 				hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 				
@@ -44,7 +45,9 @@ do
 					mkdir -p $HH
 					if [ -d $HH ]
 					then
-						# move input file -- not copied to fake cache
+						# move input file 
+						# -- has not been copied to fake cache
+						#    so no use in trying to move
 #						mv $ppp/query.fasta $HH/
 						# move intermediary files
 						mv $ppp/*uniprot20* $HH/
