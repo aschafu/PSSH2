@@ -53,7 +53,7 @@ do
 						mv $ppp/*uniprot20* $HH/
 						# move output file
 						mv $ppp/query.pssh2 $HH/
-						ln -s $HH/* $ppp
+#						ln -s $HH/* $ppp
 
 #  for testing (comment out above, uncomment this):
 #						cp $ppp/query.fasta $HH/
