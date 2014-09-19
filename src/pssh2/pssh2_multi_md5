@@ -92,8 +92,7 @@ for md5 in $md5list ; do
 #			pwd
 #			ls -lahtr
 			cp  $temp_work/$md5/$md5.fasta query.fasta
-			/mnt/project/pssh/pssh2_project/src/pssh2/pssh2_seq $passOpt
-#			pssh2_seq $passOpt
+			pssh2_seq $passOpt
 			cd $temp_work
 		else 
 			echo "ERROR: was not able to work on cache for $CC please go fix"
