@@ -72,7 +72,7 @@ do
 ### full path to cachedir
 	CC="$pssh2_cache$M/$M2/$md5"
 	echo $CC
-	input_seq=$CC/query.fasta
+	input_seq_file=$CC/query.fasta
 	
 	# check whether an input file exists in $CC
 	if [ -s $CC/query.fasta ] 
