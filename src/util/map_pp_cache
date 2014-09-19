@@ -5,14 +5,14 @@
 #$ -o /dev/null
 #$ -e /dev/null
 
-#set -x
+set -x
 
 ### base path to all caches
 fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
-h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
+#h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
 # for testing --> but then set to copy instead of moving
 # fake_cache="/mnt/project/snapcache/andrea_pssh/test_caches/"
-# h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/test_cache/"
+h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/test_cache/"
 
 # crawl over fake_cache to get out pssh results
 for p in $fake_cache/??/
@@ -56,10 +56,10 @@ do
 #						ln -s $HH/* $ppp
 
 #  for testing (comment out above, uncomment this):
-#						cp $ppp/query.fasta $HH/
-#						cp $ppp/*uniprot20* $HH/
-#						cp $ppp/query.pssh2 $HH/
-#						echo "ln -s $HH/* $ppp/"
+						cp $ppp/query.fasta $HH/
+						cp $ppp/*uniprot20* $HH/
+						cp $ppp/query.pssh2 $HH/
+						echo "ln -s $HH/* $ppp/"
 					else 
 						echo "ERROR: was not able to write to $HH "
 					fi
