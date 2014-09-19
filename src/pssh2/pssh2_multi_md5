@@ -74,7 +74,7 @@ do
 	echo $CC
 	input_seq_file=$CC/query.fasta
 	
-	# check whether an input file exists in $CC
+	# check whether an input file already exists in $CC
 	if [ -s $input_seq_file ] 
 	then
 		old_md5=`cat $input_seq_file|fasta_to_md5`
