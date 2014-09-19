@@ -19,10 +19,11 @@ do
 	do
 		for ppp in $pp/*/ 
 		do		
-			seqfile=$ppp/query.fasta
+			hmmfile=$ppp/query.uniprot20.hhm
 			# check we have the right kind of data
-			if [ -s $seqfile ] && [ -s $ppp/query.uniprot20.hhm ]
+			if [ -s $hmmfile ]
 			then
+				seqfile=$ppp/query.fasta
 				# get the md5 sum of the sequence
 				md5=`cat $seqfile | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5`
 	
