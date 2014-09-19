@@ -17,39 +17,39 @@ for p in $fake_cache/??/
 do
 	for pp in $p/??/
 	do
-		seqfile=$pp/query.fasta
-		# check we have the right kind of data
-		if [ -s $seqfile ] && [ -s $pp/query.uniprot20.hhm ]
-		then
-			# get the md5 sum of the sequence
-			md5=`cat $seqfile | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5`
-
-			### build prefixes for md5 (hhblits/pssh cache)
-			M=`echo $md5|cut -b1,2`
-			M2=`echo $md5|cut -b3,4`
-			# echo $pp $md5 $M $M2
-			HH="$h_cache$M/$M2/md5"
-
-			if [ -d $HH ]
+		for ppp in $pp/*/ 
+		do		
+			seqfile=$ppp/query.fasta
+			# check we have the right kind of data
+			if [ -s $seqfile ] && [ -s $ppp/query.uniprot20.hhm ]
 			then
-				echo "WARINING: $HH already exists, skipping $PP $md5 to avoid overwriting"
-			else
-				mkdir -p $HH
+				# get the md5 sum of the sequence
+				md5=`cat $seqfile | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5`
+	
+				### build prefixes for md5 (hhblits/pssh cache)
+				M=`echo $md5|cut -b1,2`
+				M2=`echo $md5|cut -b3,4`
+				# echo $pp $md5 $M $M2
+				HH="$h_cache$M/$M2/md5"
+
 				if [ -d $HH ]
 				then
+					echo "WARINING: $HH already exists, skipping $ppp $md5 to avoid overwriting"
+				else
+					mkdir -p $HH
+					if [ -d $HH ]
+					then
 					# move input file
-#					mv $PP/query.fasta $HH/
+#					mv $ppp/query.fasta $HH/
 					# move intermediary files
-#					mv $PP/*uniprot20* $HH/
+#					mv $ppp/*uniprot20* $HH/
 					# move output file
-#					mv $PP/query.pssh2 $HH/
-#					ln -s $HH/* $PP
-#					ln -s $hhm_file $HH/$md5.hhm
-					echo "mv $PP/query.fasta $HH/"
-					echo "mv $PP/*uniprot20* $HH/"
-					echo "mv $PP/query.pssh2 $HH/"
-					echo "ln -s $HH/* $PP"
-					echo "ln -s $hhm_file $HH/$md5.hhm"
+#					mv $ppp/query.pssh2 $HH/
+#					ln -s $HH/* $ppp
+					echo "mv $ppp/query.fasta $HH/"
+					echo "mv $ppp/*uniprot20* $HH/"
+					echo "mv $ppp/query.pssh2 $HH/"
+					echo "ln -s $HH/* $ppp"
 				else 
 					echo "ERROR: was not able to write to $HH "
 				fi
