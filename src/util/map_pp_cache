@@ -8,8 +8,8 @@
 set -x
 
 ### base path to all caches
-fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
-#h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
+#fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
+h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
 # for testing --> but then set to copy instead of moving
 # fake_cache="/mnt/project/snapcache/andrea_pssh/test_caches/"
 # h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/test_cache/"
@@ -33,9 +33,9 @@ do
 				# since query.fasta is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 
+				# get the md5 sum of the sequence
 				if [ -z $seq_begin ]
 				then
-					# get the md5 sum of the sequence
 					hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 					md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
 				else
@@ -78,11 +78,9 @@ do
 					else 
 						echo "ERROR: was not able to write to $HH "
 					fi
-				else
-					echo "ERROR: no md5 found for $ppp "
 				fi
 			else
-				echo "INFO: $pp does not contain pssh2 output -> skipping"
+				echo "INFO: $ppp does not contain anything with an md5 sum -> skipping"
 			fi
 		done
 	done
