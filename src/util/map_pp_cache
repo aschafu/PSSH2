@@ -47,6 +47,8 @@ do
 			
 			if [ -z $md5 ]
 			then
+				echo "INFO: $ppp does not contain anything with an md5 sum -> skipping"
+			else
 				### build prefixes for md5 (hhblits/pssh cache)
 				M=`echo $md5|cut -b1,2`
 				M2=`echo $md5|cut -b3,4`
@@ -79,8 +81,6 @@ do
 						echo "ERROR: was not able to write to $HH "
 					fi
 				fi
-			else
-				echo "INFO: $ppp does not contain anything with an md5 sum -> skipping"
 			fi
 		done
 	done
