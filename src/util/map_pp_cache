@@ -5,7 +5,7 @@
 #$ -o /dev/null
 #$ -e /dev/null
 
-set -x
+# set -x
 
 ### base path to all caches
 #fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
