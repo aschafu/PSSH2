@@ -12,7 +12,8 @@ fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
 #h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
 # for testing --> but then set to copy instead of moving
 # fake_cache="/mnt/project/snapcache/andrea_pssh/test_caches/"
-h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/test_cache/"
+# h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/test_cache/"
+fake_cache="/mnt/project/pssh/pssh2_project/work/mixed_up_pssh2_result_cache/"
 
 # crawl over fake_cache to get out pssh results
 for p in $fake_cache/??/
@@ -31,20 +32,20 @@ do
 			then
 				# since query.fasta is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
-				hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 
-				if [ $seq_begin -gt 0 ]
+				if [ -z $seq_begin ]
 				then
-					echo 'WARNING: no >query in $hmmfile'
+					# get the md5 sum of the sequence
+					hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
+					md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
 				else
-					seq_begin=`grep -n "^>[[:alnum:]]\{32\}" $hmmfile | cut -d ':' -f 1`
+#					echo 'WARNING: no >query in $hmmfile'
+					md5=`grep "^>[[:alnum:]]\{32\}" $hmmfile | cut -c 2-33`
 				fi
 				
-				# get the md5 sum of the sequence
-				md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
 			fi
 			
-			if [ $md5 -gt 0 ]
+			if [ -z $md5 ]
 			then
 				### build prefixes for md5 (hhblits/pssh cache)
 				M=`echo $md5|cut -b1,2`
