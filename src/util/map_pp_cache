@@ -32,7 +32,7 @@ do
 				echo "INFO: found $md5 in $psshfile"
 			elif [ -s $hmmfile ]
 			then
-				echo "INFO: reading in $hmmfile"
+				echo "WARNING: no $psshfile found, reading in $hmmfile"
 
 				# since query.fasta is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
