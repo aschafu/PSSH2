@@ -10,7 +10,7 @@
 ### base path to all caches
 fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
 #h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
-h_cache="/mnt/project/psshcache/result_cache/"
+h_cache="/mnt/project/psshcache/result_cache_2014/"
 # for testing --> but then set to copy instead of moving
 # fake_cache="/mnt/project/snapcache/andrea_pssh/test_caches/"
 # h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/test_cache/"
