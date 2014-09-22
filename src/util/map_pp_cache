@@ -8,12 +8,12 @@
 # set -x
 
 ### base path to all caches
-fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
+# fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
 h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
 # for testing --> but then set to copy instead of moving
 # fake_cache="/mnt/project/snapcache/andrea_pssh/test_caches/"
 # h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/test_cache/"
-# fake_cache="/mnt/project/pssh/pssh2_project/work/mixed_up_pssh2_result_cache/"
+fake_cache="/mnt/project/pssh/pssh2_project/work/mixed_up_pssh2_result_cache/"
 
 # crawl over fake_cache to get out pssh results
 for p in $fake_cache/??/
