@@ -55,7 +55,7 @@ do
 			
 			if [ -z $md5 ]
 			then
-				echo "INFO: $ppp does not contain anything usable from pssh2 sum -> skipping"
+				echo "INFO: $ppp does not contain anything usable from pssh2 -> skipping"
 			else
 				### build prefixes for md5 (hhblits/pssh cache)
 				M=`echo $md5|cut -b1,2`
