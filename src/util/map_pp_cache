@@ -41,8 +41,10 @@ do
 				then
 					hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 					md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
+					echo "found $md5 for sequence from $seq_begin to $hmm_begin : "
+					head -$hmm_begin $hmmfile | tail -n +$seq_begin
 				else
-#					echo 'WARNING: no >query in $hmmfile'
+					echo 'WARNING: no >query in $hmmfile'
 					md5=`grep "^>[[:alnum:]]\{32\}" $hmmfile | cut -c 2-33`
 				fi
 				seq_begin=''
