@@ -40,8 +40,9 @@ do
 				# get the md5 sum of the sequence
 				if [ -z $seq_begin ]
 				then
-					echo 'WARNING: no >query in $hmmfile'
+					echo 'WARNING: no >query in $hmmfile -> looking for sequence name'
 					md5=`grep "^>[[:alnum:]]\{32\}" $hmmfile | cut -c 2-33`
+					echo 'INFO: found $md5'
 				else
 					hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 					md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
@@ -86,7 +87,7 @@ do
 #						cp $ppp/query.pssh2 $HH/
 #						echo "ln -s $HH/* $ppp/"
 					else 
-						echo "ERROR: was not able to write to $HH "
+						echo "ERROR: was not able to write to $HH (for $ppp)"
 					fi
 				fi
 			fi
