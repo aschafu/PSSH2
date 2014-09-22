@@ -55,7 +55,7 @@ do
 			
 			if [ -z $md5 ]
 			then
-				echo "INFO: $ppp does not contain anything with an md5 sum -> skipping"
+				echo "INFO: $ppp does not contain anything usable from pssh2 sum -> skipping"
 			else
 				### build prefixes for md5 (hhblits/pssh cache)
 				M=`echo $md5|cut -b1,2`
@@ -70,7 +70,7 @@ do
 					mkdir -p $HH
 					if [ -d $HH ]
 					then
-						echo "INFO: moving from $ppp to $HH"
+#						echo "INFO: moving from $ppp to $HH"
 						# copy input file 
 						# -- has only sometimes been copied to fake cache
 						cp $ppp/query.fasta $HH/
