@@ -42,7 +42,8 @@ do
 #					echo 'WARNING: no >query in $hmmfile'
 					md5=`grep "^>[[:alnum:]]\{32\}" $hmmfile | cut -c 2-33`
 				fi
-				
+				seq_begin=''
+				hmm_begin=''
 			fi
 			
 			if [ -z $md5 ]
