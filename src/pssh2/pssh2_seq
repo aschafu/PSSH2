@@ -108,9 +108,9 @@ then
 	    	pwd
 			if [ $skip -eq 1 ] 
 			then
-				echo "skipping build_hhblits_profile"
+				echo "file up to date"
 			else
-				echo "file outdated -> rebuilding profile"
+				echo "file outdated "
 			fi
 		fi
 	fi
