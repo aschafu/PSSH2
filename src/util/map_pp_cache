@@ -29,7 +29,7 @@ do
 			if [ -s $psshfile ]
 			then 
 				md5=`head -1 $psshfile | cut -d ',' -f 1 `
-				echo "INFO: found $md5 in $psshfile"
+#				echo "INFO: found $md5 in $psshfile"
 			elif [ -s $hmmfile ]
 			then
 				echo "WARNING: no $psshfile found, reading in $hmmfile"
