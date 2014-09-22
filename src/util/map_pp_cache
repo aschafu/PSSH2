@@ -5,7 +5,7 @@
 #$ -o /dev/null
 #$ -e /dev/null
 
-set -x
+# set -x
 
 ### base path to all caches
 fake_cache="/mnt/project/snapcache/andrea_pssh/all_caches/"
@@ -18,7 +18,7 @@ h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
 # crawl over fake_cache to get out pssh results
 for p in $fake_cache/1?/
 do
-	for pp in $p/aa/
+	for pp in $p/bb/
 #	for pp in $p/??/
 	do
 		for ppp in $pp/*/ 
