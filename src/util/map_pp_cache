@@ -28,8 +28,11 @@ do
 			if [ -s $psshfile ]
 			then 
 				md5=`head -1 $psshfile | cut -d ',' -f 1 `
+				echo "INFO: found $md5 in $psshfile"
 			elif [ -s $hmmfile ]
 			then
+				echo "INFO: reading in $hmmfile"
+
 				# since query.fasta is not there, get the sequence out of the hmm
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 
