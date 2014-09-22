@@ -88,13 +88,20 @@ fi
 
 fail=0
 skip=0
+
+hmmfile='query.uniprot20.hhm' 
  
 if [ $force -eq 0 ] 
 then
 	# check whether we already have a uniprot20 hmm
-	if [ -s query.uniprot20.hhm ] 
-	then 
-    	skip=1
+	if [ -s $hmmfile ] 
+	then
+		hmm_stamp=`stat -c%Y $hmmfile`
+		db_stamp=`DB.pssh2_local select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp | tail -1`
+		if [ $hmm_stamp -gt $db_stamp ]
+		then
+	    	skip=1
+	    fi
     	if [ $silent -eq 0 ]
     	then
 	    	echo "HMM already made."
@@ -104,7 +111,7 @@ fi
 
 if [ $skip -eq 0 ] 
 then
-	/usr/bin/time -f "\t%U user,\t%S system,\t%E elapsed\t(%Mresident_max;%tresident_avrg,%Ktotal_avrg)k" nice build_hhblits_profile -f  query.fasta -m query.uniprot20.hhm -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
+	/usr/bin/time -f "\t%U user,\t%S system,\t%E elapsed\t(%Mresident_max;%tresident_avrg,%Ktotal_avrg)k" nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 else 
     if [ $silent -eq 0 ]
     then
@@ -114,7 +121,7 @@ fi
 
 if [ -s query.uniprot20.hhm ] 
 then
- 	time nice scan_structures_hhblits -m query.uniprot20.hhm -r query.uniprot20.pdb.full.hhr $passOpt
+ 	time nice scan_structures_hhblits -m  $hmmfile -r query.uniprot20.pdb.full.hhr $passOpt
 else
 	fail=-1
 fi
