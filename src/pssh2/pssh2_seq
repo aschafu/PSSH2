@@ -110,7 +110,7 @@ then
 			then
 				echo "skipping build_hhblits_profile"
 			else
-				echo "file too old -> rebuilding profile"
+				echo "file outdated -> rebuilding profile"
 			fi
 		fi
 	fi
