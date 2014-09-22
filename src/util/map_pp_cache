@@ -82,6 +82,7 @@ do
 					fi
 				fi
 			fi
+			md5=''
 		done
 	done
 done
