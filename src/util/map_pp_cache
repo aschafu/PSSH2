@@ -74,7 +74,7 @@ do
 						# move input file 
 						# -- has not been copied to fake cache
 						#    so no use in trying to move
-						mv $ppp/query.fasta $HH/
+						cp $ppp/query.fasta $HH/
 						# move intermediary files
 						mv $ppp/*uniprot20* $HH/
 						# move output file
