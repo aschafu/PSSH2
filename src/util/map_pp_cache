@@ -71,9 +71,8 @@ do
 					if [ -d $HH ]
 					then
 						echo "INFO: moving from $ppp to $HH"
-						# move input file 
-						# -- has not been copied to fake cache
-						#    so no use in trying to move
+						# copy input file 
+						# -- has only sometimes been copied to fake cache
 						cp $ppp/query.fasta $HH/
 						# move intermediary files
 						mv $ppp/*uniprot20* $HH/
