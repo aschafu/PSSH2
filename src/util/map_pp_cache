@@ -37,7 +37,7 @@ do
 				seq_begin=`grep -n '^>query' $hmmfile | cut -d ':' -f 1`
 
 				# get the md5 sum of the sequence
-				if [ -z $seq_begin ]
+				if [ ! -z $seq_begin ]
 				then
 					hmm_begin=`grep -n '^#' $hmmfile | cut -d ':' -f 1`
 					md5=`head -$hmm_begin $hmmfile | tail -n +$seq_begin | /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 | head -1`
