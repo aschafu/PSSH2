@@ -148,15 +148,15 @@ s=`date +%s`
 md5=`cat query.fasta | fasta_to_md5`
 if [ -s query.pssh2 ] 
 then
-	DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE pssh2_local.$table_name columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,Alignment) set Identity_Score=@var_id_score*100 "
+	DB.pssh2_local "load data local infile 'query.pssh2' IGNORE INTO TABLE $table_name columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,Alignment) set Identity_Score=@var_id_score*100 "
  	n=`cat query.pssh2 |wc -l`
- 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$n , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$n , stamp=$s , runtime=$runtime "
+ 	DB.pssh2_local "insert into $status_table set md5=\"$md5\" , count=$n , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$n , stamp=$s , runtime=$runtime "
 else
 	if [ $fail -eq 0 ]
  	then
  		fail=-3
  	fi
- 	DB.pssh2_local "insert into pssh2_local.pssh2_pp_counts set md5=\"$md5\" , count=$fail , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$fail , stamp=$s, runtime=$runtime " 		
+ 	DB.pssh2_local "insert into $status_table set md5=\"$md5\" , count=$fail , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$fail , stamp=$s, runtime=$runtime " 		
 fi
   
 ### compress things / delete
