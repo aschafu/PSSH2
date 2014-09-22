@@ -16,9 +16,9 @@ h_cache="/mnt/project/pssh/pssh2_project/data/pssh2/result_cache/"
 fake_cache="/mnt/project/pssh/pssh2_project/work/mixed_up_pssh2_result_cache/"
 
 # crawl over fake_cache to get out pssh results
-for p in $fake_cache/??/
+for p in $fake_cache/1?/
 do
-	for pp in $p/??/
+	for pp in $p/1?/
 	do
 		for ppp in $pp/*/ 
 		do		
