@@ -56,8 +56,7 @@ OPTIONS
      0           do not make profile unless none exists
      1           run only if the profile is older than the last update of uniprot20 (default)
      2           always run, even if the profile exists 
-  -R          Retain (DO NOT remake) the HMM profile (do not make profile unless necessary)
-              (same as -F 0)
+  -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
   -s          Operate silently (passed on to the child scripts.)
   Any other parameters are also passed on to the child scripts
 AUTHOR
