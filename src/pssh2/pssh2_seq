@@ -27,7 +27,7 @@ cat << EOT
 NAME
   pssh2_seq - generate pssh2 type sequence-to-structrue alignments 
 SYNOPSIS
-  pssh2_seq [-s] [-h] [-D] [-F] [-R] [-t tableName]
+  pssh2_seq [-s] [-h] [-D] [-F 0|1|2] [-R] [-t tableName]
 DESCRIPTION
   pssh2_seq takes an input sequence (query.fasta) and generates sequence-to-structure 
   alignments for this sequence. 
@@ -52,7 +52,10 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
-  -F          Force remaking of HMM profile (run build_hhblits_profile - default behaviour)
+  -F n        Set force remaking status for making of HMM profile (run build_hhblits_profile):
+     0           do not make profile unless none exists
+     1           run only if the profile is older than the last update of uniprot20 (default)
+     2           always run, even if the profile exists 
   -R          Retain (DO NOT remake) the HMM profile (do not make profile unless necessary)
   -s          Operate silently (passed on to the child scripts.)
   Any other parameters are also passed on to the child scripts
