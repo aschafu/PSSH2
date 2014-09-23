@@ -37,6 +37,13 @@ EOT
 }
 
 
+while getopts :h opt
+do
+	case $opt in
+	h) usage; exit;;
+	esac
+done
+
 for md5 in $* 
 do
 	mkdir -p $temp_work/$md5  2>/dev/null
