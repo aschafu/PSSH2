@@ -45,7 +45,7 @@ fi
 
 debug=0
 passOpt=" " 
-while getopts:Dhm: opt
+while getopts :Dhm: opt
 do
 	case $opt in
 	D) debug=1; passOpt="$passOpt $opt";; 
