@@ -2,12 +2,12 @@
 
 echo "copying ..."
 
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/build_hhblits_profile pssh2-0.1/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/scan_structures_hhblits pssh2-0.1/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 pssh2-0.1/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/parse_hhr_for_pssh2 pssh2-0.1/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2 pssh2-0.1/
-cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.pssh2_local pssh2-0.1/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/build_hhblits_profile pssh2-0.2/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/scan_structures_hhblits pssh2-0.2/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 pssh2-0.2/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/parse_hhr_for_pssh2 pssh2-0.2/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2 pssh2-0.2/
+cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.pssh2_local pssh2-0.2/
 
 echo "now: "
 echo "consider redoing 'pssh2-0.1/pp_pssh2 -h | ~/software/txt2man > pssh2-0.1/debian/manpage.1' if that info has changed"
