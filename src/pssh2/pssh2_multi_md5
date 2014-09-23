@@ -47,6 +47,7 @@ set -x
 
 debug=0
 passOpt=" " 
+echo "$@"
 while getopts :Dhm: opt
 do
 	case $opt in
