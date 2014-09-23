@@ -57,7 +57,7 @@ OPTIONS
      1           run only if the profile is older than the last update of uniprot20 (default)
      2           always run, even if the profile exists 
   -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
-  -t          use tableName for storing the pssh2 output in the mysql database (default: $tableName)
+  -t          use tableName for storing the pssh2 output in the mysql database (default: $table_name)
   -s          Operate silently (passed on to the child scripts.)
   Any other parameters are also passed on to the child scripts
 AUTHOR
