@@ -58,8 +58,6 @@ done
 shift $(expr $OPTIND - 2 )
 passOpt="$passOpt $@"
 
-exit
-
 if [ $debug -eq 1 ]
 then
 	set -x
