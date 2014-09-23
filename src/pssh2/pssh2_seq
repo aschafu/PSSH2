@@ -82,7 +82,7 @@ do
 	h) usage; exit;;
 	s) silent=1; passOpt="$passOpt -$opt";;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
-	*) passOpt="$passOpt -$opt";;
+#	*) passOpt="$passOpt -$opt";;
 	esac
 done
 
@@ -90,6 +90,9 @@ if [ $debug -eq 1 ]
 then
 	set -x
 fi
+
+shift $(expr $OPTIND - 1 )
+passOpt="$passOpt $@"
 
 fail=0
 skip=0
