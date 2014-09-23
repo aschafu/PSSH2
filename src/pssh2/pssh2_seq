@@ -27,7 +27,7 @@ cat << EOT
 NAME
   pssh2_seq - generate pssh2 type sequence-to-structrue alignments 
 SYNOPSIS
-  pssh2_seq [-s] [-h] [-D] [-F 0|1|2] [-R] [-t tableName]
+  pssh2_seq [-s] [-h] [-D] [-F 0|1|2] [-R] [-t tableName] [-- ...]
 DESCRIPTION
   pssh2_seq takes an input sequence (query.fasta) and generates sequence-to-structure 
   alignments for this sequence. 
@@ -59,7 +59,7 @@ OPTIONS
   -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
   -t          use tableName for storing the pssh2 output in the mysql database (default: $table_name)
   -s          Operate silently (passed on to the child scripts.)
-  Any other parameters are also passed on to the child scripts
+  Any other parameters behind "--" are passed on to the child scripts.
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -91,7 +91,7 @@ then
 	set -x
 fi
 
-shift $(expr $OPTIND - 1 )
+shift $(expr $OPTIND - 2 )
 passOpt="$passOpt $@"
 
 fail=0
