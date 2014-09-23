@@ -118,7 +118,7 @@ then
 	    	pwd
 			if [ $skip -eq 1 ] 
 			then
-				echo "file will be reused"
+				echo "file will be used again"
 			else
 				echo "file will be remade"
 			fi
