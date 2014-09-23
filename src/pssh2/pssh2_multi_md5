@@ -53,9 +53,12 @@ do
 	D) debug=1; passOpt="$passOpt -$opt";; 
 	h) usage; echo " "; pssh2_seq -h; exit;;
 	m) md5list=$OPTARG;;
-	*) passOpt="$passOpt $OPTARG";;
+#	*) passOpt="$passOpt $OPTARG";;
 	esac
 done
+
+#shift $(expr $OPTIND - 1 )
+#passOpt="$passOpt $@"
 
 exit
 
@@ -63,9 +66,6 @@ if [ $debug -eq 1 ]
 then
 	set -x
 fi
-
-#shift $(expr $OPTIND - 1 )
-#passOpt="$passOpt $@"
 
 for md5 in $md5list 
 do
