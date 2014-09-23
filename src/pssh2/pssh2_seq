@@ -76,7 +76,7 @@ do
 #	F) echo -e "force mode: remake the HMM profile  \n"; force=1;;
 #	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
 	D) debug=1;;
-	F) force=1;;
+	F) force=$opt;;
 	R) force=0;;
 	t) table_name=$OPTARG;;
 	h) usage; exit;;
