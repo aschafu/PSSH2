@@ -58,6 +58,7 @@ do
 done
 
 shift $(expr $OPTIND - 1 )
+echo "$@"
 passOpt="$passOpt $@"
 
 exit
