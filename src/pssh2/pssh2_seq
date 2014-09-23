@@ -103,7 +103,6 @@ then
 		hmm_stamp=`stat -c%Y $hmmfile`
 	    if [ $force -eq 1 ] 
 	    then
-			hmm_stamp=`stat -c%Y $hmmfile`
 			db_stamp=`DB.pssh2_local select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp | tail -1`
 			if [ $hmm_stamp -gt $db_stamp ]
 			then
