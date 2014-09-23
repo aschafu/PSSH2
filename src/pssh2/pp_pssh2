@@ -24,9 +24,6 @@ passOpt=" "
 while getopts :h opt
 do
 	case $opt in
-#	D) echo -e "debug mode: do not change output files \n"; debug=1;;
-#	F) echo -e "force mode: remake the HMM profile  \n"; force=1;;
-#	R) echo -e "reuse mode: no not remake the HMM profile  \n"; force=0;;
 	h) usage; echo " "; pssh2_seq -h; exit;;
 #	*) passOpt="$passOpt -$opt";;
 	esac
