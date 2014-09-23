@@ -80,8 +80,8 @@ do
 	R) force=0;;
 	t) table_name=$OPTARG;;
 	h) usage; exit;;
-	s) silent=1; passOpt="$passOpt $opt";;
-	*) passOpt="$passOpt $opt";;
+	s) silent=1; passOpt="$passOpt -$opt";;
+	*) passOpt="$passOpt -$opt";;
 	esac
 done
 
