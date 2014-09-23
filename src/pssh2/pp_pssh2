@@ -8,7 +8,7 @@ cat << EOT
 NAME
   pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
 SYNOPSIS
-  pp_pssh2 [-h] [-D] [-F] [-R]
+  pp_pssh2 [-h] [-- ...]
 DESCRIPTION
   wrapper around pssh2_seq: 
   operates silently (sets -s) 
