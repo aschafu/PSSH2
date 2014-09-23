@@ -69,7 +69,7 @@ force=1
 debug=0
 silent=0
 passOpt=" " 
-while getopts :sDFRht: opt
+while getopts :sDF:Rht: opt
 do
 	case $opt in
 #	D) echo -e "debug mode: do not change output files \n"; debug=1;;
