@@ -91,7 +91,7 @@ then
 	set -x
 fi
 
-shift $(expr $OPTIND - 2 )
+shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
 fail=0
