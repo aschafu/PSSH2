@@ -36,6 +36,12 @@ AUTHOR
 EOT
 }
 
+# if there are no arguments or -h, then print man entry
+if [ $# -eq 0 ]
+then
+	usage 
+	exit
+fi
 
 while getopts :h opt
 do
