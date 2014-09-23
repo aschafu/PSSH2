@@ -9,6 +9,7 @@ cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/parse_hhr_for_pssh2 pssh2-0.2/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_seq pssh2-0.2/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2 pssh2-0.2/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_multi_md5 pssh2-0.2/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2.conf pssh2-0.2/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.pssh2_local pssh2-0.2/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.aquaria_local pssh2-0.2/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/get_fasta_for_md5 pssh2-0.2/
