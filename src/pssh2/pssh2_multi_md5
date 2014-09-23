@@ -35,7 +35,7 @@ pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 ### work directory
 temp_work="/tmp/pssh2"
 ### table to store pssh2 calculation status in
-status_table="pssh2_counts"
+status_table="pssh2_active_counts"
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
