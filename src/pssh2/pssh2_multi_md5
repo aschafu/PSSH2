@@ -55,13 +55,13 @@ do
 	esac
 done
 
-shift $(expr $OPTIND - 2 )
-passOpt="$passOpt $@"
-
 if [ $debug -eq 1 ]
 then
 	set -x
 fi
+
+shift $(expr $OPTIND - 2 )
+passOpt="$passOpt $@"
 
 for md5 in $md5list 
 do
