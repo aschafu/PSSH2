@@ -27,7 +27,7 @@ DESCRIPTION
   The sequence information comes from the protein_sequence table in the aquaria mysql 
   database.
   The credentials for querying the database are stored in DB.aquaria_local script.
-  The input script for the aquaria database is found in the Aquaria project.
+  The input scripts for the aquaria database are found in the Aquaria project.
   Defaults are configured in $conf_file.
 OPTIONS
   -h          The option -h displays help and exits.
