@@ -40,7 +40,7 @@ EOT
 for md5 in $* 
 do
 	mkdir -p $temp_work/$md5  2>/dev/null
-	seq = `DB.aquaria_local "select Sequence from protein_sequence where MD5_hash =\"$md5\" " `
+	seq=`DB.aquaria_local "select Sequence from protein_sequence where MD5_hash =\"$md5\" " `
 	echo -e ">$md5\n$seq" > $temp_work/$md5/$md5.fasta 
 	echo "$temp_work/$md5/$md5.fasta"
 done
