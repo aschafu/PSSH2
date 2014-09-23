@@ -174,19 +174,19 @@ then
 	if [ -s query.uniprot20.a3m ] 
 	then
 		rm query.uniprot20.a3m  
-	elif	
+	fi	
 	if [ -s query.fasta.hhblits.log ]
 	then
 		rm query.fasta.hhblits.log
-	elif
+	fi
 	if [ -s query.uniprot20.hhm.hhblits.log ]
 	then
 		rm query.uniprot20.hhm.hhblits.log
-	elif
+	fi
 	if [ -s query.uniprot20.hhr ]
 	then
 	 	gzip -f query.uniprot20.hhr
-	elif
+	fi
  	gzip -f query.uniprot20.pdb.full.hhr
 # 	gzip query.pssh2
 fi
