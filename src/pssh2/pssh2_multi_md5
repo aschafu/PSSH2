@@ -78,7 +78,7 @@ do
 	if [ -s $input_seq_file ] 
 	then
 		old_md5=`cat $input_seq_file|fasta_to_md5`
-		echo 'working with old file $input_seq_file, with md5: $old_md5'
+		echo "working with old file $input_seq_file, with md5: $old_md5"
 	else
 		temp_fasta_file=`get_fasta_for_md5 $md5`
 		if [ -s $temp_fasta_file ]
