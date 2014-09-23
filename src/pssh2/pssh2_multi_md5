@@ -43,11 +43,8 @@ then
 	source $conf_file
 fi
 
-set -x
-
 debug=0
 passOpt=" " 
-echo "$@"
 while getopts :Dhm: opt
 do
 	case $opt in
@@ -59,7 +56,6 @@ do
 done
 
 shift $(expr $OPTIND - 2 )
-echo "$@"
 passOpt="$passOpt $@"
 
 exit
