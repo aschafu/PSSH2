@@ -40,7 +40,7 @@ DESCRIPTION
   "parse_hhr_for_pssh2" perl script and generates a .pssh2 file.
   Finally, this outputfile is read into the MySQL database pssh2_local, 
   using "DB.pssh2_local" to retrieve the access parameters.
-  The database pssh2_local_counts keeps track of the generation date of the data, the 
+  The table pssh2_local_counts keeps track of the generation date of the data, the 
   runtime and the number of hits found for the sequence. Negative count number indicate 
   error states:
     -1 -> build_hhblits_profile, -2 -> scan_structures_hhblits, -3 -> parse_hhr_for_pssh2, 
