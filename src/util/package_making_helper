@@ -16,5 +16,5 @@ cp -vp /mnt/project/pssh/pssh2_project/src/util/get_fasta_for_md5 pssh2-0.2/
 
 echo "now: "
 echo "consider redoing 'pssh2-0.2/pp_pssh2 -h | ~/software/txt2man > pssh2-0.2/debian/manpage.1' if that info has changed"
-echo "then 'cd 'pssh2-0.2/'"
+echo "then 'cd pssh2-0.2/'"
 echo "finally 'dpkg-buildpackage' to make the package ! "
