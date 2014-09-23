@@ -63,7 +63,6 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
-exit
 
 for md5 in $md5list 
 do
