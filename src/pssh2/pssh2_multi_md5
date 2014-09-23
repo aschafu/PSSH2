@@ -49,7 +49,7 @@ while getopts :Dhm: opt
 do
 	case $opt in
 	D) debug=1; passOpt="$passOpt $opt";; 
-	h) usage; pssh2_seq -h; exit;;
+	h) usage; echo " "; pssh2_seq -h; exit;;
 	m) md5list=$OPTARG;;
 	*) passOpt="$passOpt $opt";;
 	esac
