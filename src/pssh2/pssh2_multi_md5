@@ -57,6 +57,8 @@ do
 	esac
 done
 
+exit
+
 if [ $debug -eq 1 ]
 then
 	set -x
