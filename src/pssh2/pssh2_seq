@@ -81,6 +81,7 @@ do
 	t) table_name=$OPTARG;;
 	h) usage; exit;;
 	s) silent=1; passOpt="$passOpt -$opt";;
+	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	*) passOpt="$passOpt -$opt";;
 	esac
 done
