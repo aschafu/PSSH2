@@ -64,14 +64,29 @@ class RangeMapping:
 
 	def __init__(self, rangeStringA, rangeStringB):
 
-		rangeA = Range(rangeStringA)
-		rangeB = Range(rangeStringB)
-		if (rangeA.len != rangeB.len):
+		# offsetAtoB can be added to positions in B in order to retrieve positions in A
+		# offsetAtoB can be substracted from positions in A in order to retrieve positions in B
+		self.offsetAtoB = 0
+		# however, in case we have a range with insertion code, we just map diretly
+		self.rangeA = Range(rangeStringA)
+		self.rangeB = Range(rangeStringB)
+		if (self.rangeA.len != self.rangeB.len):
 			warnings.warn('range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
-		
-			
-	def mapPositionToA(
 
+
+		self.offsetAtoB = self.rangeA.begin - self.rangeB.begin		
+			
+	def mapPositionBtoA(pos):
+
+		if (type(pos) is int):
+
+		else:
+			i = insertionMatch.(pos)
+			if (i):
+				posN = int(r.group(0))
+				posC = r.group(1)
+
+		if (hasInsertion(self.rangeA)):
 
 			
 
