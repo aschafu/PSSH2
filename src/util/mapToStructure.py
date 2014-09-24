@@ -72,15 +72,24 @@ class RangeMapping:
 		if (self.rangeA.len != self.rangeB.len):
 			warnings.warn('range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
 
-		if (hasInsertion()
-		self.offsetAtoB = self.rangeA.begin - self.rangeB.begin		
+		# in case we have a range with insertion code, we just map directly, 
+		# so no use to calculate an offset
+		if (not self.hasInsertion()):
+			self.offsetAtoB = self.rangeA.begin - self.rangeB.begin		
 
 	def hasInsertion(self):
 		return self.rangeA.hasInsertion() or self.rangeB.hasInsertion()
 			
-	def mapPositionBtoA(pos):
+	def mapPositionBtoA(self, posB):
 
-		if (type(pos) is int):
+		
+		
+		if (type(pos) is string):
+
+		if (self.hasInsertion):
+			return self.rangeA.
+
+
 
 		else:
 			i = insertionMatch.(pos)
@@ -90,7 +99,7 @@ class RangeMapping:
 
 		if (hasInsertion(self.rangeA)):
 
-			
+	def inRange(self, pos):		
 
 class StructureLocationMapping:
 
