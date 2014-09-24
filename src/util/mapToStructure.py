@@ -55,7 +55,7 @@ class Range:
 			i = insertionMatch.match(inputVal)
 			if (i):
 				pos = int(i.group(0))
-				ins = int(i.group(1))
+				ins = i.group(1)
 				return pos == self.begin and ins==self.ins
 		else:
 			testVal = int(inputVal)
@@ -97,21 +97,33 @@ class RangeMapping:
 	def mapPositionBtoA(self, posB):
 
 		if (not self.inRangeB(posB):
-			warnings.warn('cannot map posB '+string(posB)+' not in range! ')
+			warnings.warn('cannot map posB '+string(posB)+': not in range! ')
 		else:
+			# ranges with insertions always only match individual insertions,
+			# so we can just return the values for A withouth calculating anything
 			if (self.hasInsertion):
 				if (self.rangeA.hasInsertion()):
-					return self.rangeA.
+					return string(self.rangeA.begin)+self.rangeA.ins
+				else:
+					return self.rangeA.begin
+			else:
+				return posB+self.offsetAtoB
+				
+	def mapPositionAtoB(self, posA):
 
-
-
+		if (not self.inRangeA(posA):
+			warnings.warn('cannot map posA '+string(posA)+': not in range! ')
 		else:
-			i = insertionMatch.(pos)
-			if (i):
-				posN = int(r.group(0))
-				posC = r.group(1)
-
-		if (hasInsertion(self.rangeA)):
+			# ranges with insertions always only match individual insertions,
+			# so we can just return the values for A withouth calculating anything
+			if (self.hasInsertion):
+				if (self.rangeA.hasInsertion()):
+					return string(self.rangeA.begin)+self.rangeA.ins
+				else:
+					return self.rangeA.begin
+			else:
+				return posB+self.offsetAtoB
+				
 
 
 class StructureLocationMapping:
