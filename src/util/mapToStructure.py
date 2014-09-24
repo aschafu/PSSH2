@@ -1,7 +1,8 @@
 import json
 import httplib
+import re
 
-class AquariaMappingRetrieval():
+class AquariaMappingRetrieval:
 
 	def __init__(self, accession_number, pdb_id, chain_id)
 		self.host = 'aquaria.js'
@@ -17,5 +18,26 @@ class AquariaMappingRetrieval():
 		body = resp.read()
 		return json.loads(body)
 #		print data['d']['results']
+
+class RangeMapping:
+
+	rangeMatch = re.compile('(\d+):(\d+)')
+	insertionMatch = re.compile('(\d+)(\D)')
+
+	def __init__(self, rangeA, rangeB):
+		
+		rA = rangeMatch.match(rangeA)
+		if (rA):
+			beginA = int(rA.group(0))
+			endA = int(rA.group(1))
+			lenA = endA - beginA
+		else:
+			iA = insertionMatch.(rangeA)
+			if (iA):
+				beginA = int(rA.group(0))
+				insA = rA.group(1)
+			
+
+class StructureLocationMapping:
 
 
