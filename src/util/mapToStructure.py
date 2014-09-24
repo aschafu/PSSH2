@@ -41,17 +41,25 @@ class Range:
 		else:
 			i = insertionMatch.(rangeString)
 			if (i):
-				self.begin = int(r.group(0))
+				self.begin = int(i.group(0))
 				self.end = begin
-				self.ins = r.group(1)
+				self.ins = i.group(1)
 			else:
 				warnings.warn('range ('+range+') does not match range or insertion')
 
 		self.len = self.end - self.begin + 1
 
 		
-	def inRange(self, testVal):
-		return testVal in range(self.begin, self.end+1) 
+	def inRange(self, inputVal):
+		if (self.hasInsertion()):
+			i = insertionMatch.(inputVal)
+			if (i):
+				pos = int(i.group(0))
+				ins = int(i.group(1))
+				return pos == self.begin and ins==self.ins
+		else:
+			testVal = int(inputVal)
+			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
 		return not self.ins
