@@ -52,7 +52,7 @@ class Range:
 		
 	def inRange(self, inputVal):
 		if (self.hasInsertion()):
-			i = insertionMatch.(inputVal)
+			i = insertionMatch.match(inputVal)
 			if (i):
 				pos = int(i.group(0))
 				ins = int(i.group(1))
@@ -88,14 +88,20 @@ class RangeMapping:
 	def hasInsertion(self):
 		return self.rangeA.hasInsertion() or self.rangeB.hasInsertion()
 			
+	def inRangeA(self, pos):		
+		return self.rangeA.inRange(pos)
+
+	def inRangeB(self, pos):		
+		return self.rangeB.inRange(pos)
+
 	def mapPositionBtoA(self, posB):
 
-		
-		
-		if (type(pos) is string):
-
-		if (self.hasInsertion):
-			return self.rangeA.
+		if (not self.inRangeB(posB):
+			warnings.warn('cannot map posB '+string(posB)+' not in range! ')
+		else:
+			if (self.hasInsertion):
+				if (self.rangeA.hasInsertion()):
+					return self.rangeA.
 
 
 
@@ -107,7 +113,6 @@ class RangeMapping:
 
 		if (hasInsertion(self.rangeA)):
 
-	def inRange(self, pos):		
 
 class StructureLocationMapping:
 
