@@ -115,16 +115,15 @@ class RangeMapping:
 			warnings.warn('cannot map posA '+string(posA)+': not in range! ')
 		else:
 			# ranges with insertions always only match individual insertions,
-			# so we can just return the values for A withouth calculating anything
+			# so we can just return the values for B withouth calculating anything
 			if (self.hasInsertion):
-				if (self.rangeA.hasInsertion()):
-					return string(self.rangeA.begin)+self.rangeA.ins
+				if (self.rangeB.hasInsertion()):
+					return string(self.rangeB.begin)+self.rangeB.ins
 				else:
-					return self.rangeA.begin
+					return self.rangeB.begin
 			else:
-				return posB+self.offsetAtoB
+				return posA-self.offsetAtoB
 				
-
 
 class StructureLocationMapping:
 
