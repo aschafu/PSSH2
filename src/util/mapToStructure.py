@@ -3,29 +3,29 @@ import httplib
 import re
 import warnings
 
-class AquariaMappingRetrieval:
-
-	def __init__(self, accession_number, pdb_id, chain_id)
-		self.host = 'aquaria.js'
-		# Get expression of a given protein in any tissue
-		self.expressionurl =  accession_number + '/'+pdb_id+'/'+chain_id+'.json'
-		
-	def connectAndRetrieve(self):
-		hconn = httplib.HTTPConnection( self.host )
-#		hconn.set_debuglevel(3)
-		hconn.request("GET", self.expressionurl)
-		resp = hconn.getresponse()
-#		print resp.status, resp.reason
-		body = resp.read()
-		return json.loads(body)
-#		print data['d']['results']
+# class AquariaMappingRetrieval:
+# 
+# 	def __init__(self, accession_number, pdb_id, chain_id)
+# 		self.host = 'aquaria.js'
+# 		# Get expression of a given protein in any tissue
+# 		self.expressionurl =  accession_number + '/'+pdb_id+'/'+chain_id+'.json'
+# 		
+# 	def connectAndRetrieve(self):
+# 		hconn = httplib.HTTPConnection( self.host )
+# #		hconn.set_debuglevel(3)
+# 		hconn.request("GET", self.expressionurl)
+# 		resp = hconn.getresponse()
+# #		print resp.status, resp.reason
+# 		body = resp.read()
+# 		return json.loads(body)
+# #		print data['d']['results']
 
 
 class Range:
 	
 	# common class for defining a Range
 	
-	rangeMatch = re.compile('(\d+):(\d+)')
+	rangeMatch = re.compile('(\d+)-(\d+)')
 	insertionMatch = re.compile('(\d+)(\D)')
 
 	def __init__(self, rangeString):
@@ -124,6 +124,16 @@ class RangeMapping:
 			else:
 				return posA-self.offsetAtoB
 				
+
+class SequenceSeqresAlignment:
+
+	# Class for representing the alignment between a sequence and the seqres sequence of a PDB StructureLocationMapping
+	
+	def __init__(self, psshAlignmentString):
+		
+		self.rangeCollection = ()
+		
+	
 
 class StructureLocationMapping:
 
