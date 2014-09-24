@@ -1,6 +1,7 @@
 import json
 import httplib
 import re
+import warnings
 
 class AquariaMappingRetrieval:
 
@@ -19,23 +20,59 @@ class AquariaMappingRetrieval:
 		return json.loads(body)
 #		print data['d']['results']
 
-class RangeMapping:
 
+class Range:
+	
+	# common class for defining a Range
+	
 	rangeMatch = re.compile('(\d+):(\d+)')
 	insertionMatch = re.compile('(\d+)(\D)')
 
-	def __init__(self, rangeA, rangeB):
+	def __init__(self, rangeString):
 		
-		rA = rangeMatch.match(rangeA)
-		if (rA):
-			beginA = int(rA.group(0))
-			endA = int(rA.group(1))
-			lenA = endA - beginA
+		r = rangeMatch.match(rangeString)
+		self.begin = 0
+		self.end = 0
+		self.ins = ''
+
+		if (r):
+			self.begin = int(r.group(0))
+			self.end = int(r.group(1))
 		else:
-			iA = insertionMatch.(rangeA)
-			if (iA):
-				beginA = int(rA.group(0))
-				insA = rA.group(1)
+			i = insertionMatch.(rangeString)
+			if (i):
+				self.begin = int(r.group(0))
+				self.end = begin
+				self.ins = r.group(1)
+			else:
+				warnings.warn('range ('+range+') does not match range or insertion')
+
+		self.len = self.end - self.begin + 1
+
+		
+	def inRange(self, testVal):
+		return testVal in range(self.begin, self.end+1) 
+		
+	def hasInsertion(self):
+		return not self.ins
+
+
+
+class RangeMapping:
+
+	# Class for defining how to ranges relate to each other
+
+	def __init__(self, rangeStringA, rangeStringB):
+
+		rangeA = Range(rangeStringA)
+		rangeB = Range(rangeStringB)
+		if (rangeA.len != rangeB.len):
+			warnings.warn('range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
+		
+			
+	def mapPositionToA(
+
+
 			
 
 class StructureLocationMapping:
