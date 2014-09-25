@@ -38,7 +38,7 @@ class Range:
 		if (r):
 			print r.group(1)
 			testval = 100
-			intval = int(r.group(1))
+#			intval = int(r.group(1))
 			print testval, intval
 			self.begin = r.group(1)
 			self.end = r.group(2)
