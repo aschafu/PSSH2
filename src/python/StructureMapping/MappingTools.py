@@ -39,7 +39,7 @@ class Range:
 			self.begin = int(r.group(0))
 			self.end = int(r.group(1))
 		else:
-			i = insertionMatch.match(rangeString)
+			i = self.insertionMatch.match(rangeString)
 			if (i):
 				self.begin = int(i.group(0))
 				self.end = begin
@@ -52,7 +52,7 @@ class Range:
 		
 	def inRange(self, inputVal):
 		if (self.hasInsertion()):
-			i = insertionMatch.match(inputVal)
+			i = self.insertionMatch.match(inputVal)
 			if (i):
 				pos = int(i.group(0))
 				ins = i.group(1)
