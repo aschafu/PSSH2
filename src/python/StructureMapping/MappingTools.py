@@ -120,7 +120,7 @@ class RangeMapping:
 		"""
 		if (not self.inRange(pos, i_from)):
 			posString = str(pos)
-			warnings.warn('cannot map pos '+posString+': not in range of %d (%d-%d)! ' % (i_from, self.rangeB.begin,self.rangeB.end))
+			warnings.warn('cannot map pos '+posString+': not in range of %d (%d-%d)! ' % (i_from, self.range[i_from].begin,self.range[i_from].end))
 		else:
 			# ranges with insertions always only match individual insertions,
 			# so we can just return the values for i_to withouth calculating anything
