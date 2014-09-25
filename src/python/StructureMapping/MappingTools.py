@@ -86,7 +86,7 @@ class RangeMapping:
 		# in case we have a range with insertion code, we just map directly, 
 		# so no use to calculate an offset
 		if (not self.hasInsertion()):
-			self.offsetAtoB = self.rangeA.begin - self.rangeB.begin		
+			self.offsetAtoB = self.range[0].begin - self.range[1].begin		
 
 	def hasInsertion(self):
 		return self.rangeA.hasInsertion() or self.rangeB.hasInsertion()
