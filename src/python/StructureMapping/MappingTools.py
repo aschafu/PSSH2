@@ -124,7 +124,7 @@ class RangeMapping:
 			# so we can just return the values for i_to withouth calculating anything
 			if (self.hasInsertion()):
 				if (self.range[i_to].hasInsertion()):
-					return string(self.range[i_to].begin)+self.range[i_to].ins
+					return str(self.range[i_to].begin)+self.range[i_to].ins
 				else:
 					return self.range[i_to].begin
 			else:
