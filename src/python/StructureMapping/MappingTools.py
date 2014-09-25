@@ -87,7 +87,6 @@ class RangeMapping:
 
 	sequenceNames = ('A', 'B')
 
-
 	def __init__(self, rangeStringA, rangeStringB):
 		"""Initialise RangeMapping with two range strings 'nnn-mmm' and 'iii-kkk' or 'nnn' and 'nnnX'.
 		In principle, RangeMapping could be extended to allow an arbitrary number of compatible ranges
