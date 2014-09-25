@@ -120,7 +120,7 @@ class RangeMapping:
 				if (self.range[i_to].hasInsertion()):
 					return string(self.range[i_to].begin)+self.range[i_to].ins
 				else:
-					return self.rangeA.begin
+					return self.range[i_to].begin
 			else:
 				return posB+self.offsetAtoB
 
