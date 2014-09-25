@@ -83,7 +83,7 @@ class Range:
 class RangeMapping:
 	"""Class for defining how two sequence or structure ranges relate to each other"""
 
-		sequenceNames = ('A', 'B')
+	sequenceNames = ('A', 'B')
 
 
 	def __init__(self, rangeStringA, rangeStringB):
