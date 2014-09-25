@@ -108,7 +108,7 @@ class RangeMapping:
 		return self.inRange(pos,1) 
 
 	def mapPosition(self, pos, i_from, i_to):
-		"""Map (integer) pos as a position in sequence 'i_from' to the corresponding position in 'i_to'
+		"""Map (integer) pos as a position in sequence 'i_from' to the corresponding position in 'i_to'.
 		'i_from' and 'i_to' refer to the order in which the sequence ranges where given on initialisation.
 		"""
 		if (not self.inRange(pos, i_from)):
