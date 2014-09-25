@@ -60,6 +60,7 @@ class Range:
 			if (i):
 				pos = int(i.group(1))
 				ins = i.group(2)
+				print pos, ins
 				return pos == self.begin and ins==self.ins
 			else:
 				warnings.warn(testVal + ' not matching insertionMatch')
