@@ -69,7 +69,7 @@ class RangeMapping:
 	"""Class for defining how two sequence or structure ranges relate to each other"""
 
 	def __init__(self, rangeStringA, rangeStringB):
-		"""RangeMapping is initialised with two range strings nnn-mmm and iii-kkk
+		"""Initialise RangeMapping with two range strings 'nnn-mmm' and 'iii-kkk' or 'nnn' and 'nnnX'
 		In principle, RangeMapping could be extended to allow an arbitrary number of compatible ranges
 		"""
 
