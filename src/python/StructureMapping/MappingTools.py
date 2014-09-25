@@ -54,6 +54,7 @@ class Range:
 		"""Determine whether the given position 'inputVal' fals into the sequence range."""
 
 		if (self.hasInsertion()):
+			print 'inRange_insertion: checking ' + testVal
 			testVal = str(inputVal)
 			i = self.insertionMatch.match(testVal)
 			if (i):
@@ -62,6 +63,7 @@ class Range:
 				return pos == self.begin and ins==self.ins
 		else:
 			testVal = int(inputVal)
+			print 'inRange_NO_insertion: checking ' + testVal
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
