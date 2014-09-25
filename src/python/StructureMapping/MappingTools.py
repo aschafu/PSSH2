@@ -64,6 +64,7 @@ class Range:
 				return pos == self.begin and ins==self.ins
 			else:
 				warnings.warn(testVal + ' not matching insertionMatch')
+				return False
 		else:
 			testVal = int(inputVal)
 			print 'inRange_NO_insertion: checking %d' % testVal
