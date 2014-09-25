@@ -36,6 +36,7 @@ class Range:
 		self.ins = ''
 
 		if (r):
+			print r.group(1)
 			self.begin = r.group(1)
 			self.end = r.group(2)
 		else:
