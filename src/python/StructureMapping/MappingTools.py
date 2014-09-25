@@ -42,7 +42,7 @@ class Range:
 			i = self.insertionMatch.match(rangeString)
 			if (i):
 				self.begin = int(i.group(1))
-				self.end = begin
+				self.end = self.begin
 				self.ins = i.group(2)
 			else:
 				warnings.warn('range ('+rangeString+') does not match range or insertion')
