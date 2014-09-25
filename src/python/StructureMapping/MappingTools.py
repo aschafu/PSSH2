@@ -22,9 +22,8 @@ import warnings
 
 
 class Range:
-	
-	# common class for defining a Range
-	
+	"""Class for defining a sequence or structure range"""
+
 	rangeMatch = re.compile('(\d+)-(\d+)')
 	insertionMatch = re.compile('(\d+)(\D?)')
 
