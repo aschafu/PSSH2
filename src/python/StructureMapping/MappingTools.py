@@ -66,8 +66,14 @@ class Range:
 				warnings.warn(testVal + ' not matching insertionMatch')
 				return False
 		else:
-			testVal = int(inputVal)
-			print 'inRange_NO_insertion: checking %d' % testVal
+			print 'inRange_NO_insertion: ' 
+			try:
+				testVal = int(inputVal)
+				print 'checking %d' % testVal 
+
+			except:
+				warnings.warn(testVal + ' not matching insertionMatch')
+								
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
@@ -106,10 +112,6 @@ class RangeMapping:
 		if (self.range[0].len != self.range[1].len):
 			warnings.warn('lengths of range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
 
-#		# in case we have a range with insertion code, we just map directly, 
-#		# so no use to calculate an offset
-#		if (not self.hasInsertion()):
-#			self.offsetAtoB = self.range[0].begin - self.range[1].begin		
 
 	def hasInsertion(self):
 		"""Determine whether any of the given ranges has an insertion."""
