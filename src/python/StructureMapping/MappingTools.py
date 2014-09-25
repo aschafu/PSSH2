@@ -70,10 +70,9 @@ class Range:
 			try:
 				testVal = int(inputVal)
 				print 'checking %d' % testVal 
-
+				testVal = 0
 			except:
 				warnings.warn(testVal + ' not matching insertionMatch')
-								
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
