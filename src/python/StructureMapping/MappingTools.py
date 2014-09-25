@@ -101,7 +101,7 @@ class RangeMapping:
 		else:
 			# ranges with insertions always only match individual insertions,
 			# so we can just return the values for A withouth calculating anything
-			if (self.hasInsertion):
+			if (self.hasInsertion()):
 				if (self.rangeA.hasInsertion()):
 					return string(self.rangeA.begin)+self.rangeA.ins
 				else:
