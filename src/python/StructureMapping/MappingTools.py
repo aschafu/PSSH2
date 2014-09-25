@@ -67,12 +67,12 @@ class Range:
 				return False
 		else:
 			print 'inRange_NO_insertion: ' 
+			testVal = 0
 			try:
 				testVal = int(inputVal)
 				print 'checking %d' % testVal 
-				testVal = 0
 			except:
-				warnings.warn(testVal + ' not matching insertionMatch')
+				warnings.warn(testVal + ' is no integer')
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
