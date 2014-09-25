@@ -62,11 +62,7 @@ class Range:
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
-		if (self.ins):
-			return True
-		else:
-			return False
-
+		return bool(self.ins)
 
 
 class RangeMapping:
