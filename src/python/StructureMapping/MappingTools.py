@@ -96,8 +96,8 @@ class RangeMapping:
 		return self.range[0].hasInsertion() or self.range[1].hasInsertion()
 
 	def inRange(self, pos, iSeq):
-		"""determine whether the given position 'pos' is in the range of the iSeq'th sequence range
-		'iSeq' refers to the order in which the sequence ranges where given on initialisation
+		"""Determine whether the given position 'pos' is in the range of the iSeq'th sequence range.
+		'iSeq' refers to the order in which the sequence ranges where given on initialisation.
 		"""
 		return self.range[iSeq].inRange(pos)
 			
@@ -109,7 +109,7 @@ class RangeMapping:
 
 	def mapPosition(self, pos, i_from, i_to):
 		"""map (integer) pos as a position in sequence 'i_from' to the corresponding position in 'i_to'
-		'i_from' and 'i_to' refer to the order in which the sequence ranges where given on initialisation
+		'i_from' and 'i_to' refer to the order in which the sequence ranges where given on initialisation.
 		"""
 		if (not self.inRange(pos, i_from)):
 			warnings.warn('cannot map pos %d: not in range of %d (%d-%d)! ' % (posB,ifrom, self.rangeB.begin,self.rangeB.end))
