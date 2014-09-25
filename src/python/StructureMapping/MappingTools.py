@@ -93,6 +93,7 @@ class RangeMapping:
 #			self.offsetAtoB = self.range[0].begin - self.range[1].begin		
 
 	def hasInsertion(self):
+		"""Determine whether any of the given ranges has an insertion."""
 		return self.range[0].hasInsertion() or self.range[1].hasInsertion()
 
 	def inRange(self, pos, iSeq):
