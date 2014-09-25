@@ -71,7 +71,6 @@ class RangeMapping:
 	def __init__(self, rangeStringA, rangeStringB):
 		"""RangeMapping is initialised with two range strings nnn-mmm and iii-kkk
 		In principle, RangeMapping could be extended to allow an arbitrary number of compatible ranges
-
 		"""
 
 		# offsetAtoB can be added to positions in B in order to retrieve positions in A
@@ -79,6 +78,7 @@ class RangeMapping:
 		self.offsetAtoB = 0
 		rangeA = Range(rangeStringA)
 		rangeB = Range(rangeStringB)
+		# store the two ranges in a tuple to avoid code duplication below
 		self.range = (rangeA, rangeB)
 		
 #		self.rangeA = Range(rangeStringA)
