@@ -72,6 +72,7 @@ class Range:
 				testVal = int(inputVal)
 				print 'checking %d' % testVal 
 			except:
+				testVal = str(inputVal)
 				warnings.warn(testVal + ' is no integer')
 			return testVal in range(self.begin, self.end+1) 
 		
