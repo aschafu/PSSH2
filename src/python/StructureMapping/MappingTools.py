@@ -125,11 +125,11 @@ class RangeMapping:
 				return self.range[i_to].begin - self.range[i_from].begin + pos
 
 	def mapPositionBtoA(self, posB):
-		'maps (integer) posB as a position in sequence B to the corresponding position in A'
+		"""Map (integer) posB as a position in sequence B to the corresponding position in A"""
 		return self.mapPosition(posB, 1, 0)
 				
 	def mapPositionAtoB(self, posA):
-		'maps (integer) posA as a position in sequence A to the corresponding position in B'
+		"""Map (integer) posA as a position in sequence A to the corresponding position in B"""
 		return self.mapPosition(posA, 0, 1)
 
 
