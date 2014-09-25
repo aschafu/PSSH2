@@ -29,7 +29,7 @@ class Range:
 	insertionMatch = re.compile('(\d+)(\D?)')
 
 	def __init__(self, rangeString):
-		"""Initialise Range with a range strings 'nnn-mmm' or 'nnn' and 'nnnX'.
+		"""Initialise Range with a range strings 'nnn-mmm' or 'nnn' or 'nnnX'.
 		In principle, RangeMapping could be extended to allow an arbitrary number of compatible ranges
 		"""
 		
