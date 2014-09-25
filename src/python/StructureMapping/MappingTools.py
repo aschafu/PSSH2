@@ -72,7 +72,7 @@ class Range:
 				testVal = int(inputVal)
 				print 'checking %d' % testVal 
 			except:
-				warnings.warn(inputVal + ' is no integer')
+				warnings.warn('Cannot read integer from positions')
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
