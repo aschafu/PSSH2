@@ -37,11 +37,9 @@ class Range:
 
 		if (r):
 			print r.group(1)
-			testval = 100
-			intval = int(r.group(1))
-			print testval, intval
-			self.begin = r.group(1)
-			self.end = r.group(2)
+#			intval = int(r.group(1))
+			self.begin = int(r.group(1))
+			self.end = int(r.group(2))
 		else:
 			i = self.insertionMatch.match(rangeString)
 			if (i):
