@@ -97,7 +97,7 @@ class RangeMapping:
 		'maps (integer) posB as a position in sequence B to the corresponding position in A'
 		
 		if (not self.inRangeB(posB)):
-			warnings.warn('cannot map posB %d: not in range! ' % posB)
+			warnings.warn('cannot map posB %d: not in range (%d-%d)! ' % (posB,rangeB.begin,rangeB.end))
 		else:
 			# ranges with insertions always only match individual insertions,
 			# so we can just return the values for A withouth calculating anything
