@@ -65,6 +65,7 @@ class Range:
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
+		"""Determine whether this range has an insertion code."""
 		return bool(self.ins)
 
 
