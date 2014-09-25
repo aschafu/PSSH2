@@ -30,7 +30,7 @@ class Range:
 
 	def __init__(self, rangeString):
 		
-		r = rangeMatch.match(rangeString)
+		r = self.rangeMatch.match(rangeString)
 		self.begin = 0
 		self.end = 0
 		self.ins = ''
