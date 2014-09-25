@@ -90,6 +90,9 @@ class RangeMapping:
 
 	def hasInsertion(self):
 		return self.range[0].hasInsertion() or self.range[1].hasInsertion()
+
+	def inRange(self, pos, iSeq):
+		"""determine whether the given position is in the range of the ith"""
 			
 	def inRangeA(self, pos):		
 		return self.range[0].inRange(pos)
@@ -97,10 +100,23 @@ class RangeMapping:
 	def inRangeB(self, pos):		
 		return self.range[1].inRange(pos)
 
-	def mapPostion(self, pos, from, to):
-		"""maps (integer) pos as a position in sequence _from_ to the corresponding position in _to_
-		_from_ and _to_ refer to the order in which the ranges where given on initialisation
+	def mapPostion(self, pos, i_from, i_to):
+		"""maps (integer) pos as a position in sequence 'i_from' to the corresponding position in 'i_to'
+		'i_from' and 'i_to' refer to the order in which the sequence ranges where given on initialisation
 		"""
+		if (not self.inRangeB(posB)):
+			warnings.warn('cannot map posB %d: not in range of B (%d-%d)! ' % (posB,self.rangeB.begin,self.rangeB.end))
+		else:
+			# ranges with insertions always only match individual insertions,
+			# so we can just return the values for A withouth calculating anything
+			if (self.hasInsertion()):
+				if (self.rangeA.hasInsertion()):
+					return string(self.rangeA.begin)+self.rangeA.ins
+				else:
+					return self.rangeA.begin
+			else:
+				return posB+self.offsetAtoB
+
 		
 
 
