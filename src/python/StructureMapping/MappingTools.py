@@ -123,7 +123,9 @@ class RangeMapping:
 				else:
 					return self.range[i_to].begin
 			else:
-				return pos+self.offsetAtoB
+				return self.range[i_to].begin - self.range[i_from].begin + pos
+				
+				pos+self.offsetAtoB
 
 		
 
