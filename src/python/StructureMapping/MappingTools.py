@@ -126,11 +126,11 @@ class RangeMapping:
 
 	def mapPositionBtoA(self, posB):
 		'maps (integer) posB as a position in sequence B to the corresponding position in A'
-		return mapPosition(posB, 1, 0)
+		return self.mapPosition(posB, 1, 0)
 				
 	def mapPositionAtoB(self, posA):
 		'maps (integer) posA as a position in sequence A to the corresponding position in B'
-		return mapPosition(posA, 0, 1)
+		return self.mapPosition(posA, 0, 1)
 
 
 #class SequenceSeqresAlignment:
