@@ -71,6 +71,13 @@ class Range:
 	def hasInsertion(self):
 		"""Determine whether this range has an insertion code."""
 		return bool(self.ins)
+		
+	def toString(self):
+		"""Give a string representation of this range."""
+		if (self.hasInsertion()):
+			return str(self.begin) + self.ins
+		else:
+			return str(self.begin) + '-' + str(self.end)
 
 
 class RangeMapping:
