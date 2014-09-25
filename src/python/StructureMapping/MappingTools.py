@@ -124,6 +124,7 @@ class RangeMapping:
 		"""
 		if (not self.inRange(pos, i_from)):
 			posString = str(pos)
+			rangeString = self.range[i_from].print()
 			warnings.warn('cannot map pos '+posString+': not in range of %d (%d-%d)! ' % (i_from, self.range[i_from].begin,self.range[i_from].end))
 		else:
 			# ranges with insertions always only match individual insertions,
