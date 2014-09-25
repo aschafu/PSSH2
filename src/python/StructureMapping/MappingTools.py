@@ -163,6 +163,7 @@ class SequenceSeqresAlignment:
 	"""Class for representing the alignment between a sequence and the seqres sequence of a PDB """
 	
 	psshMatch = re.compile('(\d+-\d+:\d+-\d+)')
+	sequenceNames = ('A', 'B')
 	
 	def __init__(self, psshAlignmentString):
 		"""Initialise the Alignment with an alignment string in pssh format:
@@ -170,10 +171,17 @@ class SequenceSeqresAlignment:
 		The first part indicates the residues in the (Uniprot) query sequence,
 		the second part indicates the residues in the SEQRES sequence of the protein structure.
 		"""
-		
 		rangeMatch = psshMatch.findall(psshAlignmentString)		
 		self.rangeCollection = map(RangeMapping(rangeMatch))
 		
+	def mapPositionBtoA(self, posB):
+		"""Map (integer) posB as a position in sequence B to the corresponding position in A"""
+		return self.mapPosition(posB, 1, 0)
+	
+	def mapPositionAtoB(self, posA):
+		"""Map (integer) posA as a position in sequence A to the corresponding position in B"""
+		return self.mapPosition(posA, 0, 1)
+
 	
 
 #class StructureLocationMapping:
