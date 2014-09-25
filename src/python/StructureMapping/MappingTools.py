@@ -110,8 +110,9 @@ class RangeMapping:
 		"""map (integer) pos as a position in sequence 'i_from' to the corresponding position in 'i_to'
 		'i_from' and 'i_to' refer to the order in which the sequence ranges where given on initialisation
 		"""
+
 		if (not self.inRange(pos, i_from)):
-			warnings.warn('cannot map posB %d: not in range of B (%d-%d)! ' % (posB,self.rangeB.begin,self.rangeB.end))
+			warnings.warn('cannot map pos %d: not in range of %d (%d-%d)! ' % (posB,ifrom,self.rangeB.begin,self.rangeB.end))
 		else:
 			# ranges with insertions always only match individual insertions,
 			# so we can just return the values for A withouth calculating anything
