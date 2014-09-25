@@ -36,11 +36,8 @@ class Range:
 		self.ins = ''
 
 		if (r):
-			print r.group(1)
-#			intval = int(r.group(1))
 			self.begin = int(r.group(1))
 			self.end = int(r.group(2))
-			print self.begin
 		else:
 			i = self.insertionMatch.match(rangeString)
 			if (i):
