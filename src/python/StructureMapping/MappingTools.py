@@ -75,7 +75,8 @@ class RangeMapping:
 
 		# offsetAtoB can be added to positions in B in order to retrieve positions in A
 		# offsetAtoB can be substracted from positions in A in order to retrieve positions in B
-		self.offsetAtoB = 0
+		# however, we have to get rid of the precalulated offset, to be more generic
+#		self.offsetAtoB = 0
 		rangeA = Range(rangeStringA)
 		rangeB = Range(rangeStringB)
 		# store the two ranges in a tuple to avoid code duplication below
