@@ -76,11 +76,11 @@ class RangeMapping:
 		self.offsetAtoB = 0
 		rangeA = Range(rangeStringA)
 		rangeB = Range(rangeStringB)
-		self.ranges = (rangeA, rangeB)
+		self.range = (rangeA, rangeB)
 		
 #		self.rangeA = Range(rangeStringA)
 #		self.rangeB = Range(rangeStringB)
-		if (self.ranges[0].len != self.range[1].len):
+		if (self.range[0].len != self.range[1].len):
 			warnings.warn('lengths of range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
 
 		# in case we have a range with insertion code, we just map directly, 
@@ -92,10 +92,10 @@ class RangeMapping:
 		return self.range[0].hasInsertion() or self.range[1].hasInsertion()
 			
 	def inRangeA(self, pos):		
-		return self.rangeA.inRange(pos)
+		return self.range[0].inRange(pos)
 
 	def inRangeB(self, pos):		
-		return self.rangeB.inRange(pos)
+		return self.range[1].inRange(pos)
 
 	def mapPositionBtoA(self, posB):
 		'maps (integer) posB as a position in sequence B to the corresponding position in A'
