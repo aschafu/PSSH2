@@ -63,7 +63,7 @@ class Range:
 				return pos == self.begin and ins==self.ins
 		else:
 			testVal = int(inputVal)
-			print 'inRange_NO_insertion: checking ' + testVal
+			print 'inRange_NO_insertion: checking %d' % testVal
 			return testVal in range(self.begin, self.end+1) 
 		
 	def hasInsertion(self):
