@@ -94,7 +94,8 @@ class RangeMapping:
 		return self.rangeB.inRange(pos)
 
 	def mapPositionBtoA(self, posB):
-
+		'maps (integer) posB as a position in sequence B to the corresponding position in A'
+		
 		if (not self.inRangeB(posB)):
 			warnings.warn('cannot map posB %d: not in range! ' % posB)
 		else:
