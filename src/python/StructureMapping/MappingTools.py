@@ -34,18 +34,16 @@ class Range:
 		self.begin = 0
 		self.end = 0
 		self.ins = ''
-		print r
 
 		if (r):
-			print r.group
-#			self.begin = int(r.group(0))
-#			self.end = int(r.group(1))
+			self.begin = int(r.group(1))
+			self.end = int(r.group(2))
 		else:
 			i = self.insertionMatch.match(rangeString)
 			if (i):
-				self.begin = int(i.group(0))
+				self.begin = int(i.group(1))
 				self.end = begin
-				self.ins = i.group(1)
+				self.ins = i.group(2)
 			else:
 				warnings.warn('range ('+range+') does not match range or insertion')
 
@@ -56,8 +54,8 @@ class Range:
 		if (self.hasInsertion()):
 			i = self.insertionMatch.match(inputVal)
 			if (i):
-				pos = int(i.group(0))
-				ins = i.group(1)
+				pos = int(i.group(1))
+				ins = i.group(2)
 				return pos == self.begin and ins==self.ins
 		else:
 			testVal = int(inputVal)
