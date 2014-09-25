@@ -37,6 +37,8 @@ class Range:
 
 		if (r):
 			print r.group(1)
+			intval = int(r.group(1))
+			print intval
 			self.begin = r.group(1)
 			self.end = r.group(2)
 		else:
