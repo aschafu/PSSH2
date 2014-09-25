@@ -92,7 +92,7 @@ class RangeMapping:
 		return self.range[0].hasInsertion() or self.range[1].hasInsertion()
 
 	def inRange(self, pos, iSeq):
-		"""determine whether the given position is in the range of the ith
+		"""determine whether the given position is in the range of the iSeq'th sequence range
 		'iSeq' refers to the order in which the sequence ranges where given on initialisation
 		"""
 		return self.range[iSeq].inRange(pos)
