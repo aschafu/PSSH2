@@ -133,9 +133,9 @@ class RangeMapping:
 		"""Map (integer) pos as a position in sequence 'i_from' to the corresponding position in 'i_to'.
 		'i_from' and 'i_to' refer to the order in which the sequence ranges where given on initialisation.
 		"""
+		posString = str(pos)
+		rangeString = self.range[i_from].toString()
 		if (not self.inRange(pos, i_from)):
-			posString = str(pos)
-			rangeString = self.range[i_from].toString()
 			warnings.warn('cannot map pos '+posString+': not in range of '+ RangeMapping.sequenceNames[i_from] +' :' + rangeString)
 		else:
 			print "is in range of " + RangeMapping.sequenceNames[i_from] +' : ' + rangeString
