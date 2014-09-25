@@ -140,10 +140,7 @@ class RangeMapping:
 			# ranges with insertions always only match individual insertions,
 			# so we can just return the values for i_to withouth calculating anything
 			if (self.hasInsertion()):
-				if (self.range[i_to].hasInsertion()):
-					return str(self.range[i_to].begin)+self.range[i_to].ins
-				else:
-					return self.range[i_to].begin
+				return self.range[i_to].toString()
 			else:
 				return self.range[i_to].begin - self.range[i_from].begin + pos
 
