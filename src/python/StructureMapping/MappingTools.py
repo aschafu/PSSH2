@@ -86,10 +86,10 @@ class RangeMapping:
 		if (self.range[0].len != self.range[1].len):
 			warnings.warn('lengths of range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
 
-		# in case we have a range with insertion code, we just map directly, 
-		# so no use to calculate an offset
-		if (not self.hasInsertion()):
-			self.offsetAtoB = self.range[0].begin - self.range[1].begin		
+#		# in case we have a range with insertion code, we just map directly, 
+#		# so no use to calculate an offset
+#		if (not self.hasInsertion()):
+#			self.offsetAtoB = self.range[0].begin - self.range[1].begin		
 
 	def hasInsertion(self):
 		return self.range[0].hasInsertion() or self.range[1].hasInsertion()
@@ -122,7 +122,7 @@ class RangeMapping:
 				else:
 					return self.range[i_to].begin
 			else:
-				return posB+self.offsetAtoB
+				return pos+self.offsetAtoB
 
 		
 
