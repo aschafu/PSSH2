@@ -76,8 +76,6 @@ class RangeMapping:
 		self.offsetAtoB = 0
 		self.rangeA = Range(rangeStringA)
 		self.rangeB = Range(rangeStringB)
-		print 'lengths:'
-		print self.rangeA.len,  self.rangeB.len
 		if (self.rangeA.len != self.rangeB.len):
 			warnings.warn('range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
 
