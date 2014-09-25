@@ -124,29 +124,14 @@ class RangeMapping:
 					return self.range[i_to].begin
 			else:
 				return self.range[i_to].begin - self.range[i_from].begin + pos
-				
-				pos+self.offsetAtoB
-
-		
-
 
 	def mapPositionBtoA(self, posB):
 		'maps (integer) posB as a position in sequence B to the corresponding position in A'
-		
-		if (not self.inRangeB(posB)):
-			warnings.warn('cannot map posB %d: not in range of B (%d-%d)! ' % (posB,self.rangeB.begin,self.rangeB.end))
-		else:
-			# ranges with insertions always only match individual insertions,
-			# so we can just return the values for A withouth calculating anything
-			if (self.hasInsertion()):
-				if (self.rangeA.hasInsertion()):
-					return string(self.rangeA.begin)+self.rangeA.ins
-				else:
-					return self.rangeA.begin
-			else:
-				return posB+self.offsetAtoB
+		return mapPosition(posB, 1, 0)
 				
 	def mapPositionAtoB(self, posA):
+		'maps (integer) posA as a position in sequence A to the corresponding position in B'
+		return mapPosition(posA, 0, 1)
 
 		if (not self.inRangeA(posA)):
 			warnings.warn('cannot map posB %d: not in range of B (%d-%d)! ' % (posA,self.rangeA.begin,self.rangeA.end))
