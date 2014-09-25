@@ -138,7 +138,7 @@ class RangeMapping:
 		if (not self.inRange(pos, i_from)):
 			warnings.warn('cannot map pos '+posString+': not in range of '+ RangeMapping.sequenceNames[i_from] +' :' + rangeString)
 		else:
-			print "is in range of " + RangeMapping.sequenceNames[i_from] +' : ' + rangeString
+			print posString + "is in range of " + RangeMapping.sequenceNames[i_from] +' : ' + rangeString
 			# ranges with insertions always only match individual insertions,
 			# so we can just return the values for i_to withouth calculating anything
 			if (self.range[i_to].hasInsertion()):
