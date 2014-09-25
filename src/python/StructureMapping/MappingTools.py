@@ -54,7 +54,8 @@ class Range:
 		"""Determine whether the given position 'inputVal' fals into the sequence range."""
 
 		if (self.hasInsertion()):
-			i = self.insertionMatch.match(inputVal)
+			testVal = str(inputVal)
+			i = self.insertionMatch.match(testVal)
 			if (i):
 				pos = int(i.group(1))
 				ins = i.group(2)
