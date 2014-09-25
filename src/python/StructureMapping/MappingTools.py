@@ -125,16 +125,16 @@ class RangeMapping:
 				return posA-self.offsetAtoB
 				
 
-class SequenceSeqresAlignment:
+#class SequenceSeqresAlignment:
 
 	# Class for representing the alignment between a sequence and the seqres sequence of a PDB StructureLocationMapping
 	
-	def __init__(self, psshAlignmentString):
+#	def __init__(self, psshAlignmentString):
 		
-		self.rangeCollection = ()
+#		self.rangeCollection = ()
 		
 	
 
-class StructureLocationMapping:
+#class StructureLocationMapping:
 
 
