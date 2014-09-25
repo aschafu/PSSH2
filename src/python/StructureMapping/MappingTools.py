@@ -97,6 +97,13 @@ class RangeMapping:
 	def inRangeB(self, pos):		
 		return self.range[1].inRange(pos)
 
+	def mapPostion(self, pos, from, to):
+		"""maps (integer) pos as a position in sequence _from_ to the corresponding position in _to_
+		_from_ and _to_ refer to the order in which the ranges where given on initialisation
+		"""
+		
+
+
 	def mapPositionBtoA(self, posB):
 		'maps (integer) posB as a position in sequence B to the corresponding position in A'
 		
