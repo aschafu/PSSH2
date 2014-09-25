@@ -83,11 +83,13 @@ class Range:
 class RangeMapping:
 	"""Class for defining how two sequence or structure ranges relate to each other"""
 
+		sequenceNames = ('A', 'B')
+
+
 	def __init__(self, rangeStringA, rangeStringB):
 		"""Initialise RangeMapping with two range strings 'nnn-mmm' and 'iii-kkk' or 'nnn' and 'nnnX'.
 		In principle, RangeMapping could be extended to allow an arbitrary number of compatible ranges
 		"""
-		self.sequenceNames = ('A', 'B')
 
 		# offsetAtoB can be added to positions in B in order to retrieve positions in A
 		# offsetAtoB can be substracted from positions in A in order to retrieve positions in B
