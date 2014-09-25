@@ -133,19 +133,6 @@ class RangeMapping:
 		'maps (integer) posA as a position in sequence A to the corresponding position in B'
 		return mapPosition(posA, 0, 1)
 
-		if (not self.inRangeA(posA)):
-			warnings.warn('cannot map posB %d: not in range of B (%d-%d)! ' % (posA,self.rangeA.begin,self.rangeA.end))
-		else:
-			# ranges with insertions always only match individual insertions,
-			# so we can just return the values for B withouth calculating anything
-			if (self.hasInsertion()):
-				if (self.rangeB.hasInsertion()):
-					return string(self.rangeB.begin)+self.rangeB.ins
-				else:
-					return self.rangeB.begin
-			else:
-				return posA-self.offsetAtoB
-				
 
 #class SequenceSeqresAlignment:
 
