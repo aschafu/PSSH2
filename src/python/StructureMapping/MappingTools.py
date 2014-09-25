@@ -89,7 +89,7 @@ class RangeMapping:
 			self.offsetAtoB = self.range[0].begin - self.range[1].begin		
 
 	def hasInsertion(self):
-		return self.rangeA.hasInsertion() or self.rangeB.hasInsertion()
+		return self.range[0].hasInsertion() or self.range[1].hasInsertion()
 			
 	def inRangeA(self, pos):		
 		return self.rangeA.inRange(pos)
