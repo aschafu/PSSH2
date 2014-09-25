@@ -66,7 +66,7 @@ class Range:
 
 
 class RangeMapping:
-	""" Class for defining how two sequence or structure ranges relate to each other"""
+	"""Class for defining how two sequence or structure ranges relate to each other"""
 
 	def __init__(self, rangeStringA, rangeStringB):
 
