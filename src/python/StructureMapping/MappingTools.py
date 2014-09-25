@@ -34,6 +34,7 @@ class Range:
 		self.begin = 0
 		self.end = 0
 		self.ins = ''
+		print r
 
 		if (r):
 			print r.group
