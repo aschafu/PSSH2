@@ -45,7 +45,7 @@ class Range:
 				self.end = begin
 				self.ins = i.group(2)
 			else:
-				warnings.warn('range ('+range+') does not match range or insertion')
+				warnings.warn('range ('+rangeString+') does not match range or insertion')
 
 		self.len = self.end - self.begin + 1
 
