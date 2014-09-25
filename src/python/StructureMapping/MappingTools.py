@@ -74,9 +74,13 @@ class RangeMapping:
 		# offsetAtoB can be added to positions in B in order to retrieve positions in A
 		# offsetAtoB can be substracted from positions in A in order to retrieve positions in B
 		self.offsetAtoB = 0
-		self.rangeA = Range(rangeStringA)
-		self.rangeB = Range(rangeStringB)
-		if (self.rangeA.len != self.rangeB.len):
+		rangeA = Range(rangeStringA)
+		rangeB = Range(rangeStringB)
+		self.ranges = (rangeA, rangeB)
+		
+#		self.rangeA = Range(rangeStringA)
+#		self.rangeB = Range(rangeStringB)
+		if (self.ranges[0].len != self.range[1].len):
 			warnings.warn('lengths of range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
 
 		# in case we have a range with insertion code, we just map directly, 
