@@ -39,7 +39,7 @@ class Range:
 			self.begin = int(r.group(0))
 			self.end = int(r.group(1))
 		else:
-			i = insertionMatch.(rangeString)
+			i = insertionMatch.match(rangeString)
 			if (i):
 				self.begin = int(i.group(0))
 				self.end = begin
