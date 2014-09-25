@@ -111,7 +111,7 @@ class RangeMapping:
 				
 	def mapPositionAtoB(self, posA):
 
-		if (not self.inRangeA(posA):
+		if (not self.inRangeA(posA)):
 			warnings.warn('cannot map posA '+string(posA)+': not in range! ')
 		else:
 			# ranges with insertions always only match individual insertions,
