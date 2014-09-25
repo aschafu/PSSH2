@@ -78,7 +78,7 @@ class RangeMapping:
 		self.rangeB = Range(rangeStringB)
 		print 'lengths:'
 		print self.rangeA.len,  self.rangeB.len
-		if (self.rangeA.len != self.rangeA.len):
+		if (self.rangeA.len != self.rangeB.len):
 			warnings.warn('range A ('+rangeStringA+') and range B ('+rangeStringB+') do not fit')
 
 		# in case we have a range with insertion code, we just map directly, 
