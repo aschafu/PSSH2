@@ -95,12 +95,13 @@ class RangeMapping:
 		"""determine whether the given position is in the range of the ith
 		'iSeq' refers to the order in which the sequence ranges where given on initialisation
 		"""
+		return self.range[iSeq].inRange(pos)
 			
 	def inRangeA(self, pos):		
-		return self.range[0].inRange(pos)
-
+		return self.inRange(pos,0) 
+		
 	def inRangeB(self, pos):		
-		return self.range[1].inRange(pos)
+		return self.inRange(pos,1) 
 
 	def mapPostion(self, pos, i_from, i_to):
 		"""map (integer) pos as a position in sequence 'i_from' to the corresponding position in 'i_to'
