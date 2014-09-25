@@ -102,9 +102,11 @@ class RangeMapping:
 		return self.range[iSeq].inRange(pos)
 			
 	def inRangeA(self, pos):		
+		"""Determine whether the given position 'pos' is in the range of the first sequence range (A)."""
 		return self.inRange(pos,0) 
 		
 	def inRangeB(self, pos):		
+		"""Determine whether the given position 'pos' is in the range of the second sequence range (B)."""
 		return self.inRange(pos,1) 
 
 	def mapPosition(self, pos, i_from, i_to):
