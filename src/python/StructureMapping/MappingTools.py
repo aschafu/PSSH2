@@ -26,9 +26,12 @@ class Range:
 	# common class for defining a Range
 	
 	rangeMatch = re.compile('(\d+)-(\d+)')
-	insertionMatch = re.compile('(\d+)(\D)')
+	insertionMatch = re.compile('(\d+)(\D?)')
 
 	def __init__(self, rangeString):
+		"""Initialise Range with a range strings 'nnn-mmm' or 'nnn' and 'nnnX'.
+		In principle, RangeMapping could be extended to allow an arbitrary number of compatible ranges
+		"""
 		
 		r = self.rangeMatch.match(rangeString)
 		self.begin = 0
