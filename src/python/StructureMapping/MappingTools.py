@@ -116,7 +116,7 @@ class RangeMapping:
 		else:
 			# ranges with insertions always only match individual insertions,
 			# so we can just return the values for B withouth calculating anything
-			if (self.hasInsertion):
+			if (self.hasInsertion()):
 				if (self.rangeB.hasInsertion()):
 					return string(self.rangeB.begin)+self.rangeB.ins
 				else:
