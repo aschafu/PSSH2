@@ -12,5 +12,5 @@ IFS=$'\n'
 #set -f 
 for md5String in `cat $md5List_batches`
 do
-	qsub -o /dev/null -e /dev/null pssh2_multi_md5 -m $md5String 
+	qsub -o /dev/null -e /dev/null /usr/bin/pssh2_multi_md5 -m $md5String 
 done
