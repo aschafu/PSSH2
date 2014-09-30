@@ -109,7 +109,11 @@ class SequenceSubmitter:
 		"""Take a fasta header and get out the sequence identifier and any given description
 		Could be extended to look for annotation info in the header.
 		"""
-		# TODO		
+		headerPattern = re.compile("^>(\S)\s+(.*)")
+		result = headerPattern.match(headerString)
+		identifier = result.group(1)
+		description = result.group(2)
+		return(identifier, description)
 		
 		
 	def parseFasta(self, fastaString):
