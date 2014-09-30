@@ -4,8 +4,8 @@
 
 set -x
 
-md5List = $1
-md5List_batches = {$md5List}.batches
+md5List=$1
+md5List_batches={$md5List}.batches
 
 xargs -a $md5List -n 5 | awk '{printf("\"%s\"\n", $0);}' > $md5List_batches
 IFS=$'\n'
