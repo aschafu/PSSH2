@@ -56,7 +56,7 @@ exit 1
 }
 
 
-while getopts "f:m:a:r:c:bu:hs" option;
+while getopts "f:m:a:r:c:bu:p:hs" option;
 do
  case $option in
   f)
