@@ -116,7 +116,9 @@ class SequenceSubmitter:
 		Checking that the user_id is valid should happen elsewhere.
 		"""
 		(seq_id, description, sequence) = parseFasta(fastaString)
+		md5 = self.getSequenceMd5(sequence)
 		submitConnection = self.db_connection.getConnection(self.sequenceDB,'updating')
+		
 		# TODO
 
 
