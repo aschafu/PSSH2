@@ -1,6 +1,9 @@
 import mysql.connector
 import ConfigParser
 import warnings
+import io
+import os
+import re
 
 defaultConfig = """
 [aquaria]
@@ -28,7 +31,7 @@ class DB_Connection:
 	
 		config = ConfigParser.RawConfigParser()
 		config.readfp(io.BytesIO(defaultConfig))
-		conffile=config.read('/etc/pssh2_databases.conf', os.path.expanduser('~/.pssh2_databases.conf'))
+		conffile=config.read(['/etc/pssh2_databases.conf', os.path.expanduser('~/.pssh2_databases.conf')])
 
 		self.databases = ('aquaria', 'pssh2')
 		for database in self.databases:
@@ -65,34 +68,38 @@ class DB_Connection:
 		                     )
 				self.connectionTable[db][permission_type] = connection
 			except mysql.connector.Error as err:
-		    	warnings.warn('Cannot make connection for '+ permission_type + \
+				warnings.warn('Cannot make connection for '+ permission_type + \
 		    	              ' to db '+ db +'!')
 				if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-    				warnings.warn("Something is wrong with your user name or password")
+					warnings.warn("Something is wrong with your user name or password")
 			  	elif err.errno == errorcode.ER_BAD_DB_ERROR:
-    				warnings.warn("Database does not exists")
+			  		warnings.warn("Database does not exists")
 				else:
-    				print(err)
+					print(err)
     				
 		return connection
 		
 			
 class SequenceSubmitter:
 
+	self.sequenceDB = 'aquaria'
+
 	def __init__(self):
 		"""Read the configuration from the default parameters or a config file."""
 	
 		config = ConfigParser.RawConfigParser()
 		config.readfp(io.BytesIO(defaultConfig))
-		conffile=config.read('/etc/pssh2_databases.conf', os.path.expanduser('~/.pssh2_databases.conf'))
+		conffile=config.read(['/etc/pssh2_databases.conf', os.path.expanduser('~/.pssh2_databases.conf')])
 		
-		self.userSequenceTable = config.read('user_tables', 'sequences')
+		self.userSequenceTable = config.get('user_tables', 'sequences')
 		if (not self.userSequenceTable):
 			warnings.warn('No table defined for user sequences!, check your config file: '+conffile)
 		
+		self.db_connection = DB_Connection()
+		
 	
-	def uploadSingleSeq(self, fastaString, source, organism_id='', domain='', kingdom=''\
-	                    features='', string_id=''):
+	def uploadSingleFastaSeq(self, fastaString, source, organism_id='', domain='', kingdom='',\
+	                         features='', string_id=''):
 		"""Load a sequence into the user sequence table.
 		The 'fastaString' should contain the header and a sequence. 
 		So this function may be called after reading in a file containing a single sequence
@@ -102,6 +109,7 @@ class SequenceSubmitter:
 		Checking that the user_id is valid should happen elsewhere.
 		"""
 		(seq_id, description, sequence) = parseFasta(fastaString)
+		submitConnection = self.db_connection.getConnection(self.sequenceDB,'updating')
 		# TODO
 
 
@@ -109,27 +117,29 @@ class SequenceSubmitter:
 		"""Take a fasta header and get out the sequence identifier and any given description
 		Could be extended to look for annotation info in the header.
 		"""
-		headerPattern = re.compile("^>(\S)\s+(.*)")
+		headerPattern = re.compile("^>(\S+)\s+(\S.*)")
 		result = headerPattern.match(headerString)
 		identifier = result.group(1)
 		description = result.group(2)
 		return(identifier, description)
 		
 		
-	def parseFasta(self, fastaString):
+	def parseFasta(self, fastaString, cleanPattern="[^a-zA-Z]"):
 		"""Take the given 'fastaString' and get out the header and sequence info"""
 		
 		fastaLines = fastaString.splitlines()
 		# skip to first ">"
 		found_seq = False
+		seq_id = '' 
+		description = ''
 		sequence = ''
-		for i in range(0 .. len(fastaLines)):
+		for i in range(0, len(fastaLines)):
 			if fastaLines[i] == '':
 				# stop on empty lines
 				if (found_seq):
 					break
-				else:
-					warnings.warn('Empty line %d :'%(i+1) + fastaLines[i] + ' in fasta string! ', fastaString)
+#				else:
+#					warnings.warn('Empty line %d :'%i + fastaLines[i] + ' in fasta string! ', fastaString)
 			elif fastaLines[i][0] == ">":
 				# if we had a header before, we want to stop now
 				if (found_seq):
@@ -145,6 +155,30 @@ class SequenceSubmitter:
 				# not a header, not empty, no sequence found so far -> nothing to do!
 
 		# clean up the sequence 
-		nonResiduePattern = re.compile("![[a-zA-Z]]")
-		nonResiduePattern.sub("X", sequence)
+		nonResiduePattern = re.compile(cleanPattern)
+		sequence = re.sub(nonResiduePattern, "X", sequence)
 		return (seq_id, description, sequence)
+		
+
+	def extractSingleFastaSequencesFromFile(self, fileName):
+		"""Take the file given by fileName, extract Fasta sequences, return a list of (multiline) strings"""
+	
+		try:
+			seqFile = open(fileName, 'r')
+		except:
+			warnings.warn("Couldn't open " + seqFile + " for reading. Stopping! " )
+			return
+
+		# split the fata file into single entries		
+		lastEntry = []
+		entryList = []
+		for line in seqFile:
+			if line[0] == ">":
+				if (lastEntry):
+					entryList.append(''.join(lastEntry))
+				lastEntry = [ line ]
+			elif (lastEntry):
+				lastEntry.append(line)
+		entryList.append(''.join(lastEntry))
+		
+		return entryList
