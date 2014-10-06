@@ -57,6 +57,7 @@ class DB_Connection:
 					self.conf[permission][param] = ''
 
 		for database in self.databases:
+			self.connectionTable[database]={}
 			for permission in self.permissions:
 				self.connectionTable[database][permission] = ''
 
