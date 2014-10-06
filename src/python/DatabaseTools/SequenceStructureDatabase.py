@@ -86,7 +86,7 @@ class DB_Connection:
 			
 class SequenceSubmitter:
 
-	self.sequenceDB = 'aquaria'
+	sequenceDB = 'aquaria'
 
 	def __init__(self):
 		"""Read the configuration from the default parameters or a config file."""
