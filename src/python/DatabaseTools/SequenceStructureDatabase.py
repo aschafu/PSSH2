@@ -35,7 +35,7 @@ class DB_Connection:
 		config = ConfigParser.RawConfigParser()
 		config.readfp(io.BytesIO(defaultConfig))
 		conffile=config.read(['/etc/pssh2_databases.conf', os.path.expanduser('~/.pssh2_databases.conf')])
-		self.conf = ()
+		self.conf = {}
 
 		self.databases = ('aquaria', 'pssh2')
 		for database in self.databases:
