@@ -120,12 +120,23 @@ class SequenceSubmitter:
 		submitConnection = self.db_connection.getConnection(self.sequenceDB,'updating')
 		cursor = submitConnection.cursor()
 		
+		# TODO: add more stuff to insert, if we really need that
 		add_sequence = ("INSERT INTO "+self.userSequenceTable 
-		                "(Primary_Accession )
+		                "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description)"
+		                "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence), %(md5)s, %(length)i, %(description)s)")
+		sequence_data = {
+			'primary_accession' : seq_id,
+			'source' : source,
+			'organism_id' : organism_id,
+			'sequence' : sequence,
+			'md5' : md5,
+			'length' : length(sequence),
+			'description' : description
+			}
 		
-		submit
-			
-		# TODO
+		cursor.execute(add_sequence, sequence_data)
+		submitConnection.commit()
+		cursor.close()
 
 
 	def parseFastaHeader(self, headerString):
