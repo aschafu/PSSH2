@@ -4,6 +4,7 @@ import warnings
 import io
 import os
 import re
+import hashlib
 
 defaultConfig = """
 [aquaria]
@@ -96,6 +97,12 @@ class SequenceSubmitter:
 			warnings.warn('No table defined for user sequences!, check your config file: '+conffile)
 		
 		self.db_connection = DB_Connection()
+		
+
+	def getSequenceMd5(self, sequence):
+		"""Return the md5 sum of the sequence string (only sequence without header!)"""
+		
+		return  hashlib.md5(sequence).hexdigest()
 		
 	
 	def uploadSingleFastaSeq(self, fastaString, source, organism_id='', domain='', kingdom='',\
