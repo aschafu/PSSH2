@@ -10,9 +10,11 @@ defaultConfig = """
 [aquaria]
 host=aquaria-mysql
 database=aquaria
+port=3306
 [pssh2]
 host=aquaria-mysql
 database=pssh2_local
+port=3306
 [updating]
 user=update_d
 password=Aquaria4ever!
