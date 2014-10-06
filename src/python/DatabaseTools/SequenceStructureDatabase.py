@@ -124,7 +124,8 @@ class SequenceSubmitter:
 		cursor = submitConnection.cursor()
 		
 		# TODO: add more stuff to insert, if we really need that
-		add_sequence = ("INSERT INTO "+self.userSequenceTable 
+		add_sequence = ("INSERT INTO "
+						self.userSequenceTable 
 		                "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description)"
 		                "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence), %(md5)s, %(length)i, %(description)s)")
 		sequence_data = {
