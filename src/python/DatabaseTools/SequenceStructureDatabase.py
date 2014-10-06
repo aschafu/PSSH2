@@ -67,7 +67,7 @@ class DB_Connection:
 			                 user=self.conf[permission_type]['user'], 
 		                     password=self.conf[permission_type]['password'],
 		                     host=self.conf[db]['host'],
-		                     database=self.conf[db]['database']
+		                     database=self.conf[db]['database'],
 		                     port=self.conf[db]['port']
 		                     )
 				self.connectionTable[db][permission_type] = connection
