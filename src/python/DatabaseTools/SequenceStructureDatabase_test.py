@@ -6,7 +6,6 @@ from DatabaseTools import *
 # ssh -L 3307:192.168.1.47:3306 andrea@rostlab
 # have local config file
 
-
 class TestSequenceSubmitter(TestCase):
 
 	def setUp(self):
@@ -54,7 +53,7 @@ LHY
 		checkFileAndEntries(self.testFileNameSwissprot, 6)
 
 		
-	def testConnection(self):
+#	def testConnection(self):
 				
 			
 
