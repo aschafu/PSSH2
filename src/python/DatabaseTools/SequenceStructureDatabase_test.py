@@ -1,6 +1,12 @@
 from unittest import TestCase, TextTestRunner, TestLoader
 from DatabaseTools import *
 
+# preprequisite for this test to work on local Mac:
+# set up tunnel: 
+# ssh -L 3307:192.168.1.47:3306 andrea@rostlab
+# have local config file
+
+
 class TestSequenceSubmitter(TestCase):
 
 	def setUp(self):
@@ -46,7 +52,10 @@ LHY
 		checkFileAndEntries(self.testFileName3Seq, 3)
 		checkFileAndEntries(self.testFileNameBrokenSeq, 2)
 		checkFileAndEntries(self.testFileNameSwissprot, 6)
+
 		
+	def testConnection(self):
+				
 			
 
 if __name__ == '__main__':		
