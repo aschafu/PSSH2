@@ -40,6 +40,8 @@ class DB_Connection:
 		self.databases = ('aquaria', 'pssh2')
 		for database in self.databases:
 			self.conf[database] = config.items(database)
+			print config.items(database)
+
 			for param in ('host', 'database'):
 				if (not self.conf[database][param]):
 					warnings.warn(conffile + ' does not contain parameter ' + param + ' for ' + permission)
