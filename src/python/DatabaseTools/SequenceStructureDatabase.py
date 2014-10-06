@@ -120,7 +120,7 @@ class SequenceSubmitter:
 		"""
 		(seq_id, description, sequence) = parseFasta(fastaString)
 		md5 = self.getSequenceMd5(sequence)
-		submitConnection = self.db_connection.getConnection(self.sequenceDB,'updating')
+		submitConnection = self.db_connection.getConnection(SequenceSubmitter.sequenceDB,'updating')
 		cursor = submitConnection.cursor()
 		
 		# TODO: add more stuff to insert, if we really need that
