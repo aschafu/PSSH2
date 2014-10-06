@@ -49,7 +49,7 @@ class DB_Connection:
 
 		self.permissions = ('updating', 'reading')
 		for permission in self.permissions:
-			self.conf[permission] = config.items(permission)
+			self.conf[permission] = dict ( config.items(permission) )
 			for param in ('user', 'password'):
 				if (not self.conf[permission][param]):
 					warnings.warn(conffile + ' does not contain parameter ' + param + ' for ' + permission)
