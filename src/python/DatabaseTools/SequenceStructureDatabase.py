@@ -139,7 +139,7 @@ class SequenceHandler:
 		# TODO: add more stuff to insert, if we really need that
 #		add_sequence = (insertBegin
 #		                "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
-#		                "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence), %(md5)s, %(length)i, %(description)s)")
+#		                "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)i, %(description)s)")
 		sequence_data = {
 			'primary_accession' : seq_id,
 			'source' : source,
