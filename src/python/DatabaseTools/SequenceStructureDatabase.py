@@ -135,7 +135,7 @@ class SequenceHandler:
 
 		cursor = submitConnection.cursor()
 		result=cursor.execute(mysqlCheck, ( seq_id, source ))
-		if result.with_rows:
+		if cursor.with_rows:
 			warnings.warn('Primary key of "'+seq_id + '" and "' + source + " has been used before! \n" + 
 			"Will skip this sequence: " + fastaString )
 			cursor.close()
