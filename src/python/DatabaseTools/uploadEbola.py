@@ -15,8 +15,8 @@ def main(argv):
 	try:
 		opts, args =  getopt.getopt(argv, "hs:", ["seqfile="])
 	except getopt.GetoptError:
-      print usage
-      sys.exit(2)
+		print usage
+		sys.exit(2)
     for opt, arg in opts:
 		if opt == '-h':
 			print usage
