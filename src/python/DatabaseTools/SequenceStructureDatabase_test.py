@@ -60,10 +60,10 @@ LHY
 			
 
 if __name__ == '__main__':		
-	submitterSuite = TestLoader().loadTestsFromTestCase(TestSequenceHandler)
+	sequenceHandlerSuite = TestLoader().loadTestsFromTestCase(TestSequenceHandler)
 #	rangeMappingSuite = TestLoader().loadTestsFromTestCase(TestRangeMapping)
 #	alignmentSuit = TestLoader().loadTestsFromTestCase(TestAlignments)
-	TextTestRunner(verbosity=2).run(submitterSuite)		
+	TextTestRunner(verbosity=2).run(sequenceHandlerSuite)		
 #	TextTestRunner(verbosity=2).run(rangeMappingSuite)		
 #	TextTestRunner(verbosity=2).run(alignmentSuit)		
 		
