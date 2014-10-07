@@ -23,8 +23,8 @@ def main(argv):
 		print "ERROR: cannot read input: ", seqfile
 		sys.exit(2)
 	
-	sys.exit()
 	sequenceHandler = SequenceStructureDatabase.SequenceHandler()
+	sys.exit()
 
 	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
 	for entry in fastaEntryList:
