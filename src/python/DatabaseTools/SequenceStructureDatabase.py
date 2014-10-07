@@ -77,8 +77,8 @@ class DB_Connection:
 		                     )
 				self.connectionTable[db][permission_type] = connection
 			except mysql.connector.Error as err:
-				warnings.warn('Cannot make connection for '+ permission_type + \
-		    	              ' to db '+ db +'!')
+				warnings.warn('Cannot make connection for \''+ permission_type + \
+		    	              '\' to db \''+ db +'\'!')
 				if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
 					warnings.warn("Something is wrong with your user name or password")
 			  	elif err.errno == errorcode.ER_BAD_DB_ERROR:
