@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from DatabaseTools import *
-import sys, getopt, os
+import sys, os, argparse
 
 # preprequisite for this import to work on local Mac:
 # set up tunnel: 
