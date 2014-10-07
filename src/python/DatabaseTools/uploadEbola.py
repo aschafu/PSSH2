@@ -14,20 +14,22 @@ def main(argv):
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("seqfile", help="fasta sequence file to upload")
+	args = parser.parse_args()
+	seqfile = args.seqfile
 
-	seqfile = ''
-	try:
-		opts, args =  getopt.getopt(argv, "hs:", ["seqfile="])
-	except getopt.GetoptError:
-		print usage
-		sys.exit(2)
-		
-	for opt, arg in opts:
-		if opt == '-h':
-			print usage
-			sys.exit()
-		elif opt in ('-s', '--seqfile'):
-			seqfile = arg
+# 	seqfile = ''
+# 	try:
+# 		opts, args =  getopt.getopt(argv, "hs:", ["seqfile="])
+# 	except getopt.GetoptError:
+# 		print usage
+# 		sys.exit(2)
+# 		
+# 	for opt, arg in opts:
+# 		if opt == '-h':
+# 			print usage
+# 			sys.exit()
+# 		elif opt in ('-s', '--seqfile'):
+# 			seqfile = arg
 	
 	if os.access(seqfile, os.R_OK):
 		print "processing ", seqfile
