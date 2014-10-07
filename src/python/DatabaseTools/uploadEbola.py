@@ -11,6 +11,10 @@ import sys, os, argparse
 usage = 'uploadEbola.py -s <sequenceFastaInputFile>'
 
 def main(argv):
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument("seqfile", help="fasta sequence file to upload")
+
 	seqfile = ''
 	try:
 		opts, args =  getopt.getopt(argv, "hs:", ["seqfile="])
