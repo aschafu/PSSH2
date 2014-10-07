@@ -89,7 +89,7 @@ class DB_Connection:
 		return connection
 		
 			
-class SequenceSubmitter:
+class SequenceHandler:
 
 	sequenceDB = 'aquaria'
 
@@ -125,8 +125,10 @@ class SequenceSubmitter:
 		"""
 		(seq_id, description, sequence) = parseFasta(fastaString)
 		md5 = self.getSequenceMd5(sequence)
-		submitConnection = self.db_connection.getConnection(SequenceSubmitter.sequenceDB,'updating')
+		submitConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'updating')
 		cursor = submitConnection.cursor()
+		
+		# TODO: first check whether the sequence id is unique!
 		
 		# TODO: add more stuff to insert, if we really need that
 		add_sequence = ("INSERT INTO %(table)"
