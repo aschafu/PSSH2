@@ -1,4 +1,5 @@
 import mysql.connector
+from mysql.connector import errorcode
 import ConfigParser
 import warnings
 import io
