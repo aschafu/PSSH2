@@ -132,11 +132,12 @@ class SequenceHandler:
 		
 		# TODO: first check whether the sequence id is unique!
 
-		insertBegin = "INSERT INTO %s " % self.userSequenceTable
-
+		mysqlInsert = "INSERT INTO %s " % self.userSequenceTable
+		mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
+		mysqlInsert += "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence), %(md5)s, %(length)i, %(description)s)"
 		
 		# TODO: add more stuff to insert, if we really need that
-		add_sequence = (insertBegin
+#		add_sequence = (insertBegin
 		                "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
 		                "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence), %(md5)s, %(length)i, %(description)s)")
 		sequence_data = {
@@ -149,7 +150,7 @@ class SequenceHandler:
 			'description' : description
 			}
 		
-		cursor.execute(add_sequence, sequence_data)
+		cursor.execute(mysqlInsert, sequence_data)
 		submitConnection.commit()
 		cursor.close()
 
