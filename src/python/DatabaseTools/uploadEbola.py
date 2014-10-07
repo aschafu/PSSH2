@@ -17,7 +17,8 @@ def main(argv):
 	except getopt.GetoptError:
 		print usage
 		sys.exit(2)
-    for opt, arg in opts:
+		
+	for opt, arg in opts:
 		if opt == '-h':
 			print usage
 			sys.exit()
