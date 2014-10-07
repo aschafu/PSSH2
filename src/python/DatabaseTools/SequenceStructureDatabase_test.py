@@ -42,7 +42,7 @@ LHY
 			self.assertEqual(len(fastaEntryList), expectedNum)
 			for entry in fastaEntryList:
 				(seq_id, description, sequence) = self.submitter.parseFasta(entry)
-				print seq_id + ' : ' + description + ' : ' + sequence
+#				print seq_id + ' : ' + description + ' : ' + sequence
 				self.assertTrue(seq_id)
 #				self.assertTrue(description)
 				self.assertTrue(sequence)
