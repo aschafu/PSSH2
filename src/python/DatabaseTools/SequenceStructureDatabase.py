@@ -122,7 +122,7 @@ class SequenceHandler:
 		For user input it should be like 'UserID:some_user_id_number'.
 		Checking that the user_id is valid should happen elsewhere.
 		"""
-		(seq_id, description, sequence) = parseFasta(fastaString)
+		(seq_id, description, sequence) = self.parseFasta(fastaString)
 		md5 = self.getSequenceMd5(sequence)
 		submitConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'updating')
 		cursor = submitConnection.cursor()
