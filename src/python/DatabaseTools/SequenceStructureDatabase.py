@@ -126,6 +126,7 @@ class SequenceHandler:
 		(seq_id, description, sequence) = self.parseFasta(fastaString)
 		md5 = self.getSequenceMd5(sequence)
 		submitConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'updating')
+		print submitConnection
 		cursor = submitConnection.cursor()
 		
 		# TODO: first check whether the sequence id is unique!
