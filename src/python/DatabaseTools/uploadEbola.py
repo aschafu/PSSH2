@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from DatabaseTools import *
-import sys, getopt
+import sys, getopt, os
 
 # preprequisite for this import to work on local Mac:
 # set up tunnel: 
@@ -23,8 +23,13 @@ def main(argv):
 			sys.exit()
 		elif opt in ('-s', '--seqfile'):
 			seqfile = arg
-		
-	print "processing ", seqfile
+	
+	if os.access(seqfile, os.R_OK):
+		print "processing ", seqfile
+	else:
+		print "ERROR: cannot read input: ", seqfile
+		sys.exit(2)
+	
 	
 	
 if __name__ == "__main__":
