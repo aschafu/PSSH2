@@ -150,6 +150,8 @@ class SequenceHandler:
 			'description' : description
 			}
 		
+		print mysqlInsert, '\n', sequence_data
+		
 		cursor.execute(mysqlInsert, sequence_data)
 		submitConnection.commit()
 		cursor.close()
