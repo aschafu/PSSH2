@@ -6,7 +6,7 @@ from DatabaseTools import *
 # ssh -L 3307:192.168.1.47:3306 andrea@rostlab
 # have local config file
 
-class TestSequenceSubmitter(TestCase):
+class TestSequenceHandler(TestCase):
 
 	def setUp(self):
 	
@@ -18,7 +18,7 @@ MSSSIRFS*ENAPCCEPCM*GIEVALSL*ESNTY*SVTFSHHAQVGTSSCRKTSLTRPLI
 LHY
 """
 		self.testSequenceA = "LVSQGAVLSSLPVGNGMLVISSRXPHSDSSYHLLLIVTKCQLRHMPWELSGCCPXPLXRLVWEGSFWMHLSRGPQPLSHGAARSHTAGGERCRVREXGKLRLYLQPLPFAHIPAXAPPSQMSSSIRFSXENAPCCEPCMXGIEVALSLXESNTYXSVTFSHHAQVGTSSCRKTSLTRPLILHY" 
-		self.submitter = SequenceStructureDatabase.SequenceSubmitter()
+		self.submitter = SequenceStructureDatabase.SequenceHandler()
 		self.testFileName3Seq = 'test/test3seq.fasta'
 		self.testFileName1Seq = 'test/test1seq.fasta'
 		self.testFileNameBrokenSeq = 'test/testBrokenSeq.fasta'
@@ -27,7 +27,7 @@ LHY
 		
 	def testInit(self):
 	
-		self.assertIsInstance(self.submitter, SequenceStructureDatabase.SequenceSubmitter)
+		self.assertIsInstance(self.submitter, SequenceStructureDatabase.SequenceHandler)
 
 		
 	def testParsing(self):
@@ -53,12 +53,14 @@ LHY
 		checkFileAndEntries(self.testFileNameSwissprot, 6)
 
 		
-#	def testConnection(self):
-				
+	def testSubmission(self):
+		self.submitter.uploadSingleFastaSeq(testSeqStringA, 'testMethod')
+#		fastaEntryList = self.submitter.extractSingleFastaSequencesFromFile(testFileName1Seq)
+		
 			
 
 if __name__ == '__main__':		
-	submitterSuite = TestLoader().loadTestsFromTestCase(TestSequenceSubmitter)
+	submitterSuite = TestLoader().loadTestsFromTestCase(TestSequenceHandler)
 #	rangeMappingSuite = TestLoader().loadTestsFromTestCase(TestRangeMapping)
 #	alignmentSuit = TestLoader().loadTestsFromTestCase(TestAlignments)
 	TextTestRunner(verbosity=2).run(submitterSuite)		
