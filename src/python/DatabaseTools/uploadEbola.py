@@ -24,9 +24,9 @@ def main(argv):
 		sys.exit(2)
 	
 	sequenceHandler = SequenceStructureDatabase.SequenceHandler()
-	sys.exit()
 
 	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
+	sys.exit()
 	for entry in fastaEntryList:
 		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
 
