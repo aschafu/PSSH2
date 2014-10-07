@@ -20,4 +20,8 @@ def main(argv):
     for opt, arg in opts:
 		if opt == '-h':
 			print usage
-         sys.exit()
+			sys.exit()
+		elif opt in ('-s', '--seqfile'):
+			seqfile = arg
+		
+	print "processing ", seqfile
