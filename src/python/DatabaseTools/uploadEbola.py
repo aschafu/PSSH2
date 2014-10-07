@@ -31,7 +31,11 @@ def main(argv):
 		sys.exit(2)
 	
 	sequenceHandler = SequenceStructureDatabase.SequenceHandler()
-	fastaEntryList = self.submitter.extractSingleFastaSequencesFromFile(fileName)
+
+	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
+	for entry in fastaEntryList:
+		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
+
 	
 if __name__ == "__main__":
 	main(sys.argv[1:])
