@@ -54,7 +54,7 @@ LHY
 
 		
 	def testSubmission(self):
-		self.submitter.uploadSingleFastaSeq(testSeqStringA, 'testMethod')
+		self.submitter.uploadSingleFastaSeq(self.testSeqStringA, 'testMethod')
 #		fastaEntryList = self.submitter.extractSingleFastaSequencesFromFile(testFileName1Seq)
 		
 			
