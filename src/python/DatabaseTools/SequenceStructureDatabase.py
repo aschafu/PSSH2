@@ -68,7 +68,7 @@ class DB_Connection:
 		connection = self.connectionTable[db][permission_type]
 		if (not connection):
 			try:
-				print 'host: "', self.conf[db]['host'], '", port: "', self.conf[db]['port'], '"' 
+#				print 'host: "', self.conf[db]['host'], '", port: "', self.conf[db]['port'], '"' 
 				connection = mysql.connector.connect( \
 			                 user=self.conf[permission_type]['user'], 
 		                     password=self.conf[permission_type]['password'],
