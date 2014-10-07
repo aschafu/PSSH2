@@ -134,9 +134,11 @@ class SequenceHandler:
 		mysqlCheck += "WHERE Primary_Accession = %s AND Source= %s"
 		# TODO: first check whether the sequence id is unique!
 
-		for result in cursor.execute(mysqlCheck, ( seq_id, source )):
-			if result.with_rows:
-				warnings.warn('')
+		result=cursor.execute(mysqlCheck, ( seq_id, source ))
+		if result.with_rows:
+			warnings.warn('Primary key of "'+seq_id + '" and "' + source + " has been used before! \n" + 
+			"Will skip this sequence: " + fastaString )
+			
 
 		mysqlInsert = "INSERT INTO %s " % self.userSequenceTable
 		mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
