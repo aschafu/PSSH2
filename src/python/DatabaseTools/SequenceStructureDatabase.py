@@ -129,8 +129,12 @@ class SequenceHandler:
 		submitConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'updating')
 		print submitConnection
 		cursor = submitConnection.cursor()
-		
+
+		mysqlCheck = "SELECT FROM %s " % self.userSequenceTable
+		mysqlCheck += "WHERE Primary_Accession = %s"
 		# TODO: first check whether the sequence id is unique!
+
+		cursor.execute(mysqlCheck, ( seq_id ))
 
 		mysqlInsert = "INSERT INTO %s " % self.userSequenceTable
 		mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
