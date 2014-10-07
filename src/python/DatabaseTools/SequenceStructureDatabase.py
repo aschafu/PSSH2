@@ -134,7 +134,7 @@ class SequenceHandler:
 
 		mysqlInsert = "INSERT INTO %s " % self.userSequenceTable
 		mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
-		mysqlInsert += "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)i, %(description)s)"
+		mysqlInsert += "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 		
 		# TODO: add more stuff to insert, if we really need that
 #		add_sequence = (insertBegin
