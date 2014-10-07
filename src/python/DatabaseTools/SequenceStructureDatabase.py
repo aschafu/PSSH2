@@ -143,7 +143,7 @@ class SequenceHandler:
 			'organism_id' : organism_id,
 			'sequence' : sequence,
 			'md5' : md5,
-			'length' : length(sequence),
+			'length' : len(sequence),
 			'description' : description
 			}
 		
