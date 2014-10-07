@@ -127,18 +127,19 @@ class SequenceHandler:
 		(seq_id, description, sequence) = self.parseFasta(fastaString)
 		md5 = self.getSequenceMd5(sequence)
 		submitConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'updating')
-		print submitConnection
-		cursor = submitConnection.cursor()
+#		print submitConnection
 
 		mysqlCheck = "SELECT Primary_Accession, Source, Sequence, MD5_Hash FROM %s " % self.userSequenceTable
 		mysqlCheck += "WHERE Primary_Accession = %s AND Source= %s"
 		# TODO: first check whether the sequence id is unique!
 
+		cursor = submitConnection.cursor()
 		result=cursor.execute(mysqlCheck, ( seq_id, source ))
 		if result.with_rows:
 			warnings.warn('Primary key of "'+seq_id + '" and "' + source + " has been used before! \n" + 
 			"Will skip this sequence: " + fastaString )
-			
+			cursor.close()
+			return
 
 		mysqlInsert = "INSERT INTO %s " % self.userSequenceTable
 		mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
@@ -160,6 +161,7 @@ class SequenceHandler:
 		
 		print mysqlInsert, '\n', sequence_data
 		
+		cursor = submitConnection.cursor()
 		cursor.execute(mysqlInsert, sequence_data)
 		submitConnection.commit()
 		cursor.close()
