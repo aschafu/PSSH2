@@ -27,8 +27,8 @@ def main(argv):
 
 	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
 	for entry in fastaEntryList:
-		print entry
-#		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
+#		print entry
+		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
 
 	
 if __name__ == "__main__":
