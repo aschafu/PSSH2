@@ -40,7 +40,6 @@ class DB_Connection:
 
 		self.databases = ('aquaria', 'pssh2')
 		for database in self.databases:
-			print dict(config.items(database))
 			self.conf[database] = dict( config.items(database) )
 
 			for param in ('host', 'database'):
