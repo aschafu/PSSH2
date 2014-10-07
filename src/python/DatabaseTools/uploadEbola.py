@@ -30,7 +30,8 @@ def main(argv):
 		print "ERROR: cannot read input: ", seqfile
 		sys.exit(2)
 	
-	
+	sequenceHandler = SequenceStructureDatabase.SequenceHandler()
+	fastaEntryList = self.submitter.extractSingleFastaSequencesFromFile(fileName)
 	
 if __name__ == "__main__":
 	main(sys.argv[1:])
