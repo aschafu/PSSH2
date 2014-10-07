@@ -25,3 +25,7 @@ def main(argv):
 			seqfile = arg
 		
 	print "processing ", seqfile
+	
+	
+if __name__ == "__main__":
+	main(sys.argv[1:])
