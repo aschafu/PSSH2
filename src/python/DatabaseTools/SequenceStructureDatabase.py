@@ -130,11 +130,13 @@ class SequenceHandler:
 		print submitConnection
 		cursor = submitConnection.cursor()
 
-		mysqlCheck = "SELECT Primary_Accession, Sequence, MD5_Hash FROM %s " % self.userSequenceTable
-		mysqlCheck += "WHERE Primary_Accession = %s"
+		mysqlCheck = "SELECT Primary_Accession, Source, Sequence, MD5_Hash FROM %s " % self.userSequenceTable
+		mysqlCheck += "WHERE Primary_Accession = %s AND Source= %s"
 		# TODO: first check whether the sequence id is unique!
 
-		cursor.execute(mysqlCheck, ( seq_id ))
+		for result in cursor.execute(mysqlCheck, ( seq_id, source )):
+			if result.with_rows:
+				warnings.warn('')
 
 		mysqlInsert = "INSERT INTO %s " % self.userSequenceTable
 		mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
