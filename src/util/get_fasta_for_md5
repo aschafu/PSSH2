@@ -58,7 +58,12 @@ do
 	for table in $sequence_tables 
 	do
 		sequence=`DB.aquaria_local "select Sequence from $table where MD5_hash =\"$md5\" " limit 1 | tail -n +2`
-		
+		# no need to check other tables if we have found the sequence already
+		if [ $sequence ]
+		then
+			break
+		fi
+	done		
 	echo -e ">$md5\n$sequence" > $temp_work/$md5/$md5.fasta 
 	echo "$temp_work/$md5/$md5.fasta"
 done
