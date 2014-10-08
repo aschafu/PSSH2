@@ -5,7 +5,7 @@ conf_file='/etc/pssh2.conf'
 
 ### work directory
 temp_work="/tmp/pssh2"
-### sequence tables
+### sequence tables in mysql
 sequence_tables="protein_sequence protein_sequence_user protein_sequence_uniprot_ebola_proteins"
 
 
