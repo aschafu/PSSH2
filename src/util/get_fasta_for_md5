@@ -6,7 +6,7 @@ conf_file='/etc/pssh2.conf'
 ### work directory
 temp_work="/tmp/pssh2"
 ### sequence tables
-sequence_tables="protein_sequence"
+sequence_tables="protein_sequence protein_sequence_user protein_sequence_uniprot_ebola_proteins"
 
 
 # get configurable options, e.g. local file paths
