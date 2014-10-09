@@ -97,7 +97,7 @@ do
     		ln -s $file .
     	done
 		s=`date +%s`
-		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , status=$returnVal , stamp=$s , runtime=$SECONDS"         
+		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=$returnVal , stamp=$s , runtime=$SECONDS"         
 		cd $temp_work
 	else 
 		s=`date +%s`
