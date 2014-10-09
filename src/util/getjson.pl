@@ -4,6 +4,16 @@ use feature qw(say);
 use Getopt::Long;
 use lib glob("/mnt/project/snap2web/");
 use Snap2Cache;
+use DBI;
+use Config::Simple;
+
+# now read the local config info
+my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
+my $db_user= $cfg->param('mysql.db_user');
+my $db_pass= $cfg->param('mysql.db_pass');
+my $host= $cfg->param('mysql.host');
+my $seqHashQuery = $cfg->param('mysql.seqHashQuery');
+
 
 our($seq,$dbg);
 
