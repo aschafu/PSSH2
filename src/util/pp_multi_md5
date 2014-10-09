@@ -1,0 +1,112 @@
+#!/bin/bash
+
+### runs pssh2 for a set of md5 sums
+#$ -o /dev/null
+#$ -e /dev/null
+
+#set -x
+
+conf_file='/etc/pssh2.conf'
+
+usage()
+{
+cat << EOT
+NAME
+  pssh2_multi_md5 - generate pssh2 type sequence-to-structrue alignments for many sequences given md5 sums
+SYNOPSIS
+  pssh2_multi_md5 [-h] [-D] [-m \"md5 input list\"] [-- ...]
+DESCRIPTION
+  pssh2_multi_md5 takes md5 sums from the command line (behind -m),
+  gets the associated sequences from the database,
+  and runs pssh2 for each of the sequences (which adds the alignment to the database).
+  See pssh2_seq -h for more details on pssh2_seq.
+  Defaults are configured in $conf_file.
+OPTIONS
+  -h          The option -h displays help and exits.
+  -D          Debug option: do not remove or zip output files (passed on to pssh2_seq)
+  Any other parameters behind "--" are passed on to the child scripts.
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+}
+
+### base path to cache
+pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+### work directory
+temp_work="/tmp/pssh2"
+### table to store pssh2 calculation status in
+status_table="pssh2_active_counts"
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+debug=0
+passOpt=" " 
+while getopts :Dhm: opt
+do
+	case $opt in
+	D) debug=1; passOpt="$passOpt -$opt";; 
+	h) usage; echo " "; pssh2_seq -h; exit;;
+	m) md5list=$OPTARG;;
+#	*) passOpt="$passOpt $OPTARG";;
+	esac
+done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+shift $(expr $OPTIND - 1 )
+passOpt="$passOpt $@"
+
+
+for md5 in $md5list 
+do
+
+	# get subdir names for cache structure
+	M=`echo $md5|cut -b1,2`
+	M2=`echo $md5|cut -b3,4`
+
+### full path to cachedir
+	CC="$pssh2_cache$M/$M2/$md5"
+	echo $CC
+	input_seq_file=$CC/query.fasta
+	
+	# check whether an input file already exists in $CC
+	if [ -s $input_seq_file ] 
+	then
+		old_md5=`cat $input_seq_file|fasta_to_md5`
+		echo "working with old file $input_seq_file, with md5: $old_md5"
+	else
+		temp_fasta_file=`get_fasta_for_md5 $md5`
+		if [ -s $temp_fasta_file ]
+		then	
+			### create cachedir if not existent
+			mkdir -p $CC
+			if [ -d $CC ] 
+			then
+				cp $temp_fasta_file $input_seq_file
+			else 
+				echo "ERROR: was not able to work on cache for $CC please go fix"
+			fi
+		fi
+	fi
+
+	if [ -s $input_seq_file ] 
+	then
+		cd $CC
+#		pwd
+#		ls -lahtr
+		pssh2_seq $passOpt
+		cd $temp_work
+	else 
+		s=`date +%s`
+		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
+		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+	fi
+
+done
