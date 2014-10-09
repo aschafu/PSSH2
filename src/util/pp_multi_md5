@@ -35,6 +35,8 @@ pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 temp_work="/tmp/pp"
 ### table to store pssh2 calculation status in
 status_table="pp_active_status"
+### local database path (to avoid NFS)
+DB="/var/tmp/rost_db/data"
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -87,9 +89,8 @@ do
 	if [ -s $input_seq_file ] 
 	then
 		cd $CC
-#		pwd
-#		ls -lahtr
-		pssh2_seq $passOpt
+#		pssh2_seq $passOpt
+        time nice predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge
 		cd $temp_work
 	else 
 		s=`date +%s`
