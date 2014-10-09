@@ -90,7 +90,7 @@ do
 	then
 		cd $CC
 #		pssh2_seq $passOpt
-        returnVal = `predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge $passOpt`
+        returnVal=`predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge $passOpt`
 		s=`date +%s`
 		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , status=$returnVal , stamp=$s , runtime=$SECONDS"         
 		cd $temp_work
