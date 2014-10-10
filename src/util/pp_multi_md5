@@ -66,7 +66,7 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
-CC=`pwd`
+CC='/mnt/project/psshcache/pp_result_cache_2014/'
 
 for md5 in $md5list 
 do
