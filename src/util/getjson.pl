@@ -50,9 +50,8 @@ if ($cache->complete()){
 	}
     # now loop over all positions and work out the average and the number of significant mutations
     for ($ip=$minPos; $ip<=$maxPos; $ip++){
-    	$avrgScore[$pos] = 0;
-    	$ratioNeutral[$pos]=0;
-    	$ratioEffect[$pos]=0;
+    	$avrgFeature[$pos] = "";
+    	$sensitivityFeature[$pos] = "";
     	my $sum = 0;
     	my $nVal = 0;
 		my $nNeutral = 0;
@@ -68,10 +67,19 @@ if ($cache->complete()){
     	}
     	if ($nVal > 0){
     		$avrgScore = $sum/$nVal;
- 	   		$ratioNeutral[$pos] = $nNeutral/$nVal;
-    		$ratioEffect[$pos] = $nEffect/$nVal;
-    		$description = sprintf("%.1f", $avrgScore);
-			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, ); 
+ 	   		$ratioNeutral = $nNeutral/$nVal;
+    		$ratioEffect = $nEffect/$nVal;
+    		$description = "avrg. score: "
+    		$description .= sprintf("%.1f", $avrgScore);
+			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description); 
+			if ($ratioNeutral > 0.5){
+				$description = "$nNeutral\/$nVal amino acid substitutions  do not change function";
+				$sensitivityFeature[$pos] = getFeature("Insensitive", $pos, $description); 
+			}
+			elseif ($ratioEffect > 0.5){
+				$description = "$nEffect\/$nVal amino acid substitutions not change function";
+				$sensitivityFeature[$pos] = getFeature("Highly sensitive", $pos, $description); 
+			}
     	}
     	
     }
@@ -96,8 +104,12 @@ sub getAnnotationEnd {
 
 sub getFeature {
 	
-	my ($featureName, $residue, $featureDescription) = @_;
-	return "         {\"Name\":".$featureName."\", \"Residue\": \"".$residue."\", \"Description\": \"".featureDescription."\"}";
+	my ($featureName, $residue, $featureDescription, $color) = @_;
+	my $colString = "";
+	if ($color){
+		$colString = "\", \"Color\": \"".$color;
+	}
+	return "         {\"Name\":".$featureName."\", \"Residue\": \"".$residue.$colString."\", \"Description\": \"".featureDescription."\"}";
 	
 }
 
