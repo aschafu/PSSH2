@@ -51,7 +51,7 @@ passOpt=" "
 while getopts :Dhm: opt
 do
 	case $opt in
-	D) debug=1; passOpt="$passOpt -$opt";; 
+	D) debug=1;; 
 	h) usage; exit;;
 	m) md5list=$OPTARG;;
 #	*) passOpt="$passOpt $OPTARG";;
