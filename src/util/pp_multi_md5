@@ -92,7 +92,7 @@ do
 	then
 		cd $CC
 #		pssh2_seq $passOpt
-		predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge $passOpt`
+		predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge $passOpt
 		files=`/mnt/home/roos/bin/ppc_fetch_md5 $md5`
 		count=0
 		for file in $files
