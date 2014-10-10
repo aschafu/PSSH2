@@ -102,7 +102,7 @@ do
 		done
 		s=`date +%s`
 		echo "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS"
-		DB.pssh2_local "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime "         
+		DB.pssh2_local "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$SECONDS "         
 		cd $temp_work
 	else 
 		s=`date +%s`
