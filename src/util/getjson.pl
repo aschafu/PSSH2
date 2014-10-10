@@ -67,25 +67,39 @@ if ($cache->complete()){
 			if ($testVal < -40) $nNeutral++;
     	}
     	if ($nVal > 0){
-    		$avrgScore[$pos] = $sum/$nVal;
- 	   		$ratioNeutral[$pos]=$nNeutral/$nVal;
-    		$ratioEffect[$pos]=$nEffect/$nVal;
+    		$avrgScore = $sum/$nVal;
+ 	   		$ratioNeutral[$pos] = $nNeutral/$nVal;
+    		$ratioEffect[$pos] = $nEffect/$nVal;
+    		$description = sprintf("%.1f", $avrgScore);
+			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, ); 
     	}
+    	
     }
-    
-        push @result,'{"col":'.$c.',"row":'.$r.',"label":"'.$wt.'","score":'.$predictions{$mut}.',"mut":"'.$var.'"}';
-        if($r==19){
-            $c++;
-            $r=-1;
-        }
-        $r++;
-    }
+	    
 }
 my $result=join ",",@result;
 
 print "[$result]";
 
+sub getAnnotationStart {
+	
+	my ($annotationName, $source, $URL, $annotationDescription) = @_;
+	return "     "."\"".$annotationName.": {\"Source\": \"".$source."\", \"URL\": \"".$URL."\", \"Features\": [ \n"
 
+}
+
+sub getAnnotationEnd {
+	
+	return "     ]}"
+
+}
+
+sub getFeature {
+	
+	my ($featureName, $residue, $featureDescription) = @_;
+	return "         {\"Name\":".$featureName."\", \"Residue\": \"".$residue."\", \"Description\": \"".featureDescription."\"}";
+	
+}
 
 # {
 #      "Sequence variation (natural variant site)": {"Source": "UniProt", "URL": "http://uniprot.org/uniprot/P04637", "Features": [
