@@ -95,10 +95,13 @@ do
 		predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge $passOpt
 		pp_output_path=`ppc_fetch --seqfile query.fasta -d`
 		count=0
-		if [ -d $pp_output_path ]
+		if [ $pp_output_path ]
 		then
-			count=`ls -1 $pp_output_path | wc -l `
-			ln -s $pp_output_path $CC
+			if [ -d $pp_output_path ]
+			then
+				count=`ls -1 $pp_output_path | wc -l `
+				ln -s $pp_output_path $CC
+			fi
 		fi
 		s=`date +%s`
 		echo "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS"
