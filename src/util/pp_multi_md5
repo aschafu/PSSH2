@@ -97,8 +97,8 @@ do
 		count=0
 		for file in $files
 		do	
-		    ((count++))
-    		    ln -s $file .
+			((count++))
+			ln -s $file .
 		done
 		s=`date +%s`
 		echo "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS"
