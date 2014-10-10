@@ -8,11 +8,11 @@ use DBI;
 use Config::Simple;
 
 # now read the local config info
-my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
-my $db_user= $cfg->param('mysql.db_user');
-my $db_pass= $cfg->param('mysql.db_pass');
-my $host= $cfg->param('mysql.host');
-my $seqHashQuery = $cfg->param('mysql.seqHashQuery');
+#my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
+#my $db_user= $cfg->param('mysql.db_user');
+#my $db_pass= $cfg->param('mysql.db_pass');
+#my $host= $cfg->param('mysql.host');
+#my $seqHashQuery = $cfg->param('mysql.seqHashQuery');
 
 
 our($seq,$dbg);
@@ -33,14 +33,26 @@ my %predictions=$cache->predictions();
 # significant neutral: <-40
 
 my @result;
+my @score;
 
 # cache complete: check whether all 19 non-native are defined
 if ($cache->complete()){
     my $c=0;
     my $r=0;
+    my $maxPos = 0;
+	my $minPos;
+	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
         $mut=~/(\w)(\d+)(\w)/o;
         my ($wt,$pos,$var)=($1,$2,$3);
+        $score[$pos]{$var}=$predictions{$mut}
+		if (defined $minPos) $minPos=$pos;
+        if ($pos>$maxPos){$maxPos = $pos};
+	}
+    # now loop over all positions and work out the average and the number of significant mutations
+    for ($ip=1
+    
+    
         push @result,'{"col":'.$c.',"row":'.$r.',"label":"'.$wt.'","score":'.$predictions{$mut}.',"mut":"'.$var.'"}';
         if($r==19){
             $c++;
