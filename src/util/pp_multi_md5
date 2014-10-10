@@ -66,12 +66,12 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
-CC='/mnt/project/psshcache/pp_result_cache_2014/'
+CC_base='/mnt/project/psshcache/pp_result_cache_2014/'
 
 for md5 in $md5list 
 do
 
-	CC="$CC/$md5" 
+	CC="$CC_base/$md5" 
 	echo $CC
 	input_seq_file=$CC/query.fasta
 	
