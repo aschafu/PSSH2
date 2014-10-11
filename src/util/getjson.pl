@@ -39,6 +39,7 @@ if ($cache->complete()){
     my $maxPos = 0;
 	my $minPos;
 	my @wildTypeSeq;
+	my %varFeature;
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
         $mut=~/(\w)(\d+)(\w)/o;
@@ -47,6 +48,7 @@ if ($cache->complete()){
         $score[$pos]{$var} = $predictions{$mut};
 		unless (defined $minPos) $minPos=$pos;
         if ($pos>$maxPos){$maxPos = $pos};
+		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut},""};
 	}
     # now loop over all positions and work out the average and the number of significant mutations
     for ($ip=$minPos; $ip<=$maxPos; $ip++){
@@ -71,19 +73,21 @@ if ($cache->complete()){
     		$ratioEffect = $nEffect/$nVal;
     		$description = "avrg. score: "
     		$description .= sprintf("%.1f", $avrgScore);
-			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description); 
+			# TODO: define color!
+			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,""); 
 			if ($ratioNeutral > 0.5){
 				$description = "$nNeutral\/$nVal amino acid substitutions  do not change function";
-				$sensitivityFeature[$pos] = getFeature("Insensitive", $pos, $description); 
+				$sensitivityFeature[$pos] = getFeature("Insensitive", $pos, $description,""); 
 			}
 			elseif ($ratioEffect > 0.5){
 				$description = "$nEffect\/$nVal amino acid substitutions not change function";
-				$sensitivityFeature[$pos] = getFeature("Highly sensitive", $pos, $description); 
+				$sensitivityFeature[$pos] = getFeature("Highly sensitive", $pos, $description,""); 
 			}
     	}
     	
     }
-	    
+    # TODO: put together annotations 
+	   
 }
 my $result=join ",",@result;
 
