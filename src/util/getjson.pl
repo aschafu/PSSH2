@@ -160,12 +160,12 @@ sub getHexColForScore {
 
 	if ($scoreVal >= 0){
 		# red color -> red on 255; rest according to ratio
-		my $gbVal = getColVal($scoreVal/100); 
+		my $gbVal = getColVal(floor($scoreVal/100)); 
 		$color = "#FF".$gbVal.$gbVal;
     }
     else {
         # green color -> green on 255; rest according to ratio
-        my $rbVal = getColVal($scoreVal/100); 
+        my $rbVal = getColVal(floor($scoreVal/100)); 
 		$color = "#".$rbVal."FF".$rbVal;
     }
 	return $color;
