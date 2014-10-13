@@ -50,8 +50,7 @@ if ($cache->complete()){
         $score[$pos]{$var} = $scoreVal;
 		unless (defined $minPos) $minPos=$pos;
         if ($pos>$maxPos){$maxPos = $pos};
-		my $color = getHexColForScore($scoreVal);		
-		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, $color};
+		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal)};
 	}
     # now loop over all positions and work out the average and the number of significant mutations
     for ($ip=$minPos; $ip<=$maxPos; $ip++){
@@ -76,8 +75,7 @@ if ($cache->complete()){
     		$ratioEffect = $nEffect/$nVal;
     		$description = "avrg. score: "
     		$description .= sprintf("%.1f", $avrgScore);
-			# TODO: define color!
-			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,""); 
+			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,getHexColForScore($avrgScore)); 
 			if ($ratioNeutral > 0.5){
 				$description = "$nNeutral\/$nVal amino acid substitutions  do not change function";
 				$sensitivityFeature[$pos] = getFeature("Insensitive", $pos, $description,""); 
