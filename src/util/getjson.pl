@@ -146,7 +146,8 @@ sub getFeature {
 sub getColVal {
 	
 	my ($ratio) = @_; 
-	$val = sprintf("%02X", min(255, floor($ratio*256)));
+	my $val = sprintf("%02X", min(255, floor($ratio*256)));
+	return $val;
 
 }
 
