@@ -100,7 +100,7 @@ if ($cache->complete()){
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
     my $avrgScoreAnnotation =  getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
-    $avrgScoreAnnotation .= join ",\n", @avrgFeature;
+    $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
 #    my @individualScoreAnnotations = ();
