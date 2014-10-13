@@ -35,8 +35,6 @@ my @score;
 
 # cache complete: check whether all 19 non-native are defined
 if ($cache->complete()){
-    my $c=0;
-    my $r=0;
     my $maxPos = 0;
 	my $minPos;
 	my %varFeature;
