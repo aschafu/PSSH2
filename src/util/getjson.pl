@@ -103,12 +103,14 @@ if ($cache->complete()){
 		$annotation .= join ",\n", @{$varFeature{$var}};
 		$annotation .= getAnnotationEnd();
     }
+
+	my $result = join ",\n",@result;
+	print "{\n".$result."\n"."}\n";
 		   
 }
-my $result=join ",\n",@result;
-
-print "{\n".$result."\n"."}\n";
-
+else {
+	print "";
+}
 
 sub getAnnotationStart {
 	
