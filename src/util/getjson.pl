@@ -147,7 +147,7 @@ sub getColVal {
 	
 	my ($ratio) = @_; 
 	my $colInt = floor($ratio*256));
-	$colInt <= 255 ? 255 : $colInt;
+	$colInt <= 255 ? $colInt : 255;
 	my $val = sprintf("%02X", min(255, floor($ratio*256)));
 	return $val;
 
