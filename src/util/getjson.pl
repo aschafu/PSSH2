@@ -57,7 +57,7 @@ if ($cache->complete()){
     # now loop over all positions and work out the average and the number of significant mutations
     for (my $pos=$minPos; $pos<=$maxPos; $pos++){
     	$avrgFeature[$pos] = "";
-    	$sensitivityFeature[$pos] = "";
+#    	$sensitivityFeature[$pos] = "";
     	my $sum = 0;
     	my $nVal = 0;
 		my $nNeutral = 0;
