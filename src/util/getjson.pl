@@ -127,7 +127,7 @@ sub getColVal {
 
 }
 
-sub getHexCol {
+sub getHexColForScore {
 		
 	my ($scoreVal) = @_;
 
