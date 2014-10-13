@@ -63,7 +63,7 @@ if ($cache->complete()){
     	foreach my $var (keys %{$score[$pos]}){
     		my $testVal = $score[$pos]{$var};
 			$sum += $testVal;
-			$nVal++
+			$nVal++;
 			# significant score:  effect > 40
 			# significant neutral: <-40
 			if ($testVal > 40) $nEffect++;
