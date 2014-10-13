@@ -154,6 +154,7 @@ sub getColVal {
 sub getHexColForScore {
 		
 	my ($scoreVal) = @_;
+	my $color = "";
 
 	if ($scoreVal >= 0){
 		# red color -> red on 255; rest according to ratio
