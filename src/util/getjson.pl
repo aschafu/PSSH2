@@ -30,7 +30,7 @@ my @mutants=$cache->allmuts();
 # hash for each prediction key e.g. M38A, value 
 my %predictions=$cache->predictions();
 
-my @result;
+my @result = ();
 my @score;
 
 # cache complete: check whether all 19 non-native are defined
@@ -89,24 +89,26 @@ if ($cache->complete()){
     	}
     	
     }
+    # put together the annotations
+    my $annotations = 
     $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     $avrgScoreAnnotation =  getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
     $avrgScoreAnnotation .= join ",\n", @avrgFeature;
     $avrgScoreAnnotation .= getAnnotationEnd();
-    individualScoreAnnotations = ();
+    my individualScoreAnnotations = ();
     foreach my $var (keys %varFeature){
-		$individualScoreAnnotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
-		
+		my $annotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
+		$annotation .= join ",\n", @{$varFeature{$var}};
+		$annotation .= getAnnotationEnd();
     }
-	
-    # TODO: put together annotations 
-	   
+		   
 }
-my $result=join ",",@result;
+my $result=join ",\n",@result;
 
-print "[$result]";
+print "{\n".$result."\n"."}\n";
+
 
 sub getAnnotationStart {
 	
