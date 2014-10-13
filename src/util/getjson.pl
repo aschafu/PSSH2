@@ -53,7 +53,7 @@ if ($cache->complete()){
         if ($scoreVal >= 0){
 			# red color -> red on 255; rest according to ratio
 			$gbVal = getColVal($scoreVal/100); 
-			$rVal = sprintf("%02X", 255); 
+			$rVal = "FF"; 
         }
         else {
         	# green color
