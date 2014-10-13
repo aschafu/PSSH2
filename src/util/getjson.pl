@@ -44,8 +44,10 @@ if ($cache->complete()){
         my ($wt,$pos,$var) = ($1,$2,$3);
         my $scoreVal =  $predictions{$mut};
         $score[$pos]{$var} = $scoreVal;
+        # remember first and last postion in the sequences
 		unless (defined $minPos) $minPos=$pos;
         if ($pos>$maxPos){$maxPos = $pos};
+        # assemble the individual mutation feature for this position and this variation
 		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal)};
 	}
     # now loop over all positions and work out the average and the number of significant mutations
