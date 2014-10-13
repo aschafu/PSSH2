@@ -53,7 +53,7 @@ if ($cache->complete()){
 		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal)};
 	}
     # now loop over all positions and work out the average and the number of significant mutations
-    for ($ip=$minPos; $ip<=$maxPos; $ip++){
+    for (my $ip=$minPos; $ip<=$maxPos; $ip++){
     	$avrgFeature[$pos] = "";
     	$sensitivityFeature[$pos] = "";
     	my $sum = 0;
