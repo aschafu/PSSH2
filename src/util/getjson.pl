@@ -61,7 +61,7 @@ if ($cache->complete()){
         	$rbVal = getColVal($scoreVal/100); 
 			$color = $rbVal."FF".$rbVal;
         }
-		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut},""};
+		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, $color};
 	}
     # now loop over all positions and work out the average and the number of significant mutations
     for ($ip=$minPos; $ip<=$maxPos; $ip++){
