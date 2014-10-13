@@ -76,7 +76,7 @@ if ($cache->complete()){
     		my $avrgScore = $sum/$nVal;
  	   		my $ratioNeutral = $nNeutral/$nVal;
     		my $ratioEffect = $nEffect/$nVal;
-    		$description = "avrg. score: ";
+    		my $description = "avrg. score: ";
     		$description .= sprintf("%.1f", $avrgScore);
 			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,getHexColForScore($avrgScore)); 
 			if ($ratioNeutral > 0.5){
