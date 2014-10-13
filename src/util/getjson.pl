@@ -43,7 +43,7 @@ if ($cache->complete()){
     	# read the mutations
         $mut=~/(\w)(\d+)(\w)/o;
         my ($wt,$pos,$var) = ($1,$2,$3);
-        # remember the score for later usage
+        # remember the score for later usage (e.g. building averages)
         my $scoreVal =  $predictions{$mut};
         $score[$pos]{$var} = $scoreVal;
         # remember first and last postion in the sequences
