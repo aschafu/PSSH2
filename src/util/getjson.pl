@@ -50,13 +50,17 @@ if ($cache->complete()){
         $score[$pos]{$var} = $scoreVal;
 		unless (defined $minPos) $minPos=$pos;
         if ($pos>$maxPos){$maxPos = $pos};
+		my $color = "";		
         if ($scoreVal >= 0){
 			# red color -> red on 255; rest according to ratio
-			$gbVal = getColVal($scoreVal/100); 
 			$rVal = "FF"; 
+			$gbVal = getColVal($scoreVal/100); 
+			$color = "FF".$gbVal.$gbVal;
         }
         else {
         	# green color
+        	$gVal = "FF";
+        	$rbVal = getColVal($scoreVal/100); 
         }
 		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut},""};
 	}
