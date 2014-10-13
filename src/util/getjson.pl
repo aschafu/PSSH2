@@ -76,7 +76,7 @@ if ($cache->complete()){
     		$avrgScore = $sum/$nVal;
  	   		$ratioNeutral = $nNeutral/$nVal;
     		$ratioEffect = $nEffect/$nVal;
-    		$description = "avrg. score: "
+    		$description = "avrg. score: ";
     		$description .= sprintf("%.1f", $avrgScore);
 			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,getHexColForScore($avrgScore)); 
 			if ($ratioNeutral > 0.5){
@@ -85,7 +85,7 @@ if ($cache->complete()){
 				# color in green for neutral
 				$sensitivityFeature[$pos] = getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
 			}
-			elseif ($ratioEffect > 0.5){
+			elsif ($ratioEffect > 0.5){
 				$description = "$nEffect\/$nVal amino acid substitutions not change function";
 				my $gbVal = getColVal($ratioNeutral);
 				# color in red for effect
