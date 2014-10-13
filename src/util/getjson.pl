@@ -139,7 +139,7 @@ sub getFeature {
 	if ($color){
 		$colString = "\", \"Color\": \"".$color;
 	}
-	return "         {\"Name\":\"".$featureName."\", \"Residue\": \"".$residue.$colString."\", \"Description\": \"".$featureDescription."\"}";
+	return "         {\"Name\": \"".$featureName."\", \"Residue\": \"".$residue.$colString."\", \"Description\": \"".$featureDescription."\"}";
 	
 }
 
