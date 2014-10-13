@@ -43,7 +43,7 @@ if ($cache->complete()){
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
         $mut=~/(\w)(\d+)(\w)/o;
-        my ($wt,$pos,$var)=($1,$2,$3);
+        my ($wt,$pos,$var) = ($1,$2,$3);
         my $scoreVal =  $predictions{$mut};
         $score[$pos]{$var} = $scoreVal;
 		unless (defined $minPos) $minPos=$pos;
