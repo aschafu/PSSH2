@@ -89,7 +89,7 @@ if ($cache->complete()){
 				$description = "$nEffect\/$nVal amino acid substitutions not change function";
 				my $gbVal = getColVal($ratioNeutral);
 				# color in red for effect
-				push @sensitivityFeature = getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
+				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
 			}
     	}
     	
