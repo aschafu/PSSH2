@@ -50,17 +50,7 @@ if ($cache->complete()){
         $score[$pos]{$var} = $scoreVal;
 		unless (defined $minPos) $minPos=$pos;
         if ($pos>$maxPos){$maxPos = $pos};
-		my $color = "";		
-        if ($scoreVal >= 0){
-			# red color -> red on 255; rest according to ratio
-			$gbVal = getColVal($scoreVal/100); 
-			$color = "FF".$gbVal.$gbVal;
-        }
-        else {
-        	# green color
-        	$rbVal = getColVal($scoreVal/100); 
-			$color = $rbVal."FF".$rbVal;
-        }
+		my $color = getHexCol($scoreVal);		
 		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, $color};
 	}
     # now loop over all positions and work out the average and the number of significant mutations
@@ -137,6 +127,23 @@ sub getColVal {
 
 }
 
+sub getHexCol {
+		
+	my ($scoreVal) = @_;
+
+	if ($scoreVal >= 0){
+		# red color -> red on 255; rest according to ratio
+		$gbVal = getColVal($scoreVal/100); 
+		$color = "FF".$gbVal.$gbVal;
+    }
+    else {
+        # green color
+        $rbVal = getColVal($scoreVal/100); 
+		$color = $rbVal."FF".$rbVal;
+    }
+	return $color;
+	
+}
 
 
 # {
