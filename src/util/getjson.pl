@@ -4,8 +4,9 @@ use feature qw(say);
 use Getopt::Long;
 use lib glob("/mnt/project/snap2web/");
 use Snap2Cache;
-use DBI;
-use Config::Simple;
+#use DBI;
+#use Config::Simple;
+use POSIX;
 
 # now read the local config info
 #my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
@@ -45,9 +46,18 @@ if ($cache->complete()){
         $mut=~/(\w)(\d+)(\w)/o;
         my ($wt,$pos,$var)=($1,$2,$3);
         $wildTypeSeq[$pos] = $wt;
-        $score[$pos]{$var} = $predictions{$mut};
+        my $scoreVal =  $predictions{$mut};
+        $score[$pos]{$var} = $scoreVal;
 		unless (defined $minPos) $minPos=$pos;
         if ($pos>$maxPos){$maxPos = $pos};
+        if ($scoreVal >= 0){
+			# red color -> red on 255; rest according to ratio
+			$gbVal = getColVal($scoreVal/100); 
+			$rVal = 
+        }
+        else {
+        	# green color
+        }
 		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut},""};
 	}
     # now loop over all positions and work out the average and the number of significant mutations
@@ -116,6 +126,15 @@ sub getFeature {
 	return "         {\"Name\":".$featureName."\", \"Residue\": \"".$residue.$colString."\", \"Description\": \"".featureDescription."\"}";
 	
 }
+
+sub getColVal {
+	
+	my ($ratio) = @_; 
+	$val = sprintf("%02X", min(255, floor($ratio*256)));
+
+}
+
+
 
 # {
 #      "Sequence variation (natural variant site)": {"Source": "UniProt", "URL": "http://uniprot.org/uniprot/P04637", "Features": [
