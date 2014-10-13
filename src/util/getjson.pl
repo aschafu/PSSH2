@@ -53,14 +53,13 @@ if ($cache->complete()){
 		my $color = "";		
         if ($scoreVal >= 0){
 			# red color -> red on 255; rest according to ratio
-			$rVal = "FF"; 
 			$gbVal = getColVal($scoreVal/100); 
 			$color = "FF".$gbVal.$gbVal;
         }
         else {
         	# green color
-        	$gVal = "FF";
         	$rbVal = getColVal($scoreVal/100); 
+			$color = $rbVal."FF".$rbVal;
         }
 		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut},""};
 	}
