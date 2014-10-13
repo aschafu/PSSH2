@@ -38,6 +38,7 @@ if ($cache->complete()){
     my $maxPos = 0;
 	my $minPos;
 	my %varFeature;
+	my @avrgFeature = ();
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
     	# read the mutations
