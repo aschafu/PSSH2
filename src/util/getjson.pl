@@ -137,7 +137,7 @@ sub getHexCol {
 		$color = "FF".$gbVal.$gbVal;
     }
     else {
-        # green color
+        # green color -> green on 255; rest according to ratio
         my $rbVal = getColVal($scoreVal/100); 
 		$color = $rbVal."FF".$rbVal;
     }
