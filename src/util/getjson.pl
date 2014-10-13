@@ -47,7 +47,7 @@ if ($cache->complete()){
         my $scoreVal =  $predictions{$mut};
         $score[$pos]{$var} = $scoreVal;
         # remember first and last postion in the sequences
-		unless (defined $minPos) $minPos=$pos;
+		unless (defined $minPos){$minPos = $pos};
         if ($pos>$maxPos){$maxPos = $pos};
         # assemble the individual mutation feature for this variation and this position  
 		$varFeature{$var}[$pos] = getFeature{"$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal)};
