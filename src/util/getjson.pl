@@ -90,10 +90,13 @@ if ($cache->complete()){
     	
     }
     $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
+    $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
+    $sensitivityAnnotation .= 
     $avrgScoreAnnotation =  getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
     foreach my $var (keys %varFeature){
 		$individualScoreAnnotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
     }
+	
     # TODO: put together annotations 
 	   
 }
@@ -110,7 +113,7 @@ sub getAnnotationStart {
 
 sub getAnnotationEnd {
 	
-	return "     ]}"
+	return "\n     ]}"
 
 }
 
