@@ -66,8 +66,8 @@ if ($cache->complete()){
 			$nVal++;
 			# significant score:  effect > 40
 			# significant neutral: <-40
-			if ($testVal > 40) $nEffect++;
-			if ($testVal < -40) $nNeutral++;
+			if ($testVal > 40) {$nEffect++}
+			elsif ($testVal < -40) {$nNeutral++};
     	}
     	# make sure we do not divide by 0
     	if ($nVal > 0){
