@@ -109,7 +109,7 @@ if ($cache->complete()){
 		   
 }
 else {
-	print "SNAP scores not complete!";
+	print "SNAP scores not complete! \n";
 }
 
 sub getAnnotationStart {
