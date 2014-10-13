@@ -106,7 +106,7 @@ if ($cache->complete()){
 #    my @individualScoreAnnotations = ();
     foreach my $var (keys %varFeature){
 		my $annotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
-		$annotation .= join ",\n", @{$varFeature{$var}};
+		$annotation .= join ",\n", @{$varFeature{$var}[$minPos..$maxPos]};
 		$annotation .= getAnnotationEnd();
 		push @result, $annotation;
     }
@@ -165,7 +165,7 @@ sub getHexColForScore {
     }
     else {
         # green color -> green on 255; rest according to ratio
-        my $rbVal = getColVal($scoreVal/100); 
+        my $rbVal = getColVal($scoreVal/-100); 
 		$color = "#".$rbVal."FF".$rbVal;
     }
 	return $color;
