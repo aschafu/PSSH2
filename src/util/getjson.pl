@@ -69,6 +69,7 @@ if ($cache->complete()){
 			if ($testVal > 40) $nEffect++;
 			if ($testVal < -40) $nNeutral++;
     	}
+    	# make sure we do not divide by 0
     	if ($nVal > 0){
     		$avrgScore = $sum/$nVal;
  	   		$ratioNeutral = $nNeutral/$nVal;
