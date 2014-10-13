@@ -103,7 +103,7 @@ if ($cache->complete()){
     $avrgScoreAnnotation .= join ",\n", @avrgFeature;
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
-    my individualScoreAnnotations = ();
+    my @individualScoreAnnotations = ();
     foreach my $var (keys %varFeature){
 		my $annotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
 		$annotation .= join ",\n", @{$varFeature{$var}};
