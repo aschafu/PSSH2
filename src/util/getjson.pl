@@ -39,6 +39,7 @@ if ($cache->complete()){
 	my $minPos;
 	my %varFeature;
 	my @avrgFeature = ();
+	my @sensitivityFeature = ();
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
     	# read the mutations
