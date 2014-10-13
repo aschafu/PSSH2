@@ -123,7 +123,7 @@ else {
 sub getAnnotationStart {
 	
 	my ($annotationName, $source, $URL, $annotationDescription) = @_;
-	return "     "."\"".$annotationName.": {\"Source\": \"".$source."\", \"URL\": \"".$URL."\", \"Features\": [ \n"
+	return "     "."\"".$annotationName.": {\"Source\": \"".$source."\", \"URL\": \"".$URL."\", \"Description\": \"".$featureDescription."\", \"Features\": [ \n"
 
 }
 
