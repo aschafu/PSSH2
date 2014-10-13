@@ -106,7 +106,8 @@ if ($cache->complete()){
 #    my @individualScoreAnnotations = ();
     foreach my $var (keys %varFeature){
 		my $annotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
-		$annotation .= join ",\n", $varFeature{$var}[$minPos..$maxPos];
+		$featuresRef = $varFeature{$var};=[@$arr_ref[0..2]];
+		$annotation .= join ",\n", [@$featuresRef[$minPos..$maxPos]];
 		$annotation .= getAnnotationEnd();
 		push @result, $annotation;
     }
