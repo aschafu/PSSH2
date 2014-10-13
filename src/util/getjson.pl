@@ -79,7 +79,7 @@ if ($cache->complete()){
 			if ($ratioNeutral > 0.5){
 				$description = "$nNeutral\/$nVal amino acid substitutions  do not change function";
 				my $rbVal = getColVal($ratioNeutral);
-				$sensitivityFeature[$pos] = getFeature("Insensitive", $pos, $description,"#".$rbVal."FF".$rbVal); 
+				$sensitivityFeature[$pos] = getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
 			}
 			elseif ($ratioEffect > 0.5){
 				$description = "$nEffect\/$nVal amino acid substitutions not change function";
