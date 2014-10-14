@@ -40,6 +40,7 @@ if ($cache->complete()){
 	my %varFeature;
 	my @avrgFeature = ();
 	my @sensitivityFeature = ();
+	
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
     	# read the mutations
@@ -54,6 +55,7 @@ if ($cache->complete()){
         # assemble the individual mutation feature for this variation and this position  
 		$varFeature{$var}[$pos] = getFeature("$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal));
 	}
+	
     # now loop over all positions and work out the average and the number of significant mutations
     for (my $pos=$minPos; $pos<=$maxPos; $pos++){
     	$avrgFeature[$pos] = "";
@@ -62,6 +64,7 @@ if ($cache->complete()){
     	my $nVal = 0;
 		my $nNeutral = 0;
 		my $nEffect = 0;
+		
     	foreach my $var (keys %{$score[$pos]}){
     		my $testVal = $score[$pos]{$var};
 			$sum += $testVal;
@@ -71,22 +74,25 @@ if ($cache->complete()){
 			if ($testVal > 40) {$nEffect++}
 			elsif ($testVal < -40) {$nNeutral++};
     	}
+    	
     	# make sure we do not divide by 0
     	if ($nVal > 0){
     		my $avrgScore = $sum/$nVal;
  	   		my $ratioNeutral = $nNeutral/$nVal;
     		my $ratioEffect = $nEffect/$nVal;
+
     		my $description = "avrg. score: ";
     		$description .= sprintf("%.1f", $avrgScore);
 			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,getHexColForScore($avrgScore)); 
+
 			if ($ratioNeutral > 0.5){
-				$description = "$nNeutral\/$nVal amino acid substitutions  do not change function";
+				$description = "$nNeutral\/$nVal amino acid substitutions do not change function";
 				my $rbVal = getColVal($ratioNeutral);
 				# color in green for neutral
 				push @sensitivityFeature, getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
 			}
 			elsif ($ratioEffect > 0.5){
-				$description = "$nEffect\/$nVal amino acid substitutions not change function";
+				$description = "$nEffect\/$nVal amino acid substitutions change function";
 				my $gbVal = getColVal($ratioNeutral);
 				# color in red for effect
 				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
@@ -94,17 +100,20 @@ if ($cache->complete()){
     	}
     	
     }
+    
     # put together the annotations
     my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
+    
     my $avrgScoreAnnotation =  getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
+    
 #    my @individualScoreAnnotations = ();
-    foreach my $var (keys %varFeature){
+    foreach my $var (sort keys %varFeature){
 		my $annotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
 		my $featuresRef = $varFeature{$var};
 		$annotation .= join ",\n", @$featuresRef[$minPos..$maxPos];
