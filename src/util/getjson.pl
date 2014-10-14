@@ -40,6 +40,7 @@ if ($cache->complete()){
 	my %varFeature;
 	my @avrgFeature = ();
 	my @sensitivityFeature = ();
+	
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
     	# read the mutations
@@ -54,6 +55,7 @@ if ($cache->complete()){
         # assemble the individual mutation feature for this variation and this position  
 		$varFeature{$var}[$pos] = getFeature("$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal));
 	}
+	
     # now loop over all positions and work out the average and the number of significant mutations
     for (my $pos=$minPos; $pos<=$maxPos; $pos++){
     	$avrgFeature[$pos] = "";
@@ -62,6 +64,7 @@ if ($cache->complete()){
     	my $nVal = 0;
 		my $nNeutral = 0;
 		my $nEffect = 0;
+		
     	foreach my $var (keys %{$score[$pos]}){
     		my $testVal = $score[$pos]{$var};
 			$sum += $testVal;
@@ -71,6 +74,7 @@ if ($cache->complete()){
 			if ($testVal > 40) {$nEffect++}
 			elsif ($testVal < -40) {$nNeutral++};
     	}
+    	
     	# make sure we do not divide by 0
     	if ($nVal > 0){
     		my $avrgScore = $sum/$nVal;
