@@ -76,17 +76,19 @@ if ($cache->complete()){
     		my $avrgScore = $sum/$nVal;
  	   		my $ratioNeutral = $nNeutral/$nVal;
     		my $ratioEffect = $nEffect/$nVal;
+
     		my $description = "avrg. score: ";
     		$description .= sprintf("%.1f", $avrgScore);
 			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,getHexColForScore($avrgScore)); 
+
 			if ($ratioNeutral > 0.5){
-				$description = "$nNeutral\/$nVal amino acid substitutions  do not change function";
+				$description = "$nNeutral\/$nVal amino acid substitutions do not change function";
 				my $rbVal = getColVal($ratioNeutral);
 				# color in green for neutral
 				push @sensitivityFeature, getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
 			}
 			elsif ($ratioEffect > 0.5){
-				$description = "$nEffect\/$nVal amino acid substitutions not change function";
+				$description = "$nEffect\/$nVal amino acid substitutions change function";
 				my $gbVal = getColVal($ratioNeutral);
 				# color in red for effect
 				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
@@ -94,15 +96,18 @@ if ($cache->complete()){
     	}
     	
     }
+    
     # put together the annotations
     my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
+    
     my $avrgScoreAnnotation =  getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
+    
 #    my @individualScoreAnnotations = ();
     foreach my $var (sort keys %varFeature){
 		my $annotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
