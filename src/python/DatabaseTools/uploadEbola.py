@@ -28,7 +28,7 @@ def main(argv):
 	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
 	for entry in fastaEntryList:
 #		print entry
-		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
+		sequenceHandler.uploadSingleFastaSeq(entry, 'genbank_taxonomy_186536')	
 #		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
 
 	
