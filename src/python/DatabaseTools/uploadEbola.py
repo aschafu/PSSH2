@@ -8,7 +8,7 @@ import sys, os, argparse
 # ssh -L 3307:192.168.1.47:3306 andrea@rostlab
 # have local config file
 
-usage = 'uploadEbola.py -s <sequenceFastaInputFile>'
+usage = 'uploadEbola.py -seqfile <sequenceFastaInputFile>'
 
 def main(argv):
 
