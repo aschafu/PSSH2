@@ -16,9 +16,11 @@ use POSIX;
 #my $seqHashQuery = $cfg->param('mysql.seqHashQuery');
 
 
-our($seq,$dbg);
+our($seq,$dbg,$details);
+$details = 0;
 
 my $args_ok=GetOptions( 'seq=s'    =>  \$seq,
+						'details'  =>  \$details,
                         'debug'       => \$dbg
 );
 
@@ -102,23 +104,25 @@ if ($cache->complete()){
     }
     
     # put together the annotations
-    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
+    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (predicted)", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
     
-    my $avrgScoreAnnotation =  getAnnotationStart("Average Mutation score", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
+    my $avrgScoreAnnotation =  getAnnotationStart("Average Mutation score (SNAP)", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
-    
-#    my @individualScoreAnnotations = ();
-    foreach my $var (sort keys %varFeature){
-		my $annotation = getAnnotationStart("Mutation score", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
-		my $featuresRef = $varFeature{$var};
-		$annotation .= join ",\n", @$featuresRef[$minPos..$maxPos];
-		$annotation .= getAnnotationEnd();
-		push @result, $annotation;
+   
+   if ($details){
+	#    my @individualScoreAnnotations = ();
+   	 foreach my $var (sort keys %varFeature){
+			my $annotation = getAnnotationStart("Mutation score (SNAP)", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
+			my $featuresRef = $varFeature{$var};
+			$annotation .= join ",\n", @$featuresRef[$minPos..$maxPos];
+			$annotation .= getAnnotationEnd();
+			push @result, $annotation;
+    	}
     }
 
 	my $result = join ",\n",@result;
@@ -155,7 +159,12 @@ sub getFeature {
 
 sub getColVal {
 	
+	# a high ratio should give a value close to 0, 
+	# a low ration should give a value close to FF
+	# This means for low ratios we will have almost white color,
+	# for high ratios it will be red/green dependign on where our value gets stuck
 	my ($ratio) = @_; 
+	$ration = 1-$ratio; # inverting the ratio to make it scale to white (see above)!
 	my $colInt = floor($ratio*256);
 	if ($colInt>255){$colInt = 255};
 	my $val = sprintf("%02X", $colInt);
