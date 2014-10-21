@@ -164,7 +164,7 @@ sub getColVal {
 	# This means for low ratios we will have almost white color,
 	# for high ratios it will be red/green dependign on where our value gets stuck
 	my ($ratio) = @_; 
-	$ration = 1-$ratio; # inverting the ratio to make it scale to white (see above)!
+	$ratio = 1-$ratio; # inverting the ratio to make it scale to white (see above)!
 	my $colInt = floor($ratio*256);
 	if ($colInt>255){$colInt = 255};
 	my $val = sprintf("%02X", $colInt);
