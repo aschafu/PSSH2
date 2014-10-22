@@ -89,13 +89,14 @@ if ($cache->complete()){
 
 			if ($ratioNeutral > 0.5){
 				$description = "$nNeutral\/$nVal amino acid substitutions do not change function";
-				my $rbVal = getColVal($ratioNeutral);
+				# rescale to use a wider color range
+				my $rbVal = getColVal((1-(1-$ratioNeutral)/5*8));
 				# color in green for neutral
 				push @sensitivityFeature, getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
 			}
 			elsif ($ratioEffect > 0.5){
 				$description = "$nEffect\/$nVal amino acid substitutions change function";
-				my $gbVal = getColVal($ratioEffect);
+				my $gbVal = getColVal((1-(1-$ratioEffect)/5*8));
 				# color in red for effect
 				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
 			}
