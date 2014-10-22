@@ -95,7 +95,7 @@ if ($cache->complete()){
 			}
 			elsif ($ratioEffect > 0.5){
 				$description = "$nEffect\/$nVal amino acid substitutions change function";
-				my $gbVal = getColVal($ratioNeutral);
+				my $gbVal = getColVal($ratioEffect);
 				# color in red for effect
 				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
 			}
