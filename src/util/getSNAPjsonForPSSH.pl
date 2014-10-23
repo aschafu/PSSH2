@@ -89,7 +89,7 @@ if ($cache->complete()){
 
 			if ($ratioNeutral > 0.5){
 				$description = "$nNeutral\/$nVal amino acid substitutions do not change function";
-				# rescale to use a wider color range
+				# rescale to use a wider color range (0.5-1 --> 0.2-1)
 				my $rbVal = getColVal((1-(1-$ratioNeutral)/5*8));
 				# color in green for neutral
 				push @sensitivityFeature, getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
@@ -105,12 +105,12 @@ if ($cache->complete()){
     }
     
     # put together the annotations
-    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (predicted)", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
+    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (predicted ratio of effect mutations)", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
     
-    my $avrgScoreAnnotation =  getAnnotationStart("Average Mutation score (SNAP)", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
+    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP score)", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
