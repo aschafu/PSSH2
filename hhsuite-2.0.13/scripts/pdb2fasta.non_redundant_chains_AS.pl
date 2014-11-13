@@ -55,7 +55,7 @@ my $help="
 \n";
 my $TOTLEN=160;   # maximum length of name, description, and keywords
 my $DESCLEN=80;   # maximum length of description
-my $minSeqLen=10; # minimum length of pdb chain sequence to consider
+my $minSeqLen=10; # minimum length of pdb chain sequence to consider (was not a variable in original script)
 
 
 if (@ARGV<2) {die($help);}
