@@ -55,6 +55,7 @@ my $help="
 \n";
 my $TOTLEN=160;   # maximum length of name, description, and keywords
 my $DESCLEN=80;   # maximum length of description
+my $minSeqLen=10; # minimum length of pdb chain sequence to consider
 
 
 if (@ARGV<2) {die($help);}
@@ -593,7 +594,7 @@ sub AddSequence() {
 	printf("ORGANI='%s'\n",$organism{$chain});
 	printf("SEQRES='%s'\n",$seqres);
     }
-    if (length($seqres)<=20) {return 1;} # skip short protein/DNA chains (for DNA's ADGT &Three2OneLetter() returns "")
+    if (length($seqres)<=$minSeqLen) {return 1;} # skip short protein/DNA chains (for DNA's ADGT &Three2OneLetter() returns "")
 
     if ($chain ne "") {$pdbidchain=$pdbid."_".$chain;} else {$pdbidchain=$pdbid;}
 
