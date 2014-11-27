@@ -146,7 +146,7 @@ sub getAnnotationStart {
 
 }
 
-sub getSeqFromAauaria{
+sub getSeqFromAquaria{
 
 	my ($acc) = @_;
 
