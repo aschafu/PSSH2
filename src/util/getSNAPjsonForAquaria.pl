@@ -160,8 +160,8 @@ sub getSeqFromAauaria{
 	my $dbh=DBI->connect("DBI:mysql:$dbname:$host;mysql_local_infile=1", $db_user, $db_pass, {'mysql_enable_utf8'=>1});
 	my $sth=$dbh->prepare("SELECT sequence from protein_sequence where Primary_Accession='$acc'")  or die "SQL Error: $DBI::errstr\n";
 	$sth->execute();
-	$seq_results = $sth->fetchrow_arrayref();	# get array of results
-	$sequence = $seq_results->[0];		        # get first value from array
+	my $seq_results = $sth->fetchrow_arrayref();	# get array of results
+	my $sequence = $seq_results->[0];		        # get first value from array
 	return $sequence;
 	
 }
