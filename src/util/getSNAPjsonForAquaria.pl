@@ -4,8 +4,8 @@ use feature qw(say);
 use Getopt::Long;
 use lib glob("/mnt/project/snap2web/");
 use Snap2Cache;
-#use DBI;
-#use Config::Simple;
+use DBI;
+use Config::Simple;
 use POSIX;
 
 # now read the local config info
