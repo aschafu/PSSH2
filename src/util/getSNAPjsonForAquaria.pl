@@ -16,7 +16,7 @@ use POSIX;
 #my $seqHashQuery = $cfg->param('mysql.seqHashQuery');
 
 
-our($seq,$dbg,$details);
+our($seq,$dbg,$details,$uniprotAcc);
 $details = 0;
 
 my $args_ok=GetOptions( 'seq=s'    =>  \$seq,
@@ -25,7 +25,11 @@ my $args_ok=GetOptions( 'seq=s'    =>  \$seq,
                         'uniprotAcc' => \$uniprotAcc
 );
 
-exit(255) unless defined $seq;
+if ((defined $uniprotAcc) && (!defined $seq)){
+	$seq = getSeqFromAquaria($uniprotAcc);
+}
+
+exit(255) unless (defined $seq && $seq);
 
 my $cache=new Snap2Cache($seq,$dbg);
 # array of mutations first pos to all, then 2 pos to all
@@ -139,6 +143,10 @@ sub getAnnotationStart {
 	
 	my ($annotationName, $source, $URL, $annotationDescription) = @_;
 	return "     "."\"".$annotationName."\": {\"Source\": \"".$source."\", \"URL\": \"".$URL."\", \"Description\": \"".$annotationDescription."\", \"Features\": [ \n"
+
+}
+
+sub getSeqFromAauaria{
 
 }
 
