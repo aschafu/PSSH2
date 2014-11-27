@@ -22,7 +22,7 @@ $details = 0;
 my $args_ok=GetOptions( 'seq=s'    =>  \$seq,
 						'details'  =>  \$details,
                         'debug'       => \$dbg,
-                        'uniprotAcc' => \$uniprotAcc
+                        'uniprotAcc=s' => \$uniprotAcc
 );
 
 if ((defined $uniprotAcc) && (!defined $seq)){
