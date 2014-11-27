@@ -7,6 +7,7 @@ if (isset($_GET['seq'])){
 elseif (isset($_GET['uniprotAcc'])){
 	$uniprotAcc=$_GET['uniprotAcc'];
 	$option="--uniprotAcc $uniprotAcc";
+	echo $uniprotAcc;
 }
 $details="";
 if (isset($_GET['details'])){
