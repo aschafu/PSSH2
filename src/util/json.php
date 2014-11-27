@@ -9,6 +9,7 @@ elseif (isset($_GET['uniprotAcc'])){
 	$option="--uniprotAcc $uniprotAcc";
 	echo $uniprotAcc;
 }
+echo 'Hallo: $option';
 $details="";
 if (isset($_GET['details'])){
 	$details=" --details";
