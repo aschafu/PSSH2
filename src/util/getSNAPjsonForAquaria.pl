@@ -148,6 +148,22 @@ sub getAnnotationStart {
 
 sub getSeqFromAauaria{
 
+	my ($acc) = @_;
+
+	my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
+	my $dbname = $cfg->param('mysql.dbname');
+	my $host= $cfg->param('mysql.host');
+	my $db_user= $cfg->param('mysql.db_user');
+	my $db_pass= $cfg->param('mysql.db_pass');
+
+	# if ($debug) {print "\nOpen connection to database\n\n"};
+	my $dbh=DBI->connect("DBI:mysql:$dbname:$host;mysql_local_infile=1", $db_user, $db_pass, {'mysql_enable_utf8'=>1});
+	my $sth=$dbh->prepare("SELECT sequence from protein_sequence where Primary_Accession='$acc'")  or die "SQL Error: $DBI::errstr\n";
+	$sth->execute();
+	$seq_results = $sth->fetchrow_arrayref();	# get array of results
+	$sequence = $seq_results->[0];		        # get first value from array
+	return $sequence;
+	
 }
 
 sub getAnnotationEnd {
