@@ -21,7 +21,7 @@ $details = 0;
 
 my $args_ok=GetOptions( 'seq=s'    =>  \$seq,
 						'details'  =>  \$details,
-                        'debug'       => \$dbg
+                        'debug'       => \$dbg,
                         'uniprotAcc' => \$uniprotAcc
 );
 
