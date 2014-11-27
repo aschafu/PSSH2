@@ -12,7 +12,7 @@ $details="";
 if (isset($_GET['details'])){
 	$details=" --details";
 }
-$cmd=escapeshellcmd("perl /mnt/project/pssh/pssh2_project/src/util/getSNAPjsonForPSSH.pl $option $details");
+$cmd=escapeshellcmd("perl /mnt/project/pssh/pssh2_project/src/util/getSNAPjsonForAquaria.pl $option $details");
 $r=shell_exec($cmd);
 echo $r;
 ?>
