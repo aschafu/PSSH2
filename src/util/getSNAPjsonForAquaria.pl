@@ -21,7 +21,7 @@ if (!defined $seq){
 	if (defined $uniprotAcc){
 		$seq = getSeqFromAquariaWithAcc($uniprotAcc);
 	}
-	elseif (defined $md5){
+	elsif (defined $md5){
 		$seq = getSeqFromAquariaWithMd5($md5);
 	}
 }
