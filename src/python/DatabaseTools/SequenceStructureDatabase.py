@@ -20,7 +20,7 @@ port=3306
 user=update_d
 password=Aquaria4ever!
 [reading]
-user=update_d
+user=aquaria-ro
 password=Aquaria4ever!
 [user_tables]
 sequences=protein_sequence_user
@@ -125,6 +125,10 @@ class SequenceHandler:
 		Checking that the user_id is valid should happen elsewhere.
 		"""
 		(seq_id, description, sequence) = self.parseFasta(fastaString)
+		
+		if (source = 'genbank')
+			(organism, description) = self.parseGenbankDescription(description)
+		
 		md5 = self.getSequenceMd5(sequence)
 		submitConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'updating')
 #		print submitConnection
