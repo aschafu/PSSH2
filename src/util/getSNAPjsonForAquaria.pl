@@ -162,7 +162,7 @@ sub getSeqFromAquariaWithMd5{
 
 sub getSeqFromAquaria{
 
-	my ($acc) = @_;
+	my ($whereClause) = @_;
 
 #	my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
 #	my $dbname = $cfg->param('mysql.dbname');
@@ -176,7 +176,7 @@ sub getSeqFromAquaria{
 
 	# if ($debug) {print "\nOpen connection to database\n\n"};
 	my $dbh=DBI->connect("DBI:mysql:$dbname:$host;mysql_local_infile=1", $db_user, $db_pass, {'mysql_enable_utf8'=>1});
-	my $sth=$dbh->prepare("SELECT sequence from protein_sequence where Primary_Accession='$acc'")  or die "SQL Error: $DBI::errstr\n";
+	my $sth=$dbh->prepare("SELECT sequence from protein_sequence where $whereClause")  or die "SQL Error: $DBI::errstr\n";
 	$sth->execute();
 	my $seq_results = $sth->fetchrow_arrayref();	# get array of results
 	my $sequence = $seq_results->[0];		        # get first value from array
