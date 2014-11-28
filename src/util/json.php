@@ -1,5 +1,5 @@
 <?php 
-$option=""
+$option="";
 if (isset($_GET['seq'])){
 	$seq=$_GET['seq'];
 	$option="--seq $seq";
