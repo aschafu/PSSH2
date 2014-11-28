@@ -5,7 +5,6 @@ use Getopt::Long;
 use lib glob("/mnt/project/snap2web/");
 use Snap2Cache;
 use DBI;
-use Config::Simple;
 use POSIX;
 
 # now read the local config info
@@ -150,11 +149,15 @@ sub getSeqFromAquaria{
 
 	my ($acc) = @_;
 
-	my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
-	my $dbname = $cfg->param('mysql.dbname');
-	my $host= $cfg->param('mysql.host');
-	my $db_user= $cfg->param('mysql.db_user');
-	my $db_pass= $cfg->param('mysql.db_pass');
+#	my $cfg = new Config::Simple("Config.ini") || die Config::Simple->error();
+#	my $dbname = $cfg->param('mysql.dbname');
+#	my $host= $cfg->param('mysql.host');
+#	my $db_user= $cfg->param('mysql.db_user');
+#	my $db_pass= $cfg->param('mysql.db_pass');
+	my $dbname = 'aquaria';
+	my $host='192.168.1.47';
+	my $db_user='aquaria-ro';
+	my $db_pass='qsepKW8povr9ZBM';
 
 	# if ($debug) {print "\nOpen connection to database\n\n"};
 	my $dbh=DBI->connect("DBI:mysql:$dbname:$host;mysql_local_infile=1", $db_user, $db_pass, {'mysql_enable_utf8'=>1});
