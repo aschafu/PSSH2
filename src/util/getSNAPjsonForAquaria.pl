@@ -147,13 +147,15 @@ sub getSeqFromAquariaWithAcc{
 
 	my ($acc) = @_;
 	my $whereClause = "Primary_Accession='$acc'";
+	getSeqFromAquaria($whereClause);
 
 }
 
 sub getSeqFromAquariaWithMd5{
 
 	my ($md5) = @_;
-
+	my $whereClause = "MD5_Hash='$md5'";
+	getSeqFromAquaria($whereClause);
 
 }
 
