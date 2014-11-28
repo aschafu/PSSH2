@@ -7,7 +7,7 @@ use Snap2Cache;
 use DBI;
 use POSIX;
 
-our($seq,$dbg,$details,$uniprotAcc);
+our($seq,$dbg,$details,$uniprotAcc,$md5);
 $details = 0;
 
 my $args_ok=GetOptions( 'seq=s'    =>  \$seq,
@@ -17,8 +17,13 @@ my $args_ok=GetOptions( 'seq=s'    =>  \$seq,
                         'md5=s' => \$md5
 );
 
-if ((defined $uniprotAcc) && (!defined $seq)){
-	$seq = getSeqFromAquaria($uniprotAcc);
+if (!defined $seq){
+	if (defined $uniprotAcc){
+		$seq = getSeqFromAquariaWithAcc($uniprotAcc);
+	}
+	elseif (defined $md5){
+		$seq = getSeqFromAquariaWithMd5($md5);
+	}
 }
 
 exit(255) unless (defined $seq && $seq);
