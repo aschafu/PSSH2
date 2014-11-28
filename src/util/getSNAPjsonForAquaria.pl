@@ -143,6 +143,21 @@ sub getAnnotationStart {
 
 }
 
+sub getSeqFromAquariaWithAcc{
+
+	my ($acc) = @_;
+	my $whereClause = "Primary_Accession='$acc'";
+
+}
+
+sub getSeqFromAquariaWithMd5{
+
+	my ($md5) = @_;
+
+
+}
+
+
 sub getSeqFromAquaria{
 
 	my ($acc) = @_;
