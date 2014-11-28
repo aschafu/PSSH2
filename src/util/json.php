@@ -9,7 +9,7 @@ elseif (isset($_GET['uniprotAcc'])){
        $option="--uniprotAcc $uniprotAcc";
 }
 elseif (isset($_GET['md5'])){
-       $uniprotAcc=$_GET['md5'];
+       $md5=$_GET['md5'];
        $option="--md5 $md5";
 }
 $details="";
