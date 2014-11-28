@@ -21,7 +21,7 @@ user=update_d
 password=Aquaria4ever!
 [reading]
 user=aquaria-ro
-password=Aquaria4ever!
+password=qsepKW8povr9ZBM
 [user_tables]
 sequences=protein_sequence_user
 pssh2=pssh2_active 
