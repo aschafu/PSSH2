@@ -126,7 +126,7 @@ class SequenceHandler:
 		"""
 		(seq_id, description, sequence) = self.parseFasta(fastaString)
 		
-		if (source == 'genbank')
+		if (source == 'genbank'):
 			(organism, description) = self.parseGenbankDescription(description)
 		
 		md5 = self.getSequenceMd5(sequence)
