@@ -16,7 +16,7 @@ def main(argv):
 	# make a connection to the database
 	db_connection = DB_Connection()
 	db_name = 'pssh2'
-	submitConnection = db_connection.getConnection(db_name,'updating')
+#	submitConnection = db_connection.getConnection(db_name,'updating')
 	
 	# prepare our regexes
 	hhmFilt = re.compile("^FILT\s+(\d+) out of (\d+) ")
