@@ -20,6 +20,7 @@ def main(argv):
 	tableName = ''
 	if (args.tableName):
 		tableName = args.tableName	
+
 	organismId = ''
 	if (args.organismId):
 		organismId = args.organismId	
@@ -35,7 +36,7 @@ def main(argv):
 	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
 	for entry in fastaEntryList:
 #		print entry
-		sequenceHandler.uploadSingleFastaSeq(entry, 'genbank_taxonomy_186536', table=tableName)	
+		sequenceHandler.uploadSingleFastaSeq(entry, 'genbank_taxonomy_186536', table=tableName, organism_id=organismId)	
 #		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
 
 	
