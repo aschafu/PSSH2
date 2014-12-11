@@ -12,6 +12,7 @@ def main(argv):
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("seqfile", help="fasta sequence file to upload")
+	parser.add_argument("source", help="description of data source, e.g. swissprot, trembl, genbank")
 	parser.add_argument("-t", "--tableName", help="name of mysql table to import into")
 	parser.add_argument("-o", "--organismId", help="organism all the sequences come from (if applicalble)")
 	args = parser.parse_args()
