@@ -126,8 +126,8 @@ class SequenceHandler:
 		"""
 		(seq_id, description, sequence) = self.parseFasta(fastaString)
 		
-		if (source == 'genbank'):
-			(organism, description) = self.parseGenbankDescription(description)
+#		if (source == 'genbank'):
+#			(organism, description) = self.parseGenbankDescription(description)
 			
 		if (table == ''):
 			table = self.userSequenceTable
