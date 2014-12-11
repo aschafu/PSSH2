@@ -12,10 +12,17 @@ def main(argv):
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("seqfile", help="fasta sequence file to upload")
-	parser.add_argument("tableName", help="name of mysql table to import into")
+	parser.add_argument("-t", "--tableName", help="name of mysql table to import into")
+	parser.add_argument("-o", "--organismId", help="organism all the sequences come from (if applicalble)")
 	args = parser.parse_args()
 	seqfile = args.seqfile
-	tableName = args.tableName
+
+	tableName = ''
+	if (args.tableName):
+		tableName = args.tableName	
+	organismId = ''
+	if (args.organismId):
+		organismId = args.organismId	
 	
 	if os.access(seqfile, os.R_OK):
 		print "processing ", seqfile
