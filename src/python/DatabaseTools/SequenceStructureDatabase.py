@@ -115,7 +115,7 @@ class SequenceHandler:
 		
 	
 	def uploadSingleFastaSeq(self, fastaString, source, organism_id='', domain='', kingdom='',\
-	                         features='', string_id=''):
+	                         features='', string_id='', table=''):
 		"""Load a sequence into the user sequence table.
 		The 'fastaString' should contain the header and a sequence. 
 		So this function may be called after reading in a file containing a single sequence
@@ -128,6 +128,9 @@ class SequenceHandler:
 		
 		if (source == 'genbank'):
 			(organism, description) = self.parseGenbankDescription(description)
+			
+		if (table == ''):
+			table = self.userSequenceTable
 		
 		md5 = self.getSequenceMd5(sequence)
 		submitConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'updating')
