@@ -149,7 +149,7 @@ class SequenceHandler:
 # 			cursor.close()
 # 			return
 
-		mysqlInsert = "INSERT INTO %s " % self.userSequenceTable
+		mysqlInsert = "INSERT INTO %s " % table
 		mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
 		mysqlInsert += "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 		
