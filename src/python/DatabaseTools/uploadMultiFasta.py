@@ -17,6 +17,7 @@ def main(argv):
 	parser.add_argument("-o", "--organismId", help="organism all the sequences come from (if applicalble)")
 	args = parser.parse_args()
 	seqfile = args.seqfile
+	source = args.source
 
 	tableName = ''
 	if (args.tableName):
