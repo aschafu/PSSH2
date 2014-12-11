@@ -15,6 +15,7 @@ def main(argv):
 	parser.add_argument("tableName", help="name of mysql table to import into")
 	args = parser.parse_args()
 	seqfile = args.seqfile
+	tableName = args.tableName
 	
 	if os.access(seqfile, os.R_OK):
 		print "processing ", seqfile
