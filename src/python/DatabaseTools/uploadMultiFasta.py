@@ -12,6 +12,7 @@ def main(argv):
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("seqfile", help="fasta sequence file to upload")
+	parser.add_argument("tableName", help="name of mysql table to import into")
 	args = parser.parse_args()
 	seqfile = args.seqfile
 	
@@ -26,7 +27,7 @@ def main(argv):
 	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
 	for entry in fastaEntryList:
 #		print entry
-		sequenceHandler.uploadSingleFastaSeq(entry, 'genbank_taxonomy_186536')	
+		sequenceHandler.uploadSingleFastaSeq(entry, 'genbank_taxonomy_186536', table=tableName)	
 #		sequenceHandler.uploadSingleFastaSeq(entry, 'uniprot_taxonomy_186536')	
 
 	
