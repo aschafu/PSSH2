@@ -28,6 +28,9 @@ def main(argv):
 	
 #	for root, dirs, filenames in os.walk(cacheDir):
 	for root, dirs, filenames in os.walk(testDir):
+			
+		print root, dirs, filenames
+	
 		for f in filenames:
 			fileName, fileExtension = os.path.splitext(f)
 			if (fileExtension == 'hhm'):
