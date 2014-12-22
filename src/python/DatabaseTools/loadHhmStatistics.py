@@ -9,6 +9,7 @@ import sys, os, argparse, re
 # have local config file
 
 # TODO: Either get the database to work or write a tsv and import by hand
+# TODO: in any case: extract md5 sum from file path
 
 def main(argv):
 
