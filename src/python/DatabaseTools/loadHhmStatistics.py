@@ -8,6 +8,8 @@ import sys, os, argparse, re
 # ssh -L 3307:192.168.1.47:3306 andrea@rostlab
 # have local config file
 
+# TODO: Either get the database to work or write a tsv and import by hand
+
 def main(argv):
 
 #	parser = argparse.ArgumentParser()
@@ -43,7 +45,7 @@ def main(argv):
 				lines = filehandle.readlines()
 				filehandle.close()
 
-				print 'file: ', filepath
+				# print 'file: ', filepath
 
 				for line in lines:
 					filterMatch = hhmFilt.match(line)
