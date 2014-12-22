@@ -36,6 +36,8 @@ def main(argv):
 				lines = filehandle.readlines()
 				filehandle.close()
 
+				print 'file: ', filepath
+
 				for line in lines:
 					filterMatch = hhmFilt.match(line)
 					if (filterMatch):
