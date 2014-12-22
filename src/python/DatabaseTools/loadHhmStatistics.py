@@ -28,12 +28,12 @@ def main(argv):
 	
 #	for root, dirs, filenames in os.walk(cacheDir):
 	for root, dirs, filenames in os.walk(testDir):
-			
-		print root, ' ', dirs, ' ', filenames
+	
+		# print root, ' ', dirs, ' ', filenames
 	
 		for f in filenames:
 			fileName, fileExtension = os.path.splitext(f)
-			print fileName, ' ', fileExtension
+			# print fileName, ' ', fileExtension
 			
 			if (fileExtension == '.hhm'):
 				filepath = os.path.join(root, f)
