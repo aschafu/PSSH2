@@ -24,7 +24,7 @@ def main(argv):
 	
 	# loop over the result directories
 	cacheDir = '/mnt/project/psshcache/result_cache_2014/'
-	testDir = '/mnt/project/psshcache/result_cache_2014//mnt/project/psshcache/result_cache_2014/0b/00'
+	testDir = '/mnt/project/psshcache/result_cache_2014/0b/00'
 	
 #	for root, dirs, filenames in os.walk(cacheDir):
 	for root, dirs, filenames in os.walk(testDir):
