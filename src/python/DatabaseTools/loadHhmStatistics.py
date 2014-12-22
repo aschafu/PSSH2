@@ -14,8 +14,8 @@ def main(argv):
 #	parser.add_argument("seqfile", help="fasta sequence file to upload")
 #	args = parser.parse_args()
 	# make a connection to the database
-	db_connection = DB_Connection()
-	db_name = 'pssh2'
+#	db_connection = DB_Connection()
+#	db_name = 'pssh2'
 #	submitConnection = db_connection.getConnection(db_name,'updating')
 	
 	# prepare our regexes
