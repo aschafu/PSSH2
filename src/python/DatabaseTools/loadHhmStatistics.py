@@ -47,12 +47,12 @@ def main(argv):
 
 				for line in lines:
 					filterMatch = hhmFilt.match(line)
-					if (filterMatch not None):
+					if (not filterMatch is None):
 						seqNum1 = filterMatch.group(1)
 						seqNum2 = filterMatch.group(1)
 						continue
 					neffMatch = hhmNeff.match(line)
-					if (neffMatch not None):
+					if (not neffMatch is None):
 						neff = filterMatch.group(1)
 						# neff is the last match we are looking for
 						# break
