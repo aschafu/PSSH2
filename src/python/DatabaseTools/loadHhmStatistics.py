@@ -50,6 +50,7 @@ def main(argv):
 					if (filterMatch):
 						seqNum1 = filterMatch.group(1)
 						seqNum2 = filterMatch.group(1)
+						continue
 					neffMatch = hhmNeff.match(line)
 					if (neffMatch):
 						neff = filterMatch.group(1)
