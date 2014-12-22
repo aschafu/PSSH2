@@ -33,8 +33,12 @@ def main(argv):
 	
 		for f in filenames:
 			fileName, fileExtension = os.path.splitext(f)
+			pritn fileName, fileExtension
+			
 			if (fileExtension == 'hhm'):
 				filepath = os.path.join(root, f)
+				print filepath
+				
 				filehandle = open(filepath)
 				lines = filehandle.readlines()
 				filehandle.close()
