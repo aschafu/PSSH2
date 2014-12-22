@@ -44,6 +44,8 @@ def main(argv):
 					neffMatch = hhmNeff.match(line)
 					if (neffMatch):
 						neff = filterMatch.group(1)
+						# neff is the last match we are looking for
+						break
 						
 				print 'file: ', filepath, ' -> neff, seqs: ', neff, ' ', seqNum1, ' ', seqNum2
 						
