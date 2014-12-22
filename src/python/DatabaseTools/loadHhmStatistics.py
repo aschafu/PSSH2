@@ -35,7 +35,7 @@ def main(argv):
 			fileName, fileExtension = os.path.splitext(f)
 			print fileName, ' ', fileExtension
 			
-			if (fileExtension == 'hhm'):
+			if (fileExtension == '.hhm'):
 				filepath = os.path.join(root, f)
 				print filepath
 				
