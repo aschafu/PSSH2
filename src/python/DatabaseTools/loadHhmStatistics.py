@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from DatabaseTools import *
+#from DatabaseTools import *
 import sys, os, argparse
 
 # preprequisite for this import to work on local Mac:
