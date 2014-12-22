@@ -33,7 +33,7 @@ def main(argv):
 	
 		for f in filenames:
 			fileName, fileExtension = os.path.splitext(f)
-			pritn fileName, fileExtension
+			print fileName, fileExtension
 			
 			if (fileExtension == 'hhm'):
 				filepath = os.path.join(root, f)
