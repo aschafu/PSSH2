@@ -44,8 +44,8 @@ def main(argv):
 					neffMatch = hhmNeff.match(line)
 					if (neffMatch):
 						neff = filterMatch.group(1)
-
-			print 'file: ', filepath, ' -> neff, seqs: ', neff, ' ', seqNum1, ' ', seqNum2
+						
+				print 'file: ', filepath, ' -> neff, seqs: ', neff, ' ', seqNum1, ' ', seqNum2
 						
 			
 		
