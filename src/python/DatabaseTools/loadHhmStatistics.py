@@ -41,6 +41,7 @@ def main(argv):
 			
 			if (fileExtension == '.hhm'):
 				filepath = os.path.join(root, f)
+				print root
 				print filepath
 				
 				filehandle = open(filepath)
