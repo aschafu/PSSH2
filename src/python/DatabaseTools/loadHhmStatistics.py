@@ -41,7 +41,7 @@ def main(argv):
 			
 			if (fileExtension == '.hhm'):
 				path_list = root.split(os.sep)
-				md5_sum = path_list[1]
+				md5_sum = path_list[-1]
 				print md5_sum, ':', root
 				
 				filepath = os.path.join(root, f)
