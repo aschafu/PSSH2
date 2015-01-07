@@ -40,10 +40,12 @@ def main(argv):
 			# print fileName, ' ', fileExtension
 			
 			if (fileExtension == '.hhm'):
-				filepath = os.path.join(root, f)
-				print root
-				print filepath
+				path_list = root.split(os.sep)
+				md5_sum = path_list[1]
+				print md5_sum, ':', root
 				
+				filepath = os.path.join(root, f)
+#				print filepath
 				filehandle = open(filepath)
 				lines = filehandle.readlines()
 				filehandle.close()
