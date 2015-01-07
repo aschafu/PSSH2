@@ -24,8 +24,8 @@ def main(argv):
 #	testDir = '/mnt/project/psshcache/result_cache_2014/0b/00'
 	testDir = '/mnt/project/psshcache/result_cache_2014/0b/'
 	
-#	for root, dirs, filenames in os.walk(cacheDir):
-	for root, dirs, filenames in os.walk(testDir):
+	for root, dirs, filenames in os.walk(cacheDir):
+#	for root, dirs, filenames in os.walk(testDir):
 	
 		# print root, ' ', dirs, ' ', filenames
 	
@@ -36,7 +36,7 @@ def main(argv):
 			if (fileExtension == '.hhm'):
 				path_list = root.split(os.sep)
 				md5_sum = path_list[-1]
-				print md5_sum, ':', root
+#				print md5_sum, ':', root
 				
 				filepath = os.path.join(root, f)
 #				print filepath
