@@ -50,7 +50,7 @@ def main(argv):
 					filterMatch = hhmFilt.match(line)
 					if (not filterMatch is None):
 						seqNum1 = filterMatch.group(1)
-						seqNum2 = filterMatch.group(1)
+						seqNum2 = filterMatch.group(2)
 						continue
 					neffMatch = hhmNeff.match(line)
 					if (not neffMatch is None):
