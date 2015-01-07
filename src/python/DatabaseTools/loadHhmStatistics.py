@@ -3,13 +3,7 @@
 #from DatabaseTools import *
 import sys, os, argparse, re
 
-# preprequisite for this import to work on local Mac:
-# set up tunnel: 
-# ssh -L 3307:192.168.1.47:3306 andrea@rostlab
-# have local config file
-
 # TODO: Either get the database to work or write a tsv and import by hand
-# TODO: in any case: extract md5 sum from file path
 
 def main(argv):
 
@@ -64,7 +58,8 @@ def main(argv):
 						# neff is the last match we are looking for
 						break
 						
-				print 'file: ', filepath, ' -> neff, seqs: ', neff, ' ', seqNum1, ' ', seqNum2
+#				print 'file: ', filepath, ' -> neff, seqs: ', neff, ' ', seqNum1, ' ', seqNum2
+				print md5_sum, '\t', neff, '\t', seqNum1, '\t', seqNum2
 						
 			
 		
