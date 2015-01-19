@@ -6,8 +6,20 @@ conf_file='/etc/pssh2.conf'
 ### work directory
 temp_work="/tmp/pssh2"
 ### sequence tables in mysql
-sequence_tables="protein_sequence protein_sequence_user protein_sequence_uniprot_ebola_proteins"
-
+sequence_tables="protein_sequence protein_sequence_user"
+### Note:
+### by making protein_sequence_user a view in MySQL, one can move this configuration to the database
+### (where it belongs) 
+## Example config in MySQL:
+# create view protein_sequence_test AS 
+# select * from `protein_sequence_user_upload`
+# UNION ALL 
+# select * from protein_sequence_ehec
+# UNION ALL
+# select * from `protein_sequence_genbank_ebola_proteins`
+# UNION ALL
+# select * from protein_sequence_uniprot_ebola_proteins;
+## The view is of type union all, though, so limit 1 is important in the query! 
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]

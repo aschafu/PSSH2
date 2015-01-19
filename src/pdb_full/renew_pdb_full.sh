@@ -52,7 +52,7 @@ source_dir=$rootDir"src/pdb_full/"
 
 ## First symbolic links to all PDB files in /mnt/project/rost_db/data/pdb/entries/*/ are remade, as the script needs all files in one directory.
 pdb_links_dir=$pdb_derived_dir"pdb_links/"
-dssp_links_dir=$dssp_derived_dir"dssp/"
+dssp_links_dir=$pdb_derived_dir"dssp/"
 
 rm -r $pdb_links_dir 2>/dev/null #remove all old links
 mkdir $pdb_links_dir 2>/dev/null
