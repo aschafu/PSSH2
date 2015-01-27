@@ -93,8 +93,6 @@ class DB_Connection:
 class SequenceHandler:
 
 	sequenceDB = 'aquaria'
-	headerPattern = re.compile("^>(\S+)(\s+\S.*)?")
-	descriptionPattern = re.compile("^\s+(\S.*)")
 
 	def __init__(self):
 		"""Read the configuration from the default parameters or a config file."""
@@ -108,6 +106,8 @@ class SequenceHandler:
 			warnings.warn('No table defined for user sequences!, check your config file: '+conffile)
 		
 		self.db_connection = DB_Connection()
+		self.headerPattern = re.compile("^>(\S+)(\s+\S.*)?")
+		self.descriptionPattern = re.compile("^\s+(\S.*)")
 		
 
 	def getSequenceMd5(self, sequence):
@@ -186,11 +186,11 @@ class SequenceHandler:
 		Could be extended to look for annotation info in the header.
 		"""
 #		headerPattern = re.compile("^>(\S+)(\s+\S.*)?")
-		result = headerPattern.match(headerString)
+		result = self.headerPattern.match(headerString)
 		identifier = result.group(1)
 		descriptionString = result.group(2)
 		if (descriptionString):
-			match = descriptionPattern.match(descriptionString)
+			match = self.descriptionPattern.match(descriptionString)
 			description = match.group(1)
 		else:
 			description = ''
