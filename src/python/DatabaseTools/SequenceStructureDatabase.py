@@ -93,6 +93,7 @@ class DB_Connection:
 class SequenceHandler:
 
 	sequenceDB = 'aquaria'
+	headerPattern = re.compile("^>(\S+)(\s+\S.*)?")
 
 	def __init__(self):
 		"""Read the configuration from the default parameters or a config file."""
@@ -183,10 +184,12 @@ class SequenceHandler:
 		"""Take a fasta header and get out the sequence identifier and any given description
 		Could be extended to look for annotation info in the header.
 		"""
-		headerPattern = re.compile("^>(\S+)\s+(\S.*)")
+#		headerPattern = re.compile("^>(\S+)(\s+\S.*)?")
 		result = headerPattern.match(headerString)
 		identifier = result.group(1)
-		description = result.group(2)
+		descriptionString = result.group(2)
+		if (descriptionString):
+			
 		return(identifier, description)
 		
 		
