@@ -94,6 +94,7 @@ class SequenceHandler:
 
 	sequenceDB = 'aquaria'
 	headerPattern = re.compile("^>(\S+)(\s+\S.*)?")
+	descriptionPattern = re.compile("^\s+(\S.*)")
 
 	def __init__(self):
 		"""Read the configuration from the default parameters or a config file."""
@@ -189,7 +190,10 @@ class SequenceHandler:
 		identifier = result.group(1)
 		descriptionString = result.group(2)
 		if (descriptionString):
-			
+			match = descriptionPattern.match(descriptionString)
+			description = match.group(1)
+		else:
+			description = ''
 		return(identifier, description)
 		
 		
