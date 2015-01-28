@@ -16,7 +16,7 @@ $details="";
 if (isset($_GET['details'])){
         $details=" --details";
 }
-$cmd=escapeshellcmd("perl /mnt/project/pssh/pssh2_project/src/util/getSNAPjsonForAquaria.pl $option $details");
+$cmd=escapeshellcmd("perl /mnt/project/pssh/pssh2_project/src/util/getPPjsonForAquaria.pl $option $details");
 $r=shell_exec($cmd);
 header("Access-Control-Allow-Origin: *");
 header('Content-type: application/json');
