@@ -36,13 +36,28 @@ STQTALA
 		jobUri = submitResponse[u'uri']
 		print 'Job running, get info from ', jobUri
 		
-		statusRequest = requests.get(jobUri)
-		statusResponse = statusRequest.json()
-		currentStatus = statusResponse[
+#		statusRequest = requests.get(jobUri)
+#		statusResponse = statusRequest.json()
+#		currentJobStatus = statusResponse['Job status']
+		(statusResponse, currentJobStatus) = checkJobStatus(jobUri)
 	
-		while True:
+		while (currentJobStatus == u'running'):
 			print (statusRequest.json())
 			time.sleep(30)
+			(statusResponse, currentJobStatus) = checkJobStatus(jobUri)
+		
+		if (currentJobStatus == u'finished'):
+			resultUri = statusResponse[u'uri']
+			
+		else:
+			print 'ERROR: Job stopped running, but not finished: ', statusResponse
 			
 	else:
-		print 'Submission failed: ', submitResponse
+		print 'ERROR: Submission failed: ', submitResponse
+		
+		
+def checkJobStatus(jobUri):
+	statusRequest = requests.get(jobUri)
+	statusResponse = statusRequest.json()
+	currentJobStatus = statusResponse['Job status']
+	return (statusResponse, currentJobStatus)
