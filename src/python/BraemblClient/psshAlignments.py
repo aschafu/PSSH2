@@ -1,8 +1,7 @@
 import requests
 import json
 import time
-import sys
-import argparse
+import sys, os, argparse
 
 testSequence = """>sp|P02769|ALBU_BOVIN Serum albumin OS=Bos taurus GN=ALB PE=1 SV=4
 MKWVTFISLLLLFSSAYSRGVFRRDTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
