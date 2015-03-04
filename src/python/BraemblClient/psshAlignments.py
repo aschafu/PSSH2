@@ -25,6 +25,12 @@ def main(argv):
 	parser.add_argument("seqfile", help="fasta sequence file to process")
 	args = parser.parse_args()
 	seqfile = args.seqfile
+	
+	if os.access(seqfile, os.R_OK):
+		print "processing ", seqfile
+	else:
+		print "ERROR: cannot read input: ", seqfile
+		sys.exit(2)
 
 	sequenceHandler = SequenceStructureDatabase.SequenceHandler()
 	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
