@@ -48,6 +48,7 @@ STQTALA
 		
 		if (currentJobStatus == u'finished'):
 			resultUri = statusResponse[u'uri']
+			print 'get result at ', resultUri
 			
 		else:
 			print 'ERROR: Job stopped running, but not finished: ', statusResponse
