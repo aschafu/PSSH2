@@ -18,7 +18,7 @@ NRLCVLHEKTPVSEKVTKCCTESLVNRRPCFSALTPDETYVPKAFDEKLFTFHADICTLP
 DTEKQIKKQTALVELLKHKPKATEEQLKTVMENFVAFVDKCCAADDKEACFAVEGPKLVV
 STQTALA
 """
-	payload = {'sequence': urllib.urlencode(sequence) }
+	payload = {'sequence': sequence }
 	url = "http://drylab.rdpa.org/rest/pssh2/job/"
 	headers = {'content-type': 'application/json'}
 	
