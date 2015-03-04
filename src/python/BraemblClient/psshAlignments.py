@@ -2,6 +2,8 @@ import requests
 import json
 import time
 import sys, os, argparse
+from DatabaseTools import *
+
 
 testSequence = """>sp|P02769|ALBU_BOVIN Serum albumin OS=Bos taurus GN=ALB PE=1 SV=4
 MKWVTFISLLLLFSSAYSRGVFRRDTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
