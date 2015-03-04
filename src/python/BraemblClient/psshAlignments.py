@@ -70,6 +70,7 @@ def processSequence(sequence):
 		if (currentJobStatus == u'finished'):
 			resultUri = statusResponse[u'uri']
 			print 'get result at ', resultUri
+#			return resultUri
 
 		# report en error if the job just went missing
 		else:
