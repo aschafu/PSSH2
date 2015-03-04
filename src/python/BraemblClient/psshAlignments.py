@@ -59,18 +59,23 @@ def processSequence(sequence):
 			time.sleep(30)
 			(statusResponse, currentJobStatus) = checkJobStatus(jobUri)
 		
+		# report the result URI if the job is finished
 		if (currentJobStatus == u'finished'):
 			resultUri = statusResponse[u'uri']
 			print 'get result at ', resultUri
-			
+
+		# report en error if the job just went missing
 		else:
 			print 'ERROR: Job stopped running, but not finished: ', statusResponse
 			
+	# reoport if the submit request was unsuccessful		
 	else:
 		print 'ERROR: Submission failed: ', submitResponse
 
 
+
 def checkJobStatus(jobUri):
+# chek the job status (extracted to avoid code duplication)
 	statusRequest = requests.get(jobUri)
 	statusResponse = statusRequest.json()
 	currentJobStatus = statusResponse['Job status']
