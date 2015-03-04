@@ -22,14 +22,27 @@ STQTALA
 	payload = {'sequence': sequence }
 	url = "http://drylab.rdpa.org/rest/pssh2/job/"
 	headers = {'content-type': 'application/json'}
+
+
+	# start the job:	
+	submitRequest = requests.post(url, data=json.dumps(payload), headers=headers)
+	submitResponse = submitRequest.json()
+#	print (submitResponse)
+
+	# check the status and find out where to get results
+	submitStatus = submitResponse[u'Status']
+
+	if (submitStatus == u'success'):
+		jobUri = submitResponse[u'uri']
+		print jobUri
+		
+		statusRequest = requests.get(jobUri)
+		statusResponse = statusRequest.json()
+		currentStatus = statusResponse[
 	
-	r = requests.post(url, data=json.dumps(payload), headers=headers)
-	response = r.json()
-	print (response)
-	jobUri = response[u'uri']
-	print jobUri
-	
-	while True:
-		r2 = requests.get(jobUri)
-		print (r2.json())
-		time.sleep(30)
+		while True:
+			print (statusRequest.json())
+			time.sleep(30)
+			
+	else:
+		print 'Submission failed: ', submitResponse
