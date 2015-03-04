@@ -23,7 +23,12 @@ STQTALA
 	url = "http://drylab.rdpa.org/rest/pssh2/job/"
 	headers = {'content-type': 'application/json'}
 	
+	r = requests.post(url, data=json.dumps(payload), headers=headers)
+	response = r.json()
+	print (response)
+	jobUri = response[u'uri']
+	
 	while True:
-		r = requests.post(url, data=json.dumps(payload), headers=headers)
-		print (r.json())
+		r2 = requests.get(jobUri)
+		print (r2.json())
 		time.sleep(30)
