@@ -42,7 +42,7 @@ STQTALA
 		(statusResponse, currentJobStatus) = checkJobStatus(jobUri)
 	
 		while (currentJobStatus == u'running'):
-			print (statusRequest.json())
+			print (statusResponse)
 			time.sleep(30)
 			(statusResponse, currentJobStatus) = checkJobStatus(jobUri)
 		
