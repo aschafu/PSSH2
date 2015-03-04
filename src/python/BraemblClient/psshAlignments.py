@@ -32,10 +32,12 @@ def main(argv):
 	for sequence in fastaEntryList:
 		processSequence(sequence)
 
+
+def processSequence(sequence):
+
 	payload = {'sequence': sequence }
 	url = "http://drylab.rdpa.org/rest/pssh2/job/"
 	headers = {'content-type': 'application/json'}
-
 
 	# start the job:	
 	submitRequest = requests.post(url, data=json.dumps(payload), headers=headers)
