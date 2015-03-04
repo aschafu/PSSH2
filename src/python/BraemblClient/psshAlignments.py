@@ -34,7 +34,7 @@ STQTALA
 
 	if (submitStatus == u'success'):
 		jobUri = submitResponse[u'uri']
-		print jobUri
+		print 'Job running, get info from ', jobUri
 		
 		statusRequest = requests.get(jobUri)
 		statusResponse = statusRequest.json()
