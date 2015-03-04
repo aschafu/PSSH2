@@ -26,4 +26,4 @@ STQTALA
 	while True:
 		r = requests.post(url, data=json.dumps(payload), headers=headers)
 		print (r.json())
-		time.sleep(3)
+		time.sleep(30)
