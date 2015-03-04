@@ -27,6 +27,7 @@ STQTALA
 	response = r.json()
 	print (response)
 	jobUri = response[u'uri']
+	print jobUri
 	
 	while True:
 		r2 = requests.get(jobUri)
