@@ -51,11 +51,9 @@ def processSequence(sequence):
 		jobUri = submitResponse[u'uri']
 		print 'Job running, get info from ', jobUri
 		
-#		statusRequest = requests.get(jobUri)
-#		statusResponse = statusRequest.json()
-#		currentJobStatus = statusResponse['Job status']
 		(statusResponse, currentJobStatus) = checkJobStatus(jobUri)
 	
+		# wait fo the job to finish
 		while (currentJobStatus == u'running'):
 			print (statusResponse)
 			time.sleep(30)
