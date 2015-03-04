@@ -3,7 +3,8 @@ import json
 import urllib
 import time
 
-if __name__ == '__main__':
+		
+def main(argv):
 
 	sequence = """>sp|P02769|ALBU_BOVIN Serum albumin OS=Bos taurus GN=ALB PE=1 SV=4
 MKWVTFISLLLLFSSAYSRGVFRRDTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
@@ -54,10 +55,14 @@ STQTALA
 			
 	else:
 		print 'ERROR: Submission failed: ', submitResponse
-		
-		
+
+
 def checkJobStatus(jobUri):
 	statusRequest = requests.get(jobUri)
 	statusResponse = statusRequest.json()
 	currentJobStatus = statusResponse['Job status']
 	return (statusResponse, currentJobStatus)
+	
+		
+if __name__ == "__main__":
+    main()
