@@ -53,7 +53,7 @@ def processSequence(sequence):
 		
 		(statusResponse, currentJobStatus) = checkJobStatus(jobUri)
 	
-		# wait fo the job to finish
+		# wait until the job stops running
 		while (currentJobStatus == u'running'):
 			print (statusResponse)
 			time.sleep(30)
