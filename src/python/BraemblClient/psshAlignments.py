@@ -2,11 +2,9 @@ import requests
 import json
 import time
 import sys
+import argparse
 
-		
-def main(argv):
-
-	sequence = """>sp|P02769|ALBU_BOVIN Serum albumin OS=Bos taurus GN=ALB PE=1 SV=4
+testSequence = """>sp|P02769|ALBU_BOVIN Serum albumin OS=Bos taurus GN=ALB PE=1 SV=4
 MKWVTFISLLLLFSSAYSRGVFRRDTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
 DEHVKLVNELTEFAKTCVADESHAGCEKSLHTLFGDELCKVASLRETYGDMADCCEKQEP
 ERNECFLSHKDDSPDLPKLKPDPNTLCDEFKADEKKFWGKYLYEIARRHPYFYAPELLYY
@@ -19,6 +17,21 @@ NRLCVLHEKTPVSEKVTKCCTESLVNRRPCFSALTPDETYVPKAFDEKLFTFHADICTLP
 DTEKQIKKQTALVELLKHKPKATEEQLKTVMENFVAFVDKCCAADDKEACFAVEGPKLVV
 STQTALA
 """
+
+		
+def main(argv):
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument("seqfile", help="fasta sequence file to process")
+	args = parser.parse_args()
+	seqfile = args.seqfile
+
+	sequenceHandler = SequenceStructureDatabase.SequenceHandler()
+	fastaEntryList = sequenceHandler.extractSingleFastaSequencesFromFile(seqfile)
+
+	for sequence in fastaEntryList:
+		processSequence(sequence)
+
 	payload = {'sequence': sequence }
 	url = "http://drylab.rdpa.org/rest/pssh2/job/"
 	headers = {'content-type': 'application/json'}
