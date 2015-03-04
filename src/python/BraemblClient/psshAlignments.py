@@ -20,8 +20,8 @@ STQTALA
 	payload = {'sequence': urllib.urlencode(sequence) }
 	url = "http://drylab.rdpa.org/rest/pssh2/job/"
 	headers = {'content-type': 'application/json'}
-    
-    while True:
+	
+	while True:
 		r = requests.post(url, data=json.dumps(payload), headers=headers)
 		print (r.json())
 		time.sleep(3)
