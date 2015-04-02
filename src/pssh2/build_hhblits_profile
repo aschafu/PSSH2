@@ -86,7 +86,7 @@ do
    ;;
   b)
 	echo 'received -b, setting option -maxmem $bigMem'
-  	b='-maxmem $bigMem '
+  	b="-maxmem $bigMem "
    ;;
   :)
    echo "option -$OPTARG needs an argument"
