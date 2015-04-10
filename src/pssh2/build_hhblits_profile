@@ -88,8 +88,8 @@ do
    n_cpu=$OPTARG;
    ;;
   b)
-	echo "received -b, setting option -maxmem $bigMem -maxres $bigRes"
-  	b="-maxmem $bigMem -maxres $bigRes"
+    echo "received -b, setting option -maxmem $bigMem -maxres $bigRes"
+    b="-maxmem $bigMem -maxres $bigRes"
    ;;
   :)
    echo "option -$OPTARG needs an argument"
