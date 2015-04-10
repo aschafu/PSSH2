@@ -10,7 +10,7 @@ fi
 ### uniprot20 location
 u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
 #u20='/usr/share/hhblits/uniprot20_current'
-### amount of memory to use for big jobs
+### amount of memory and residues to use for big jobs
 bigMem=7
 bigRes=36000
 ### parallel runs
@@ -49,7 +49,7 @@ OPTIONS
   -m          output file name for HMM (hhm format)
   -a          output file name for multiple sequence alignment (a3m format)
   -r          output file name for hhblits result file (hhr format)
-  -b          big job -> run with more memory ($bigMem) 
+  -b          big job -> run with more memory ($bigMem) and residues ($bigRes) 
   -u          /path/to/uniprot_20_files (without extensions)
   -c          number of cpus hhblits should run in parallel (default $n_cpu)
 AUTHOR
