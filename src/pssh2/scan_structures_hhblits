@@ -3,7 +3,9 @@
 # this script is used to sum up the parameters for a structure database (pdb_full) scanning hhblits in one place
 # it is used by the PredictProtein make file, the generate_pssh2 perl script and the pssh2_multi_md5 wrapper
 
-conf_file='/etc/pssh2.conf'
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
 
 ### pdb_full location
 pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
