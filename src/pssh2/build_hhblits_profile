@@ -11,7 +11,7 @@ fi
 u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
 #u20='/usr/share/hhblits/uniprot20_current'
 ### amount of memory to use for big jobs
-bigMem=5
+bigMem=7
 ### parallel runs
 n_cpu=1
 
