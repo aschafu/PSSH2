@@ -2,7 +2,9 @@
 ## run the necessary things for pssh2 predictions
 ### run and parse hhblits
 
-conf_file='/etc/pssh2.conf'
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
 
 ### base path to cache
 pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
