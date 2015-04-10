@@ -12,6 +12,7 @@ u20='/var/tmp/rost_db/data/hhblits/uniprot20_current'
 #u20='/usr/share/hhblits/uniprot20_current'
 ### amount of memory to use for big jobs
 bigMem=7
+bigRes=36000
 ### parallel runs
 n_cpu=1
 
@@ -88,7 +89,7 @@ do
    ;;
   b)
 	echo "received -b, setting option -maxmem $bigMem"
-  	b="-maxmem $bigMem "
+  	b="-maxmem $bigMem -maxres 36000"
    ;;
   :)
    echo "option -$OPTARG needs an argument"
