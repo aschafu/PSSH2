@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
 # parse_hhr.pl
 # Parses an HHblits HHR-output file for required informations for PSSH2:
