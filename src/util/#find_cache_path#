@@ -1,0 +1,19 @@
+#!/bin/bash
+
+while getopts :Dhm: opt
+do
+        case $opt in
+        h) usage; echo " "; pssh2_seq -h; exit;;
+        m) md5list=$OPTARG;;
+#       *) passOpt="$passOpt $OPTARG";;
+        esac
+done
+
+pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+# get subdir names for cache structure
+M=`echo $md5|cut -b1,2`
+M2=`echo $md5|cut -b3,4`
+
+### full path to cachedir
+CC="$pssh2_cache$M/$M2/$md5"
+echo $CC
