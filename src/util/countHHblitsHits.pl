@@ -4,7 +4,7 @@
 # Counts the number of sequence hits better than a set of E-values in hhblits output
 
 
-my %colNames = ('1e-100' => 'hh_100', '1e-33' => 'hh_33', '1e-10' => 'hh_10', '1e-3' => 'hh_3', '1e10' => 'hh_p10');
+my %colNames = ('1e-100' => 'hh_100', '1e-33' => 'hh_33', '1e-10' => 'hh_10', '1e-3' => 'hh_3', '1' => 'hh_0', '1e10' => 'hh_p10');
 my @evalCutoffs = keys %colNames; 
 my %evalues = ();
 
