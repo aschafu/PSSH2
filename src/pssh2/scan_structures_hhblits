@@ -11,7 +11,7 @@ fi
 pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
 #pdb_full='/usr/share/hhblits/pdb_full'
 ### amount of memory to use for big jobs
-bigMem=5
+bigMem=7
 ### parallel runs
 n_cpu=1
 
