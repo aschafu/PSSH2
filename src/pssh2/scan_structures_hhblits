@@ -12,6 +12,7 @@ pdb_full='/var/tmp/rost_db/data/hhblits/pdb_full'
 #pdb_full='/usr/share/hhblits/pdb_full'
 ### amount of memory to use for big jobs
 bigMem=7
+bigRes=36000
 ### parallel runs
 n_cpu=1
 
@@ -46,7 +47,7 @@ OPTIONS
   -f          input sequence file (fasta format)
   -m          input file name for HMM (hhm format)
   -r          output file name for hhblits result file (hhr format)
-  -b          big job -> run with more memory ($bigMem) 
+  -b          big job -> run with more memory ($bigMem) and residues ($bigRes)
   -p          /path/to/pdb_full_files (without extensions)
   -c          number of cpus hhblits should run in parallel (default $n_cpu)
 AUTHOR
