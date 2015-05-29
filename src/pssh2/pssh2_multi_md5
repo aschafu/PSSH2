@@ -87,7 +87,7 @@ do
 			echo "working with old file $input_seq_file, with md5: $old_md5"
 		else 
 			get_seq=1
-			echo "old file $input_seq_file, has different md5: $old_md5"
+			echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
 		fi
 	else
 		get_seq=1
