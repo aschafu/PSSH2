@@ -64,7 +64,7 @@ fi
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
-
+get_seq=0
 
 for md5 in $md5list 
 do
@@ -82,8 +82,19 @@ do
 	if [ -s $input_seq_file ] 
 	then
 		old_md5=`cat $input_seq_file|fasta_to_md5`
-		echo "working with old file $input_seq_file, with md5: $old_md5"
+		if  [$old_md5 == $md5 ]
+		then
+			echo "working with old file $input_seq_file, with md5: $old_md5"
+		else 
+			get_seq=1
+			echo "old file $input_seq_file, has different md5: $old_md5"
+		fi
 	else
+		get_seq=1
+	fi
+	
+	if [ $get_seq -eq 1]
+	then 
 		temp_fasta_file=`get_fasta_for_md5 $md5`
 		if [ -s $temp_fasta_file ]
 		then	
