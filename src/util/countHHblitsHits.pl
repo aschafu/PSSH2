@@ -31,6 +31,7 @@ for my $line (<STDIN>) {
         	my $sp = $2; #contains all ids of the cluster
         	@id_list = ();
 
+			print STDOUT $sp, "\n";
 		    while ($sp =~ /\|(sp:)*(\w+)/g) {
 				my $uniprot_id = $2;
 		        push(@id_list, $uniprot_id);
