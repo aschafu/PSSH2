@@ -72,4 +72,28 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 get_seq=0
 
+while true 
+do
 
+	md5list=`get_md5s_aws`  # TODO: write get_md5_aws
+	for md5 in $md5list 
+	do
+
+		# get subdir names for cache structure
+		M=`echo $md5|cut -b1,2`
+		M2=`echo $md5|cut -b3,4`
+
+	### full path to cachedir
+		CC="$pssh2_cache$M/$M2/$md5"
+
+		# look for md5 in S3 and unpack
+
+
+		echo $CC
+		input_seq_file=$CC/query.fasta
+
+
+
+done
+
+md5list = 
