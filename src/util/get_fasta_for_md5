@@ -75,7 +75,14 @@ do
 		then
 			break
 		fi
-	done		
-	echo -e ">$md5\n$sequence" > $temp_work/$md5/$md5.fasta 
-	echo "$temp_work/$md5/$md5.fasta"
+	done
+	
+	# don't write empty sequence files!
+	if [ $sequence ]
+	then 
+		echo -e ">$md5\n$sequence" > $temp_work/$md5/$md5.fasta 
+		echo "$temp_work/$md5/$md5.fasta"
+	else 
+		exit 1
+	fi
 done
