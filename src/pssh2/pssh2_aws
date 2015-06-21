@@ -74,25 +74,71 @@ get_seq=0
 
 while true 
 do
+	
+	# get the next bunch of md5s to process
+	md5list=`get_md5list_aws`  # TODO: write get_md5_aws (maybe with a parameter defining sequence size)
 
-	md5list=`get_md5s_aws`  # TODO: write get_md5_aws
 	for md5 in $md5list 
 	do
-
 		# get subdir names for cache structure
 		M=`echo $md5|cut -b1,2`
 		M2=`echo $md5|cut -b3,4`
 
 	### full path to cachedir
 		CC="$pssh2_cache$M/$M2/$md5"
+		mkdir -p $CC
+		if [ -d $CC ] 
+		then
+			echo "working in $CC"
+		else 
+			echo "ERROR: was not able to work on cache for $CC please go fix"
+			# TODO: we should probably raise and error and die here!
+		fi
 
 		# look for md5 in S3 and unpack
+		# TODO
 
-
-		echo $CC
 		input_seq_file=$CC/query.fasta
+		# check whether an input file already exists in $CC
+		if [ -s $input_seq_file ] 
+		then
+			old_md5=`cat $input_seq_file|fasta_to_md5`
+			if  [ $old_md5 == $md5 ]
+			then
+				echo "working with old file $input_seq_file, with md5: $old_md5"
+			else 
+				get_seq=1
+				echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
+			fi
+		else
+			get_seq=1
+		fi
 
+		if [ $get_seq -eq 1 ]
+		then 
+			temp_fasta_file=`get_fasta_for_md5 $md5`
+			if [ -s $temp_fasta_file ]
+			then	
+				cp $temp_fasta_file $input_seq_file
+			else 
+				echo "ERROR: didn't get the sequence for $md5"
+			fi
+		fi
 
+		if [ -s $input_seq_file ] 
+		then
+			cd $CC
+#		pwd
+#		ls -lahtr
+			pssh2_seq $passOpt
+			cd $temp_work
+		else 
+			s=`date +%s`
+			DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
+			echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+		fi
+
+	done
 
 done
 
