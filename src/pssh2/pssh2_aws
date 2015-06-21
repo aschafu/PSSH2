@@ -18,13 +18,14 @@ NAME
 SYNOPSIS
   pssh2_aws [-h] [-D] [-- ...]
 DESCRIPTION
-  pssh2_aws runs until terminated or until no more md5 sums need to be processed. 
+  pssh2_aws runs until terminated externally.
   It (repeatedly) queries for md5 sums to process,
   for each md5 it
   - gets corresponding cache entries from S3,
   - gets the associated sequences from the database,
   - runs pssh2_seq (which adds the alignment to the database),
   - stores the result files in S3.
+  If there are no md5 sums to process, it sleeps for a radom time.
   See pssh2_seq -h for more details on pssh2_seq.
   Defaults are configured in $conf_file.
 OPTIONS
@@ -61,3 +62,14 @@ do
 #	*) passOpt="$passOpt $OPTARG";;
 	esac
 done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+shift $(expr $OPTIND - 1 )
+passOpt="$passOpt $@"
+get_seq=0
+
+
