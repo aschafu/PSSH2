@@ -83,6 +83,9 @@ do
 		echo -e ">$md5\n$sequence" > $temp_work/$md5/$md5.fasta 
 		echo "$temp_work/$md5/$md5.fasta"
 	else 
-		exit 1
+		# since this can processes several md5s, we cannot return an error state here
+		# therefore we instead return an empty file
+		touch $temp_work/$md5/$md5.fasta
+		echo "$temp_work/$md5/$md5.fasta" 
 	fi
 done
