@@ -129,9 +129,11 @@ do
 		if [ -s $input_seq_file ] 
 		then
 			cd $CC
-#		pwd
-#		ls -lahtr
+#		    pwd
+#		    ls -lahtr
 			pssh2_seq $passOpt
+			# evaluate return state of pssh2_seq for messaging the queue? 
+			# TODO
 			
 			# pack directory and write to S3
 			# TODO 
@@ -151,4 +153,3 @@ do
 
 done
 
-md5list = 
