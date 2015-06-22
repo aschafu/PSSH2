@@ -133,13 +133,10 @@ do
 #		    ls -lahtr
 			pssh2_seq $passOpt
 			# evaluate return state of pssh2_seq for messaging the queue? 
-			# TODO
+			count=`DB.pssh2_local "select * from pssh2_local.$status_table where md5=\"$md5\"" | tail -n +2 | cut -f 2`
 			
 			# pack directory and write to S3
 			# TODO 
-
-			# send the queue a message that this sequence has been processed
-			# TODO
 
 			cd $temp_work
 
@@ -147,7 +144,13 @@ do
 			s=`date +%s`
 			DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
 			echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+			count=-99
 		fi
+
+		# send the queue a message that this sequence has been processed
+		# if the count is -99 the sequence has a problem
+		# if the count is -3 then the 
+		# TODO
 
 	done
 
