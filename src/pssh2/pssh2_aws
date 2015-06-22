@@ -149,7 +149,10 @@ do
 
 		# send the queue a message that this sequence has been processed
 		# if the count is -99 the sequence has a problem
-		# if the count is -3 then the 
+		# if the count is -3 then no structures had been found
+		# if the count is -2 then scanning structures had failed -> possibly rerun
+		# if the count is -1 then building the hmm had failed -> possibly rerun with more memory
+		
 		# TODO
 
 	done
