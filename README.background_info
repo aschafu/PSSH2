@@ -82,9 +82,11 @@ Number of uniq swissprot sequences in the directory "/mnt/project/mamut/md5/fast
 For update: /mamut/bin/fasta_to_fastas.md5.rb
 das erzeugt fuer multifasta je eine datei pro md5sum, die auch gleich die md5sum als namen hat, vorsicht arbeitet im aktuellen verzeichniss, sollte nicht nfs sein
 
-=====
-=====
+==========
+
 UniProt filtering of Manfred Roos:
+---------------------------------
+
 - map: md5sum : sequence
 /mnt/project/mamut/mapping/md5:seq_swissprot
 cat /mnt/project/rost_db/data/swissprot/uniprot_sprot.fasta |/mnt/project/mamut/bin/fasta_to_md5+sequence.rb > md5:seq_swissprot
