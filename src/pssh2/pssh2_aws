@@ -72,6 +72,11 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 get_seq=0
 
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`
+
+cd $temp_work
+
 while true 
 do
 	
@@ -85,11 +90,17 @@ do
 	MSG=`aws --region=$REGION sqs receive-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/aquaria-small --query 'Messages[*].[ReceiptHandle,Body]' --output text`
 	HANDLE=`awk '{print $1}' <<< $MSG`
 	md5=`awk '{print $2}' <<< $MSG`
+	keepWorking=0	
 
 	# if we really received something, we process, otherwise we poll again until we are killed
 	if [ -n $md5 ]
 	then
+		keepWorking=1	
+	fi
 	
+	# make sure we have a cache directory we can work in and get data from the cache
+	if [ $keepWorking -eq 1 ]
+	then
 		# get subdir names for cache structure
 		M=`echo $md5|cut -b1,2`
 		M2=`echo $md5|cut -b3,4`
@@ -100,15 +111,28 @@ do
 		if [ -d $CC ] 
 		then
 			echo "working in $CC"
+			# look for md5 in S3 and unpack
+			if aws --region=$REGION s3 ls s3://aquaria-$ACCOUNT-$REGION/$md5 > /dev/null
+			then
+				cd $CC
+				# gets the data under the tar directly into current directory
+				aws --region=$REGION s3 cp s3://aquaria-$ACCOUNT-$REGION/$md5 - | tar -xz
+				cd $temp_work
+			fi
+			keepWorking=1
 		else 
 			echo "ERROR: was not able to work on cache for $CC please go fix"
-			# TODO: we should probably raise and error and die here!
+			# LATER: we should probably raise and error and die here (or below?)!
+			keepWorking=0
+			count=-999
 		fi
-
-		# look for md5 in S3 and unpack
-		# TODO
-
+	fi
+	
+	# make sure we have an input sequence
+	if [ $keepWorking -eq 1 ]
+	then
 		input_seq_file=$CC/query.fasta
+
 		# check whether an input file already exists in $CC
 		if [ -s $input_seq_file ] 
 		then
@@ -133,63 +157,74 @@ do
 			else 
 				echo "ERROR: didn't get the sequence for $md5"
 			fi
-		fi
+		fi		
 
 		if [ -s $input_seq_file ] 
 		then
-			cd $CC
-#		    pwd
-#		    ls -lahtr
-			pssh2_seq $passOpt
-			# evaluate return state of pssh2_seq for messaging the queue? 
-			count=`DB.pssh2_local "select * from pssh2_local.$status_table where md5=\"$md5\"" | tail -n +2 | cut -f 2`
-			
-			# pack directory and write to S3
-			# TODO 
-
-			cd $temp_work
-
-		else 
-			s=`date +%s`
-			DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
-			echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+			keepWorking=1
+		else
+			keepWorking=0
 			count=-99
 		fi
+	fi
 
-		# send the queue a message that this sequence has been processed
-		# if the count is -99 the sequence has a problem
-		# if the count is -3 then no structures had been found (no pssh2 file generated)
-		# if the count is -2 then scanning structures had failed -> try rerun with more memory
-		# if the count is -1 then building the hmm had failed -> try rerun with more memory
-		
-		# TODO
-		finished=0
-		redo_large=0
-		if [ $count -gt -1 ]
-		then 
-			finished=1
-		elif [ $count -eq -1 ]
-		then
-			redo_large=1
-		elif [ $count -eq -2 ]
-		then
-			redo_large=1
-		else
-			finished=1
-		fi
-		
-		if [ $redo_large -eq 1 ]
-		then
-			aws ...  #	TODO : add to another queue!
-			finished=1
-		fi
-		
-		if [ $finished -eq 1 ]
-		then
-			aws --region=$REGION sqs delete-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/aquaria-small --receipt-handle $HANDLE
-		fi
+	# now we have prepared everything, we can actually do the work
+	if [ $keepWorking -eq 1 ]
+	then
+		cd $CC
+#		pwd
+#		ls -lahtr
+		pssh2_seq $passOpt
+		# evaluate return state of pssh2_seq for messaging the queue? 
+		count=`DB.pssh2_local "select * from pssh2_local.$status_table where md5=\"$md5\"" | tail -n +2 | cut -f 2`
+			
+		# pack directory and write to S3
+		tar -cz * | aws --region=$REGION s3 cp - s3://aquaria-$ACCOUNT-$REGION/$MD5
+#		tar -c /mnt/data/pssh2_cache/`sed 's/\(..\).*/\1/'<<<$MD5`/`sed 's/..\(..\).*/\1/'<<<$MD5`/$MD5 | aws --region=$REGION s3 cp - s3://aquaria-$ACCOUNT-$REGION/$MD5
+		cd $temp_work
+	else 
+		# if we didn't do anything, we need to store the info about that failure in the database
+		s=`date +%s`
+		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=$count, stamp=$s , runtime=$SECONDS" 
+		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+	fi
 
-	fi 
+	# send the queue a message that this sequence has been processed
+	# if the count is -999 the compute node had a problem with the cache
+	# if the count is -99 the sequence has a problem
+	# if the count is -3 then no structures had been found (no pssh2 file generated)
+	# if the count is -2 then scanning structures had failed -> try rerun with more memory
+	# if the count is -1 then building the hmm had failed -> try rerun with more memory
+
+	finished=0
+	redo_large=0
+	if [ $count -gt -1 ]
+	then 
+		finished=1
+	elif [ $count -eq -1 ]
+	then
+		redo_large=1
+	elif [ $count -eq -2 ]
+	then
+		redo_large=1
+	else
+		finished=1
+		# LATER: possibly write some log messages about failures?
+	fi
+		
+	if [ $redo_large -eq 1 ]
+	then
+# 		submit to another queue before we tell this one we are done?
+#		aws ...  #	LATER : add to another queue!
+		finished=1
+	fi
+	
+	if [ $finished -eq 1 ]
+	then
+		aws --region=$REGION sqs delete-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/aquaria-small --receipt-handle $HANDLE
+	fi
+
+	# reset the variables so don't accidentally use them again
 	md5=""
 	HANDLE=""
 	
