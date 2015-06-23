@@ -75,12 +75,21 @@ get_seq=0
 while true 
 do
 	
-	# get the next bunch of md5s to process
-	md5list=`get_md5list_aws`  # TODO: write get_md5_aws (maybe with a parameter defining sequence size)
-	# get_md5list_aws is responsible for sleeping while no jobs are available!
+	# get the next md5 to process
+	# We receive a message (with the next md5 sum) which then gets hidden from other workers for one hour 
+    # (so that the md5 is not processed multiple times). 
+    # The call to aws is delayed up to 20 seconds (to give AWS infrastructure time to look 
+    # for messages in case none is readily available at the query endpoint). 
+    # Unused messages (= md5 sums) will be discarded automatically after two weeks 
+  	# (when no worker has taken care of them).
+	MSG=`aws --region=$REGION sqs receive-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/aquaria-small --query 'Messages[*].[ReceiptHandle,Body]' --output text`
+	HANDLE=`awk '{print $1}' <<< $MSG`
+	md5=`awk '{print $2}' <<< $MSG`
 
-	for md5 in $md5list 
-	do
+	# if we really received something, we process, otherwise we poll again until we are killed
+	if [ -n $md5 ]
+	then
+	
 		# get subdir names for cache structure
 		M=`echo $md5|cut -b1,2`
 		M2=`echo $md5|cut -b3,4`
@@ -149,13 +158,40 @@ do
 
 		# send the queue a message that this sequence has been processed
 		# if the count is -99 the sequence has a problem
-		# if the count is -3 then no structures had been found
-		# if the count is -2 then scanning structures had failed -> possibly rerun
-		# if the count is -1 then building the hmm had failed -> possibly rerun with more memory
+		# if the count is -3 then no structures had been found (no pssh2 file generated)
+		# if the count is -2 then scanning structures had failed -> try rerun with more memory
+		# if the count is -1 then building the hmm had failed -> try rerun with more memory
 		
 		# TODO
+		finished=0
+		redo_large=0
+		if [ $count -gt -1 ]
+		then 
+			finished=1
+		elif [ $count -eq -1 ]
+		then
+			redo_large=1
+		elif [ $count -eq -2 ]
+		then
+			redo_large=1
+		else
+			finished=1
+		fi
+		
+		if [ $redo_large -eq 1 ]
+		then
+			aws ...  #	TODO : add to another queue!
+			finished=1
+		fi
+		
+		if [ $finished -eq 1 ]
+		then
+			aws --region=$REGION sqs delete-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/aquaria-small --receipt-handle $HANDLE
+		fi
 
-	done
-
+	fi 
+	md5=""
+	HANDLE=""
+	
 done
 
