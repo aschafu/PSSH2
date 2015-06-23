@@ -51,8 +51,9 @@ $ mkdir /mnt/project/aquaria/HHblits_Psi-BLAST_compare/pdb_full/db
 
 
 =====
-=====
-After pdb_full generation:
+
+pssh2 (after pdb_full generation):
+----------------------------------
 
 1) HHblits against UniProt20 with any UniProt query, with HMM output -ohhm:
 *$ hhblits -i 1mbs_A.fas -d /mnt/project/rost_db/data/hhblits/uniprot20_current -ohhm 1mbs_A-uniprot.hhm [-oa3m 1mbs_A-uniprot.a3m -o 1mbs_A-uniprot.hhr]
@@ -60,7 +61,7 @@ After pdb_full generation:
 2) With HMM output from 1) as input, HHblits against pdb_full, with -hhr output:
 *$ hhblits -d ./mini_pdb_full -i 1mbs_A-uniprot.hhm -o 1mbs_A-uniprot-mini.hhr
 
-3) parse the hhr output for IDs, identity ... and alignment gapless-blocks (see Andrea's last Email on Sean, database scheme on google and Sean's decision?) with my parser: 
+3) parse the hhr output for IDs, identity ... and alignment gapless-blocks (see Andrea's last Email on Sean, database scheme on google and Sean's decision?) with  parser: 
 *$ mnt/project/aquaria/HHblits_Psi-BLAST_compare/pdb_full/scripts/parse_hhr.pl -i <hhr output from 2)> -o <output file>
 
 -> script ".../scripts/pssh2/generate_pssh2.pl" does the steps, uses the parser ".../scripts/pssh2/parse_hhr.pl" in the third step, which 
