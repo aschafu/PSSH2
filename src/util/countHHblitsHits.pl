@@ -113,7 +113,7 @@ foreach $id(keys %evaluesCluster){
 	my $eVal = $evaluesCluster{$id};
 	foreach $cut(@evalCutoffs){
 		if ($eVal <= 1.0*$cut){
-			$evaluesCluster{$cut} ++;
+			$countCluster{$cut} ++;
 		}
 	}
 }
