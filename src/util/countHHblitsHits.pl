@@ -4,9 +4,11 @@
 # Counts the number of sequence hits better than a set of E-values in hhblits output
 
 
-my %colNames = ('1e-100' => 'hh_100', '1e-33' => 'hh_33', '1e-10' => 'hh_10', '1e-3' => 'hh_3', '1' => 'hh_0', '1e10' => 'hh_p10');
-my @evalCutoffs = keys %colNames; 
-my %evalues = ();
+my %colNamesIndividual = ('1e-100' => 'hh_100', '1e-80' => 'hh_80', '1e-60' => 'hh_60', '1e-40' => 'hh_40', '1e-30' => 'hh_30', '1e-20' => 'hh_20', '1e-10' => 'hh_10', '1e-3' => 'hh_3', '1' => 'hh_0', '1e10' => 'hh_p10');
+my %colNamesCluster = ('1e-100' => 'hhc_100', '1e-80' => 'hhc_80', '1e-60' => 'hhc_60', '1e-40' => 'hhc_40', '1e-30' => 'hhc_30', '1e-20' => 'hhc_20', '1e-10' => 'hhc_10', '1e-3' => 'hhc_3', '1' => 'hhc_0', '1e10' => 'hhc_p10');
+my @evalCutoffs = keys %colNamesIndividual; 
+my %evaluesIndividual = ();
+my %evaluesCluster = ();
 
 my $align_lines = 0;
 my $cluster_id = "";
@@ -31,7 +33,7 @@ for my $line (<STDIN>) {
         	my $sp = $2; #contains all ids of the cluster
         	@id_list = ();
 
-			print STDOUT $sp, "\n";
+#			print STDOUT $sp, "\n";
 		    while ($sp =~ /\|(sp:)*(\w+)/g) {
 				my $uniprot_id = $2;
 		        push(@id_list, $uniprot_id);
@@ -62,39 +64,63 @@ for my $line (<STDIN>) {
 #		$probability =~ /=(.+)/; 
 #		$probability = $1;
 
-		my @id_list_loc = @id_list; # list of all the cluster ids
+#		my @id_list_loc = @id_list; # list of all the cluster ids
 
-		for my $id (@id_list_loc){ # save all the cluster hits in the hash
-			if (exists $evalues{$id}) {
-		  	  	if ($evalue < $evalues{$id}) { # save only the HSP with the lowest evalue
-		  	  		$evalues{$id} = $evalue;
+		# save the evalue of the cluster
+		if (exists $evaluesCluster{$cluster_id}) {
+			if ($evalue < $evaluesCluster{$cluster_id}) { # save only the HSP with the lowest evalue
+		  		$evaluesCluster{$cluster_id} = $evalue;
+			}    
+		}
+		else {
+			$evaluesCluster{$cluster_id} = $evalue;
+		}
+
+		# save all the individual cluster hits in the hash
+		for my $id (@id_list){ # save all the cluster hits in the hash
+			if (exists $evaluesIndividual{$id}) {
+		  	  	if ($evalue < $evaluesIndividual{$id}) { # save only the HSP with the lowest evalue
+		  	  		$evaluesIndividual{$id} = $evalue;
 			  	}    
 			}
 			else {
-		  	  	$evalues{$id} = $evalue;
+		  	  	$evaluesIndividual{$id} = $evalue;
 			}
   		}
+		
 		
     } # end of Probab line
 
 } # end of input
 
 # initialise counter
+%countIndividual = ();
+%countCluster = ();
 foreach $cut(@evalCutoffs){
-	$count{$cut} = 0;
+	$countIndividual{$cut} = 0;
+	$countCluster{$cut} = 0;
 }
 
-foreach $id(keys %evalues){
-	my $eVal = $evalues{$id};
+foreach $id(keys %evaluesIndividual){
+	my $eVal = $evaluesIndividual{$id};
 	foreach $cut(@evalCutoffs){
 		if ($eVal <= 1.0*$cut){
-			$count{$cut} ++;
+			$countIndividual{$cut} ++;
+		}
+	}
+}
+foreach $id(keys %evaluesCluster){
+	my $eVal = $evaluesCluster{$id};
+	foreach $cut(@evalCutoffs){
+		if ($eVal <= 1.0*$cut){
+			$evaluesCluster{$cut} ++;
 		}
 	}
 }
 
 foreach $cut(@evalCutoffs){
-	print STDOUT $colNames{$cut}."=".$count{$cut}, ",";
+	print STDOUT $colNamesIndividual{$cut}."=".$countIndividual{$cut}, ",";
+	print STDOUT $colNamesCluster{$cut}."=".$countCluster{$cut}, ",";
 }
 print STDOUT "\n";
 
