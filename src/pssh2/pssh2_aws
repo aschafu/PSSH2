@@ -93,8 +93,10 @@ do
 	keepWorking=0	
 
 	# if we really received something, we process, otherwise we poll again until we are killed
-	if [ -n $md5 ]
+	if [ -z $md5 ]
 	then
+		keepWorking=0	
+	else
 		keepWorking=1	
 	fi
 	
@@ -176,17 +178,25 @@ do
 #		ls -lahtr
 		pssh2_seq $passOpt
 		# evaluate return state of pssh2_seq for messaging the queue? 
-		count=`DB.pssh2_local "select * from pssh2_local.$status_table where md5=\"$md5\"" | tail -n +2 | cut -f 2`
+		count=`DB.pssh2_local "select * from $status_table where md5=\"$md5\"" | tail -n +2 | cut -f 2`
 			
 		# pack directory and write to S3
-		tar -cz * | aws --region=$REGION s3 cp - s3://aquaria-$ACCOUNT-$REGION/$MD5
+		tar -cz * | aws --region=$REGION s3 cp - s3://aquaria-$ACCOUNT-$REGION/$md5
 #		tar -c /mnt/data/pssh2_cache/`sed 's/\(..\).*/\1/'<<<$MD5`/`sed 's/..\(..\).*/\1/'<<<$MD5`/$MD5 | aws --region=$REGION s3 cp - s3://aquaria-$ACCOUNT-$REGION/$MD5
 		cd $temp_work
-	else 
-		# if we didn't do anything, we need to store the info about that failure in the database
+		if [ $debug -eq 1 ]
+		then
+			echo "keeping $CC for debugging"
+		else
+			rm -r $CC
+		fi
+	elif [ ! -z $md5 ] 
+	then
+		# if we didn't do anything but had an md5, 
+		# we need to store the info about that failure in the database
 		s=`date +%s`
-		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=$count, stamp=$s , runtime=$SECONDS" 
-		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+		DB.pssh2_local "insert into $status_table set md5=\"$md5\" , count=$count, stamp=$s , runtime=$SECONDS" 
+		echo "ERROR: could not work on sequence: $md5 (error code: $count)"
 	fi
 
 	# send the queue a message that this sequence has been processed
@@ -198,7 +208,11 @@ do
 
 	finished=0
 	redo_large=0
-	if [ $count -gt -1 ]
+	# if we didn't have to do anything we cannot notify the queue -> finished is 0
+	if [ -z $md5 ]
+	then
+		finished=0
+	elif [ $count -gt -1 ]
 	then 
 		finished=1
 	elif [ $count -eq -1 ]
