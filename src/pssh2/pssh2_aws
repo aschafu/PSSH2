@@ -76,6 +76,11 @@ get_seq=0
 
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`
+instance_id=`wget 169.254.169.254/latest/meta-data/instance-id -qO-`
+instance_type=`wget 169.254.169.254/latest/meta-data/instance-type -qO-`
+availability_zone=`wget 169.254.169.254/latest/meta-data/placement/availability-zone -qO-`	
+pid=$BASHPID
+
 
 cd $temp_work
 
@@ -178,9 +183,6 @@ do
 	usrTime=0
 	wallTime=0
 #	prepTime=$SECONDS
-	instance_id=`wget 169.254.169.254/latest/meta-data/instance-id -qO-`
-	instance_type=`wget 169.254.169.254/latest/meta-data/instance-type -qO-`
-	availability_zone=`wget 169.254.169.254/latest/meta-data/placement/availability-zone -qO-`	
 	
 	# now we have prepared everything, we can actually do the work
 	if [ $keepWorking -eq 1 ]
@@ -190,14 +192,15 @@ do
 #		ls -lahtr
 		stderr=$((( command time -f ' MemTimeSUe_Stat %M %S %U %e' pssh2_seq $passOpt; ) 1>/dev/null; ) 2>&1; )
 		statistics=`echo $stderr | sed 's/.* MemTimeSUe_Stat \([ 0-9.]*\)$/\1/'`
-		maxmem=`echo $statistics| awk '{print $1}'
-		sysTime=`echo $statistics| awk '{print $2}'
-		usrTime=`echo $statistics| awk '{print $3}'
-		wallTime=`echo $statistics| awk '{print $4}'
+		maxmem=`echo $statistics| awk '{print $1}'`
+		sysTime=`echo $statistics| awk '{print $2}'`
+		usrTime=`echo $statistics| awk '{print $3}'`
+		wallTime=`echo $statistics| awk '{print $4}'`
 		
 #		pssh2_seq $passOpt
 		# evaluate return state of pssh2_seq for messaging the queue? 
 		count=`DB.pssh2_local "select * from $status_table where md5=\"$md5\"" | tail -n +2 | cut -f 2`
+		# if for some reason pssh2_execution failed then count should be '', so we can detect that later
 			
 		# pack directory and write to S3
 		tar -cz * | aws --region=$REGION s3 cp - s3://aquaria-$ACCOUNT-$REGION/$md5
@@ -212,14 +215,15 @@ do
 	elif [ ! -z $md5 ] 
 	then
 		# if we didn't do anything but had an md5, 
-		# we need to store the info about that failure in the database
+		# we need to store the info about that failure in the database;
+		# here we don't ge cases where the execution of pssh2_seq failed; but these should be rare setup problems
 		s=`date +%s`
 		DB.pssh2_local "insert into $status_table set md5=\"$md5\" , count=$count, stamp=$s , runtime=$SECONDS" 
 		echo "ERROR: could not work on sequence: $md5 (error code: $count)"
 	fi
 
 	s=`date +%s`
-	DB.pssh2_local "insert into $aws_table set md5=\"$md5\", stamp=$s , maxmem=$maxmem, sysTime=$sysTime, usrTime=$usrTime, wallTime=$wallTime, instance_id=\"$instance_id\", instance_type=\"$instance_type\", availability_zone=\"$availability_zone\"" 
+	DB.pssh2_local "insert into $aws_table set md5=\"$md5\", stamp=$s, pid=$pid, maxmem=$maxmem, sysTime=$sysTime, usrTime=$usrTime, wallTime=$wallTime, instance_id=\"$instance_id\", instance_type=\"$instance_type\", availability_zone=\"$availability_zone\"" 
 	
 	# send the queue a message that this sequence has been processed
 	# if the count is -999 the compute node had a problem with the cache
@@ -246,6 +250,7 @@ do
 	else
 		finished=1
 		# LATER: possibly write some log messages about failures?
+		# how about creating a queue with failed md5s?
 	fi
 		
 	if [ $redo_large -eq 1 ]
