@@ -44,6 +44,8 @@ pssh2_cache="/mnt/data/pssh_cache/"
 temp_work="/mnt/data/tmp/pssh2"
 ### table to store pssh2 calculation status in
 status_table="pssh2_active_counts"
+### table to store the aws run statistics
+aws_table="aws_statistics"
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -170,13 +172,30 @@ do
 		fi
 	fi
 
+	# prepare the statistics
+	maxmem=0
+	sysTime=0
+	usrTime=0
+	wallTime=0
+#	prepTime=$SECONDS
+	instance_id=`wget 169.254.169.254/latest/meta-data/instance-id -qO-`
+	instance_type=`wget 169.254.169.254/latest/meta-data/instance-type -qO-`
+	availability_zone=`wget 169.254.169.254/latest/meta-data/placement/availability-zone -qO-`	
+	
 	# now we have prepared everything, we can actually do the work
 	if [ $keepWorking -eq 1 ]
 	then
 		cd $CC
 #		pwd
 #		ls -lahtr
-		pssh2_seq $passOpt
+		stderr=$((( command time -f ' MemTimeSUe_Stat %M %S %U %e' pssh2_seq $passOpt; ) 1>/dev/null; ) 2>&1; )
+		statistics=`echo $stderr | sed 's/.* MemTimeSUe_Stat \([ 0-9.]*\)$/\1/'`
+		maxmem=`echo $statistics| awk '{print $1}'
+		sysTime=`echo $statistics| awk '{print $2}'
+		usrTime=`echo $statistics| awk '{print $3}'
+		wallTime=`echo $statistics| awk '{print $4}'
+		
+#		pssh2_seq $passOpt
 		# evaluate return state of pssh2_seq for messaging the queue? 
 		count=`DB.pssh2_local "select * from $status_table where md5=\"$md5\"" | tail -n +2 | cut -f 2`
 			
@@ -199,6 +218,9 @@ do
 		echo "ERROR: could not work on sequence: $md5 (error code: $count)"
 	fi
 
+	s=`date +%s`
+	DB.pssh2_local "insert into $aws_table set md5=\"$md5\", stamp=$s , maxmem=$maxmem, sysTime=$sysTime, usrTime=$usrTime, wallTime=$wallTime, instance_id=\"$instance_id\", instance_type=\"$instance_type\", availability_zone=\"$availability_zone\"" 
+	
 	# send the queue a message that this sequence has been processed
 	# if the count is -999 the compute node had a problem with the cache
 	# if the count is -99 the sequence has a problem
@@ -238,7 +260,7 @@ do
 		aws --region=$REGION sqs delete-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/aquaria-small --receipt-handle $HANDLE
 	fi
 
-	# reset the variables so don't accidentally use them again
+	# reset the variables so we don't accidentally use them again
 	md5=""
 	HANDLE=""
 	
