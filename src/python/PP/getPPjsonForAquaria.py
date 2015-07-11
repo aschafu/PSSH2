@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 #import requests
+import re
 import json
 import time
 import sys, os, argparse
@@ -30,18 +31,22 @@ def main(argv):
 	fastaString = ''
 	name = ''
 	if (args.seq):
+		name = 'usrSequence_'
+		timestamp = int(100*time.time())
+		name += str(timestamp) 
 		sequence = args.seq
-		fastaString = ">userSequence \n"
-		fastaString += sequence
-		fastaString += "\n"
+		fastaString = ">" + name + " \n"
+		fastaString += sequence + "\n"
 	elif (args.uniprotAcc):
 		uniprotAcc = args.uniprotAcc
 		sequenceHandler = SequenceStructureDatabase.SequenceHandler()
 		fastaString = sequenceHandler.getFastaSequenceByAccession(uniprotAcc)
+		name = uniprotAcc
 	elif (args.md5):
 		md5 = args.md5
 		sequenceHandler = SequenceStructureDatabase.SequenceHandler()
 		fastaString = sequenceHandler.getFastaSequenceByMd5(md5)
+		name = md5
 	else:
 		sys.exit(2)
 
@@ -49,16 +54,18 @@ def main(argv):
 	if (args.details):
 		details = True
 	
+	# if we got a sequence really, then retrieve PP result location
 	predictionPath = ''
 	if (fastaString):
-		predictionPath = queryPP(fastaString)
+		predictionPath = queryPP(name, fastaString)
 	
+	# if we got a PP result location, start parsing
 	if (predictionPath):
 		isis_json = parse_isis(predictionPath)
 		someNA_json = parse_someNA(predictionPath)	
 		# ...
 	
-def queryPP(fastaString):
+def queryPP(name, fastaString):
 	"""write fasta sequence to a file 
 		call ppc_fetch for the file
 		return the directory the predictions are stored in"""
