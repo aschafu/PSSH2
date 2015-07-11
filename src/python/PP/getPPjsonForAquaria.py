@@ -75,6 +75,10 @@ def queryPP(name, fastaString):
 def parsePHD(predictionPath):
 	"""parse out PHDhtm output (secondary structure predictions)""""
 
+	source = ''
+	description = ''
+	url = ''
+
 	phdFile = open(predictionPath+'query.phdPred','r')
 	phdText = phdFile.read()
 
@@ -90,7 +94,12 @@ def parsePHD(predictionPath):
 	rexp = re.compile('[H]+')
 	rangeList = [(m.start(0), m.end(0)) for m in rexp.finditer(phdStr)]
 	
-	obj = {'Transmembrane regions (Prediction by PHDhtm)':{'Features':\
+	
+	obj = {'Transmembrane regions (Prediction by PHDhtm)':{\
+	'Source' : source,\
+	'URL': url,\
+	'Description': description, \
+	'Features':\
 	[{'Name':'PHDhtm','Residues':rangeList}]}}
 	JSONstr = json.dumps(obj)
 	return JSONstr
