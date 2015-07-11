@@ -63,7 +63,7 @@ def main(argv):
 	if (predictionPath):
 #		isis_json = parse_isis(predictionPath)
 #		someNA_json = parse_someNA(predictionPath)
-		PHD_json = parse_PHD(predictionPath)
+		PHDhtm_json = parse_PHD(predictionPath)
 		# ...
 	
 def queryPP(name, fastaString):
@@ -73,7 +73,7 @@ def queryPP(name, fastaString):
 	# TODO
 
 def parsePHD(predictionPath):
-	"""parse out PHD output (secondary structure predictions)""""
+	"""parse out PHDhtm output (secondary structure predictions)""""
 
 	phdFile = open(predictionPath+'query.phdPred','r')
 	phdText = phdFile.read()
