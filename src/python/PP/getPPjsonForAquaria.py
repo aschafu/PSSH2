@@ -79,30 +79,42 @@ def parsePHD(predictionPath):
 	description = ''
 	url = ''
 
-	phdFile = open(predictionPath+'query.phdPred','r')
-	phdText = phdFile.read()
+ 	phdFile = open(predictionPath+'query.phdRdb','r')
 
-	rexp = re.compile('PHD htm \|[\sH]*\|')
-	l1 = rexp.findall(phdText)
-	#iterate over all entries in list and remove unwanted characters
-	l2 = l1;
-	for i,el in enumerate(l1):
-		l2[i] = el[10:-1]
-	l2joined = "".join(l2)
+	# skip until the beginning of predictions
+	reHeader = re.compile('No\sAA\sPHL\sRI_H')
+	for line in phdFile:
+		if reHeader.match(line):
+       		break
 	
-	#get position ranges for which a tm was predicted
-	rexp = re.compile('[H]+')
-	rangeList = [(m.start(0), m.end(0)) for m in rexp.finditer(phdStr)]
-	
-	
-	obj = {'Transmembrane regions (Prediction by PHDhtm)':{\
-	'Source' : source,\
-	'URL': url,\
-	'Description': description, \
-	'Features':\
-	[{'Name':'PHDhtm','Residues':rangeList}]}}
-	JSONstr = json.dumps(obj)
-	return JSONstr
+	for line in phdFile:
+				
+
+
+# 	phdFile = open(predictionPath+'query.phdPred','r')
+# 	phdText = phdFile.read()
+# 
+# 	rexp = re.compile('PHDRhtm \|[\sH]*\|')
+# 	l1 = rexp.findall(phdText)
+# 	#iterate over all entries in list and remove unwanted characters
+# 	l2 = l1;
+# 	for i,el in enumerate(l1):
+# 		l2[i] = el[10:-1]
+# 	l2joined = "".join(l2)
+# 	
+# 	#get position ranges for which a tm was predicted
+# 	rexp = re.compile('[H]+')
+# 	rangeList = [(m.start(0), m.end(0)) for m in rexp.finditer(phdStr)]
+# 	
+# 	
+# 	obj = {'Transmembrane regions (Prediction by PHDhtm)':{\
+# 	'Source' : source,\
+# 	'URL': url,\
+# 	'Description': description, \
+# 	'Features':\
+# 	[{'Name':'PHDhtm','Residues':rangeList}]}}
+# 	JSONstr = json.dumps(obj)
+# 	return JSONstr
 
 
 def parse_isis(predictionPath):
