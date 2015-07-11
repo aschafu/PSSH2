@@ -2,7 +2,7 @@
 
 #import requests
 import json
-#import time
+import time
 import sys, os, argparse
 from DatabaseTools import SequenceStructureDatabase
 
