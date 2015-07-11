@@ -82,12 +82,13 @@ def parsePHD(predictionPath):
  	phdFile = open(predictionPath+'query.phdRdb','r')
 
 	# skip until the beginning of predictions
-	reHeader = re.compile('4N\s1S\s1S\s1N\s1N')
+	reHeader = re.compile('4N\t1S\t1S\t1N\t1N')
 	for line in phdFile:
 		if reHeader.match(line):
        		break
 	
-	# 
+	# read the actual data
+	reData = re.compile('\s*\d+\t\w\t\w\t\d\t\d\t\d\t\s*3N^I1S^I1S^I1S')
 	for line in phdFile:
 				
 
