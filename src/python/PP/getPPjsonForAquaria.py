@@ -88,9 +88,12 @@ def parsePHD(predictionPath):
        		break
 	
 	# read the actual data
-	reData = re.compile('\s*\d+\t\w\t\w\t\d\t\d\t\d\t\s*3N^I1S^I1S^I1S')
+	reData = re.compile('\s*(\d+)\t\w\t\w\t(\d)\t\d\t\d\t\s*\d+\t(\w)\t\w\t(\w)')
 	for line in phdFile:
-				
+		match = reData.match(line)
+		if match:
+			residueNumber = match.group(0)
+			# TODO ...
 
 
 # 	phdFile = open(predictionPath+'query.phdPred','r')
