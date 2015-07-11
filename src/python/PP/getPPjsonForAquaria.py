@@ -61,8 +61,9 @@ def main(argv):
 	
 	# if we got a PP result location, start parsing
 	if (predictionPath):
-		isis_json = parse_isis(predictionPath)
-		someNA_json = parse_someNA(predictionPath)	
+#		isis_json = parse_isis(predictionPath)
+#		someNA_json = parse_someNA(predictionPath)
+		PHD_json = parse_PHD(predictionPath)
 		# ...
 	
 def queryPP(name, fastaString):
@@ -77,3 +78,42 @@ def parse_isis(predictionPath):
 	
 def parse_someNA(predictionPath):
 	# TODO
+	
+	
+	
+# def parsePHD(phdText):
+#     #extract the PHD prediction as a single string
+#     rexp = re.compile('PHD htm \|[\sH]*\|')
+#     l1 = rexp.findall(phdText)
+#     #iterate over all entries in list and remove unwanted characters
+#     l2 = l1;
+#     for i,el in enumerate(l1):
+#         l2[i] = el[10:-1]
+#     l2joined = "".join(l2)
+#     return "".join(l2joined)
+# 
+# def getRange(phdStr):
+#     #get position ranges for which a tm was predicted
+#     rexp = re.compile('[H]+')
+#     return [(m.start(0), m.end(0)) for m in rexp.finditer(phdStr)]
+# 
+# # author: David Scholz, 2015, davidmscholz@gmx.de
+# # this script requires the python simplejson package
+# # usage:
+# # call this script from commandline with two arguments
+# # 1: full path to the input file '...'query.phdPred'
+# # 2: desired output folder for phdPred.json
+# 
+# inputDir = sys.argv[1]
+# outputDir = sys.argv[2]
+# phdFile = open(inputDir+'query.phdPred','r')
+# phdText = phdFile.read()
+# phdStr = parsePHD(phdText)
+# rangeList = getRange(phdStr)
+# 
+# obj = {'Transmembrane regions (Prediction by PHDhtm)':{'Features':\
+#       [{'Name':'PHDhtm','Residues':rangeList}]}}
+# JSONstr = json.dumps(obj)
+# outFile = open(outputDir+'PHDhtm.json', 'w')
+# outFile.write(JSONstr)
+# outFile.close()
