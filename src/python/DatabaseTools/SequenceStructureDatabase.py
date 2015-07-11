@@ -104,6 +104,11 @@ class SequenceHandler:
 		self.userSequenceTable = config.get('user_tables', 'sequences')
 		if (not self.userSequenceTable):
 			warnings.warn('No table defined for user sequences!, check your config file: '+conffile)
+
+		self.mainSequenceTable = config.get('main_tables', 'sequences')
+		if (not self.mainSequenceTable):
+			warnings.warn('No table defined for normal sequences!, check your config file: '+conffile)
+
 		
 		self.db_connection = DB_Connection()
 		self.headerPattern = re.compile("^>(\S+)(\s+\S.*)?")
@@ -255,3 +260,49 @@ class SequenceHandler:
 		entryList.append(''.join(lastEntry))
 		
 		return entryList
+		
+	
+	def getFastaSequenceByMd5(self, md5String, table=''):
+		"""Connect to the database and retrieve the sequence, return a Fasta formatted string"""
+
+		mysqlQuery = "SELECT * from %s " % table
+		mysqlQuery += "WHERE protein_sequence_hash='%s'" % md5String
+	
+		return getFastaSequenceByQuery(self, mysqlQuery, table)
+		
+		
+	def getFastaSequenceByAccession(self, accString, table=''):
+		"""Connect to the database and retrieve the sequence, return a Fasta formatted string"""
+
+		mysqlQuery = "SELECT * from %s " % table
+		mysqlQuery += "WHERE Primary_Accession='%s'" % accString
+		
+		return getFastaSequenceByQuery(self, mysqlQuery, table)
+
+
+	def getFastaSequenceByQuery(self, queryString, table=''):
+		"""Connect to the database and retrieve the sequence, return a Fasta formatted string"""
+		
+		queryConnection = self.db_connection.getConnection(SequenceHandler.sequenceDB,'reading')
+		
+		if (table == ''):
+			table = self.mainSequenceTable
+
+		mysqlQuery = "SELECT Primary_Accession, Source_Database, MD5_Hash, Sequence from %s " % table
+		mysqlQuery += "WHERE protein_sequence_hash='%s'" % md5String
+		
+		queryCursor = queryConnection.cursor()
+
+		fastaString = ''
+		try:
+			queryCursor.execute(mysqlQuery)
+			(acc, source, md5, sequence) = queryCursor.fetchOne()					
+			fastaString = ">%s %s|%s\n" % md5, source, acc
+			fastaString += sequence
+			fastaString += "\n"
+		except mysql.connector.IntegrityError as err:
+			print("Error: {}".format(err))
+			warnings.warn("Will skip this sequence: \n" + fastaString)
+		
+		return fastaString
+
