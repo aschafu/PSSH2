@@ -72,6 +72,29 @@ def queryPP(name, fastaString):
 		return the directory the predictions are stored in"""
 	# TODO
 
+def parsePHD(predictionPath):
+	"""parse out PHD output (secondary structure predictions)""""
+
+	phdFile = open(predictionPath+'query.phdPred','r')
+	phdText = phdFile.read()
+
+	rexp = re.compile('PHD htm \|[\sH]*\|')
+	l1 = rexp.findall(phdText)
+	#iterate over all entries in list and remove unwanted characters
+	l2 = l1;
+	for i,el in enumerate(l1):
+		l2[i] = el[10:-1]
+	l2joined = "".join(l2)
+	
+	#get position ranges for which a tm was predicted
+	rexp = re.compile('[H]+')
+	rangeList = [(m.start(0), m.end(0)) for m in rexp.finditer(phdStr)]
+	
+	obj = {'Transmembrane regions (Prediction by PHDhtm)':{'Features':\
+	[{'Name':'PHDhtm','Residues':rangeList}]}}
+	JSONstr = json.dumps(obj)
+	return JSONstr
+
 
 def parse_isis(predictionPath):
 	# TODO
@@ -81,39 +104,3 @@ def parse_someNA(predictionPath):
 	
 	
 	
-# def parsePHD(phdText):
-#     #extract the PHD prediction as a single string
-#     rexp = re.compile('PHD htm \|[\sH]*\|')
-#     l1 = rexp.findall(phdText)
-#     #iterate over all entries in list and remove unwanted characters
-#     l2 = l1;
-#     for i,el in enumerate(l1):
-#         l2[i] = el[10:-1]
-#     l2joined = "".join(l2)
-#     return "".join(l2joined)
-# 
-# def getRange(phdStr):
-#     #get position ranges for which a tm was predicted
-#     rexp = re.compile('[H]+')
-#     return [(m.start(0), m.end(0)) for m in rexp.finditer(phdStr)]
-# 
-# # author: David Scholz, 2015, davidmscholz@gmx.de
-# # this script requires the python simplejson package
-# # usage:
-# # call this script from commandline with two arguments
-# # 1: full path to the input file '...'query.phdPred'
-# # 2: desired output folder for phdPred.json
-# 
-# inputDir = sys.argv[1]
-# outputDir = sys.argv[2]
-# phdFile = open(inputDir+'query.phdPred','r')
-# phdText = phdFile.read()
-# phdStr = parsePHD(phdText)
-# rangeList = getRange(phdStr)
-# 
-# obj = {'Transmembrane regions (Prediction by PHDhtm)':{'Features':\
-#       [{'Name':'PHDhtm','Residues':rangeList}]}}
-# JSONstr = json.dumps(obj)
-# outFile = open(outputDir+'PHDhtm.json', 'w')
-# outFile.write(JSONstr)
-# outFile.close()
