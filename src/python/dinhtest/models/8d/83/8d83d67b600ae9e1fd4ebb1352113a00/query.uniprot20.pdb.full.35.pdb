@@ -1,0 +1,76 @@
+PFRMAT TS                                                                       
+TARGET 8d83d67b600ae9e1fd4ebb1352113a00                                         
+REMARK AUTHOR My server                                                         
+REMARK Fri May 15 13:13:31 2015                                                 
+REMARK 1: 3nb2_A Secreted effector protein; pentapeptide, HECT domain, HECT E ub
+REMARK    Probab=99.00  E-value=5e-14  Score=115.07  Aligned_cols=62  Identities
+REMARK                                                                          
+REMARK 3nb2_A Secreted effector protein; pentapeptide, HECT domain, HECT E ubiqu
+REMARK No 36                                                                    
+SCORE  99.00                                                                    
+PARENT 3nb2_A                                                                   
+MODEL  1                                                                        
+ATOM     47  CA  PHE    47      -0.643  56.541  80.473  1.00                    
+ATOM     48  CA  THR    48       0.910  58.194  77.443  1.00                    
+ATOM     49  CA  MET    49       3.229  55.600  75.897  1.00                    
+ATOM     50  CA  GLU    50       3.386  57.207  72.465  1.00                    
+ATOM     51  CA  ASN    51       6.554  57.163  70.348  1.00                    
+ATOM     52  CA  GLN    52       7.901  54.213  72.296  1.00                    
+ATOM     53  CA  ILE    53       9.581  50.919  71.510  1.00                    
+ATOM     54  CA  HIS    54       7.871  48.239  73.594  1.00                    
+ATOM     55  CA  THR    55       9.208  45.393  71.506  1.00                    
+ATOM     56  CA  GLY    56       9.277  41.795  72.697  1.00                    
+ATOM     57  CA  MET    57       7.941  42.797  76.126  1.00                    
+ATOM     58  CA  GLU    58       5.990  40.311  78.268  1.00                    
+ATOM     59  CA  TYR    59       3.000  42.488  79.198  1.00                    
+ATOM     60  CA  ASP    60       0.275  39.899  79.677  1.00                    
+ATOM     61  CA  ASN    61      -2.576  41.046  81.927  1.00                    
+ATOM     62  CA  GLY    62      -1.446  44.685  81.914  1.00                    
+ATOM     63  CA  ARG    63      -4.120  47.364  82.201  1.00                    
+ATOM     64  CA  PHE    64      -3.464  50.067  79.612  1.00                    
+ATOM     65  CA  ILE    65      -7.081  51.191  79.779  1.00                    
+ATOM     66  CA  GLY    66      -7.885  54.520  78.113  1.00                    
+ATOM     67  CA  VAL    67      -4.171  55.011  77.470  1.00                    
+ATOM     68  CA  LYS    68      -2.301  56.095  74.326  1.00                    
+ATOM     69  CA  PHE    69       0.049  53.914  72.303  1.00                    
+ATOM     70  CA  LYS    70       0.214  55.918  69.076  1.00                    
+ATOM     71  CA  SER    71       3.414  55.611  67.064  1.00                    
+ATOM     72  CA  VAL    72       4.548  52.812  69.344  1.00                    
+ATOM     73  CA  THR    73       6.420  49.742  68.158  1.00                    
+ATOM     74  CA  PHE    74       4.712  46.846  69.963  1.00                    
+ATOM     75  CA  LYS    75       6.078  44.083  67.734  1.00                    
+ATOM     76  CA  ASP    76       6.407  40.569  69.119  1.00                    
+ATOM     77  CA  SER    77       5.086  41.817  72.443  1.00                    
+ATOM     78  CA  VAL    78       2.704  39.758  74.579  1.00                    
+ATOM     79  CA  PHE    79      -0.435  41.681  75.466  1.00                    
+ATOM     80  CA  LYS    80      -2.608  38.612  76.077  1.00                    
+ATOM     81  CA  SER    81      -5.418  39.174  78.579  1.00                    
+ATOM     82  CA  CYS    82      -4.366  42.846  78.668  1.00                    
+ATOM     83  CA  THR    83      -7.083  45.404  79.361  1.00                    
+ATOM     84  CA  PHE    84      -6.680  47.712  76.397  1.00                    
+ATOM     85  CA  GLU    85     -10.167  49.175  76.343  1.00                    
+ATOM     86  CA  ASP    86     -10.663  52.682  74.996  1.00                    
+ATOM     87  CA  VAL    87      -7.016  52.814  73.951  1.00                    
+ATOM     88  CA  THR    88      -5.513  54.473  70.912  1.00                    
+ATOM     89  CA  SER    89      -3.078  52.839  68.518  1.00                    
+ATOM     90  CA  VAL    90      -2.890  55.483  65.798  1.00                    
+ATOM     91  CA  ASN    91       0.073  54.724  63.534  1.00                    
+ATOM     92  CA  THR    92       1.147  51.982  65.885  1.00                    
+ATOM     93  CA  TYR    93       3.005  48.903  64.690  1.00                    
+ATOM     94  CA  PHE    94       1.250  45.790  65.997  1.00                    
+ATOM     95  CA  LYS    95       3.004  43.174  63.838  1.00                    
+ATOM     96  CA  ASN    96       3.205  39.794  65.548  1.00                    
+ATOM     97  CA  CYS    97       1.796  41.083  68.846  1.00                    
+ATOM     98  CA  THR    98      -0.136  38.629  70.990  1.00                    
+ATOM     99  CA  PHE    99      -3.591  40.012  71.857  1.00                    
+ATOM    100  CA  ILE   100      -5.177  36.666  72.715  1.00                    
+ATOM    101  CA  ASP   101      -8.093  37.074  75.103  1.00                    
+ATOM    102  CA  THR   102      -7.150  40.736  75.268  1.00                    
+ATOM    103  CA  VAL   103      -9.826  43.357  75.801  1.00                    
+ATOM    104  CA  PHE   104      -9.831  45.994  73.060  1.00                    
+ATOM    105  CA  ASP   105     -13.388  47.287  73.035  1.00                    
+ATOM    106  CA  ASN   106     -13.769  50.752  71.473  1.00                    
+ATOM    107  CA  THR   107     -10.100  50.912  70.509  1.00                    
+ATOM    108  CA  ASP   108      21.117  31.421  22.617  1.00                    
+TER                                                                             
+END                                                                             

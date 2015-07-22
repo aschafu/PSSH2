@@ -1,0 +1,806 @@
+Query         8d83d67b600ae9e1fd4ebb1352113a00
+Match_columns 136
+No_of_seqs    1099 out of 2470
+Neff          8.0 
+Searched_HMMs 30
+Date          Fri Jan 16 15:00:30 2015
+Command       hhblits -cpu 1 -i query.uniprot20.hhm -d /var/tmp/rost_db/data//hhblits/pdb_full -n 1 -o query.uniprot20.pdb.full.hhr -B 10000 -Z 10000 
+
+ No Hit                             Prob E-value P-value  Score    SS Cols Query HMM  Template HMM
+  1 4jra_C Synaptic vesicle glycop  99.9 9.1E-29 8.6E-33  169.0   0.0  125   12-136    12-136 (136)
+  2 2j8i_A NP275; toxin; 2.1A {Nos  99.4 5.9E-18 5.7E-22  111.5   0.0   79   46-124    39-117 (118)
+  3 2w7z_A EFSQNR, pentapeptide re  99.4   5E-17 4.9E-21  116.4   0.0  100   28-128    31-131 (214)
+  4 2xt2_A ALBG, MCBG-like protein  99.3 1.2E-16 1.1E-20  113.1   0.0  105   22-127     4-115 (200)
+  5 2xt4_A ALBG, MCBG-like protein  99.3 1.5E-16 1.5E-20  112.0   0.0   74   53-126    35-108 (194)
+  6 3du1_X ALL3740 protein, HETL;   99.3   2E-16   2E-20  115.9   0.0  113   12-125    19-133 (257)
+  7 3n90_A P15, thylakoid lumenal   99.3 2.2E-16 2.1E-20  108.3   0.0   90   25-115     4-94  (152)
+  8 2f3l_A RFR-domain; beta helix,  99.3 2.4E-16 2.3E-20  111.1   0.0   91   38-128    57-153 (184)
+  9 2f3l_A RFR-domain; beta helix,  99.3 3.9E-16 3.7E-20  110.0   0.0   57   50-106    50-106 (184)
+ 10 2j8i_A NP275; toxin; 2.1A {Nos  99.3 4.7E-16 4.6E-20  102.1   0.0   80   49-128    32-111 (118)
+ 11 2j8k_A NP275-NP276; pentapepti  99.2 6.6E-16 6.4E-20  109.5   0.0   16   29-45     37-52  (201)
+ 12 3pss_A QNR; pentapeptide repea  99.2 6.6E-16 6.5E-20  110.2   0.0   82   47-128    15-102 (216)
+ 13 3psz_A QNR; pentapeptide repea  99.2 9.6E-16 9.5E-20  109.2   0.0   82   47-128    15-102 (216)
+ 14 2xtw_A QNRB1; cell cycle, pent  99.2 1.2E-15 1.1E-19  109.0   0.0   81   47-127    16-102 (217)
+ 15 2xtx_A QNRB1; cell cycle, pent  99.2 1.4E-15 1.3E-19  108.5   0.0   50   61-110    56-105 (217)
+ 16 3n90_A P15, thylakoid lumenal   99.2 1.5E-15 1.4E-19  104.1   0.0   61   47-107    31-91  (152)
+ 17 2xty_A QNRB1; cell cycle, pent  99.2 1.6E-15 1.6E-19  108.0   0.0   81   47-127    16-102 (217)
+ 18 2o6w_A Repeat five residue (RF  99.2   2E-15 1.9E-19  102.5   0.0   30   94-123    98-127 (150)
+ 19 3sy2_A E3 ubiquitin-protein li  99.2 2.3E-15   2E-19  123.1   0.0  102   18-121    19-131 (621)
+ 20 2j8k_A NP275-NP276; pentapepti  99.2 2.4E-15 2.3E-19  106.6   0.0   74   17-91     15-89  (201)
+ 21 2xt4_A ALBG, MCBG-like protein  99.2 3.4E-15 3.3E-19  104.9   0.0   75   54-128    56-130 (194)
+ 22 2w7z_A EFSQNR, pentapeptide re  99.2 3.4E-15 3.4E-19  106.6   0.0   81   48-128    71-151 (214)
+ 23 2qza_A Secreted effector prote  99.1 4.2E-15 3.8E-19  121.4   0.0   97   24-121    21-128 (618)
+ 24 2qyu_A Secreted effector prote  99.1 7.7E-15 6.9E-19  120.0   0.0   96   25-121    31-137 (627)
+ 25 2bm5_A MFPA, RV3361C, pentapep  99.1   8E-15 7.8E-19  102.2   0.0   53   57-109    50-102 (186)
+ 26 2xt2_A ALBG, MCBG-like protein  99.1 9.4E-15 9.2E-19  103.0   0.0   78   50-127    52-135 (200)
+ 27 2bm5_A MFPA, RV3361C, pentapep  99.1   1E-14   1E-18  101.7   0.0   79   49-127    62-140 (186)
+ 28 3du1_X ALL3740 protein, HETL;   99.1 1.2E-14 1.2E-18  106.2   0.0   23  103-125   106-128 (257)
+ 29 3nb2_A Secreted effector prote  99.1 1.5E-14 1.4E-18  118.2   0.0  101   27-128    27-139 (613)
+ 30 3sqv_A NLEL, secreted effector  99.0 2.5E-14 2.3E-18  116.9   0.0  101   27-128    30-142 (616)
+ 31 3sqv_A NLEL, secreted effector  99.0 3.1E-14 2.8E-18  116.4   0.0   71   38-108    30-101 (616)
+ 32 3psz_A QNR; pentapeptide repea  99.0 3.9E-14 3.8E-18  100.6   0.0   65   47-111    35-105 (216)
+ 33 2xtx_A QNRB1; cell cycle, pent  99.0 3.9E-14 3.9E-18  100.7   0.0   82   47-128    16-103 (217)
+ 34 3pss_A QNR; pentapeptide repea  99.0 4.1E-14   4E-18  100.7   0.0   65   47-111    35-105 (216)
+ 35 3nb2_A Secreted effector prote  99.0   5E-14 4.6E-18  115.1   0.0   62   47-108    37-98  (613)
+ 36 2xtw_A QNRB1; cell cycle, pent  99.0 4.9E-14 4.8E-18  100.3   0.0   73   38-110    26-105 (217)
+ 37 2qza_A Secreted effector prote  99.0 5.9E-14 5.3E-18  114.6   0.0   73   56-128    56-130 (618)
+ 38 2xty_A QNRB1; cell cycle, pent  99.0 6.9E-14 6.8E-18   99.4   0.0   64   47-110    36-105 (217)
+ 39 4jra_C Synaptic vesicle glycop  98.9 1.2E-13 1.1E-17   92.8   0.0   71   57-128    38-108 (136)
+ 40 2qyu_A Secreted effector prote  98.9 1.8E-13 1.6E-17  111.8   0.0   73   56-128    65-139 (627)
+ 41 3sy2_A E3 ubiquitin-protein li  98.9 1.8E-13 1.6E-17  111.7   0.0   73   56-128    59-133 (621)
+
+No 1  
+>4jra_C Synaptic vesicle glycoprotein 2C; beta-helix, vesicles, lumen, toxin, hydrolase; 2.30A {Homo sapiens} PDB: 4jra_D
+Probab=99.89  E-value=9.1e-29  Score=169.02  Aligned_cols=125  Identities=100%  Similarity=1.535  Sum_probs=82.7
+
+Q 8d83d67b600ae9   12 LVPRGSDVIKPLQSDEYALLTRNVERDKYANFTINFTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVN   91 (136)
+Q Consensus        12 ~~~~~~~l~~~i~~~~~~~~~~~~~~~~l~~~~f~~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~   91 (136)
+                      .......|+++|++++|+.++++++|+.+++++|+.+|+++.|++|.|.+++|++++|+++.|.+|+|.+|+|+++++.+
+T Consensus        12 ~~~~~~~l~~~i~~~~~~~~~~~~~~~~~~~~~~~~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~   91 (136)
+T 4jra_C           12 LVPRGSDVIKPLQSDEYALLTRNVERDKYANFTINFTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVN   91 (136)
+T ss_dssp             -----------------------------CCCBC--CEESCBCCSCEEESCEEETCEEESCBEESCEEESCEEESCEEES
+T ss_pred             eeeecccchhhhccchhhhhcccccCceeeeeeeeeeeccceEEceEEeeceeeCCeeeceEEEeeEEcCceeecceeee
+Confidence            34455668999999999999999955999999999999999999999999999999999999999999999999999999
+
+
+Q 8d83d67b600ae9   92 TYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFHNKTGCQITFD  136 (136)
+Q Consensus        92 ~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~~~~~g~~~d~~  136 (136)
+                      +.|.+|+|.+++|.+|.|.++.|.+|+|.+++|.++++||++|||
+T Consensus        92 ~~F~~C~l~~~~f~~a~l~~~~f~~c~l~~~~f~~~~~~~~~~~~  136 (136)
+T 4jra_C           92 TYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFHNKTGCQITFD  136 (136)
+T ss_dssp             CCEESCEEESCEEESCCCCGGGCTTCCEEEEEEC-----------
+T ss_pred             eEEecceecCcccCCCccCCcEEeccEEccceeecCCccccccCC
+Confidence            999999999999999999999999999999999999999999986
+
+
+No 2  
+>2j8i_A NP275; toxin; 2.1A {Nostoc punctiforme} PDB: 2j8i_B
+Probab=99.44  E-value=5.9e-18  Score=111.49  Aligned_cols=79  Identities=3%  Similarity=0.111  Sum_probs=54.2
+
+Q 8d83d67b600ae9   46 NFTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSF  124 (136)
+Q Consensus        46 ~~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F  124 (136)
+                      +.++.++.|++++|.+++|.+++|.++.|.+|.|.+++|.+++|.++.|.+|+|.+++|.+++|.++.|.+|+|.+++|
+T Consensus        39 ~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~l~~~~~~~~~~~~~~f~~~~l~~~~f  117 (118)
+T 2j8i_A           39 IVDLRGAVLENINLSGAILHGAMLDEANLQQANLSRADLSGATLNGADLRGANLSKADLSDAILDNAILEGAILDEAVL  117 (118)
+T ss_dssp             TCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBC
+T ss_pred             cccccCcccccceecCceecCceeCCCcccCceeccceeeCcEEcCceecCceEeCceecCceecccccCCCccccCcc
+Confidence            4566666666666666666666666666666666666676666677777777777777777777777777777766665
+
+
+No 3  
+>2w7z_A EFSQNR, pentapeptide repeat family protein; glutaraldehyde, gyrase inhibitor, cyclic pentylation, chemic modification; HET: LP6; 1.60A {Enterococcus faecalis} PDB: 2w7z_B*
+Probab=99.36  E-value=5e-17  Score=116.37  Aligned_cols=100  Identities=16%  Similarity=0.240  Sum_probs=81.0
+
+Q 8d83d67b600ae9   28 YALLTRNVERDKYANFTI-NFTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDN  106 (136)
+Q Consensus        28 ~~~~~~~~~~~~l~~~~f-~~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~  106 (136)
+                      .+++..+.+ .++++.+| +.+++++.|.+|+|.+++|.+++|.++.|.+|+|.+|+|.++.+.++.|.+|+|.+++|.+
+T Consensus        31 ~l~~~~~~~-~~~~~~~~~~~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~~~~~~~~~~~f~~c~~~~~~f~~  109 (214)
+T 2w7z_A           31 ILENHLYQQ-IDLPNQEVRNLVFRDAVFDHLSLANGQFASFDCSNVRFEACDFSNVEWLSGSFHRVTFLRCNLTGTNFAD  109 (214)
+T ss_dssp             EEESSEEEE-EECCSCEEESCEEEEEEEEEEECTTCEEETCEEEEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBCTT
+T ss_pred             eecceeEee-cccCcccccceeEEecEEeeeeeeCCccCCCeecCeEEeeeeeecceecCceeeeeEEccceecccccCC
+Confidence            455666663 66666666 3778888888888888888888888888888888888888888888888888888888888
+
+
+Q 8d83d67b600ae9  107 TDFEPYKFIDSEFKNCSFFHNK  128 (136)
+Q Consensus       107 a~l~~~~F~~c~l~~a~F~~~~  128 (136)
+                      +.+.++.|.+|++.++.|.+++
+T Consensus       110 ~~~~~~~f~~~~l~~~~f~~~~  131 (214)
+T 2w7z_A          110 SYLXDCLFEDCXADYASFRFAN  131 (214)
+T ss_dssp             CEEEEEEEESCBCTTCBCTTCE
+T ss_pred             CcCcCceeccCccccccccccc
+Confidence            8888888888888888777765
+
+
+No 4  
+>2xt2_A ALBG, MCBG-like protein; cell cycle, right handed quadrilateral beta helix; 2.00A {Xanthomonas albilineans} PDB: 2xt2_B
+Probab=99.32  E-value=1.2e-16  Score=113.13  Aligned_cols=105  Identities=10%  Similarity=0.214  Sum_probs=51.4
+
+Q 8d83d67b600ae9   22 PLQSDEYALLTRNVERDKYANFTIN-FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFI  100 (136)
+Q Consensus        22 ~i~~~~~~~~~~~~~~~~l~~~~f~-~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~  100 (136)
+                      ++..+.++.++.+.+ .++++..+. ..++++.|.+|+|.+++|+++.|.++.|++|+|.+++|.++.+.++.|.+|+|.
+T Consensus         4 ~~~~~~~~~~~~~~~-~~~~~~~l~~~~~~~~~f~~~~f~~~~~~~~~~~~~~f~~~~~~~~~~~~~~l~~~~f~~~~l~   82 (200)
+T 2xt2_A            4 KTLESKDYCGESFVS-EDRSGQSLESIRFEDCTFRQCNFTEAELNRCKFRECEFVDCNLSLISIPQTSFMEVRFVDCKML   82 (200)
+T ss_dssp             CCCCCSEEESCEEES-CBCTTCEEESCEEESCEEESCBCTTCEEESCEEEEEEEESCBCTTCBCTTCEEEEEEEESCBCT
+T ss_pred             ccccCccccCCeEEe-ccCCCCCcCCceeecceEeecccCCCccCCeEEeeeEeecCcccCcccCcceeeeeeEcccccc
+Confidence            344444455555553 555544332 344444444444444444444444455555555555555555555555555555
+
+
+Q 8d83d67b600ae9  101 DTVFDNTDF------EPYKFIDSEFKNCSFFHN  127 (136)
+Q Consensus       101 ~~~F~~a~l------~~~~F~~c~l~~a~F~~~  127 (136)
+                      +++|.++.+      .++.|.+|++.+++|.++
+T Consensus        83 ~~~~~~~~~~~~~~~~~~~f~~~~l~~~~f~~~  115 (200)
+T 2xt2_A           83 GVNWTSAQWPSVKMEGALSFERCILNDSLFYGL  115 (200)
+T ss_dssp             TCBGGGSCCCSSCCTTSEEEESCBCTTCBCTTC
+T ss_pred             ccccccccCCCcccccceeeeeeeeeccceecc
+Confidence            555555554      444455555554444443
+
+
+No 5  
+>2xt4_A ALBG, MCBG-like protein; cell cycle, right handed quadrilateral beta helix; 2.394A {Xanthomonas albilineans} PDB: 2xt4_B
+Probab=99.31  E-value=1.5e-16  Score=112.02  Aligned_cols=74  Identities=11%  Similarity=0.295  Sum_probs=28.4
+
+Q 8d83d67b600ae9   53 IHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFH  126 (136)
+Q Consensus        53 ~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~~  126 (136)
+                      .|++++|.+++|.+++|.++.|.+|+|.+++|.++.+.++.|.+|+|.+++|.++.+.++.|.+|++.+++|.+
+T Consensus        35 ~f~~~~~~~~~~~~~~~~~~~f~~~~l~~~~~~~~~~~~~~f~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  108 (194)
+T 2xt4_A           35 TFRQCNFTEAELNRCKFRECEFVDCNLSLISIPQTSFMEVRFVDCKMLGVNWTSAQAGALSFERCILNDSLFYG  108 (194)
+T ss_dssp             EEESCBCTTCEEETCEEEEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBCTT
+T ss_pred             eEeeeccCCceecCceEeeeeEeecccCCCCCCCCeeeeeEEeeeeecCceeecCccCceeeeeeeeccccccc
+Confidence            33333333333333333333333333333333333333334444444444444443333444444443333333
+
+
+No 6  
+>3du1_X ALL3740 protein, HETL; right-handed beta helix, repeated five residue fold, pentape repeat protein, structural protein; 2.00A {Nostoc SP}
+Probab=99.30  E-value=2e-16  Score=115.93  Aligned_cols=113  Identities=5%  Similarity=0.082  Sum_probs=63.6
+
+Q 8d83d67b600ae9   12 LVPRGSDVIKPLQSDEY-ALLTRNVERDKYANFTI-NFTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTS   89 (136)
+Q Consensus        12 ~~~~~~~l~~~i~~~~~-~~~~~~~~~~~l~~~~f-~~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l   89 (136)
+                      .......++++++.+++ ++++.+.+ ..+++..| +..+.++.|+++.|.+++|.++.|.++.|.+|.|.+|+|+++.+
+T Consensus        19 ~~~~~~~~~~~~~~~~~d~~~~~l~~-~~l~~~~~~~~~f~~~~f~~~~f~~~~f~~~~f~~~~f~~~~f~~~~f~~~~~   97 (257)
+T 3du1_X           19 SHMNVGEILRHYAAGKRNFQHINLQE-IELTNASLTGADLSYADLRQTRLGKSNFSHTCLREADLSEAILWGIDLSEADL   97 (257)
+T ss_dssp             -CCCHHHHHHHHHTTCCBCTTCBCTT-CBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBC
+T ss_pred             CCcCHHHHHHHHHhcccCCCcCcccC-ccccCCcccCCCcCCCccCCCccCCCccCCccccccccccccccccccccccc
+Confidence            33445566777777766 77777774 77776665 35566666665555555555555555555555555555555555
+
+
+Q 8d83d67b600ae9   90 VNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFF  125 (136)
+Q Consensus        90 ~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~  125 (136)
+                      .++.|.+|+|.++.|.++.+.++.|.+|++.++.|.
+T Consensus        98 ~~~~f~~~~f~~~~~~~~~~~~~~f~~~~~~~~~f~  133 (257)
+T 3du1_X           98 YRAILREADLTGAKLVKTRLEEANLIKASLCGANLN  133 (257)
+T ss_dssp             TTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCT
+T ss_pred             cccccccceeccccccccccccceeccccccCcccc
+Confidence            555555555554444444444444444443333333
+
+
+No 7  
+>3n90_A P15, thylakoid lumenal 15 kDa protein 1, chloroplastic; right-handed quadrilateral beta helix; 1.70A {Arabidopsis thaliana}
+Probab=99.30  E-value=2.2e-16  Score=108.33  Aligned_cols=90  Identities=11%  Similarity=0.086  Sum_probs=56.6
+
+Q 8d83d67b600ae9   25 SDEYALLTRNVERDKYANFTIN-FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTV  103 (136)
+Q Consensus        25 ~~~~~~~~~~~~~~~l~~~~f~-~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~  103 (136)
+                      .|....+..+.+ ..+.+.+|. ..++++.|.+|.|.+++|.+++|.++.|.+|.|.+|+|++++|.++.|.+|+|.+++
+T Consensus         4 ~g~~~~~~~~~~-~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~l~~~~f~~~~l~~~~f~~~~l~~~~f~~~~~~~~~   82 (152)
+T 3n90_A            4 GGGPYGQGVTRG-QDLSGKDFSGQTLIRQDFKTSILRQANFKGAKLLGASFFDADLTGADLSEADLRGADFSLANVTKVN   82 (152)
+T ss_dssp             GGCCCCHHHHTT-CBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCB
+T ss_pred             CCCCCCCcceeC-CCCCCCCCCCCccccceecccccccceecCceecCeeecCceeecceecCCeecCceeccceecCce
+Confidence            344445555553 566655553 666777777777777777777777777777777766666666666666666666666
+
+
+Q 8d83d67b600ae9  104 FDNTDFEPYKFI  115 (136)
+Q Consensus       104 F~~a~l~~~~F~  115 (136)
+                      |.+++|.++.|.
+T Consensus        83 f~~~~l~~~~~~   94 (152)
+T 3n90_A           83 LTNANLEGATMM   94 (152)
+T ss_dssp             CTTCBCTTCBCC
+T ss_pred             ecCCcccCCeec
+Confidence            655555544443
+
+
+No 8  
+>2f3l_A RFR-domain; beta helix, unknown function; 2.11A {Cyanothece SP} PDB: 2g0y_A
+Probab=99.29  E-value=2.4e-16  Score=111.13  Aligned_cols=91  Identities=15%  Similarity=0.223  Sum_probs=42.4
+
+Q 8d83d67b600ae9   38 DKYANFTIN-FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVN-----TYFKNCTFIDTVFDNTDFEP  111 (136)
+Q Consensus        38 ~~l~~~~f~-~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~-----~~F~~C~l~~~~F~~a~l~~  111 (136)
+                      ..+.+.+|. ..|.++.|.+|.|.+++|.+++|.++.|.+|.|.+|+|.+++|.+     +.|.+|+|.+++|.+++|.+
+T Consensus        57 ~~l~~~~f~~~~l~~~~f~~~~l~~~~f~~a~l~~~~f~~~~~~~~~~~~a~~~~~~~~~~~~~~~~~~~~~f~~a~l~~  136 (184)
+T 2f3l_A           57 VKLIGEDFSGKSLTYAQFTNADLTDSNFSEADLRGAVFNGSALIGADLHGADLTNGLAYLTSFKGADLTNAVLTEAIMMR  136 (184)
+T ss_dssp             CBCTTCBCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEEEEECTTCBCTTCBCTTCEEEE
+T ss_pred             CeeeCCcccCCccCCceeccccccCcccccccccCceecCceecCceEeeeeecCCeecCceeccceeccceecCeeecc
+Confidence            333333332 444555555555555555555544444444444444444444443     33444444444444444444
+
+
+Q 8d83d67b600ae9  112 YKFIDSEFKNCSFFHNK  128 (136)
+Q Consensus       112 ~~F~~c~l~~a~F~~~~  128 (136)
+                      +.|.+|+|.+++|.+++
+T Consensus       137 ~~f~~a~l~~a~f~~~~  153 (184)
+T 2f3l_A          137 TKFDDAKITGADFSLAV  153 (184)
+T ss_dssp             EECTTCBCTTCBCTTCE
+T ss_pred             eeecCcEEcCceeecee
+Confidence            45555555555544443
+
+
+No 9  
+>2f3l_A RFR-domain; beta helix, unknown function; 2.11A {Cyanothece SP} PDB: 2g0y_A
+Probab=99.27  E-value=3.9e-16  Score=110.02  Aligned_cols=57  Identities=11%  Similarity=0.222  Sum_probs=26.5
+
+Q 8d83d67b600ae9   50 ENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDN  106 (136)
+Q Consensus        50 ~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~  106 (136)
+                      .++.|+++.|.+++|++++|.++.|.+|.|.+|+|.+++|.++.|.+|+|.+++|.+
+T Consensus        50 ~~~~f~~~~l~~~~f~~~~l~~~~f~~~~l~~~~f~~a~l~~~~f~~~~~~~~~~~~  106 (184)
+T 2f3l_A           50 SSASYEDVKLIGEDFSGKSLTYAQFTNADLTDSNFSEADLRGAVFNGSALIGADLHG  106 (184)
+T ss_dssp             --CEEESCBCTTCBCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEESCBCTTCBCTT
+T ss_pred             CCceecCCeeeCCcccCCccCCceeccccccCcccccccccCceecCceecCceEee
+Confidence            333455555555555555555555555555555554444444444444333333333
+
+
+No 10 
+>2j8i_A NP275; toxin; 2.1A {Nostoc punctiforme} PDB: 2j8i_B
+Probab=99.26  E-value=4.7e-16  Score=102.11  Aligned_cols=80  Identities=4%  Similarity=0.093  Sum_probs=37.2
+
+Q 8d83d67b600ae9   49 MENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFHNK  128 (136)
+Q Consensus        49 l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~~~~  128 (136)
+                      +.+..|.+++|.+++|++++|.++.|.+|+|.+|+|.+++|.++.|.+|+|.+++|.+++|.++.|.+|++.+++|.+++
+T Consensus        32 ~~~~~~~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~l~~~~~~~~~~~~~~f~~~~  111 (118)
+T 2j8i_A           32 AGERDFSIVDLRGAVLENINLSGAILHGAMLDEANLQQANLSRADLSGATLNGADLRGANLSKADLSDAILDNAILEGAI  111 (118)
+T ss_dssp             HTCCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCB
+T ss_pred             cCCCCcccccccCcccccceecCceecCceeCCCcccCceeccceeeCcEEcCceecCceEeCceecCceecccccCCCc
+Confidence            33334444444444444444444444444444444444444444444444444444444444444444444444444443
+
+
+No 11 
+>2j8k_A NP275-NP276; pentapeptide repeat protein, PRP, right handed quadrilateral beta helix, RHQBH, toxin; HET: MES; 1.5A {Nostoc punctiforme}
+Probab=99.24  E-value=6.6e-16  Score=109.53  Aligned_cols=16  Identities=6%  Similarity=-0.031  Sum_probs=6.5
+
+Q 8d83d67b600ae9   29 ALLTRNVERDKYANFTI   45 (136)
+Q Consensus        29 ~~~~~~~~~~~l~~~~f   45 (136)
+                      +.++.+.+ ..++++.|
+T Consensus        37 ~~~~~~~~-~~~~~~~f   52 (201)
+T 2j8k_A           37 FSIVDLRG-AVLENINL   52 (201)
+T ss_dssp             CTTCBCTT-CBCTTCBC
+T ss_pred             CCccccCC-CcccCCcc
+Confidence            34444442 44444333
+
+
+No 12 
+>3pss_A QNR; pentapeptide repeat, antibiotic resistance, DNA topoisomeras cell cycle; HET: MLY; 2.00A {Aeromonas hydrophila} PDB: 3pss_B*
+Probab=99.24  E-value=6.6e-16  Score=110.21  Aligned_cols=82  Identities=15%  Similarity=0.239  Sum_probs=43.6
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFK------SCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFK  120 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~------~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~  120 (136)
+                      .+|.++.|++|+|.+++|++++|+++.|.+|+|.      +|+|.++.+.++.|.+|+|.+++|.++.+.++.|.+|++.
+T Consensus        15 ~~l~~~~f~~~~f~~~~f~~~~l~~~~f~~~~f~~~~~~~~~~f~~~~~~~~~f~~~~l~~~~~~~~~~~~~~f~~~~~~   94 (216)
+T 3pss_A           15 QDLEGEQFQGCRFIGCNFSWLDLAECRFVDCSFYDRESEQSCLLQGCDLREASFLRCDLTMADCSRSQCLGLELRDCQAL   94 (216)
+T ss_dssp             GGGSSCEEESCEEESCBCTTCBCTTCEEESCBCCBTTTTBCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCT
+T ss_pred             CCcCCCcccceeeeccccCcCCCCCceecCcccccCCCccceeecCccccccccccccccCCccCCcccccceecccccc
+Confidence            4455555555555555555555555555555555      5555555555555555555555555555555555555555
+
+
+Q 8d83d67b600ae9  121 NCSFFHNK  128 (136)
+Q Consensus       121 ~a~F~~~~  128 (136)
+                      +++|.+++
+T Consensus        95 ~~~f~~~~  102 (216)
+T 3pss_A           95 GINFSRAS  102 (216)
+T ss_dssp             TCBCTTCB
+T ss_pred             CCccCCCc
+Confidence            54444443
+
+
+No 13 
+>3psz_A QNR; pentapeptide repeat, antibiotic resistance, type II DNA topoisomerase, cell cycle; 2.20A {Aeromonas hydrophila} PDB: 3psz_B
+Probab=99.22  E-value=9.6e-16  Score=109.22  Aligned_cols=82  Identities=15%  Similarity=0.240  Sum_probs=42.0
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFK------SCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFK  120 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~------~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~  120 (136)
+                      .+++++.|++++|.+++|++++|+++.|++|.|.      +|+|+++.++++.|.+|+|.+++|.++.+.++.|.+|++.
+T Consensus        15 ~~l~~~~f~~~~f~~~~~~~~~l~~~~f~~c~f~~~~~~~~~~~~~~~~~~~~f~~~~l~~~~f~~~~~~~~~f~~~~l~   94 (216)
+T 3psz_A           15 QDLEGEQFQGCRFIGCNFSWLDLAEARFVDCSFYDRESEQSCLLQGCDLREASFLRCDLTMADCSRSQCLGLELRDCQAL   94 (216)
+T ss_dssp             GGSTTCEEESCEEESCBCTTCBCTTCEEESCBCSCTTTCCCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEESCBCT
+T ss_pred             CCCCCCccCCeeeeccCcCccccCCeeecCccccccCcccCccccCcccCCceecCceecCCccCCCccccceeeccccc
+Confidence            4444455555555555555555555555555554      5555555555555555555555555555555555555555
+
+
+Q 8d83d67b600ae9  121 NCSFFHNK  128 (136)
+Q Consensus       121 ~a~F~~~~  128 (136)
+                      +++|.+++
+T Consensus        95 ~~~f~~~~  102 (216)
+T 3psz_A           95 GINFSRAS  102 (216)
+T ss_dssp             TCBCTTCB
+T ss_pred             Cccccccc
+Confidence            44444443
+
+
+No 14 
+>2xtw_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resistance, handed quadrilateral beta-helix; 2.803A {Klebsiella pneumoniae} PDB: 2xtw_B 2xtw_C 2xtw_D
+Probab=99.21  E-value=1.2e-15  Score=108.96  Aligned_cols=81  Identities=17%  Similarity=0.284  Sum_probs=41.1
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVF------KSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFK  120 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f------~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~  120 (136)
+                      .+|+++.|++|.|.+++|++++|+++.|.+|.|      ++|+|+++.+.++.|.+|+|.+++|.++.|.++.|.+|+|.
+T Consensus        16 ~~l~~~~f~~~~f~~~~f~~~~~~~~~f~~~~f~~~~~~~~~~f~~~~~~~~~f~~~~l~~~~~~~~~~~~~~f~~~~l~   95 (217)
+T 2xtw_A           16 NRFTGEKIENSTFFNCDFSGADLSGTEFIGCQFYDRESQKGCNFSRAMLKDAIFKSCDLSMADFRNSSALGIEIRHCRAQ   95 (217)
+T ss_dssp             TSSTTCEEESCEEESCBCTTCBCTTCEEESCBCCBTTTTBCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCT
+T ss_pred             CccCCCccccceecccccCCCCCCCCeecCcccccCCccccccccccccccceecCcccCCccccccccccceeeccccc
+Confidence            444445555555555555555555555555555      44555555555555555555555555555554444444444
+
+
+Q 8d83d67b600ae9  121 NCSFFHN  127 (136)
+Q Consensus       121 ~a~F~~~  127 (136)
+                      +++|.++
+T Consensus        96 ~~~f~~~  102 (217)
+T 2xtw_A           96 GADFRGA  102 (217)
+T ss_dssp             TCBCTTC
+T ss_pred             CCccccc
+Confidence            4444443
+
+
+No 15 
+>2xtx_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resistance, handed quadrilateral beta-helix; 2.20A {Klebsiella pneumoniae} PDB: 2xtx_B
+Probab=99.20  E-value=1.4e-15  Score=108.48  Aligned_cols=50  Identities=16%  Similarity=0.344  Sum_probs=23.7
+
+Q 8d83d67b600ae9   61 NGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFE  110 (136)
+Q Consensus        61 ~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~  110 (136)
+                      +++|+++.|.++.|.+|.|.+|+|.++.+.++.|.+|++.+++|.++.+.
+T Consensus        56 ~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~  105 (217)
+T 2xtx_A           56 GCNFSRAMLKDAIFKSCDLSMADFRNSSALGIEIRHCRAQGADFRGASFR  105 (217)
+T ss_dssp             CCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCTTCBCTTCBCC
+T ss_pred             cccccccccCcceeccccccCCccCCccccCceeeccccCCceeccceee
+Confidence            34444444444444444444444444444444444444444444444433
+
+
+No 16 
+>3n90_A P15, thylakoid lumenal 15 kDa protein 1, chloroplastic; right-handed quadrilateral beta helix; 1.70A {Arabidopsis thaliana}
+Probab=99.20  E-value=1.5e-15  Score=104.08  Aligned_cols=61  Identities=5%  Similarity=0.190  Sum_probs=23.3
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNT  107 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a  107 (136)
+                      ..+.++.|.++.|.+++|.++.|.++.|.+|+|.+|+|.++.+.++.|.+|+|.+++|.++
+T Consensus        31 ~~f~~~~~~~~~f~~~~l~~~~f~~~~l~~~~f~~~~l~~~~f~~~~~~~~~f~~~~l~~~   91 (152)
+T 3n90_A           31 QDFKTSILRQANFKGAKLLGASFFDADLTGADLSEADLRGADFSLANVTKVNLTNANLEGA   91 (152)
+T ss_dssp             CBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTC
+T ss_pred             ceecccccccceecCceecCeeecCceeecceecCCeecCceeccceecCceecCCcccCC
+Confidence            3333333333333333333333333333333333333333333333333333333333333
+
+
+No 17 
+>2xty_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resistance, handed quadrilateral beta-helix; 1.80A {Klebsiella pneumoniae} PDB: 2xty_B
+Probab=99.19  E-value=1.6e-15  Score=108.05  Aligned_cols=81  Identities=17%  Similarity=0.284  Sum_probs=37.4
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVF------KSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFK  120 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f------~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~  120 (136)
+                      .+|+++.|++|+|.+++|.+++|+++.|.+|.|      ++|+|.++.+.++.|.+|+|.+++|.++.+.++.|.+|++.
+T Consensus        16 ~~l~~~~~~~~~f~~~~~~~~~~~~~~f~~~~f~~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~   95 (217)
+T 2xty_A           16 NRFTGEKIENSTFFNCDFSGADLSGTEFIGCQFYDRESQKGCNFSRAMLKDAIFKSCDLSMADFRNSSALGIEIRHCRAQ   95 (217)
+T ss_dssp             TSSTTCEEESCEEESCBCTTCBCTTCEEESCBCCBTTTTBCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCT
+T ss_pred             CccCCCccccceecccccCCCCCCCCeecCcccccCCCcccccccccccccceecccccccccccCccccCceecccccc
+Confidence            344444444444444444444444444444444      34444444444444444444444444444444444444444
+
+
+Q 8d83d67b600ae9  121 NCSFFHN  127 (136)
+Q Consensus       121 ~a~F~~~  127 (136)
+                      +++|.++
+T Consensus        96 ~~~f~~~  102 (217)
+T 2xty_A           96 GADFRGA  102 (217)
+T ss_dssp             TCBCTTC
+T ss_pred             ccccccc
+Confidence            4444433
+
+
+No 18 
+>2o6w_A Repeat five residue (RFR) protein or pentapeptide repeat protein; beta helix, unknown function; 2.40A {Cyanothece}
+Probab=99.19  E-value=2e-15  Score=102.47  Aligned_cols=30  Identities=3%  Similarity=0.215  Sum_probs=10.8
+
+Q 8d83d67b600ae9   94 FKNCTFIDTVFDNTDFEPYKFIDSEFKNCS  123 (136)
+Q Consensus        94 F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~  123 (136)
+                      |.+|+|.+++|.+++|.++.|.+|+|.+++
+T Consensus        98 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  127 (150)
+T 2o6w_A           98 LIGANLQGANLENANLQGANLENANLRGAI  127 (150)
+T ss_dssp             CTTCBCTTCBCTTCBCTTCBCTTCBCTTCB
+T ss_pred             ecceeecCCCcCCcccCCCccCCcccCCce
+Confidence            333333333333333333333333333333
+
+
+No 19 
+>3sy2_A E3 ubiquitin-protein ligase SOPA; pentapeptide, HECT domain, HECT E3,HECT E3 ubiquitin ligase, protein-protein CO effector protein; 3.27A {Salmonella enterica subsp} PDB: 3sy2_B
+Probab=99.18  E-value=2.3e-15  Score=123.13  Aligned_cols=102  Identities=22%  Similarity=0.361  Sum_probs=70.8
+
+Q 8d83d67b600ae9   18 DVIKPLQSDEYAL--LTRNVERDKYANFTIN-------FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVT   88 (136)
+Q Consensus        18 ~l~~~i~~~~~~~--~~~~~~~~~l~~~~f~-------~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~   88 (136)
+                      .+++. +.|+++.  ++++++ .++++++|.       ..+.++.|.+++|.+++|++++|+++.|.+|+|.+|+|++|.
+T Consensus        19 a~l~~-~~g~~l~~~~~dfsg-~DLs~~~Ls~~~~~s~~~l~ga~L~ganfsganL~~AdL~~a~f~~~dLsgAnL~gA~   96 (621)
+T 3sy2_A           19 AVLRQ-KAGETLTAADRDFSN-ADFRNITFSKILPPSFMERDGDIIKGFNFSNSKFTYSDISHLHFDECRFTYSTLSDVV   96 (621)
+T ss_dssp             THHHH-TSSCCCCTTTTCCTT-CCCTTCBTTTTSCTTTTSTTCCCEESCCCTTCCCTTCBCTTCEEESCBCTTCBCTTCB
+T ss_pred             HHHHH-HcCCccccccccccc-cccccccccccCCCCcccCCCceecCCcccCccccccccccccccccccccccccccc
+Confidence            34443 4566665  677774 777766664       345577778888888888888888888888888888888877
+
+
+Q 8d83d67b600ae9   89 SVNTYFKNCTFIDTVFDNTDFE--PYKFIDSEFKN  121 (136)
+Q Consensus        89 l~~~~F~~C~l~~~~F~~a~l~--~~~F~~c~l~~  121 (136)
+                      |.++.|.+|+|.+++|.++.+.  ++.|.+|+|.|
+T Consensus        97 L~~a~L~~adL~~AdL~~a~l~~~~adf~~A~L~g  131 (621)
+T 3sy2_A           97 CSNTKFSNSDMNEVFLQYSITTQQQPSFIDTTLKN  131 (621)
+T ss_dssp             CTTCEEESCBCCSCEECCCTTCCSCCBCTTCBCTT
+T ss_pred             ccCeEEecccccccccccccccccccccccccccc
+Confidence            7777777777777777776554  34555555555
+
+
+No 20 
+>2j8k_A NP275-NP276; pentapeptide repeat protein, PRP, right handed quadrilateral beta helix, RHQBH, toxin; HET: MES; 1.5A {Nostoc punctiforme}
+Probab=99.18  E-value=2.4e-15  Score=106.57  Aligned_cols=74  Identities=8%  Similarity=0.077  Sum_probs=30.9
+
+Q 8d83d67b600ae9   17 SDVIKPLQSDEYALLTRNVERDKYANFTIN-FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVN   91 (136)
+Q Consensus        17 ~~l~~~i~~~~~~~~~~~~~~~~l~~~~f~-~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~   91 (136)
+                      ..+.++|...+.+..+...+ .++++++|. ..++++.|.++.|.+++|.+++|+++.|.+|.|.+|.|.++.+.+
+T Consensus        15 ~~~~~~~~~~~~~~~~~~~~-~~~~~~~~~~~~~~~~~f~~~~f~~~~~~~~~f~~~~f~~~~f~~~~f~~~~~~~   89 (201)
+T 2j8k_A           15 VPRGSHMDVEKLRQLYAAGE-RDFSIVDLRGAVLENINLSGAILHGAMLDEANLQQANLSRADLSGATLNGADLRG   89 (201)
+T ss_dssp             CCCSSBCCHHHHHHHHHTTC-CBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTT
+T ss_pred             CCCCCCCCHHHHHHHHHhcC-CCCCccccCCCcccCCccCCCcccCCccCCCcccCceeccccccCceecCCcccC
+Confidence            33445555555554444442 444444442 344444444444444444444333333333333333333333333
+
+
+No 21 
+>2xt4_A ALBG, MCBG-like protein; cell cycle, right handed quadrilateral beta helix; 2.394A {Xanthomonas albilineans} PDB: 2xt4_B
+Probab=99.16  E-value=3.4e-15  Score=104.91  Aligned_cols=75  Identities=13%  Similarity=0.244  Sum_probs=36.9
+
+Q 8d83d67b600ae9   54 HTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFHNK  128 (136)
+Q Consensus        54 f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~~~~  128 (136)
+                      |.+|+|.+++|.++.+.++.|.+|.|.+++|.++.+.++.|.+|+|.+++|.++.+.++.|.+|++.+++|.++.
+T Consensus        56 f~~~~l~~~~~~~~~~~~~~f~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~l~~~~f~~~~~~~~~f~~~~  130 (194)
+T 2xt4_A           56 FVDCNLSLISIPQTSFMEVRFVDCKMLGVNWTSAQAGALSFERCILNDSLFYGLYLAGVKMVECRIHDANFTEAD  130 (194)
+T ss_dssp             EESCBCTTCBCTTCEEEEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBCTTCBCTTCEEESCBCTTCBCTTCB
+T ss_pred             EeecccCCCCCCCCeeeeeEEeeeeecCceeecCccCceeeeeeeeccccccccccCCeEEeeeeeecCccCccc
+Confidence            333333333333344444444444444444444444455555555555555555555555555555555554443
+
+
+No 22 
+>2w7z_A EFSQNR, pentapeptide repeat family protein; glutaraldehyde, gyrase inhibitor, cyclic pentylation, chemic modification; HET: LP6; 1.60A {Enterococcus faecalis} PDB: 2w7z_B*
+Probab=99.16  E-value=3.4e-15  Score=106.57  Aligned_cols=81  Identities=19%  Similarity=0.340  Sum_probs=51.9
+
+Q 8d83d67b600ae9   48 TMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFHN  127 (136)
+Q Consensus        48 ~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~~~  127 (136)
+                      .++++.|.+|+|.+++|.++.+.++.|.+|+|.+++|+++.+.++.|.+|+|.+++|.++.+.++.|.+|+|.+++|.++
+T Consensus        71 ~l~~~~F~~c~f~~~~~~~~~~~~~~f~~c~~~~~~f~~~~~~~~~f~~~~l~~~~f~~~~l~~~~f~~~~l~~~~f~~~  150 (214)
+T 2w7z_A           71 DCSNVRFEACDFSNVEWLSGSFHRVTFLRCNLTGTNFADSYLXDCLFEDCXADYASFRFANFNLVHFNQTRLVESEFFEV  150 (214)
+T ss_dssp             EEEEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBCTTC
+T ss_pred             eecCeEEeeeeeecceecCceeeeeEEccceecccccCCCcCcCceeccCccccccccccccceeEEeeceeccceeecC
+Confidence            34444455555555555566666666666666666666666777777777777777777666666666666666666655
+
+
+Q 8d83d67b600ae9  128 K  128 (136)
+Q Consensus       128 ~  128 (136)
+                      .
+T Consensus       151 ~  151 (214)
+T 2w7z_A          151 T  151 (214)
+T ss_dssp             E
+T ss_pred             c
+Confidence            4
+
+
+No 23 
+>2qza_A Secreted effector protein; ubiquitin E3 ligase, ligase; 2.80A {Salmonella typhimurium} PDB: 2qza_B
+Probab=99.15  E-value=4.2e-15  Score=121.43  Aligned_cols=97  Identities=22%  Similarity=0.352  Sum_probs=62.0
+
+Q 8d83d67b600ae9   24 QSDEYA--LLTRNVERDKYANFTIN-------FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYF   94 (136)
+Q Consensus        24 ~~~~~~--~~~~~~~~~~l~~~~f~-------~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F   94 (136)
+                      +.++++  .++++++ .+++++++.       ..+.++.|.+|+|.+++|.+++|+++.|.+|+|.+|+|++|.|.++.|
+T Consensus        21 ~~g~~l~~~~~Dls~-~DLs~~dLs~~~~~s~~~l~ga~L~ganLsga~L~~AdL~~a~f~~~dLsgAnL~gA~L~~a~L   99 (618)
+T 2qza_A           21 KAGETLTAADRDFSN-ADFRNITFSKILPPSFMERDGDIIKGFNFSNSKFTYSDISHLHFDECRFTYSTLSDVVCSNTKF   99 (618)
+T ss_dssp             TTTCCCCTGGGBCTT-CBCTTCBGGGSSCGGGGSSSCCCEESCBCCSCBCSSCBCTTCEEESCBCTTCBCTTCBCTTCEE
+T ss_pred             HcCCccccccccccc-cccccccccccCCCCccccCCceecCCccCCCccccccccccccccccccccccccccccccee
+Confidence            344444  5566663 677666554       234566777777777777777777777777777777777777777777
+
+
+Q 8d83d67b600ae9   95 KNCTFIDTVFDNTDFE--PYKFIDSEFKN  121 (136)
+Q Consensus        95 ~~C~l~~~~F~~a~l~--~~~F~~c~l~~  121 (136)
+                      .+|+|.+++|.++.+.  +++|.+|+|.+
+T Consensus       100 s~adL~~A~L~~a~f~~~~adf~~A~L~g  128 (618)
+T 2qza_A          100 SNSDMNEVFLQYSITTQQQPSFIDTTLKN  128 (618)
+T ss_dssp             ESCBCCSCEECCCTTCCSCCEEEEEECTT
+T ss_pred             ccccccccccccccccccccccccccccc
+Confidence            7777777776665543  34555555555
+
+
+No 24 
+>2qyu_A Secreted effector protein; ubiquitin E3 ligase, ligase; HET: B3P; 2.10A {Salmonella typhimurium}
+Probab=99.12  E-value=7.7e-15  Score=120.00  Aligned_cols=96  Identities=22%  Similarity=0.350  Sum_probs=66.1
+
+Q 8d83d67b600ae9   25 SDEYA--LLTRNVERDKYANFTIN-------FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFK   95 (136)
+Q Consensus        25 ~~~~~--~~~~~~~~~~l~~~~f~-------~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~   95 (136)
+                      .++++  .++++++ .++++++|.       ..+.|+.|.+|+|.+++|.+++|+++.|.+|+|.+|+|++|.|.++.|.
+T Consensus        31 ~g~~l~~~~~DLsg-~dLs~~dLs~~~~~~~~~l~ga~L~ganfsganf~~adL~~a~f~~cdLsgAnL~gA~L~~a~f~  109 (627)
+T 2qyu_A           31 AGETLTAADRDFSN-ADFRNITFSKILPPSFMERDGDIIKGFNFSNSKFTYSDISHLHFDECRFTYSTLSDVVCSNTKFS  109 (627)
+T ss_dssp             TTCCCCTTTTBCTT-CBCTTCBGGGTSCGGGGSTTCCCEESCBCTTCBCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEE
+T ss_pred             cCCccccccccccc-cccccccccccCCCCccccCCceecCCccCCCccccccccccccccccccccccccccccceeec
+Confidence            34555  5667774 777766654       2345677777777777777777777777777777777777777777777
+
+
+Q 8d83d67b600ae9   96 NCTFIDTVFDNTDFE--PYKFIDSEFKN  121 (136)
+Q Consensus        96 ~C~l~~~~F~~a~l~--~~~F~~c~l~~  121 (136)
+                      +|+|.+++|.++.+.  ++.|.+|+|.+
+T Consensus       110 ~adL~~A~L~~a~f~~~~adf~~AdL~g  137 (627)
+T 2qyu_A          110 NSDMNEVFLQYSITTQQQPSFIDTTLKN  137 (627)
+T ss_dssp             SCBCTTCEECCCTTCCSCCEEEEEECTT
+T ss_pred             cccccccccccccccccccccccccccc
+Confidence            777777777766554  45566666655
+
+
+No 25 
+>2bm5_A MFPA, RV3361C, pentapeptide repeat family protein; pentapeptide repeat protein, fluroquinolone resistance, DNA gyrase, DNA mimicry; 2.0A {Mycobacterium tuberculosis} PDB: 2bm4_B 2bm4_A 2bm5_B 2bm6_A 2bm7_A 2bm7_B 2bm7_C
+Probab=99.11  E-value=8e-15  Score=102.21  Aligned_cols=53  Identities=15%  Similarity=0.203  Sum_probs=19.5
+
+Q 8d83d67b600ae9   57 MEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDF  109 (136)
+Q Consensus        57 ~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l  109 (136)
+                      +.|.+|+|.+++|+++.|.+|.|.+++|.++.+.++.|.+|+|.++.|.++.|
+T Consensus        50 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~f~~~~l  102 (186)
+T 2bm5_A           50 SAFRNCTFERTTLWHSTFAQCSMLGSVFVACRLRPLTLDDVDFTLAVLGGNDL  102 (186)
+T ss_dssp             CEEESCEEESCBCTTCEEEEEECTTCEEESCBCCSCEEEEEECTTCBCTTCBC
+T ss_pred             ceecCceeCCcccccccccCceeeCCeecccccccceeecceecccccCCCcc
+Confidence            33333333333333333333333333333333333333333333333333333
+
+
+No 26 
+>2xt2_A ALBG, MCBG-like protein; cell cycle, right handed quadrilateral beta helix; 2.00A {Xanthomonas albilineans} PDB: 2xt2_B
+Probab=99.10  E-value=9.4e-15  Score=103.03  Aligned_cols=78  Identities=13%  Similarity=0.198  Sum_probs=34.9
+
+Q 8d83d67b600ae9   50 ENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTS------VNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCS  123 (136)
+Q Consensus        50 ~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l------~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~  123 (136)
+                      +++.|++|+|.+++|.++.|.++.|.+|.|.+++|+++.+      .++.|.+|+|.+++|.++.|.++.|.+|++.++.
+T Consensus        52 ~~~~f~~~~~~~~~~~~~~l~~~~f~~~~l~~~~~~~~~~~~~~~~~~~~f~~~~l~~~~f~~~~l~~~~f~~~~l~~~~  131 (200)
+T 2xt2_A           52 RECEFVDCNLSLISIPQTSFMEVRFVDCKMLGVNWTSAQWPSVKMEGALSFERCILNDSLFYGLYLAGVKMVECRIHDAN  131 (200)
+T ss_dssp             EEEEEESCBCTTCBCTTCEEEEEEEESCBCTTCBGGGSCCCSSCCTTSEEEESCBCTTCBCTTCBCTTCEEESCBCTTCB
+T ss_pred             eeeEeecCcccCcccCcceeeeeeEccccccccccccccCCCcccccceeeeeeeeeccceecccccceeeccceeccCc
+Confidence            3333333333333344444444444444444444444444      3344455555555555555444444444444444
+
+
+Q 8d83d67b600ae9  124 FFHN  127 (136)
+Q Consensus       124 F~~~  127 (136)
+                      |.++
+T Consensus       132 f~~~  135 (200)
+T 2xt2_A          132 FTEA  135 (200)
+T ss_dssp             CTTC
+T ss_pred             cccc
+Confidence            4444
+
+
+No 27 
+>2bm5_A MFPA, RV3361C, pentapeptide repeat family protein; pentapeptide repeat protein, fluroquinolone resistance, DNA gyrase, DNA mimicry; 2.0A {Mycobacterium tuberculosis} PDB: 2bm4_B 2bm4_A 2bm5_B 2bm6_A 2bm7_A 2bm7_B 2bm7_C
+Probab=99.09  E-value=1e-14  Score=101.67  Aligned_cols=79  Identities=10%  Similarity=0.182  Sum_probs=36.6
+
+Q 8d83d67b600ae9   49 MENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFHN  127 (136)
+Q Consensus        49 l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~~~  127 (136)
+                      +.++.|.+|.+.+++|.++.++++.|.+|.|.+++|.++.|.++.|.+|+|.+++|.+++|.++.|.+|+|.+++|.++
+T Consensus        62 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~f~~~~l~~~~f~~~~~~~~~f~~~~l~~~~f~~~~l~~~~f~~~  140 (186)
+T 2bm5_A           62 LWHSTFAQCSMLGSVFVACRLRPLTLDDVDFTLAVLGGNDLRGLNLTGCRLRETSLVDTDLRKCVLRGADLSGARTTGA  140 (186)
+T ss_dssp             CTTCEEEEEECTTCEEESCBCCSCEEEEEECTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTC
+T ss_pred             cccccccCceeeCCeecccccccceeecceecccccCCCcccCceecCCccCCCcccccccCCcEEcCCcCCCCccCCC
+Confidence            3334444444444444444444444444444444444444444444444444444444444444444444444444433
+
+
+No 28 
+>3du1_X ALL3740 protein, HETL; right-handed beta helix, repeated five residue fold, pentape repeat protein, structural protein; 2.00A {Nostoc SP}
+Probab=99.08  E-value=1.2e-14  Score=106.23  Aligned_cols=23  Identities=4%  Similarity=0.140  Sum_probs=8.6
+
+Q 8d83d67b600ae9  103 VFDNTDFEPYKFIDSEFKNCSFF  125 (136)
+Q Consensus       103 ~F~~a~l~~~~F~~c~l~~a~F~  125 (136)
+                      +|.++.+.++.|.+|.+.+++|.
+T Consensus       106 ~f~~~~~~~~~~~~~~f~~~~~~  128 (257)
+T 3du1_X          106 DLTGAKLVKTRLEEANLIKASLC  128 (257)
+T ss_dssp             BCTTCBCTTCBCTTCBCTTCBCT
+T ss_pred             eeccccccccccccceecccccc
+Confidence            33333333333333333333333
+
+
+No 29 
+>3nb2_A Secreted effector protein; pentapeptide, HECT domain, HECT E ubiquitin ligase, ligase; HET: MES; 2.10A {Escherichia coli} PDB: 3naw_B* 3naw_A* 3nb2_B* 3nb2_C* 3nb2_D*
+Probab=99.08  E-value=1.5e-14  Score=118.24  Aligned_cols=101  Identities=14%  Similarity=0.257  Sum_probs=49.2
+
+Q 8d83d67b600ae9   27 EYALLTRNVERDKYANFTIN-F-----TMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTY----FKN   96 (136)
+Q Consensus        27 ~~~~~~~~~~~~~l~~~~f~-~-----~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~----F~~   96 (136)
+                      ..++++++.+ .++++++|. .     +++++.|.+|+|.+|+|++++|+++.|.+|.|.+|+|.+|+|.++.    |.+
+T Consensus        27 ~~l~~~~f~g-adLsg~~fsg~~fs~a~F~~a~l~~~~F~~cnfs~a~f~~a~f~~~~f~~~~l~~anf~~a~l~~~f~~  105 (613)
+T 3nb2_A           27 ESAEELNYSG-CDLSGLSLVGLNLSSVNFSGAVLDDTDLRMSDLSQAVLENCSFKNSILNECNFCYANLSNCIIRALFEN  105 (613)
+T ss_dssp             CCTTTTBCTT-CBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCEEEEEECTTCBCTTCBCTTCEEEEECTT
+T ss_pred             cccccceecC-ccccCceecCccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+Confidence            4455555553 444444442 3     3344444444444444444444444444444444444444444444    455
+
+
+Q 8d83d67b600ae9   97 CTFIDTVFDNTDFEPYKFIDS--EFKNCSFFHNK  128 (136)
+Q Consensus        97 C~l~~~~F~~a~l~~~~F~~c--~l~~a~F~~~~  128 (136)
+                      |+|.+++|.+|+|.++.|.+|  +|.+++|.++.
+T Consensus       106 a~L~~a~l~~a~f~~a~f~~~~adL~~adL~ga~  139 (613)
+T 3nb2_A          106 SNFSNSNLKNASFKGSSYIQYPPILNEADLTGAI  139 (613)
+T ss_dssp             CBCTTCBCTTCBCTTCBCSSSCCBCTTCBCTTCE
+T ss_pred             ccccccccCCceEeCccccccccccccccccccc
+Confidence            555555555555555555555  55555555554
+
+
+No 30 
+>3sqv_A NLEL, secreted effector protein; effector protein, pentapeptide, HECT domain, HECT E3 ubiquit ligase, E2 ubiquitin conjugating enzyme; 3.30A {Escherichia coli} PDB: 3sqv_B
+Probab=99.04  E-value=2.5e-14  Score=116.92  Aligned_cols=101  Identities=14%  Similarity=0.257  Sum_probs=49.2
+
+Q 8d83d67b600ae9   27 EYALLTRNVERDKYANFTIN-F-----TMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTY----FKN   96 (136)
+Q Consensus        27 ~~~~~~~~~~~~~l~~~~f~-~-----~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~----F~~   96 (136)
+                      +.++++++.+ .++.+.+|. .     +++++.|.+|+|.+|+|+++.|.++.|.+|.|.+|+|.+|+|.++.    |.+
+T Consensus        30 ~~l~~~df~g-adLsg~~f~~~~fs~a~f~~a~l~~~~f~~c~fs~a~f~~a~f~~a~f~~~~f~~a~f~~a~l~a~f~~  108 (616)
+T 3sqv_A           30 ESAEELNYSG-CDLSGLSLVGLNLSSVNFSGAVLDDTDLRMSDLSQAVLENCSFKNSILNECNFCYANLSNCIIRALFEN  108 (616)
+T ss_dssp             CCHHHHBCCS-CBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCCSBCTT
+T ss_pred             cccccccccc-ceecCceecCccccCccccCcccccccccCCCCCCceecCccccccccCCccccccccccccccccccc
+Confidence            5555555553 555544442 3     3444444444444444444445555555555555555555554444    445
+
+
+Q 8d83d67b600ae9   97 CTFIDTVFDNTDFEPYKFIDS--EFKNCSFFHNK  128 (136)
+Q Consensus        97 C~l~~~~F~~a~l~~~~F~~c--~l~~a~F~~~~  128 (136)
+                      |+|.+++|.+++|.++.|.+|  +|.+++|.++.
+T Consensus       109 a~f~~a~L~~a~f~~a~f~~~~a~l~~adL~ga~  142 (616)
+T 3sqv_A          109 SNFSNSNLKNASFKGSSYIQYPPILNEADLTGAI  142 (616)
+T ss_dssp             CBCTTCBCTTCBCTTCBCSSSCCBCTTCBCTTCE
+T ss_pred             ceecccccCCcEeeCccccccccccccccccccc
+Confidence            555555555555555544444  44444444443
+
+
+No 31 
+>3sqv_A NLEL, secreted effector protein; effector protein, pentapeptide, HECT domain, HECT E3 ubiquit ligase, E2 ubiquitin conjugating enzyme; 3.30A {Escherichia coli} PDB: 3sqv_B
+Probab=99.03  E-value=3.1e-14  Score=116.39  Aligned_cols=71  Identities=13%  Similarity=0.261  Sum_probs=46.7
+
+Q 8d83d67b600ae9   38 DKYANFTI-NFTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTD  108 (136)
+Q Consensus        38 ~~l~~~~f-~~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~  108 (136)
+                      ..+++.+| +.+|+++.|.+|+|.+++|+++.|.++.|.+|+|.+++|.+++|.++.|.+|+|.+++|.++.
+T Consensus        30 ~~l~~~df~gadLsg~~f~~~~fs~a~f~~a~l~~~~f~~c~fs~a~f~~a~f~~a~f~~~~f~~a~f~~a~  101 (616)
+T 3sqv_A           30 ESAEELNYSGCDLSGLSLVGLNLSSVNFSGAVLDDTDLRMSDLSQAVLENCSFKNSILNECNFCYANLSNCI  101 (616)
+T ss_dssp             CCHHHHBCCSCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCB
+T ss_pred             ccccccccccceecCceecCccccCccccCcccccccccCCCCCCceecCccccccccCCcccccccccccc
+Confidence            44554444 366666666666666666666666666666677766666777777777777777766666655
+
+
+No 32 
+>3psz_A QNR; pentapeptide repeat, antibiotic resistance, type II DNA topoisomerase, cell cycle; 2.20A {Aeromonas hydrophila} PDB: 3psz_B
+Probab=99.01  E-value=3.9e-14  Score=100.65  Aligned_cols=65  Identities=8%  Similarity=0.236  Sum_probs=33.3
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYD------NGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEP  111 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~------~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~  111 (136)
+                      .+++++.|++|.|.      +++|+++.++++.|.+|+|.+++|.++.+.++.|.+|+|.+++|.++.+.+
+T Consensus        35 ~~l~~~~f~~c~f~~~~~~~~~~~~~~~~~~~~f~~~~l~~~~f~~~~~~~~~f~~~~l~~~~f~~~~~~~  105 (216)
+T 3psz_A           35 LDLAEARFVDCSFYDRESEQSCLLQGCDLREASFLRCDLTMADCSRSQCLGLELRDCQALGINFSRASFAN  105 (216)
+T ss_dssp             CBCTTCEEESCBCSCTTTCCCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEESCBCTTCBCTTCBCSC
+T ss_pred             cccCCeeecCccccccCcccCccccCcccCCceecCceecCCccCCCccccceeecccccCcccccccccc
+Confidence            34444445555554      555555555555555555555555555555555555554444444444433
+
+
+No 33 
+>2xtx_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resistance, handed quadrilateral beta-helix; 2.20A {Klebsiella pneumoniae} PDB: 2xtx_B
+Probab=99.01  E-value=3.9e-14  Score=100.69  Aligned_cols=82  Identities=17%  Similarity=0.281  Sum_probs=46.6
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVF------KSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFK  120 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f------~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~  120 (136)
+                      .+|++..|.+|.|.+++|++++|+++.|.+|.|      ++|+|+++.+.++.|.+|+|.+++|.++.|.++.|.+|.+.
+T Consensus        16 ~~l~~~~~~~~~f~~~~~~~~~l~~~~f~~c~f~~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~   95 (217)
+T 2xtx_A           16 NRFTGEKIENSTFFNCDFSGADLSGTEFIGCQFYDRESQKGCNFSRAMLKDAIFKSCDLSMADFRNSSALGIEIRHCRAQ   95 (217)
+T ss_dssp             TSSTTCEEESCEEESCBCTTCBCTTCEEESCBCCBTTTTBCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCT
+T ss_pred             CcccCCcccceeeecccCCCCCCCCCeecCcccccCCccccccccccccCcceeccccccCCccCCccccCceeeccccC
+Confidence            455555555555555555555555555555555      45566666666666666666555555555555555555555
+
+
+Q 8d83d67b600ae9  121 NCSFFHNK  128 (136)
+Q Consensus       121 ~a~F~~~~  128 (136)
+                      ++.|.++.
+T Consensus        96 ~~~f~~~~  103 (217)
+T 2xtx_A           96 GADFRGAS  103 (217)
+T ss_dssp             TCBCTTCB
+T ss_pred             Cceeccce
+Confidence            55555444
+
+
+No 34 
+>3pss_A QNR; pentapeptide repeat, antibiotic resistance, DNA topoisomeras cell cycle; HET: MLY; 2.00A {Aeromonas hydrophila} PDB: 3pss_B*
+Probab=99.01  E-value=4.1e-14  Score=100.65  Aligned_cols=65  Identities=8%  Similarity=0.225  Sum_probs=36.0
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYD------NGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEP  111 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~------~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~  111 (136)
+                      .+++++.|++|.|.      +++|.++.|+++.|.+|.|.+++|.++.+.++.|.+|+|.+++|.++.+.+
+T Consensus        35 ~~l~~~~f~~~~f~~~~~~~~~~f~~~~~~~~~f~~~~l~~~~~~~~~~~~~~f~~~~~~~~~f~~~~~~~  105 (216)
+T 3pss_A           35 LDLAECRFVDCSFYDRESEQSCLLQGCDLREASFLRCDLTMADCSRSQCLGLELRDCQALGINFSRASFAN  105 (216)
+T ss_dssp             CBCTTCEEESCBCCBTTTTBCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCTTCBCTTCBCEE
+T ss_pred             CCCCCceecCcccccCCCccceeecCccccccccccccccCCccCCcccccceeccccccCCccCCCcccc
+Confidence            44445555555555      555555555666666666666666666555555555555555555444443
+
+
+No 35 
+>3nb2_A Secreted effector protein; pentapeptide, HECT domain, HECT E ubiquitin ligase, ligase; HET: MES; 2.10A {Escherichia coli} PDB: 3naw_B* 3naw_A* 3nb2_B* 3nb2_C* 3nb2_D*
+Probab=99.00  E-value=5e-14  Score=115.07  Aligned_cols=62  Identities=15%  Similarity=0.279  Sum_probs=36.0
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTD  108 (136)
+Q Consensus        47 ~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~  108 (136)
+                      .+|+++.|.+|+|.+++|+++.|.++.|.+|+|.+|+|++++|.++.|.+|+|.+++|.++.
+T Consensus        37 adLsg~~fsg~~fs~a~F~~a~l~~~~F~~cnfs~a~f~~a~f~~~~f~~~~l~~anf~~a~   98 (613)
+T 3nb2_A           37 CDLSGLSLVGLNLSSVNFSGAVLDDTDLRMSDLSQAVLENCSFKNSILNECNFCYANLSNCI   98 (613)
+T ss_dssp             CBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCBCTTCEEEEEECTTCBCTTCBCTTCE
+T ss_pred             ccccCceecCcccccccccccccccccccccccccccccccccccccccccccccccccccc
+Confidence            55555555555555555555555555555555555555555555555555555555555554
+
+
+No 36 
+>2xtw_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resistance, handed quadrilateral beta-helix; 2.803A {Klebsiella pneumoniae} PDB: 2xtw_B 2xtw_C 2xtw_D
+Probab=99.00  E-value=4.9e-14  Score=100.31  Aligned_cols=73  Identities=14%  Similarity=0.310  Sum_probs=40.4
+
+Q 8d83d67b600ae9   38 DKYANFTI-NFTMENQIHTGMEY------DNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFE  110 (136)
+Q Consensus        38 ~~l~~~~f-~~~l~~~~f~~~~f------~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~  110 (136)
+                      ..+.+..| +.+++++.|.+|.|      ++++|+++.+.++.|++|.|.+|+|.++.+.++.|.+|+|.+++|.++.+.
+T Consensus        26 ~~f~~~~f~~~~~~~~~f~~~~f~~~~~~~~~~f~~~~~~~~~f~~~~l~~~~~~~~~~~~~~f~~~~l~~~~f~~~~~~  105 (217)
+T 2xtw_A           26 STFFNCDFSGADLSGTEFIGCQFYDRESQKGCNFSRAMLKDAIFKSCDLSMADFRNSSALGIEIRHCRAQGADFRGASFM  105 (217)
+T ss_dssp             CEEESCBCTTCBCTTCEEESCBCCBTTTTBCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCTTCBCTTCBCE
+T ss_pred             ceecccccCCCCCCCCeecCcccccCCccccccccccccccceecCcccCCccccccccccceeecccccCCccccceec
+Confidence            33333333 24555555555555      456666666666666666666666666655555555555555555544444
+
+
+No 37 
+>2qza_A Secreted effector protein; ubiquitin E3 ligase, ligase; 2.80A {Salmonella typhimurium} PDB: 2qza_B
+Probab=98.99  E-value=5.9e-14  Score=114.55  Aligned_cols=73  Identities=15%  Similarity=0.179  Sum_probs=50.1
+
+Q 8d83d67b600ae9   56 GMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFI--DSEFKNCSFFHNK  128 (136)
+Q Consensus        56 ~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~--~c~l~~a~F~~~~  128 (136)
+                      ++.|.+++|++++|.++.|.+|.|.+|+|++|+|+++.|.+|+|.+|+|.+|+|.++.|.  +++|.+|+|.++.
+T Consensus        56 ga~L~ganLsga~L~~AdL~~a~f~~~dLsgAnL~gA~L~~a~Ls~adL~~A~L~~a~f~~~~adf~~A~L~gA~  130 (618)
+T 2qza_A           56 GDIIKGFNFSNSKFTYSDISHLHFDECRFTYSTLSDVVCSNTKFSNSDMNEVFLQYSITTQQQPSFIDTTLKNTL  130 (618)
+T ss_dssp             CCCEESCBCCSCBCSSCBCTTCEEESCBCTTCBCTTCBCTTCEEESCBCCSCEECCCTTCCSCCEEEEEECTTCE
+T ss_pred             CceecCCccCCCcccccccccccccccccccccccccccccceeccccccccccccccccccccccccccccccc
+Confidence            566666666777777777777777777777777777777777777777777777776665  4466677776644
+
+
+No 38 
+>2xty_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resistance, handed quadrilateral beta-helix; 1.80A {Klebsiella pneumoniae} PDB: 2xty_B
+Probab=98.97  E-value=6.9e-14  Score=99.37  Aligned_cols=64  Identities=14%  Similarity=0.312  Sum_probs=34.0
+
+Q 8d83d67b600ae9   47 FTMENQIHTGMEY------DNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFE  110 (136)
+Q Consensus        47 ~~l~~~~f~~~~f------~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~  110 (136)
+                      .+++++.|.+|.|      .+++|.++.+.++.|.+|.|.+|+|.++++.++.|.+|+|.+++|.++.+.
+T Consensus        36 ~~~~~~~f~~~~f~~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~~~~f~~~~~~  105 (217)
+T 2xty_A           36 ADLSGTEFIGCQFYDRESQKGCNFSRAMLKDAIFKSCDLSMADFRNSSALGIEIRHCRAQGADFRGASFM  105 (217)
+T ss_dssp             CBCTTCEEESCBCCBTTTTBCCBCTTCBCTTCEEESCBCTTCBCTTCBCTTEEEESCBCTTCBCTTCBCC
+T ss_pred             CCCCCCeecCcccccCCCcccccccccccccceecccccccccccCccccCceecccccccccccccccc
+Confidence            3444444555555      345555555555555555555555555555555555555555555544444
+
+
+No 39 
+>4jra_C Synaptic vesicle glycoprotein 2C; beta-helix, vesicles, lumen, toxin, hydrolase; 2.30A {Homo sapiens} PDB: 4jra_D
+Probab=98.94  E-value=1.2e-13  Score=92.75  Aligned_cols=71  Identities=15%  Similarity=0.212  Sum_probs=39.2
+
+Q 8d83d67b600ae9   57 MEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFIDSEFKNCSFFHNK  128 (136)
+Q Consensus        57 ~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~~c~l~~a~F~~~~  128 (136)
+                      ..+.+.++. .+|+++.|.+|.|.+|+|.+++|.++.|.+|.|.+++|.++.+.++.|.+|+|.+++|.++.
+T Consensus        38 ~~~~~~~~~-~~l~~~~f~~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~f~~a~  108 (136)
+T 4jra_C           38 DKYANFTIN-FTMENQIHTGMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTD  108 (136)
+T ss_dssp             ---CCCBC---CEESCBCCSCEEESCEEETCEEESCBEESCEEESCEEESCEEESCCEESCEEESCEEESCC
+T ss_pred             ceeeeeeee-eeeccceEEceEEeeceeeCCeeeceEEEeeEEcCceeecceeeeeEEecceecCcccCCCc
+Confidence            334444443 45556666666666666666666666666666666666666666666666666655555543
+
+
+No 40 
+>2qyu_A Secreted effector protein; ubiquitin E3 ligase, ligase; HET: B3P; 2.10A {Salmonella typhimurium}
+Probab=98.92  E-value=1.8e-13  Score=111.79  Aligned_cols=73  Identities=15%  Similarity=0.179  Sum_probs=52.0
+
+Q 8d83d67b600ae9   56 GMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFI--DSEFKNCSFFHNK  128 (136)
+Q Consensus        56 ~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~--~c~l~~a~F~~~~  128 (136)
+                      ++.|.+++|++++|+++.|.+|.|.+|+|++|+|+++.|.+|+|.+|+|.+|+|.++.|.  +++|.+|++.++.
+T Consensus        65 ga~L~ganfsganf~~adL~~a~f~~cdLsgAnL~gA~L~~a~f~~adL~~A~L~~a~f~~~~adf~~AdL~ga~  139 (627)
+T 2qyu_A           65 GDIIKGFNFSNSKFTYSDISHLHFDECRFTYSTLSDVVCSNTKFSNSDMNEVFLQYSITTQQQPSFIDTTLKNTL  139 (627)
+T ss_dssp             CCCEESCBCTTCBCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEESCBCTTCEECCCTTCCSCCEEEEEECTTCE
+T ss_pred             CceecCCccCCCccccccccccccccccccccccccccccceeeccccccccccccccccccccccccccccccc
+Confidence            566777777777777777777777777777777777777777777777777777777766  5567777776654
+
+
+No 41 
+>3sy2_A E3 ubiquitin-protein ligase SOPA; pentapeptide, HECT domain, HECT E3,HECT E3 ubiquitin ligase, protein-protein CO effector protein; 3.27A {Salmonella enterica subsp} PDB: 3sy2_B
+Probab=98.91  E-value=1.8e-13  Score=111.67  Aligned_cols=73  Identities=15%  Similarity=0.179  Sum_probs=48.6
+
+Q 8d83d67b600ae9   56 GMEYDNGRFIGVKFKSVTFKDSVFKSCTFEDVTSVNTYFKNCTFIDTVFDNTDFEPYKFI--DSEFKNCSFFHNK  128 (136)
+Q Consensus        56 ~~~f~~~~f~~~~l~~~~F~~c~f~~~~f~~a~l~~~~F~~C~l~~~~F~~a~l~~~~F~--~c~l~~a~F~~~~  128 (136)
+                      ++.|.+++|++++|+++.|.+|+|.+|+|++|+|+++.|.+|+|.+|+|.+|+|.++.|.  +++|.+|+|.++.
+T Consensus        59 ga~L~ganfsganL~~AdL~~a~f~~~dLsgAnL~gA~L~~a~L~~adL~~AdL~~a~l~~~~adf~~A~L~gA~  133 (621)
+T 3sy2_A           59 GDIIKGFNFSNSKFTYSDISHLHFDECRFTYSTLSDVVCSNTKFSNSDMNEVFLQYSITTQQQPSFIDTTLKNTL  133 (621)
+T ss_dssp             CCCEESCCCTTCCCTTCBCTTCEEESCBCTTCBCTTCBCTTCEEESCBCCSCEECCCTTCCSCCBCTTCBCTTCE
+T ss_pred             CceecCCcccCcccccccccccccccccccccccccccccCeEEecccccccccccccccccccccccccccccc
+Confidence            566666666666666666666666666666666666666666666666666666666665  3466666666644
+
+
+Done!

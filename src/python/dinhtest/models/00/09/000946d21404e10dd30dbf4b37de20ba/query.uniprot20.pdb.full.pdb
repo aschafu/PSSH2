@@ -1,0 +1,45 @@
+PFRMAT TS                                                                       
+TARGET 000946d21404e10dd30dbf4b37de20ba                                         
+REMARK AUTHOR My server                                                         
+REMARK Thu Apr  2 15:38:05 2015                                                 
+REMARK 1: 1jxc_A Putative trypsin inhibitor ATTI-2; chymotrypsin inhibitor, stru
+REMARK    Probab=71.65  E-value=0.43  Score=23.74  Aligned_cols=31  Identities=3
+REMARK                                                                          
+REMARK 1jxc_A Putative trypsin inhibitor ATTI-2; chymotrypsin inhibitor, structu
+REMARK Done!                                                                    
+SCORE  71.65                                                                    
+PARENT 1jxc_A                                                                   
+MODEL  1                                                                        
+ATOM     15  CA  ILE    15      30.420 -21.479 -32.269  1.00                    
+ATOM     16  CA  PRO    16      32.272 -19.176 -29.905  1.00                    
+ATOM     17  CA  ASP    17      31.814 -15.610 -31.168  1.00                    
+ATOM     18  CA  GLY    18      32.182 -14.483 -27.573  1.00                    
+ATOM     19  CA  ASN    19      29.587 -11.792 -28.168  1.00                    
+ATOM     20  CA  CYS    20      27.974 -11.884 -24.745  1.00                    
+ATOM     21  CA  ASN    21      31.567 -11.571 -23.595  1.00                    
+ATOM     22  CA  LYS    22      32.178  -8.189 -25.180  1.00                    
+ATOM     23  CA  HIS    23      28.590  -7.136 -24.596  1.00                    
+ATOM     24  CA  CYS    24      28.502  -8.324 -21.003  1.00                    
+ATOM     25  CA  LYS    25      31.851  -6.594 -20.658  1.00                    
+ATOM     26  CA  GLU    26      30.079  -3.256 -20.874  1.00                    
+ATOM     27  CA  LYS    27      28.178  -4.191 -17.737  1.00                    
+ATOM     28  CA  GLU    28      31.516  -5.203 -16.267  1.00                    
+ATOM     29  CA  HIS    29      30.362  -6.536 -12.918  1.00                    
+ATOM     30  CA  LEU    30      29.273  -9.962 -14.104  1.00                    
+ATOM     31  CA  LEU    31      30.753 -13.401 -13.548  1.00                    
+ATOM     32  CA  SER    32      28.424 -15.525 -15.642  1.00                    
+ATOM     33  CA  GLY    33      24.867 -15.499 -16.935  1.00                    
+ATOM     34  CA  ARG    34      22.457 -17.226 -19.288  1.00                    
+ATOM     35  CA  CYS    35      21.650 -17.197 -22.986  1.00                    
+ATOM     36  CA  ARG    36      18.145 -17.001 -24.401  1.00                    
+ATOM     37  CA  ASP    37      16.968 -18.603 -27.622  1.00                    
+ATOM     38  CA  ASP    38      14.601 -11.531 -30.329  1.00                    
+ATOM     39  CA  PHE    39      15.821 -12.354 -26.843  1.00                    
+ATOM     40  CA  ARG    40      18.450 -10.809 -24.601  1.00                    
+ATOM     41  CA  CYS    41      21.653 -11.950 -22.936  1.00                    
+ATOM     42  CA  TRP    42      21.512 -12.579 -19.207  1.00                    
+ATOM     43  CA  CYS    43      24.437 -11.565 -17.029  1.00                    
+ATOM     44  CA  THR    44      24.282 -11.681 -13.249  1.00                    
+ATOM     45  CA  ARG    45      27.065 -11.508 -10.689  1.00                    
+TER                                                                             
+END                                                                             

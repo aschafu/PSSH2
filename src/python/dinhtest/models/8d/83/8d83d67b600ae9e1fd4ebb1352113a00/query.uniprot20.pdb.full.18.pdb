@@ -1,0 +1,44 @@
+PFRMAT TS                                                                       
+TARGET 8d83d67b600ae9e1fd4ebb1352113a00                                         
+REMARK AUTHOR My server                                                         
+REMARK Fri May 15 13:13:27 2015                                                 
+REMARK 1: 2o6w_A Repeat five residue (RFR) protein or pentapeptide repeat protei
+REMARK    Probab=99.19  E-value=2e-15  Score=102.47  Aligned_cols=30  Identities
+REMARK                                                                          
+REMARK 2o6w_A Repeat five residue (RFR) protein or pentapeptide repeat protein; 
+REMARK No 19                                                                    
+SCORE  99.19                                                                    
+PARENT 2o6w_A                                                                   
+MODEL  1                                                                        
+ATOM     94  CA  PHE    94     -30.478  13.154  10.869  1.00                    
+ATOM     95  CA  LYS    95     -12.599  -2.013   8.074  1.00                    
+ATOM     96  CA  ASN    96     -12.974  -2.225   4.316  1.00                    
+ATOM     97  CA  CYS    97     -13.789   1.483   4.131  1.00                    
+ATOM     98  CA  THR    98     -13.293   3.255   0.824  1.00                    
+ATOM     99  CA  PHE    99     -11.322   6.435   1.599  1.00                    
+ATOM    100  CA  ILE   100     -10.153   7.153  -1.953  1.00                    
+ATOM    101  CA  ASP   101      -8.996  10.740  -2.260  1.00                    
+ATOM    102  CA  THR   102     -10.164  11.385   1.296  1.00                    
+ATOM    103  CA  VAL   103      -8.638  14.210   3.276  1.00                    
+ATOM    104  CA  PHE   104      -7.515  13.052   6.749  1.00                    
+ATOM    105  CA  ASP   105      -5.011  15.819   7.469  1.00                    
+ATOM    106  CA  ASN   106      -4.112  16.144  11.153  1.00                    
+ATOM    107  CA  THR   107      -6.752  13.565  11.960  1.00                    
+ATOM    108  CA  ASP   108      -6.259  11.370  15.025  1.00                    
+ATOM    109  CA  PHE   109      -6.380   7.639  14.124  1.00                    
+ATOM    110  CA  GLU   110      -5.037   6.180  17.356  1.00                    
+ATOM    111  CA  PRO   111      -6.209   2.640  17.901  1.00                    
+ATOM    112  CA  TYR   112      -8.311   2.903  14.746  1.00                    
+ATOM    113  CA  LYS   113      -8.830  -0.162  12.570  1.00                    
+ATOM    114  CA  PHE   114      -8.393   0.371   8.830  1.00                    
+ATOM    115  CA  ILE   115      -7.954  -3.233   7.657  1.00                    
+ATOM    116  CA  ASP   116      -8.391  -3.596   3.896  1.00                    
+ATOM    117  CA  SER   117      -9.288   0.063   3.682  1.00                    
+ATOM    118  CA  GLU   118      -8.675   1.877   0.388  1.00                    
+ATOM    119  CA  PHE   119      -6.369   4.879   0.849  1.00                    
+ATOM    120  CA  LYS   120      -5.626   5.560  -2.827  1.00                    
+ATOM    121  CA  ASN   121      -5.006   9.258  -3.331  1.00                    
+ATOM    122  CA  CYS   122      -5.962   9.901   0.289  1.00                    
+ATOM    123  CA  SER   123      -3.975  12.507   2.188  1.00                    
+TER                                                                             
+END                                                                             

@@ -1,0 +1,25 @@
+Query         0154cdb4bc10bce927e233c971601bc6
+Match_columns 17
+No_of_seqs    13 out of 40
+Neff          3.8 
+Searched_HMMs 1
+Date          Fri Jan 16 14:44:03 2015
+Command       hhblits -cpu 1 -i query.uniprot20.hhm -d /var/tmp/rost_db/data//hhblits/pdb_full -n 1 -o query.uniprot20.pdb.full.hhr -B 10000 -Z 10000 
+
+ No Hit                             Prob E-value P-value  Score    SS Cols Query HMM  Template HMM
+  1 4j2c_B Vacuolar protein sortin  98.3 1.3E-10 1.1E-14   45.2   0.0   16    1-16      1-16  (26)
+
+No 1  
+>4j2c_B Vacuolar protein sorting-associated protein 51 HO; tethering complex, protein transport; 1.80A {Homo sapiens} PDB: 4j2c_D
+Probab=98.35  E-value=1.3e-10  Score=45.20  Aligned_cols=16  Identities=100%  Similarity=1.562  Sum_probs=14.9
+
+Q 0154cdb4bc10bc    1 AHGMLKLYYGLSEGEA   16 (17)
+Q Consensus         1 ~~g~l~~yyG~~e~~~   16 (17)
+                      +|||||+|||++|+++
+T Consensus         1 ~hGmlk~YYGl~e~~~   16 (26)
+T 4j2c_B            1 AHGMLKLYYGLSEGEA   16 (26)
+T ss_pred             CcccceeeeecCCCCC
+Confidence            6899999999999986
+
+
+Done!

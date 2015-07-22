@@ -1,0 +1,30 @@
+PFRMAT TS                                                                       
+TARGET 8d83d67b600ae9e1fd4ebb1352113a00                                         
+REMARK AUTHOR My server                                                         
+REMARK Fri May 15 13:13:27 2015                                                 
+REMARK 1: 2j8k_A NP275-NP276; pentapeptide repeat protein, PRP, right handed qua
+REMARK    Probab=99.24  E-value=6.6e-16  Score=109.53  Aligned_cols=16  Identiti
+REMARK                                                                          
+REMARK 2j8k_A NP275-NP276; pentapeptide repeat protein, PRP, right handed quadri
+REMARK No 12                                                                    
+SCORE  99.24                                                                    
+PARENT 2j8k_A                                                                   
+MODEL  1                                                                        
+ATOM     29  CA  ALA    29      53.265  17.679   8.195  1.00                    
+ATOM     30  CA  LEU    30      52.576  20.336  10.821  1.00                    
+ATOM     31  CA  LEU    31      48.888  20.597  11.784  1.00                    
+ATOM     32  CA  THR    32      47.736  17.896   9.375  1.00                    
+ATOM     33  CA  ARG    33      44.392  16.261   9.968  1.00                    
+ATOM     34  CA  ASN    34      44.885  12.509  10.411  1.00                    
+ATOM     35  CA  VAL    35      42.054  11.967  12.905  1.00                    
+ATOM     36  CA  GLU    36      40.956   8.322  12.950  1.00                    
+ATOM     38  CA  ASP    38      43.436   7.510  10.174  1.00                    
+ATOM     39  CA  LYS    39      44.640   3.934   9.640  1.00                    
+ATOM     40  CA  TYR    40      48.374   4.580   9.997  1.00                    
+ATOM     41  CA  ALA    41      49.415   1.164  11.287  1.00                    
+ATOM     42  CA  ASN    42      52.937   0.100  10.267  1.00                    
+ATOM     43  CA  PHE    43      53.591   3.485   8.591  1.00                    
+ATOM     44  CA  THR    44      57.163   4.682   8.543  1.00                    
+ATOM     45  CA  ILE    45      60.465   1.986  51.655  1.00                    
+TER                                                                             
+END                                                                             

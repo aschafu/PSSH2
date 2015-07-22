@@ -1,0 +1,67 @@
+PFRMAT TS                                                                       
+TARGET 8d83d67b600ae9e1fd4ebb1352113a00                                         
+REMARK AUTHOR My server                                                         
+REMARK Fri May 15 13:13:29 2015                                                 
+REMARK 1: 2bm5_A MFPA, RV3361C, pentapeptide repeat family protein; pentapeptide
+REMARK    Probab=99.11  E-value=8e-15  Score=102.21  Aligned_cols=53  Identities
+REMARK                                                                          
+REMARK 2bm5_A MFPA, RV3361C, pentapeptide repeat family protein; pentapeptide re
+REMARK No 26                                                                    
+SCORE  99.11                                                                    
+PARENT 2bm5_A                                                                   
+MODEL  1                                                                        
+ATOM     57  CA  MET    57       5.625   5.129  26.926  1.00                    
+ATOM     58  CA  GLU    58       6.746   1.459  27.051  1.00                    
+ATOM     59  CA  TYR    59      10.270   0.012  27.201  1.00                    
+ATOM     60  CA  ASP    60       9.519  -3.682  26.767  1.00                    
+ATOM     61  CA  ASN    61      12.297  -6.225  27.237  1.00                    
+ATOM     62  CA  GLY    62      14.836  -3.440  26.749  1.00                    
+ATOM     63  CA  ARG    63      18.426  -3.439  27.954  1.00                    
+ATOM     64  CA  PHE    64      19.810  -0.688  30.107  1.00                    
+ATOM     65  CA  ILE    65      23.444  -1.273  31.172  1.00                    
+ATOM     66  CA  GLY    66      25.302   1.762  32.501  1.00                    
+ATOM     67  CA  VAL    67      22.473   4.064  31.404  1.00                    
+ATOM     68  CA  LYS    68      21.920   7.387  33.187  1.00                    
+ATOM     69  CA  PHE    69      18.262   8.325  33.953  1.00                    
+ATOM     70  CA  LYS    70      19.261  10.999  36.515  1.00                    
+ATOM     71  CA  SER    71      16.572  13.679  36.948  1.00                    
+ATOM     72  CA  VAL    72      14.249  12.110  34.374  1.00                    
+ATOM     73  CA  THR    73      10.476  11.718  34.713  1.00                    
+ATOM     74  CA  PHE    74       8.465   8.655  33.831  1.00                    
+ATOM     75  CA  LYS    75       4.613   8.844  34.205  1.00                    
+ATOM     76  CA  ASP    76       2.252   5.989  33.301  1.00                    
+ATOM     77  CA  SER    77       5.042   4.129  31.608  1.00                    
+ATOM     78  CA  VAL    78       5.823   0.438  31.258  1.00                    
+ATOM     79  CA  PHE    79       9.316  -1.139  31.745  1.00                    
+ATOM     80  CA  LYS    80       8.019  -4.734  31.515  1.00                    
+ATOM     81  CA  SER    81      10.827  -7.246  31.323  1.00                    
+ATOM     82  CA  CYS    82      13.578  -4.645  30.904  1.00                    
+ATOM     83  CA  THR    83      17.017  -5.198  32.503  1.00                    
+ATOM     84  CA  PHE    84      18.982  -2.472  34.325  1.00                    
+ATOM     85  CA  GLU    85      22.615  -3.094  35.267  1.00                    
+ATOM     86  CA  ASP    86      24.678  -0.454  37.128  1.00                    
+ATOM     87  CA  VAL    87      22.485   2.456  35.976  1.00                    
+ATOM     88  CA  THR    88      22.171   5.938  37.515  1.00                    
+ATOM     89  CA  SER    89      18.510   5.634  38.643  1.00                    
+ATOM     90  CA  VAL    90      18.166   8.419  41.225  1.00                    
+ATOM     91  CA  ASN    91      17.151  10.849  41.984  1.00                    
+ATOM     92  CA  THR    92      14.359  10.853  39.407  1.00                    
+ATOM     93  CA  TYR    93      10.558  11.026  39.247  1.00                    
+ATOM     94  CA  PHE    94       8.333   7.953  38.858  1.00                    
+ATOM     95  CA  LYS    95       4.507   8.264  38.599  1.00                    
+ATOM     96  CA  ASN    96       2.891   4.876  38.070  1.00                    
+ATOM     97  CA  CYS    97       5.413   2.764  36.296  1.00                    
+ATOM     98  CA  THR    98       5.111  -0.933  35.633  1.00                    
+ATOM     99  CA  PHE    99       8.318  -2.841  36.404  1.00                    
+ATOM    100  CA  ILE   100       6.689  -6.307  36.067  1.00                    
+ATOM    101  CA  ASP   101       9.388  -8.898  35.359  1.00                    
+ATOM    102  CA  THR   102      12.108  -6.205  35.151  1.00                    
+ATOM    103  CA  VAL   103      15.579  -6.892  36.522  1.00                    
+ATOM    104  CA  PHE   104      16.684  -4.139  38.948  1.00                    
+ATOM    105  CA  ASP   105      19.138  -6.166  41.017  1.00                    
+ATOM    106  CA  ASN   106      22.128  -4.402  42.441  1.00                    
+ATOM    107  CA  THR   107      20.826  -0.905  41.578  1.00                    
+ATOM    108  CA  ASP   108      20.595   2.087  43.936  1.00                    
+ATOM    109  CA  PHE   109      -8.514 -13.012  72.637  1.00                    
+TER                                                                             
+END                                                                             

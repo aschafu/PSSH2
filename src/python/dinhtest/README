@@ -1,0 +1,9 @@
+pythonscript.py
+
+Prompts two things:
+- csv file name: Enter the name you want your result csv file to be named after. No file suffix
+- md5 checksum: Enter the checksum of the protein you want to look at
+
+if you want to preserve all the temporary data the script generates, set the boolean cleanup = False (Line 19)
+maxclres.log should NOT be present when executing the script! If you disabled the cleanup, you probably have to delete maxclres.log manually
+before starting the script.

@@ -1,0 +1,78 @@
+PFRMAT TS                                                                       
+TARGET 8d83d67b600ae9e1fd4ebb1352113a00                                         
+REMARK AUTHOR My server                                                         
+REMARK Fri May 15 13:13:32 2015                                                 
+REMARK 1: 2xty_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resista
+REMARK    Probab=98.97  E-value=6.9e-14  Score=99.37  Aligned_cols=64  Identitie
+REMARK                                                                          
+REMARK 2xty_A QNRB1; cell cycle, pentapeptide repeat, PRP, antibiotic resistance
+REMARK No 39                                                                    
+SCORE  98.97                                                                    
+PARENT 2xty_A                                                                   
+MODEL  1                                                                        
+ATOM     47  CA  PHE    47     -30.023  -0.947  -3.228  1.00                    
+ATOM     48  CA  THR    48     -26.576   0.488  -2.545  1.00                    
+ATOM     49  CA  MET    49     -24.999   0.601  -5.992  1.00                    
+ATOM     50  CA  GLU    50     -22.388   3.229  -5.030  1.00                    
+ATOM     51  CA  ASN    51     -19.548   2.871  -7.501  1.00                    
+ATOM     52  CA  GLN    52     -21.179  -0.152  -9.117  1.00                    
+ATOM     53  CA  ILE    53     -20.253  -0.617 -12.774  1.00                    
+ATOM     54  CA  HIS    54     -22.519  -2.331 -15.257  1.00                    
+ATOM     55  CA  THR    55     -21.133  -3.000 -18.748  1.00                    
+ATOM     56  CA  GLY    56     -23.054  -4.549 -21.618  1.00                    
+ATOM     57  CA  MET    57     -25.979  -5.502 -19.333  1.00                    
+ATOM     58  CA  GLU    58     -29.687  -5.706 -20.135  1.00                    
+ATOM     59  CA  TYR    59     -32.310  -4.646 -17.591  1.00                    
+ATOM     60  CA  ASP    60     -40.858  -5.076 -17.876  1.00                    
+ATOM     61  CA  ASN    61     -37.803  -3.078 -16.844  1.00                    
+ATOM     62  CA  GLY    62     -36.091  -3.159 -13.458  1.00                    
+ATOM     63  CA  ARG    63     -36.843  -1.061 -10.388  1.00                    
+ATOM     64  CA  PHE    64     -34.050   1.235  -9.156  1.00                    
+ATOM     65  CA  ILE    65     -36.306   3.519  -7.139  1.00                    
+ATOM     66  CA  GLY    66     -34.532   5.129  -4.157  1.00                    
+ATOM     67  CA  VAL    67     -31.284   3.289  -5.044  1.00                    
+ATOM     68  CA  LYS    68     -27.992   4.816  -4.003  1.00                    
+ATOM     69  CA  PHE    69     -26.280   5.353  -7.365  1.00                    
+ATOM     70  CA  LYS    70     -23.478   7.696  -6.376  1.00                    
+ATOM     71  CA  SER    71     -20.744   7.318  -8.985  1.00                    
+ATOM     72  CA  VAL    72     -22.487   4.291 -10.452  1.00                    
+ATOM     73  CA  THR    73     -21.717   3.487 -14.065  1.00                    
+ATOM     74  CA  PHE    74     -23.905   2.046 -16.812  1.00                    
+ATOM     75  CA  LYS    75     -22.076   1.510 -20.119  1.00                    
+ATOM     76  CA  ASP    76     -23.754   0.064 -23.182  1.00                    
+ATOM     77  CA  SER    77     -26.667  -1.226 -21.080  1.00                    
+ATOM     78  CA  VAL    78     -30.336  -1.508 -21.945  1.00                    
+ATOM     79  CA  PHE    79     -32.185   0.420 -19.254  1.00                    
+ATOM     80  CA  LYS    80     -35.450   0.680 -21.172  1.00                    
+ATOM     81  CA  SER    81     -38.360   1.354 -18.796  1.00                    
+ATOM     82  CA  CYS    82     -36.065   1.467 -15.753  1.00                    
+ATOM     83  CA  THR    83     -37.572   3.111 -12.676  1.00                    
+ATOM     84  CA  PHE    84     -34.999   5.511 -11.197  1.00                    
+ATOM     85  CA  GLU    85     -37.537   7.483  -9.210  1.00                    
+ATOM     86  CA  ASP    86     -36.230   9.116  -6.019  1.00                    
+ATOM     87  CA  VAL    87     -32.788   7.607  -6.503  1.00                    
+ATOM     88  CA  THR    88     -29.646   9.355  -5.262  1.00                    
+ATOM     89  CA  SER    89     -27.640   9.699  -8.478  1.00                    
+ATOM     90  CA  VAL    90     -24.909  12.281  -7.855  1.00                    
+ATOM     91  CA  ASN    91     -22.131  11.654 -10.345  1.00                    
+ATOM     92  CA  THR    92     -23.901   8.814 -12.104  1.00                    
+ATOM     93  CA  TYR    93     -22.681   7.801 -15.588  1.00                    
+ATOM     94  CA  PHE    94     -25.007   6.476 -18.230  1.00                    
+ATOM     95  CA  LYS    95     -23.053   6.142 -21.480  1.00                    
+ATOM     96  CA  ASN    96     -24.093   4.587 -24.770  1.00                    
+ATOM     97  CA  CYS    97     -27.273   3.197 -23.219  1.00                    
+ATOM     98  CA  THR    98     -30.769   2.508 -24.419  1.00                    
+ATOM     99  CA  PHE    99     -32.906   4.274 -21.841  1.00                    
+ATOM    100  CA  ILE   100     -36.206   4.579 -23.670  1.00                    
+ATOM    101  CA  ASP   101     -39.021   5.257 -21.231  1.00                    
+ATOM    102  CA  THR   102     -36.747   5.342 -18.174  1.00                    
+ATOM    103  CA  VAL   103     -38.298   7.295 -15.276  1.00                    
+ATOM    104  CA  PHE   104     -36.097   9.834 -13.467  1.00                    
+ATOM    105  CA  ASP   105     -38.746  11.742 -11.607  1.00                    
+ATOM    106  CA  ASN   106     -37.655  12.694  -8.127  1.00                    
+ATOM    107  CA  THR   107     -34.095  11.409  -8.687  1.00                    
+ATOM    108  CA  ASP   108     -31.479  13.715  -7.111  1.00                    
+ATOM    109  CA  PHE   109     -28.253  14.532  -8.955  1.00                    
+ATOM    110  CA  GLU   110     -26.392  34.761 -46.346  1.00                    
+TER                                                                             
+END                                                                             

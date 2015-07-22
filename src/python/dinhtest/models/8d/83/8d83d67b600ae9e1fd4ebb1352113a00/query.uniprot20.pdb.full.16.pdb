@@ -1,0 +1,75 @@
+PFRMAT TS                                                                       
+TARGET 8d83d67b600ae9e1fd4ebb1352113a00                                         
+REMARK AUTHOR My server                                                         
+REMARK Fri May 15 13:13:27 2015                                                 
+REMARK 1: 3n90_A P15, thylakoid lumenal 15 kDa protein 1, chloroplastic; right-h
+REMARK    Probab=99.20  E-value=1.5e-15  Score=104.08  Aligned_cols=61  Identiti
+REMARK                                                                          
+REMARK 3n90_A P15, thylakoid lumenal 15 kDa protein 1, chloroplastic; right-hand
+REMARK No 17                                                                    
+SCORE  99.20                                                                    
+PARENT 3n90_A                                                                   
+MODEL  1                                                                        
+ATOM     47  CA  PHE    47      19.155  39.558  24.370  1.00                    
+ATOM     48  CA  THR    48      22.784  40.013  23.232  1.00                    
+ATOM     49  CA  MET    49      22.953  42.309  20.170  1.00                    
+ATOM     50  CA  GLU    50      26.564  43.368  20.891  1.00                    
+ATOM     51  CA  ASN    51      28.268  44.687  17.719  1.00                    
+ATOM     52  CA  GLN    52      25.332  43.716  15.517  1.00                    
+ATOM     53  CA  ILE    53      24.081  45.703  12.538  1.00                    
+ATOM     54  CA  HIS    54      20.463  46.672  13.162  1.00                    
+ATOM     55  CA  THR    55      19.888  49.414  10.597  1.00                    
+ATOM     56  CA  GLY    56      16.167  49.897  10.022  1.00                    
+ATOM     57  CA  MET    57      15.381  47.026  12.416  1.00                    
+ATOM     58  CA  GLU    58      11.918  46.972  13.961  1.00                    
+ATOM     59  CA  TYR    59      11.820  46.701  17.775  1.00                    
+ATOM     60  CA  ASP    60       8.509  48.543  18.224  1.00                    
+ATOM     61  CA  ASN    61       7.035  47.528  21.616  1.00                    
+ATOM     62  CA  GLY    62       9.714  44.903  22.130  1.00                    
+ATOM     63  CA  ARG    63      10.628  43.878  25.669  1.00                    
+ATOM     64  CA  PHE    64      14.353  44.497  25.912  1.00                    
+ATOM     65  CA  ILE    65      15.009  44.790  29.627  1.00                    
+ATOM     66  CA  GLY    66      18.794  44.390  30.209  1.00                    
+ATOM     67  CA  VAL    67      19.480  43.782  26.472  1.00                    
+ATOM     68  CA  LYS    68      22.959  44.670  25.146  1.00                    
+ATOM     69  CA  PHE    69      23.287  47.003  22.106  1.00                    
+ATOM     70  CA  LYS    70      26.960  47.499  22.985  1.00                    
+ATOM     71  CA  SER    71      28.632  48.980  19.841  1.00                    
+ATOM     72  CA  VAL    72      25.577  47.992  17.740  1.00                    
+ATOM     73  CA  THR    73      24.499  50.038  14.739  1.00                    
+ATOM     74  CA  PHE    74      20.889  51.021  15.255  1.00                    
+ATOM     75  CA  LYS    75      20.694  53.647  12.532  1.00                    
+ATOM     76  CA  ASP    76      17.017  54.226  11.578  1.00                    
+ATOM     77  CA  SER    77      15.690  51.501  13.870  1.00                    
+ATOM     78  CA  VAL    78      12.219  51.687  15.453  1.00                    
+ATOM     79  CA  PHE    79      12.495  51.362  19.234  1.00                    
+ATOM     80  CA  LYS    80       9.184  53.224  19.860  1.00                    
+ATOM     81  CA  SER    81       7.272  51.991  22.947  1.00                    
+ATOM     82  CA  CYS    82      10.087  49.546  23.726  1.00                    
+ATOM     83  CA  THR    83      10.950  48.452  27.267  1.00                    
+ATOM     84  CA  PHE    84      14.688  49.312  27.377  1.00                    
+ATOM     85  CA  GLU    85      15.133  49.365  31.159  1.00                    
+ATOM     86  CA  ASP    86      18.752  48.666  32.044  1.00                    
+ATOM     87  CA  VAL    87      19.762  48.115  28.401  1.00                    
+ATOM     88  CA  THR    88      23.286  48.955  27.328  1.00                    
+ATOM     89  CA  SER    89      23.659  51.380  24.433  1.00                    
+ATOM     90  CA  VAL    90      27.325  52.164  25.165  1.00                    
+ATOM     91  CA  ASN    91      29.242  52.938  21.920  1.00                    
+ATOM     92  CA  THR    92      26.095  52.310  19.865  1.00                    
+ATOM     93  CA  TYR    93      25.144  54.248  16.766  1.00                    
+ATOM     94  CA  PHE    94      21.630  55.380  17.687  1.00                    
+ATOM     95  CA  LYS    95      21.246  57.903  14.874  1.00                    
+ATOM     96  CA  ASN    96      17.781  58.563  13.392  1.00                    
+ATOM     97  CA  CYS    97      16.186  56.018  15.719  1.00                    
+ATOM     98  CA  THR    98      12.599  56.327  16.832  1.00                    
+ATOM     99  CA  PHE    99      12.543  56.306  20.622  1.00                    
+ATOM    100  CA  ILE   100       9.018  57.740  21.070  1.00                    
+ATOM    101  CA  ASP   101       7.653  56.502  24.411  1.00                    
+ATOM    102  CA  THR   102      10.607  54.182  24.953  1.00                    
+ATOM    103  CA  VAL   103      11.434  53.420  28.566  1.00                    
+ATOM    104  CA  PHE   104      15.207  53.720  29.121  1.00                    
+ATOM    105  CA  ASP   105      15.060  53.747  32.912  1.00                    
+ATOM    106  CA  ASN   106      18.539  52.816  34.176  1.00                    
+ATOM    107  CA  THR   107      20.026  52.130  30.761  1.00                    
+TER                                                                             
+END                                                                             
