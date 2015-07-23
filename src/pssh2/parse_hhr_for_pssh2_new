@@ -11,7 +11,7 @@ use Getopt::Long;
 
 # Parameters! 
 my $nRetain = 5;  # how many alignments to keep, regardless of e-value
-my $evalCutoff = 10e-10;
+my $evalCutoff = 1e-10;
 my $identityCutoff = 0.9;   # storing values as decimal ratios, not percent! 
 # setting default path for mapping
 my $pssh_dir = "/mnt/project/pssh/pssh2_project"; 
