@@ -16,7 +16,7 @@ cat << EOT
 NAME
   make_new_pdb_full - generate a new pdb_full database 
 SYNOPSIS
-  make_new_pdb_full [-u|-r]  [-v (verbose)] [-d dbName] 
+  make_new_pdb_full [-R|-F n]  [-v] <-d dbName> 
 DESCRIPTION
   make_new_pdb_full iterates over sequences in the pdb table of Aquaria,
   writes pdb_redundant_chains-md5-seq-mapping,
@@ -25,13 +25,13 @@ DESCRIPTION
   links the output a3m files to the psipred a3m directory
   and finally runs hhblitsdb.pl on the psipred a3m directory
 OPTIONS
-  -u          update:  
-  -r          regenerate: force remake a3m files 
-  -f          input sequence file (fasta format)
-  -m          output file name for HMM (hhm format)
-  -a          output file name for multiple sequence alignment (a3m format)
-  -r          output file name for hhblits result file (hhr format)
-  -b          big job -> run with more memory ($bigMem Gb) and residues ($bigRes) 
+  -d          output name for new pdb_full
+  -F n        Set force remaking status for making of HMM profile (run build_hhblits_profile):
+     0           do not make profile unless none exists
+     1           run only if the profile is older than the last update of uniprot20 (default)
+     2           always run, even if the profile exists 
+  -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
+  -v          be verbose
   -u          /path/to/uniprot_20_files (without extensions)
   -c          number of cpus hhblits should run in parallel (default $n_cpu)
 AUTHOR
@@ -39,3 +39,21 @@ AUTHOR
 EOT
 exit 1
 }
+
+force=1
+debug=0
+silent=0
+passOpt=" " 
+while getopts :sDF:Rht: opt
+do
+	case $opt in
+	D) debug=1;;
+	F) force=$OPTARG;;
+	R) force=0;;
+	u) table_name=$OPTARG;;
+	h) usage; exit;;
+	s) silent=1; passOpt="$passOpt -$opt";;
+	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
+#	*) passOpt="$passOpt -$opt";;
+	esac
+done
