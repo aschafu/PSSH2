@@ -16,20 +16,17 @@ cat << EOT
 NAME
   make_new_pdb_full - generate a new pdb_full database 
 SYNOPSIS
-  build_hhblits_profile <-f fasta_sequence_file> <-m hmm_file_name> <-a a3m_file_name> 
-          <-r results_file_name> [-b] [-u /path/to/uniprot_20] [-s] [-c number_of_cpus]
+  make_new_pdb_full [-u|-r]  [-v (verbose)] [-d dbName] 
 DESCRIPTION
-  build_hhblits_profile takes an input sequence,
-  searches against the uniprot20 database of HMMs 
-  and generates a HHM output (HMM-profile) as well as 
-  an a3m file of the alignment and
-  a result file containing details of the search
-  The databases to search with hhblits should be available under $u20
-  unless they are explicitly given in the input.
-  Defaults are configured in $conf_file.
+  make_new_pdb_full iterates over sequences in the pdb table of Aquaria,
+  writes pdb_redundant_chains-md5-seq-mapping,
+  runs build_hhblits_profile for each sequence (to get a3m files),
+  runs addss.pl on each a3m file,
+  links the output a3m files to the psipred a3m directory
+  and finally runs hhblitsdb.pl on the psipred a3m directory
 OPTIONS
-  -h          The option -h displays help and exits.
-  -s          Operate silently 
+  -u          update:  
+  -r          regenerate: force remake a3m files 
   -f          input sequence file (fasta format)
   -m          output file name for HMM (hhm format)
   -a          output file name for multiple sequence alignment (a3m format)
