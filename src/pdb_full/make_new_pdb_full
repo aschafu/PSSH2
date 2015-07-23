@@ -50,7 +50,7 @@ do
 	D) debug=1;;
 	F) force=$OPTARG;;
 	R) force=0;;
-	u) table_name=$OPTARG;;
+	d) version=$OPTARG;;
 	h) usage; exit;;
 	s) silent=1; passOpt="$passOpt -$opt";;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
