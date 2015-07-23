@@ -167,13 +167,7 @@ sub read_hhr{
         	exit(1);
         }
 
-        if (defined $id_md5sum{$target_id}){
-        	$seqres_md5sum = $id_md5sum{$target_id};
-        	if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
-        }else{
-        	print "Error: SEQRES md5sum of '".$target_id."' not initialized!\n";
-        	exit(1);
-        }
+        $seqres_md5sum = $target_id;
 
         $gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
 
