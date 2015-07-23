@@ -44,7 +44,7 @@ force=1
 debug=0
 silent=0
 passOpt=" " 
-while getopts :sDF:Rhd: opt
+while getopts :sDF:Rhd:u: opt
 do
 	case $opt in
 	D) debug=1;;
@@ -52,6 +52,7 @@ do
 	R) force=0;;
 	d) version=$OPTARG;;
 	h) usage; exit;;
+	u) u20=$OPTARG;
 	s) silent=1; passOpt="$passOpt -$opt";;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 #	*) passOpt="$passOpt -$opt";;
