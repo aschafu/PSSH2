@@ -159,7 +159,7 @@ sub read_hhr{
 
       if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment
 
-        if ($full_target_id =~ /(\w{32}/){
+        if ($full_target_id =~ /^(\w{32}/){
         	$target_id = $1;
         	if ($v) {print "target ID: ".$target_id."\n";}
         }else{
