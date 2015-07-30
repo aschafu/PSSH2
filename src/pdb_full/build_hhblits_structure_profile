@@ -52,6 +52,8 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
+cd $path
+
 time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 
 ### TODO
