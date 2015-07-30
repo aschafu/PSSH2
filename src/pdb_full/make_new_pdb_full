@@ -184,6 +184,7 @@ do
 
 	# check whether the queue is too full (> 10000 jobs waiting)
 	# if yes, sleep a litle before we submit more
+	# TODO
 
 
 done < $md5ListFile
