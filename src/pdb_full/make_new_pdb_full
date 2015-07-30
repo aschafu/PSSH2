@@ -185,10 +185,10 @@ do
 					db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
 					if [ $a3m_stamp -gt $db_stamp ]
 					then
-		    			skip=1
+		    			add='-a'
 		    		fi
 				else
-					skip=1
+					add='-a'
 				fi
     			if [ $silent -eq 0 ]
     			then
