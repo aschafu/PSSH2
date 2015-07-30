@@ -66,10 +66,11 @@ done
 # parameters (will be overwritten by anything read from conf file)
 rootDir="/mnt/project/pssh/pssh2_project/" 
 pdb_full_dir=$rootDir"data/pdb_full/"
+pdb_derived_dir=$rootDir"data/pdb_derived/"
+psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
+
 source_dir=$rootDir"src/pdb_full/"
-#export HHLIB=$rootDir'hhsuite-2.0.13'
-pdb_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
-dssp_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
+util_dir=$rootDir"src/util/"
 
 # Note for later:
 # how to count the ratio of Xs in SEQRES sequences and limit to protein 
@@ -93,12 +94,31 @@ then
 	exit 1
 fi
 
-# loop over all md5s, submit them to the queue to be processed 
+## loop over all md5s, submit them to the queue to be processed 
 while read md5
 do
 	
 done < $md5ListFile
 
+## when all is done, loop over the md5s again and make links in the psipred_a3m_dir
+while read md5
+do
+	cachePath=`$util_dir/find_cache_path -m $md5`
+	ln -s $cachePath/query.psipred.a3m $psipred_a3m_dir/$md5.a3m	
+done < $md5ListFile
 
 
+## Generating pdb_full database files with HH-suite script hhblitsdb.pl and the MSAs with PSIPRED prediction received in (4.) as input 
+## (runs on jobtest, as hhblitsdb.pl uses multithread.pl).
+db=$pdb_full_dir$version
+rm -r $db 2>/dev/null #delete old db files
+mkdir $db 2>/dev/null
 
+hhblitsdb_log_dir=$rootDir"work/log_hhblitsdb/"
+mkdir $hhblitsdb_log_dir 2>/dev/null
+if $verbose ;
+then
+    echo calling hhblitsdb.pl on $psipred_a3m_dir "(see log in $hhblitsdb_log_dir)" 
+    echo $HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb.log
+fi  
+$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb.log   
