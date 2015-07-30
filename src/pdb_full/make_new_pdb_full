@@ -177,7 +177,29 @@ do
 					fi
 				fi
 			elif [ -s $a3mfile]
-
+			then
+				pa3m_stamp=`stat -c%Y $a3mfile`
+	   		 	if [ $force -eq 1 ] 
+	    		then
+					db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
+					if [ $a3m_stamp -gt $db_stamp ]
+					then
+		    			skip=1
+		    		fi
+				else
+					skip=1
+				fi
+    			if [ $silent -eq 0 ]
+    			then
+	    			echo "a3m already made: $a3m_stamp in "
+			    	pwd
+					if [ $skip -eq 1 ] 
+					then
+						echo "file will be used again"
+					else
+						echo "file will be remade"
+					fi
+				fi
 			fi
 		fi
 
