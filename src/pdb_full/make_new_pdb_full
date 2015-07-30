@@ -72,6 +72,9 @@ psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 #source_dir=$rootDir"src/pdb_full/"
 util_dir=$rootDir"src/util/"
 
+status_table="pdb_full_counts"
+
+
 # Note for later:
 # how to count the ratio of Xs in SEQRES sequences and limit to protein 
 # select `MD5_Hash`, group_concat(pdb_id separator ', ') as pdb_ids, SEQRES, length,  Replace (SEQRES, "X", "") as clean_seqres, length(Replace (SEQRES, "X", "")) as c_length,  ((length - length(Replace (SEQRES, "X", ""))) / length) as x_ratio from PDB_chain where type='Protein' and length>10 group by `MD5_Hash` order by x_ratio  desc limit 10;
@@ -116,8 +119,32 @@ do
 		get_seq=1
 	fi
 
-	
-	qsub build_hhblits_structure_profile $cachePath
+		if [ $get_seq -eq 1 ]
+	then 
+		temp_fasta_file=`get_fasta_for_md5 $md5`
+		if [ -s $temp_fasta_file ]
+		then	
+			### create cachedir if not existent
+			mkdir -p $CC
+			if [ -d $CC ] 
+			then
+				cp $temp_fasta_file $input_seq_file
+			else 
+				echo "ERROR: was not able to work on cache for $CC please go fix"
+			fi
+		fi
+	fi
+
+	if [ -s $input_seq_file ] 
+	then
+		qsub build_hhblits_structure_profile $cachePath
+		
+	else 
+		s=`date +%s`
+		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
+		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+	fi
+
 done < $md5ListFile
 
 ## when all is done, loop over the md5s again and make links in the psipred_a3m_dir
