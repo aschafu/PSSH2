@@ -194,7 +194,7 @@ do
     			then
 	    			echo "a3m already made: $a3m_stamp in "
 			    	pwd
-					if [ $skip -eq 1 ] 
+					if [ $add -eq '-a' ] 
 					then
 						echo "file will be used again"
 					else
