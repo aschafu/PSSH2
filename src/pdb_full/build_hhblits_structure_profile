@@ -10,7 +10,7 @@ cat << EOT
 NAME
   build_hhblits_structure_profile - generate a hhblits aligment file (called a3m) for a pdb sequence
 SYNOPSIS
-  build_hhblits_structure_profile  [-s] [-h] [-D]  <pathToWorkOn> 
+  build_hhblits_structure_profile  [-s] [-h] [-D]  <-p pathToWorkOn> 
 DESCRIPTION
   build_hhblits_profile takes an input sequence,
   calls build_hhblits_profile to scan agains uniprot20 and generate an a3m alignment, 
@@ -34,7 +34,7 @@ do
 	case $opt in
 	D) debug=1;; 
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
-	m) md5list=$OPTARG;;
+	p) path=$OPTARG;;
 #	*) passOpt="$passOpt $OPTARG";;
 	esac
 done
