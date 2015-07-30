@@ -173,7 +173,7 @@ do
 
 		if [ $skip -eq 0 ] 
 		then	
-			qsub build_hhblits_structure_profile $cachePath		
+			qsub build_hhblits_structure_profile -p $cachePath		
 		fi	
 	
 	else
