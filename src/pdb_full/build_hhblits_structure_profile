@@ -33,8 +33,8 @@ passOpt=" "
 while getopts :Dhm: opt
 do
 	case $opt in
-	D) debug=1; passOpt="$passOpt -$opt";; 
-	h) usage; echo " "; pssh2_seq -h; exit;;
+	D) debug=1;; 
+	h) usage; echo " "; build_hhblits_profile -h; exit;;
 	m) md5list=$OPTARG;;
 #	*) passOpt="$passOpt $OPTARG";;
 	esac
