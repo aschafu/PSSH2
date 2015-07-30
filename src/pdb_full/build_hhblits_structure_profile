@@ -77,8 +77,14 @@ else
 	fi	
 fi
 
+if [ -s $a3mfile ] 
+then
+	# TODO: add the psipred stuff
 
-### TODO
+else
+	fail=-1
+fi
+
 
 
 count=0
