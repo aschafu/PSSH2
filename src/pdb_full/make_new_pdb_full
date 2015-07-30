@@ -85,6 +85,7 @@ dssp_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
 # then interprete the align_to_seqres in a dedicated script to find the longest match, and also to choose the best resolution / most recent structure
 # before giving the a3m with the md5 sum as input to addss.pl, we have to replace the id for the found pdb_id
 # Note also that the hhsuite installed on the cluster is not customised to our local Rostlab setup
+# /usr/share/hhsuite/scripts/HHPaths.pm needs to be adjusted!
 
 if [ ! -s $md5List ]
 then
