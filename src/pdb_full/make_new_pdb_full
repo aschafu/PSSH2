@@ -16,7 +16,7 @@ cat << EOT
 NAME
   make_new_pdb_full - generate a new pdb_full database 
 SYNOPSIS
-  make_new_pdb_full [-R|-F n]  [-v] <-d dbName> 
+  make_new_pdb_full [-R|-F n]  [-v] <-m md5List> <-d dbName> 
 DESCRIPTION
   make_new_pdb_full iterates over sequences in the pdb table of Aquaria,
   runs build_hhblits_profile for each sequence (to get a3m files),
@@ -25,6 +25,7 @@ DESCRIPTION
   and finally runs hhblitsdb.pl on the psipred a3m directory
 OPTIONS
   -d          output name for new pdb_full
+  -m          file containing pdb Seqres md5s to run over 
   -F n        Set force remaking status for making of HMM profile (run build_hhblits_profile):
      0           do not make profile unless none exists
      1           run only if the profile is older than the last update of uniprot20 (default)
@@ -43,12 +44,13 @@ force=1
 debug=0
 silent=0
 passOpt=" " 
-while getopts :sDF:Rhd:u: opt
+while getopts :sDF:m:Rhd:u: opt
 do
 	case $opt in
 	D) debug=1;;
 	F) force=$OPTARG;;
 	R) force=0;;
+	m) md5List=$OPTARG;;
 	d) version=$OPTARG;;
 	h) usage; exit;;
 	u) u20=$OPTARG;
@@ -57,5 +59,11 @@ do
 #	*) passOpt="$passOpt -$opt";;
 	esac
 done
+
+if [ ! -s $md5List ]
+then
+	echo The file of md5 numbers to iterate over does not exist or is empty
+	exit 1
+files
 
 
