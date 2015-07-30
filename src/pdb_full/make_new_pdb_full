@@ -72,7 +72,7 @@ psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 #source_dir=$rootDir"src/pdb_full/"
 util_dir=$rootDir"src/util/"
 
-status_table="pdb_full_status"
+pdb_full_status_table="pdb_full_status"
 
 
 # Note for later:
