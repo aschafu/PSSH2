@@ -148,6 +148,7 @@ do
 	then
 
 		skip=0
+		add=''
  		
  		if [ $force -le 1 ] 
 		then
@@ -205,7 +206,7 @@ do
 
 		if [ $skip -eq 0 ] 
 		then	
-			qsub build_hhblits_structure_profile -p $CC		
+			qsub build_hhblits_structure_profile $add -p $CC		
 		fi	
 	
 	else
