@@ -182,6 +182,10 @@ do
 		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
 	fi
 
+	# check whether the queue is too full (> 10000 jobs waiting)
+	# if yes, sleep a litle before we submit more
+
+
 done < $md5ListFile
 
 ## when all is done, loop over the md5s again and make links in the psipred_a3m_dir
