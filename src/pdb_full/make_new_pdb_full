@@ -53,7 +53,7 @@ do
 	D) debug=1;;
 	F) force=$OPTARG;;
 	R) force=0;;
-	m) md5List=$OPTARG;;
+	m) md5ListFile=$OPTARG;;
 	d) version=$OPTARG;;
 	h) usage; exit;;
 	u) u20=$OPTARG;
@@ -87,10 +87,18 @@ dssp_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
 # Note also that the hhsuite installed on the cluster is not customised to our local Rostlab setup
 # /usr/share/hhsuite/scripts/HHPaths.pm needs to be adjusted!
 
-if [ ! -s $md5List ]
+if [ ! -s $md5ListFile ]
 then
 	echo The file of md5 numbers to iterate over does not exist or is empty
 	exit 1
-files
+fi
+
+# loop over all md5s, submit them to the queue to be processed 
+while read md5
+do
+	
+done < $md5ListFile
+
+
 
 
