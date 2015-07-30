@@ -27,6 +27,10 @@ EOT
 exit 1
 }
 
+
+pdb_full_status_table="pdb_full_status"
+
+
 debug=0
 passOpt=" " 
 while getopts :Dhm: opt
@@ -35,6 +39,7 @@ do
 	D) debug=1;; 
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
 	p) path=$OPTARG;;
+	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
 done
 
