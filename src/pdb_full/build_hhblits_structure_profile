@@ -36,11 +36,15 @@ a3mfile='query.uniprot20.a3m'
 
 debug=0
 passOpt=" " 
+add=1
+silent=0
 while getopts :Dahp: opt
 do
 	case $opt in
 	D) debug=1;; 
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
+	a) add=1;; 
+	s) silent=1; passOpt="$passOpt -$opt";;
 	p) path=$OPTARG;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
