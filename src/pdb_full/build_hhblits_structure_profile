@@ -30,6 +30,8 @@ exit 1
 
 
 pdb_full_status_table="pdb_full_status"
+pa3mfile='query.uniprot20.psipred.a3m' 
+a3mfile='query.uniprot20.a3m' 
 
 
 debug=0
@@ -53,7 +55,6 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
 cd $path
-
 time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 
 ### TODO
