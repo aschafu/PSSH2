@@ -59,6 +59,7 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
 cd $path
+skip=0
 if [ -s $a3mfile]
 then
 	if [ $add -eq 1 ]
