@@ -19,6 +19,7 @@ DESCRIPTION
   Any input behind "--" is passed on build_hhblits_profile 
 OPTIONS
   -h          The option -h displays help and exits.
+  -D          Debug option: do not remove or zip output files
   -s          Operate silently 
   -v          be verbose
 AUTHOR
@@ -26,3 +27,15 @@ AUTHOR
 EOT
 exit 1
 }
+
+debug=0
+passOpt=" " 
+while getopts :Dhm: opt
+do
+	case $opt in
+	D) debug=1; passOpt="$passOpt -$opt";; 
+	h) usage; echo " "; pssh2_seq -h; exit;;
+	m) md5list=$OPTARG;;
+#	*) passOpt="$passOpt $OPTARG";;
+	esac
+done
