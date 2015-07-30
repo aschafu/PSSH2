@@ -146,7 +146,7 @@ do
 
 		skip=0
 		pa3mfile='query.psipred.a3m' 
- 		a3mfile='query.psipred.a3m' 
+ 		a3mfile='query.uniprot20.a3m' 
  		
  		if [ $force -le 1 ] 
 		then
