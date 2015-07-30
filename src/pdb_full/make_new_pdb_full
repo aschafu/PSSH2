@@ -71,6 +71,13 @@ source_dir=$rootDir"src/pdb_full/"
 pdb_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
 dssp_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
 
+# Note for later:
+# how to count the ratio of Xs in SEQRES sequences and limit to protein 
+# select `MD5_Hash`, group_concat(pdb_id separator ', ') as pdb_ids, SEQRES, length,  Replace (SEQRES, "X", "") as clean_seqres, length(Replace (SEQRES, "X", "")) as c_length,  ((length - length(Replace (SEQRES, "X", ""))) / length) as x_ratio from PDB_chain where type='Protein' and length>10 group by `MD5_Hash` order by x_ratio  desc limit 10;
+# how to find the best resolution pdb for a given md5: 
+# select c.pdb_id, c.chain, p.`Resolution`, p.`Experimental_Method` from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID` and  p.`Experimental_Method`='X-ray diffraction' order by resolution limit 1;
+# how to get the most recent pdb for a given md5:
+# select c.pdb_id, c.chain, p.Published, p.`Experimental_Method` from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID` order by Published limit desc 1;
 
 
 if [ ! -s $md5List ]
