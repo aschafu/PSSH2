@@ -45,3 +45,9 @@ fi
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
+
+### TODO
+
+
+count=0
+DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0" 
