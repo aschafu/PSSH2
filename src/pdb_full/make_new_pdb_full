@@ -98,7 +98,25 @@ fi
 # submit further processing to the queue  
 while read md5
 do
-	cachePath=`$util_dir/find_cache_path -m $md5`
+	CC=`$util_dir/find_cache_path -m $md5`
+	input_seq_file=$CC/query.fasta
+
+	# check whether an input file already exists in $CC
+	if [ -s $input_seq_file ] 
+	then
+		old_md5=`cat $input_seq_file|fasta_to_md5`
+		if  [ $old_md5 == $md5 ]
+		then
+			echo "working with old file $input_seq_file, with md5: $old_md5"
+		else 
+			get_seq=1
+			echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
+		fi
+	else
+		get_seq=1
+	fi
+
+	
 	qsub build_hhblits_structure_profile $cachePath
 done < $md5ListFile
 
