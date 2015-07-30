@@ -20,7 +20,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
-  -a 		  only add the psipred, the a3m is already up to date
+  -a 		  only add the psipred if an a3m is exists
   -s          Operate silently 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
