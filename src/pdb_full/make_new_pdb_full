@@ -18,7 +18,7 @@ NAME
 SYNOPSIS
   make_new_pdb_full [-R|-F n]  [-v] <-m md5List> <-d dbName> 
 DESCRIPTION
-  make_new_pdb_full iterates over sequences in the pdb table of Aquaria,
+  make_new_pdb_full iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
   runs build_hhblits_profile for each sequence (to get a3m files),
   runs addss.pl on each a3m file,
   links the output a3m files to the psipred a3m directory
@@ -59,6 +59,16 @@ do
 #	*) passOpt="$passOpt -$opt";;
 	esac
 done
+
+# parameters (will be overwritten by anything read from conf file)
+rootDir="/mnt/project/pssh/pssh2_project/" 
+pdb_full_dir=$rootDir"data/pdb_full/"
+source_dir=$rootDir"src/pdb_full/"
+#export HHLIB=$rootDir'hhsuite-2.0.13'
+pdb_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
+dssp_entries_dir="/mnt/project/rost_db/data/pdb/entries/"
+
+
 
 if [ ! -s $md5List ]
 then
