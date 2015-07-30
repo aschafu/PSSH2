@@ -145,18 +145,19 @@ do
 	then
 
 		skip=0
-		a3mfile='query.psipred.a3m' 
- 
+		pa3mfile='query.psipred.a3m' 
+ 		a3mfile='query.psipred.a3m' 
+ 		
  		if [ $force -le 1 ] 
 		then
 			# check whether we already have a psipred a3m
-			if [ -s $a3mfile ] 
+			if [ -s $pa3mfile ] 
 			then
-				a3m_stamp=`stat -c%Y $a3mfile`
+				pa3m_stamp=`stat -c%Y $pa3mfile`
 	   		 	if [ $force -eq 1 ] 
 	    		then
 					db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
-					if [ $a3m_stamp -gt $db_stamp ]
+					if [ $pa3m_stamp -gt $db_stamp ]
 					then
 		    			skip=1
 		    		fi
@@ -165,7 +166,7 @@ do
 				fi
     			if [ $silent -eq 0 ]
     			then
-	    			echo "psipred_a3m already made: $a3m_stamp in "
+	    			echo "psipred_a3m already made: $pa3m_stamp in "
 			    	pwd
 					if [ $skip -eq 1 ] 
 					then
@@ -174,6 +175,8 @@ do
 						echo "file will be remade"
 					fi
 				fi
+			elif [ -s $a3mfile]
+
 			fi
 		fi
 
