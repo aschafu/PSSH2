@@ -35,6 +35,13 @@ do
 	D) debug=1;; 
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
 	p) path=$OPTARG;;
-#	*) passOpt="$passOpt $OPTARG";;
 	esac
 done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+shift $(expr $OPTIND - 1 )
+passOpt="$passOpt $@"
