@@ -137,8 +137,48 @@ do
 
 	if [ -s $input_seq_file ] 
 	then
-		qsub build_hhblits_structure_profile $cachePath
-		
+
+		skip=0
+		a3mfile='query.psipred.a3m' 
+ 
+if [ $force -le 1 ] 
+then
+	# check whether we already have a uniprot20 hmm
+	if [ -s $hmmfile ] 
+	then
+		hmm_stamp=`stat -c%Y $hmmfile`
+	    if [ $force -eq 1 ] 
+	    then
+			db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
+			if [ $hmm_stamp -gt $db_stamp ]
+			then
+		    	skip=1
+		    fi
+		else
+			skip=1
+		fi
+    	if [ $silent -eq 0 ]
+    	then
+	    	echo "HMM already made: $hmm_stamp in "
+	    	pwd
+			if [ $skip -eq 1 ] 
+			then
+				echo "file will be used again"
+			else
+				echo "file will be remade"
+			fi
+		fi
+	fi
+fi
+
+if [ $skip -eq 0 ] 
+then
+
+
+
+		if 
+	
+		qsub build_hhblits_structure_profile $cachePath		
 	else 
 		s=`date +%s`
 		DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
