@@ -179,7 +179,7 @@ do
 				fi
 			elif [ -s $a3mfile]
 			then
-				pa3m_stamp=`stat -c%Y $a3mfile`
+				a3m_stamp=`stat -c%Y $a3mfile`
 	   		 	if [ $force -eq 1 ] 
 	    		then
 					db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
