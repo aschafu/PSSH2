@@ -54,6 +54,10 @@ psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 util_dir=$rootDir"src/util/"
 
 pdb_full_status_table="pdb_full_status"
+pa3mfile='query.uniprot20.psipred.a3m' 
+a3mfile='query.uniprot20.a3m' 
+
+
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -145,8 +149,6 @@ do
 	then
 
 		skip=0
-		pa3mfile='query.psipred.a3m' 
- 		a3mfile='query.uniprot20.a3m' 
  		
  		if [ $force -le 1 ] 
 		then
