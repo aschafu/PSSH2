@@ -33,7 +33,7 @@ pdb_full_status_table="pdb_full_status"
 
 debug=0
 passOpt=" " 
-while getopts :Dhm: opt
+while getopts :Dhp: opt
 do
 	case $opt in
 	D) debug=1;; 
