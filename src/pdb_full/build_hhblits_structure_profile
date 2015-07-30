@@ -8,29 +8,17 @@ usage()
 {
 cat << EOT
 NAME
-  build_hhblits_structure_profile - generate a new pdb_full database 
+  build_hhblits_structure_profile - generate a hhblits aligment file (called a3m) for a pdb sequence
 SYNOPSIS
-  make_new_pdb_full [-R|-F n]  [-v] <-m md5List> <-d dbName> 
+  build_hhblits_structure_profile  [-s] [-h] [-D] [-v] [-u uniprot20Path] [-c n_cpu] <md5Number> 
 DESCRIPTION
-  make_new_pdb_full iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
-  runs build_hhblits_profile for each sequence (to get a3m files),
-  runs addss.pl on each a3m file (based on the best pdb structure for the sequence),
-  links the output a3m files to the psipred a3m directory
-  and finally runs hhblitsdb.pl on the psipred a3m directory.
-  This script assumes that the sequences given in the md5List are valid sequences,
-  any sorting out of DNA sequences, short sequences or some with too many non-amino acid residues
-  must happen in the process that constructs the md5List. 
+  build_hhblits_profile takes an input sequence,
+  calls build_hhblits_profile to scan agains uniprot20 and generate an a3m alignment, 
+  then it  runs addss.pl on the a3m file (based on the best pdb structure for the sequence),
+  producing a new a3m file including the secondary structure.
 OPTIONS
-  -d          output name for new pdb_full
-  -m          file containing pdb Seqres md5s to run over 
-  -F n        Set force remaking status for making of HMM profile (run build_hhblits_profile):
-     0           do not make profile unless none exists
-     1           run only if the profile is older than the last update of uniprot20 (default)
-     2           always run, even if the profile exists 
-  -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
+  -m          md5s to run for
   -v          be verbose
-  -u          /path/to/uniprot_20_files (without extensions)
-  -c          number of cpus hhblits should run in parallel (default $n_cpu)
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
