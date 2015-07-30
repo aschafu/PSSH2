@@ -58,7 +58,6 @@ pa3mfile='query.uniprot20.psipred.a3m'
 a3mfile='query.uniprot20.a3m' 
 
 
-
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
@@ -205,7 +204,7 @@ done < $md5ListFile
 while read md5
 do
 	cachePath=`$util_dir/find_cache_path -m $md5`
-	ln -s $cachePath/query.psipred.a3m $psipred_a3m_dir/$md5.a3m	
+	ln -s $cachePath/$pa3mfile $psipred_a3m_dir/$md5.a3m	
 done < $md5ListFile
 
 
