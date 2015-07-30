@@ -10,7 +10,7 @@ cat << EOT
 NAME
   build_hhblits_structure_profile - generate a hhblits aligment file (called a3m) for a pdb sequence
 SYNOPSIS
-  build_hhblits_structure_profile  [-s] [-h] [-D]  <-p pathToWorkOn> 
+  build_hhblits_structure_profile  [-s] [-h] [-D] [-a] <-p pathToWorkOn> 
 DESCRIPTION
   build_hhblits_profile takes an input sequence,
   calls build_hhblits_profile to scan agains uniprot20 and generate an a3m alignment, 
@@ -20,6 +20,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
+  -a 		  only add the psipred, the a3m is already up to date
   -s          Operate silently 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
@@ -33,7 +34,7 @@ pdb_full_status_table="pdb_full_status"
 
 debug=0
 passOpt=" " 
-while getopts :Dhp: opt
+while getopts :Dahp: opt
 do
 	case $opt in
 	D) debug=1;; 
@@ -50,6 +51,8 @@ fi
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
+
+time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 
 ### TODO
 
