@@ -19,7 +19,6 @@ SYNOPSIS
   make_new_pdb_full [-R|-F n]  [-v] <-d dbName> 
 DESCRIPTION
   make_new_pdb_full iterates over sequences in the pdb table of Aquaria,
-  writes pdb_redundant_chains-md5-seq-mapping,
   runs build_hhblits_profile for each sequence (to get a3m files),
   runs addss.pl on each a3m file,
   links the output a3m files to the psipred a3m directory
