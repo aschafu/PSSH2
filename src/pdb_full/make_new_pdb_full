@@ -181,7 +181,7 @@ do
 			fi
 		fi
 
-		if [ $skip -eq 0 ] 
+		if [ $skip -lt 2 ] 
 		then	
 			qsub build_hhblits_structure_profile -p $CC		
 		fi	
