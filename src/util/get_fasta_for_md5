@@ -1,7 +1,9 @@
 #!/bin/bash
 ### get fasta files from the db aquaria.protein_sequence   works on md5s 
 
-conf_file='/etc/pssh2.conf'
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
 
 ### work directory
 temp_work="/tmp/pssh2"
