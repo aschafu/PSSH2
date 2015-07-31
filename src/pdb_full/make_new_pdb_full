@@ -68,8 +68,6 @@ do
 	m) md5ListFile=$OPTARG;;
 	d) version=$OPTARG;;
 	h) usage; exit;;
-	u) u20=$OPTARG;
-	s) silent=1; passOpt="$passOpt -$opt";;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 #	*) passOpt="$passOpt -$opt";;
 	esac
