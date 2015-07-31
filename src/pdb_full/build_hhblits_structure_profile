@@ -150,7 +150,8 @@ fi
 if [ $skip_add -eq 0 ]
 	if [ -s $a3mfile ] 
 	then
-		# TODO: add the psipred stuff
+		# before giving the a3m with the md5 sum as input to addss.pl, we have to replace the id for the found pdb_id
+		#
 		a3mfile_pdb=$a3mfile.pdbid.a3m
 		pa3mfile_pdb=$pa3mfile.pdbid.a3m
 		cp $a3mfile $a3mfile_pdb

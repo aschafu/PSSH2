@@ -48,6 +48,11 @@ do
 	esac
 done
 
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
 # how to find the best resolution pdb for a given md5: 
 # select c.pdb_id, c.chain, p.`Resolution`, p.`Experimental_Method` from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID` and  p.`Experimental_Method`='X-ray diffraction' order by resolution limit 1;
 #
