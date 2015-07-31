@@ -4,6 +4,19 @@ if [ -z "$conf_file" ]; then
 	conf_file='/etc/pssh2.conf'
 fi
 
+### parameters
+pdb_full_status_table="pdb_full_status"
+pa3mfile='query.uniprot20.psipred.a3m' 
+a3mfile='query.uniprot20.a3m' 
+rootDir="/mnt/project/pssh/pssh2_project/" 
+hhlib=$rootDir'hhsuite-2.0.13'
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
 usage()
 {
 cat << EOT
@@ -32,14 +45,6 @@ EOT
 exit 1
 }
 
-
-pdb_full_status_table="pdb_full_status"
-pa3mfile='query.uniprot20.psipred.a3m' 
-a3mfile='query.uniprot20.a3m' 
-
-export HHLIB=$rootDir'hhsuite-2.0.13'
-
-
 debug=0
 passOpt=" " 
 add=1
@@ -65,6 +70,9 @@ fi
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
+
+
+export HHLIB=$hhlib
 
 cd $path
 skip_build=0
