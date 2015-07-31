@@ -6,7 +6,7 @@ conf_file='/etc/pssh2.conf'
 ### work directory
 temp_work="/tmp/pssh2"
 ### sequence tables in mysql
-sequence_tables="protein_sequence protein_sequence_user"
+sequence_tables="protein_sequence protein_squence_pdb protein_sequence_user"
 ### Note:
 ### by making protein_sequence_user a view in MySQL, one can move this configuration to the database
 ### (where it belongs) 
