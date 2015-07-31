@@ -24,7 +24,7 @@ DESCRIPTION
   
 OPTIONS
   -h          The option -h displays help and exits.
-  -D          Debug option
+  -D          Debug option: be verbose
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
