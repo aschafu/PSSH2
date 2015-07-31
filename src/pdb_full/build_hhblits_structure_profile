@@ -149,7 +149,10 @@ if [ -s $pa3mfile ]
 then
 	# TODO set count to something sensible
 else
-	fail=-2
+	if [ $fail eq 0 ]
+		fail=-2
+	fi
+	count=$fail
 fi
 
-DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0" 
+DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0 ON DUPLICATE KEY UPDATE count=$n , stamp=$s , runtime=$runtime " 
