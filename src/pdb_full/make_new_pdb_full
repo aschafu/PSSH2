@@ -132,16 +132,7 @@ do
 
 	if [ -s $input_seq_file ] 
 	then
-
-		skip=0
-		add=''
- 		
-
-		if [ $skip -eq 0 ] 
-		then	
-			qsub build_hhblits_structure_profile $add -p $CC		
-		fi	
-	
+		qsub build_hhblits_structure_profile $add -p $CC		
 	else
 		s=`date +%s`
 		DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
