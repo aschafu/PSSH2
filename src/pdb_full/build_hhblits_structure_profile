@@ -163,6 +163,7 @@ if [ $skip_add -eq 0 ]
 		sed 's/$pdb_id/$md5/g' < $pa3mfile_pdb > $pa3mfile
 		# clean up
 		rm $pa3mfile_pdb $a3mfile_pdb
+		gzip $a3mfile
 	else
 		fail=-1
 	fi
