@@ -150,8 +150,11 @@ if [ $skip_add -eq 0 ]
 		a3mfile_pdb=$a3mfile.pdbid.a3m
 		pa3mfile_pdb=$pa3mfile.pdbid.a3m
 		cp $a3mfile $a3mfile_pdb
-		
-		$HHLIB/scripts/addss.pl $a3mfile_pdb $pa3mfile
+		# TODO: find out and edit in the pdb id
+		$HHLIB/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
+		# TODO: remove the pdb id from the $pa3mfile_pdb 
+		# clean up
+		rm $pa3mfile_pdb $a3mfile_pdb
 	else
 		fail=-1
 	fi
