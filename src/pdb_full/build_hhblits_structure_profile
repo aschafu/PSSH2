@@ -49,14 +49,13 @@ debug=0
 passOpt=" " 
 add=1
 silent=0
-while getopts :sDF:Rahp: opt
+while getopts :sDF:Rhp: opt
 do
 	case $opt in
 	D) debug=1;; 
 	F) force=$OPTARG;;
 	R) force=0;;
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
-	a) add=1;; 
 	s) silent=1; debug=0; passOpt="$passOpt -$opt";;
 	p) path=$OPTARG;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
