@@ -79,7 +79,7 @@ then
 			db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
 			if [ $pa3m_stamp -gt $db_stamp ]
 			then
-		    	skip_build=1
+		    	skip_add=1
 		    fi
 		else
 			skip=1
