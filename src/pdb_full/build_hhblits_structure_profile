@@ -105,16 +105,16 @@ then
 			db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
 			if [ $a3m_stamp -gt $db_stamp ]
 			then
-		    	add='-a'
+		    	skip_build=1
 		    fi
 		else
-			add='-a'
+		    skip_build=1
 		fi
     	if [ $silent -eq 0 ]
     	then
 	    	echo "a3m already made: $a3m_stamp in "
 			pwd
-			if [ $add -eq '-a' ] 
+			if [ $skip_build -eq 1 ] 
 			then
 				echo "file will be used again"
 			else
@@ -124,15 +124,7 @@ then
 	fi
 fi
 
-
-if [ -s $a3mfile]
-then
-	if [ $add -eq 1 ]
-	then
-		skip=1
-	fi
-fi	
-if [ $skip -eq 0 ]
+if [ $skip_build -eq 0 ]
 then
 	time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a $a3mfile -r query.uniprot20.hhr $passOpt
 else
@@ -142,12 +134,14 @@ else
 	fi	
 fi
 
-if [ -s $a3mfile ] 
-then
-	# TODO: add the psipred stuff
-
-else
-	fail=-1
+if [ $skip_add -eq 0 ]
+	if [ -s $a3mfile ] 
+	then
+		# TODO: add the psipred stuff
+		
+	else
+		fail=-1
+	fi
 fi
 
 # TODO set count to something sensible
