@@ -80,6 +80,7 @@ then
 			if [ $pa3m_stamp -gt $db_stamp ]
 			then
 		    	skip_add=1
+		    	skip_build=1
 		    fi
 		else
 			skip_add=1
