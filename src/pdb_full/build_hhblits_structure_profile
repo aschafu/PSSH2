@@ -172,7 +172,7 @@ fi
 count=0
 if [ -s $pa3mfile ]
 then
-	# TODO set count to something sensible
+	count=`grep -c "^>" $pa3mfile"
 else
 	if [ $fail eq 0 ]
 		fail=-2
