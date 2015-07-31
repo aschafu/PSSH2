@@ -38,7 +38,7 @@ then
 	exit
 fi
 
-while getopts :h opt
+while getopts :hm: opt
 do
 	case $opt in
 	h) usage; exit;;
