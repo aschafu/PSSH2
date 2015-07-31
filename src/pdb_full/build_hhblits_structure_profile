@@ -82,13 +82,13 @@ then
 		    	skip_add=1
 		    fi
 		else
-			skip=1
+			skip_add=1
 		fi
     	if [ $silent -eq 0 ]
     	then
 	    	echo "psipred_a3m already made: $pa3m_stamp in "
 			pwd
-			if [ $skip -eq 1 ] 
+			if [ $skip_add -eq 1 ] 
 			then
 				echo "file will be used again"
 			else
