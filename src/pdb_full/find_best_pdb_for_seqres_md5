@@ -24,15 +24,24 @@ DESCRIPTION
   
 OPTIONS
   -h          The option -h displays help and exits.
-  -D          Debug option: do not remove or zip output files
-  -F n        Set force remaking status for making of HMM profile (run build_hhblits_profile):
-     0           do not make profile unless none exists
-     1           run only if the profile is older than the last update of uniprot20 (default)
-     2           always run, even if the profile exists 
-  -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
-  -s          Operate silently 
+  -D          Debug option
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
 exit 1
 }
+
+# if there are no arguments or -h, then print man entry
+if [ $# -eq 0 ]
+then
+	usage 
+	exit
+fi
+
+while getopts :h opt
+do
+	case $opt in
+	h) usage; exit;;
+	esac
+done
+
