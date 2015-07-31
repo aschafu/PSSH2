@@ -38,11 +38,13 @@ then
 	exit
 fi
 
-while getopts :hm: opt
+debug=0
+while getopts :Dhm: opt
 do
 	case $opt in
-	h) usage; exit;;
-	m) md5=$OPTARG
+		D) debug=1;; 
+		h) usage; exit;;
+		m) md5=$OPTARG;;
 	esac
 done
 
