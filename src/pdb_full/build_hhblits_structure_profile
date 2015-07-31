@@ -107,9 +107,9 @@ then
 				echo "file will be remade"
 			fi
 		fi
-	elif [ -s $a3mfile]
+	elif [ -s $a3mfile_gz]
 	then
-		a3m_stamp=`stat -c%Y $a3mfile`
+		a3m_stamp=`stat -c%Y $a3mfile_gz`
 	   	if [ $force -eq 1 ] 
 	    then
 			db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
@@ -138,6 +138,7 @@ if [ $skip_build -eq 0 ]
 then
 	time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a $a3mfile -r query.uniprot20.hhr $passOpt
 else
+	gunzip $a3mfile_gz
 	if [ $silent -eq 0 ]
  	then
 		echo "skip making A3M."
