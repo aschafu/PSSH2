@@ -45,8 +45,7 @@ psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 
 #source_dir=$rootDir"src/pdb_full/"
 util_dir=$rootDir"src/util/"
-
-
+pa3mfile='query.uniprot20.psipred.a3m' 
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
