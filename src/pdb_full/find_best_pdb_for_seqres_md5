@@ -42,6 +42,21 @@ while getopts :h opt
 do
 	case $opt in
 	h) usage; exit;;
+	m) md5=$OPTARG
 	esac
 done
 
+# how to find the best resolution pdb for a given md5: 
+# select c.pdb_id, c.chain, p.`Resolution`, p.`Experimental_Method` from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID` and  p.`Experimental_Method`='X-ray diffraction' order by resolution limit 1;
+#
+# how to get the most recent pdb for a given md5:
+# select c.pdb_id, c.chain, p.Published, p.`Experimental_Method` from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID` order by Published limit desc 1;
+#
+# how to get all chains for a a given md5
+# select c.pdb_id, c.chain, c.`Align_to_SEQRES` from PDB_chain c where c.`MD5_Hash`='7838b037ee471235d77ba2a140f0cba7';
+#
+# how to get the best pdb id for the secondary structure for a given md5: 
+# select c.pdb_id, c.chain,  c.`Align_to_SEQRES`, p.`Resolution`, p.`Experimental_Method`,  p.Published  from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID`;
+# then interprete the align_to_seqres in a dedicated script to find the longest match, and also to choose the best resolution / most recent structure
+# before giving the a3m with the md5 sum as input to addss.pl, we have to replace the id for the found pdb_id
+#
