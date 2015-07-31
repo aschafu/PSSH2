@@ -84,6 +84,7 @@ then
 		    fi
 		else
 			skip_add=1
+		    skip_build=1
 		fi
     	if [ $silent -eq 0 ]
     	then
