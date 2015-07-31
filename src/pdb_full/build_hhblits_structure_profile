@@ -37,6 +37,8 @@ pdb_full_status_table="pdb_full_status"
 pa3mfile='query.uniprot20.psipred.a3m' 
 a3mfile='query.uniprot20.a3m' 
 
+export HHLIB=$rootDir'hhsuite-2.0.13'
+
 
 debug=0
 passOpt=" " 
