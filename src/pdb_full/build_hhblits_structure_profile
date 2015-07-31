@@ -65,7 +65,8 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
 cd $path
-skip=0
+skip_build=0
+skip_add=0
 
 if [ $force -le 1 ] 
 then
@@ -78,7 +79,7 @@ then
 			db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
 			if [ $pa3m_stamp -gt $db_stamp ]
 			then
-		    	skip=1
+		    	skip_build=1
 		    fi
 		else
 			skip=1
@@ -120,8 +121,6 @@ then
 		fi
 	fi
 fi
-
-
 
 
 if [ -s $a3mfile]
