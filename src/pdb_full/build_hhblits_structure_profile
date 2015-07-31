@@ -156,6 +156,7 @@ if [ $skip_add -eq 0 ]
 		pa3mfile_pdb=$pa3mfile.pdbid.a3m
 		cp $a3mfile $a3mfile_pdb
 		# TODO: find out and edit in the pdb id
+		md5=`cat query.fasta|fasta_to_md5`
 		pdb_id=`find_best_pdb_for_seqres_md5 -m $md5`
 		$HHLIB/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
 		# TODO: remove the pdb id from the $pa3mfile_pdb 
