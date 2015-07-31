@@ -147,7 +147,10 @@ if [ $skip_add -eq 0 ]
 	if [ -s $a3mfile ] 
 	then
 		# TODO: add the psipred stuff
-		$HHLIB/scripts/addss.pl $a3mfile $pa3mfile
+		a3mfile_pdb=$a3mfile.pdbid.a3m
+		cp $a3mfile $a3mfile_pdb
+		
+		$HHLIB/scripts/addss.pl $a3mfile_pdb $pa3mfile
 	else
 		fail=-1
 	fi
