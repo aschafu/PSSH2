@@ -151,16 +151,14 @@ if [ $skip_add -eq 0 ]
 	if [ -s $a3mfile ] 
 	then
 		# before giving the a3m with the md5 sum as input to addss.pl, we have to replace the id for the found pdb_id
-		#
 		a3mfile_pdb=$a3mfile.pdbid.a3m
 		pa3mfile_pdb=$pa3mfile.pdbid.a3m
 		md5=`cat query.fasta|fasta_to_md5`
 		pdb_id=`find_best_pdb_for_seqres_md5 -m $md5`
 		sed 's/$md5/$pdb_id/g' < $a3mfile > $a3mfile_pdb
 		$HHLIB/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
-		# TODO: remove the pdb id from the $pa3mfile_pdb 
+		# remove the pdb id from the $pa3mfile_pdb 
 		sed 's/$pdb_id/$md5/g' < $pa3mfile_pdb > $pa3mfile
-		
 		# clean up
 		rm $pa3mfile_pdb $a3mfile_pdb
 	else
