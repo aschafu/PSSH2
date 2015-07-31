@@ -179,7 +179,7 @@ if [ $debug -eq 0 ]
 then
 	if [ -s query.uniprot20.a3m ] 
 	then
-		rm query.uniprot20.a3m  
+		gzip query.uniprot20.a3m  
 	fi	
 	if [ -s query.fasta.hhblits.log ]
 	then
