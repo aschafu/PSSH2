@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+#
+use Getopt::Long;
+
+my $usage="
+NAME
+  find_best_pdb_for_seqres_md5 - find a pdb code and chain that best represents the SEQRES sequence 
+SYNOPSIS
+  find_best_pdb_for_seqres_md5 <-m md5> 
+DESCRIPTION
+  find_best_pdb_for_seqres_md5 takes an input md5 and runs searches on the pdb tables in Aquaria
+  selection criteria are:
+  1. find a structure with as much overlap between SEQRES and coordinates as possible
+  2. select an X-ray structure 
+  2a. slect an X-ray structure with good resolution
+  3. select a new structure  
+OPTIONS
+  -h          The option -h displays help and exits.
+  -D          Debug option: be verbose
+  -m		  md5 sum of SEQRES sequence to search
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+\n";
+
+# if there are no arguments or -h, then print man entry
+if (@ARGV<1) {die ($usage);}
+our($dbg,$help,$md5);
+$help = 0;
+my $args_ok=GetOptions( 'debug'       => \$dbg,
+                        'help' => \$help,
+                        'md5=s' => \$md5
+);
+
+if ($help || !$args_ok){
+	print $usage;
+	exit;
+}
+
+
+debug=0
+while getopts :Dhm: opt
+do
+	case $opt in
+		D) debug=1;; 
+		h) usage; exit;;
+		m) md5=$OPTARG;;
+	esac
+done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
