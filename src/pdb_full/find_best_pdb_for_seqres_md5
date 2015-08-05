@@ -112,37 +112,37 @@ if ($#bestIds > 0){
 #  3. select a new structure
     my @xray;
     foreach my $id(@bestIds){
-	my $p = $pdbCode{$id};
-#	my $c = $chain{$id}
-	my $strucInfo = `DB.aquaria_local "select p.Published, p.Experimental_Method, p.Resolution from PDB p where p.PDB_ID='$p'";`; 
-	my @strucLines = split /\n/, $strucInfo;
+		my $p = $pdbCode{$id};
+#		my $c = $chain{$id}
+		my $strucInfo = `DB.aquaria_local "select p.Published, p.Experimental_Method, p.Resolution from PDB p where p.PDB_ID='$p'";`; 
+		my @strucLines = split /\n/, $strucInfo;
 # first line has column headings
-	my $line = $strucLines[1];
-	my @columns = split /\t/, $line;
+		my $line = $strucLines[1];
+		my @columns = split /\t/, $line;
 #	print join('|', @columns), "\n";
-	$published{$id} = $columns[0];
-	$method{$id} = $columns[1];
-	$resolution{$id} = $columns[2];
-	if ($method{$id} =~ /X-ray/){
-	    push @xray, $id;
-	}
+		$published{$id} = $columns[0];
+		$method{$id} = $columns[1];
+		$resolution{$id} = $columns[2];
+		if ($method{$id} =~ /X-ray/){
+	    	push @xray, $id;
+		}
     }
     if ($xray[0]){
-	if ($#xray > 0){
-	    foreach my $id(@xray){
-		my @sortedIds = sort sortByResolution @xray;
-		$selectedId = $sortedIds[0];
-	    }
-	}
-	else {
-	    $selectedId = $xray[0];
-	}
+		if ($#xray > 0){
+		    foreach my $id(@xray){
+				my @sortedIds = sort sortByResolution @xray;
+				$selectedId = $sortedIds[0];
+	    	}
+		}
+		else {
+	    	$selectedId = $xray[0];
+		}
     }
     else {
-	foreach my $id(@bestIds){
-	    my @sortedIds = sort sortByPublished @bestIds;
-	    $selectedId = $sortedIds[0];
-	}
+		foreach my $id(@bestIds){
+	    	my @sortedIds = sort sortByPublished @bestIds;
+		    $selectedId = $sortedIds[0];
+		}
     }
 }
 else {
