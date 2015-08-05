@@ -29,7 +29,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: be verbose
-  -m
+  -m		  md5 sum of SEQRES sequence to search
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -70,3 +70,4 @@ fi
 # how to get the best pdb id for the secondary structure for a given md5: 
 # select c.pdb_id, c.chain,  c.`Align_to_SEQRES`, p.`Resolution`, p.`Experimental_Method`,  p.Published  from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID`;
 # then interprete the align_to_seqres in a dedicated script to find the longest match, and also to choose the best resolution / most recent structure
+
