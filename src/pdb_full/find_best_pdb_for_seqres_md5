@@ -16,7 +16,7 @@ DESCRIPTION
   3. select a new structure  
 OPTIONS
   -h          The option -h displays help and exits.
-  -D          Debug option: be verbose
+  -d          Debug option: be verbose
   -m		  md5 sum of SEQRES sequence to search
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
@@ -26,7 +26,7 @@ AUTHOR
 if (@ARGV<1) {die ($usage);}
 our($dbg,$help,$md5);
 $help = 0;
-my $args_ok=GetOptions( 'debug'       => \$dbg,
+my $args_ok=GetOptions( 'debug'  => \$dbg,
                         'help' => \$help,
                         'md5=s' => \$md5
 );
@@ -36,18 +36,3 @@ if ($help || !$args_ok){
 	exit;
 }
 
-
-debug=0
-while getopts :Dhm: opt
-do
-	case $opt in
-		D) debug=1;; 
-		h) usage; exit;;
-		m) md5=$OPTARG;;
-	esac
-done
-
-if [ $debug -eq 1 ]
-then
-	set -x
-fi
