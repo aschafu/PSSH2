@@ -1,0 +1,94 @@
+#!/bin/bash
+
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
+### parameters
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  find_best_pdb_for_seqres_md5 - find a pdb code and chain that best represents the SEQRES sequence 
+SYNOPSIS
+  find_best_pdb_for_seqres_md5 <-m md5> 
+DESCRIPTION
+  find_best_pdb_for_seqres_md5 takes an input md5 and runs searches on the pdb tables in Aquaria
+  selection criteria are:
+  1. find a structure with as much overlap between SEQRES and coordinates as possible
+  2. select an X-ray structure 
+  2a. slect an X-ray structure with good resolution
+  3. select a new structure  
+OPTIONS
+  -h          The option -h displays help and exits.
+  -D          Debug option: be verbose
+  -m		  md5 sum of SEQRES sequence to search
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
+
+# if there are no arguments or -h, then print man entry
+if [ $# -eq 0 ]
+then
+	usage 
+	exit
+fi
+
+debug=0
+while getopts :Dhm: opt
+do
+	case $opt in
+		D) debug=1;; 
+		h) usage; exit;;
+		m) md5=$OPTARG;;
+	esac
+done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+# how to find the best resolution pdb for a given md5: 
+# select c.pdb_id, c.chain, p.`Resolution`, p.`Experimental_Method` from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID` and  p.`Experimental_Method`='X-ray diffraction' order by resolution limit 1;
+#
+# how to get the most recent pdb for a given md5:
+# select c.pdb_id, c.chain, p.Published, p.`Experimental_Method` from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID` order by Published limit desc 1;
+#
+# how to get all chains for a a given md5
+# select c.pdb_id, c.chain, c.`Align_to_SEQRES` from PDB_chain c where c.`MD5_Hash`='7838b037ee471235d77ba2a140f0cba7';
+#
+# how to get the best pdb id for the secondary structure for a given md5: 
+# select c.pdb_id, c.chain,  c.`Align_to_SEQRES`, p.`Resolution`, p.`Experimental_Method`,  p.Published  from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID`;
+# then interprete the align_to_seqres in a dedicated script to find the longest match, and also to choose the best resolution / most recent structure
+
+calcLength(){
+	alignment=$1
+	echo $alignment
+	return 2
+}
+
+
+i=0
+j='id'
+for strucInfo in `DB.aquaria_local "select c.pdb_id, c.chain, c.Align_to_SEQRES from PDB_chain c where c.MD5_Hash='$md5';"` 
+do 
+    echo $strucInfo
+    case $j in 
+	id) pdb_id[$i]=$strucInfo; $j='chain';;
+	chain) chain[$i]=$strucInfo; $j='ali';;
+	ali) calcLength $strucInfo; alignLength[$i]=$?; $j=1;;
+	esac
+done
+echo "{$pdb_id[@]}"
+echo "{$chain[@]}"
+echo "{$alignLength[@]}"
