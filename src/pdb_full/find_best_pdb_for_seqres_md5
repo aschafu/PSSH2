@@ -100,7 +100,7 @@ my $maxAliLength = $aliLength{$sortedIds[0]};
 my @bestIds;
 BEST: foreach my $id(@sortedIds){
     if ($aliLength{$id} >= $maxAliLength){
-	push @bestIds, $id;
+		push @bestIds, $id;
     }
     else {last BEST};
 }
@@ -110,7 +110,10 @@ if ($#bestIds > 0){
 #  2. select an X-ray structure
 #  2a. slect an X-ray structure with good resolution
 #  3. select a new structure
+
     my @xray;
+
+	# get the info from the database and parse
     foreach my $id(@bestIds){
 		my $p = $pdbCode{$id};
 #		my $c = $chain{$id}
@@ -127,6 +130,8 @@ if ($#bestIds > 0){
 	    	push @xray, $id;
 		}
     }
+
+    # evaluate the info
     if ($xray[0]){
 		if ($#xray > 0){
 		    foreach my $id(@xray){
