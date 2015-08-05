@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 #
 use Getopt::Long;
+use strict;
 
 my $usage="
 NAME
@@ -19,7 +20,7 @@ OPTIONS
   -d          Debug option: be verbose
   -m		  md5 sum of SEQRES sequence to search
 AUTHOR
-  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+  Andrea Schafferhans <andrea.schafferhans\@rostlab.org>
 \n";
 
 # if there are no arguments or -h, then print man entry
@@ -49,30 +50,117 @@ if ($help || !$args_ok){
 # select c.pdb_id, c.chain,  c.`Align_to_SEQRES`, p.`Resolution`, p.`Experimental_Method`,  p.Published  from PDB_chain c, PDB p where c.`MD5_Hash` = '7838b037ee471235d77ba2a140f0cba7' and c.`PDB_ID` = p.`PDB_ID`;
 # then interprete the align_to_seqres in a dedicated script to find the longest match, and also to choose the best resolution / most recent structure
 
+my $selectedId = '';
 
+#  1. find a structure with as much overlap between SEQRES and coordinates as possible
+#  get all chains for the given md5
 my $alignInfo = `DB.aquaria_local "select c.pdb_id, c.chain, c.Align_to_SEQRES from PDB_chain c where c.MD5_Hash='$md5';"`; 
 #print $alignInfo;
 
+my %aliLength;
+my %pdbCode;
+my %chain;
+my %method;
+my %resolution;
+my %published;
 my @alignLines = split /\n/, $alignInfo;
 # first line has column headings
 shift @alignLines;
 # split out the info
-foreach $line(@alignLines){
+foreach my $line(@alignLines){
     my @columns = split /\t/, $line;
-    print join('|', @columns), "\n";
+#    print join('|', @columns), "\n";
     my $id = $columns[0];
     if ($columns[1]){$id .= '_'.$columns[1]};
-    @alignPieces = split /\\n/, $columns[2];
-    print join('||', @alignPieces), "\n";
-    my $aliLength = 0;
-    for $piece(@alignPieces){
-	($seqres, $atom) = split /\:/, $alignPieces[0];
+    my @alignPieces = split /\\n/, $columns[2];
+#    print join('||', @alignPieces), "\n";
+    my $length = 0;
+    foreach my $piece(@alignPieces){
+	my ($seqres, $atom) = split /\:/, $piece;
 	if ($seqres =~ /\-/){
-	    ($seqresStart, $seqresEnd) = split /\-/, $seqres;    
-	    $aliLength += ($seqresEnd-$seqresStart+1);
+	    my ($seqresStart, $seqresEnd) = split /\-/, $seqres;    
+	    $length += ($seqresEnd-$seqresStart+1);
 	}
-	else {$aliLength++}
+	else {$length++}
+#	print " at $seqres : aliLength: $aliLength \n"; 
     }
-    print "aliLength: $aliLength \n";
+#    print "aliLength: $aliLength \n";
+    $aliLength{$id} = $length;
+    $pdbCode{$id} = $columns[0];
+    $chain{$id} = $columns[1];
 }
 
+#print %aliLength, "\n";
+
+# find longest alignment(s)
+my @sortedIds = sort sortByAliLength (keys %aliLength);
+#print "sorted Ids: ", join (',', @sortedIds), "\n";
+my $maxAliLength = $aliLength{$sortedIds[0]};
+#print $maxAliLength, "\n";
+my @bestIds;
+BEST: foreach my $id(@sortedIds){
+    if ($aliLength{$id} >= $maxAliLength){
+	push @bestIds, $id;
+    }
+    else {last BEST};
+}
+#print "best Ids: ", join (',', @bestIds), "\n";
+
+if ($#bestIds > 0){
+#  2. select an X-ray structure
+#  2a. slect an X-ray structure with good resolution
+#  3. select a new structure
+    my @xray;
+    foreach my $id(@bestIds){
+	my $p = $pdbCode{$id};
+#	my $c = $chain{$id}
+	my $strucInfo = `DB.aquaria_local "select p.Published, p.Experimental_Method, p.Resolution from PDB p where p.PDB_ID='$p'";`; 
+	my @strucLines = split /\n/, $strucInfo;
+# first line has column headings
+	my $line = $strucLines[1];
+	my @columns = split /\t/, $line;
+#	print join('|', @columns), "\n";
+	$published{$id} = $columns[0];
+	$method{$id} = $columns[1];
+	$resolution{$id} = $columns[2];
+	if ($method{$id} =~ /X-ray/){
+	    push @xray, $id;
+	}
+    }
+    if ($xray[0]){
+	if ($#xray > 0){
+	    foreach my $id(@xray){
+		my @sortedIds = sort sortByResolution @xray;
+		$selectedId = $sortedIds[0];
+	    }
+	}
+	else {
+	    $selectedId = $xray[0];
+	}
+    }
+    else {
+	foreach my $id(@bestIds){
+	    my @sortedIds = sort sortByPublished @bestIds;
+	    $selectedId = $sortedIds[0];
+	}
+    }
+}
+else {
+    $selectedId = $bestIds[0];
+}
+
+print $selectedId, "\n";
+
+
+
+sub sortByAliLength {
+    $aliLength{$b} <=> $aliLength{$a};
+}
+
+sub sortByResolution {
+    $resolution{$a} <=> $resolution{$b};
+}
+
+sub sortByPublished {
+    $published{$b} <=> $published{$a};
+}
