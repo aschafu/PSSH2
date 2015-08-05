@@ -50,5 +50,5 @@ if ($help || !$args_ok){
 # then interprete the align_to_seqres in a dedicated script to find the longest match, and also to choose the best resolution / most recent structure
 
 
-my $strucInfo = `DB.aquaria_local "select c.pdb_id, c.chain, c.Align_to_SEQRES from PDB_chain c where c.MD5_Hash='$md5';"` 
+my $strucInfo = `DB.aquaria_local "select c.pdb_id, c.chain, c.Align_to_SEQRES from PDB_chain c where c.MD5_Hash='$md5';"`; 
 print $strucInfo;
