@@ -43,6 +43,7 @@ pdb_full_dir=$rootDir"data/pdb_full/"
 pdb_derived_dir=$rootDir"data/pdb_derived/"
 psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 n_queue=10
+queue_max_wait=1000
 
 #source_dir=$rootDir"src/pdb_full/"
 util_dir=$rootDir"src/util/"
