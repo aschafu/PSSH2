@@ -89,11 +89,11 @@ do
 	# check whether the queue is too full (> 10000 jobs waiting)
 	# if yes, sleep a litle before we submit more
 	n_waiting=1000
-	sleep_time=1 
+	sleep_time=0 
 	while [ $n_waiting -gt 1000 ] 
 		sleep $sleep_time
 		n_waiting=`qstat -u $USER | grep qw | wc -l` 		
-		$sleep_time=$n_waiting 
+		$sleep_time=$n_waiting/$n_queue 
 	if 
 
 done < $md5ListFile
