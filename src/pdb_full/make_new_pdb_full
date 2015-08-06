@@ -57,7 +57,7 @@ then
 fi
 
 passOpt=" " 
-while getopts :sm:Rhd:u: opt
+while getopts :m:hd: opt
 do
 	case $opt in
 	D) debug=1;;
@@ -68,6 +68,15 @@ do
 #	*) passOpt="$passOpt -$opt";;
 	esac
 done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+shift $(expr $OPTIND - 1 )
+passOpt="$passOpt $@"
+
 
 # Note for later:
 # how to count the ratio of Xs in SEQRES sequences and limit to protein 
@@ -85,7 +94,7 @@ fi
 # submit further processing to the queue  
 while read md5
 do
-	qsub build_hhblits_structure_profile $add -m $md5		
+	qsub build_hhblits_structure_profile -m $md5 $passOpt		
 	# check whether the queue is too full (> 10000 jobs waiting)
 	# if yes, sleep a litle before we submit more
 	n_waiting=1001
