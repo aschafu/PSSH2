@@ -57,15 +57,15 @@ debug=0
 passOpt=" " 
 add=1
 silent=0
-while getopts :sDF:Rhp: opt
+while getopts :sDm:F:Rh opt
 do
 	case $opt in
+	s) silent=1; debug=0; passOpt="$passOpt -$opt";;
 	D) debug=1;; 
+	m) md5=$OPTARG;;
 	F) force=$OPTARG;;
 	R) force=0;;
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
-	s) silent=1; debug=0; passOpt="$passOpt -$opt";;
-	m) md5=$OPTARG;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
 done
