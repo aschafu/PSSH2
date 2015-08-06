@@ -99,11 +99,12 @@ do
 	# if yes, sleep a litle before we submit more
 	n_waiting=1001
 	sleep_time=0 
-	while [ $n_waiting -gt $queue_max_wait ] 
+	while [ $n_waiting -gt $queue_max_wait ]
+	do
 		sleep $sleep_time
 		n_waiting=`qstat -u $USER | grep qw | wc -l` 		
 		$sleep_time=$n_waiting/$n_queue 
-	if 
+	done 
 
 done < $md5ListFile
 
