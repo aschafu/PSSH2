@@ -55,7 +55,7 @@ debug=0
 passOpt=" " 
 add=1
 silent=0
-while getopts :sDmF:Rhp: opt
+while getopts :sDm:F:Rh opt
 do
 	case $opt in
 	D) debug=1;; 
