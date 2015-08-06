@@ -48,7 +48,7 @@ EOT
 exit 1
 }
 
-
+# parameters (will be overwritten by anything read from conf file)
 rootDir="/mnt/project/pssh/pssh2_project/" 
 util_dir=$rootDir"src/util/"
 
