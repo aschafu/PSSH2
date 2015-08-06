@@ -48,6 +48,10 @@ EOT
 exit 1
 }
 
+rootDir="/mnt/project/pssh/pssh2_project/" 
+util_dir=$rootDir"src/util/"
+
+
 force=1
 debug=0
 passOpt=" " 
