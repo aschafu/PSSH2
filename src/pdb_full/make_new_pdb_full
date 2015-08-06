@@ -63,7 +63,7 @@ do
 	D) debug=1;;
 	m) md5ListFile=$OPTARG;;
 	d) version=$OPTARG;;
-	h) usage; exit;;
+	h) usage; build_hhblits_structure_profile -h; exit;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 #	*) passOpt="$passOpt -$opt";;
 	esac
