@@ -115,6 +115,7 @@ then
 	fi
 fi
 
+a3m_stamp=0
 # now we should have input, check what needs to be done
 if [ -s $input_seq_file ] 
 then
@@ -154,31 +155,12 @@ then
 		elif [ -s $a3mfile_gz ]
 		then
 			a3m_stamp=`stat -c%Y $a3mfile_gz`
-	   		if [ $force -eq 1 ] 
-		    then
-				db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
-				if [ $a3m_stamp -gt $db_stamp ]
-				then
-			    	skip_build=1
-			    fi
-			else
-			    skip_build=1
-			fi
- 		   	if [ $silent -eq 0 ]
-    		then
-	    		echo "a3m already made: $a3m_stamp in "
-				pwd
-				if [ $skip_build -eq 1 ] 
-				then
-					echo "file will be used again"
-				else
-					echo "file will be remade"
-				fi
-			fi
 		elif [ -s $a3mfile ]
 		then
 			a3m_stamp=`stat -c%Y $a3mfile`
-	   		if [ $force -eq 1 ] 
+		fi
+		
+			if [ $force -eq 1 ] 
 		    then
 				db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
 				if [ $a3m_stamp -gt $db_stamp ]
@@ -199,7 +181,7 @@ then
 					echo "file will be remade"
 				fi
 			fi
-		fi
+
 	fi
 else
 	# if there is no input, we exit now with an error
