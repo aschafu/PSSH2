@@ -14,6 +14,8 @@ rootDir="/mnt/project/pssh/pssh2_project/"
 hhlib=$rootDir'hhsuite-2.0.13'
 util_dir=$rootDir"src/util/"
 
+set -x
+
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
