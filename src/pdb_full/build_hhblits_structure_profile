@@ -236,7 +236,7 @@ fi
 count=0
 if [ -s $pa3mfile ]
 then
-	count=`grep -c "^>" $pa3mfile"`
+	count=`grep -c "^>" $pa3mfile`
 else
 	if [ $fail eq 0 ]
 	then
