@@ -26,6 +26,7 @@ DESCRIPTION
   This script assumes that the sequences given in the md5List are valid sequences,
   any sorting out of DNA sequences, short sequences or some with too many non-amino acid residues
   must happen in the process that constructs the md5List. 
+  Any input behind "--" is passed on build_hhblits_structure_profile 
 OPTIONS
   -d          output name for new pdb_full
   -m          file containing pdb Seqres md5s to run over 
