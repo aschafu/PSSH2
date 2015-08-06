@@ -1,0 +1,160 @@
+#!/bin/bash
+
+# rewrite of renew_pdb_full
+# this script works based on the pdb table in the mysql database
+# (-> extracting SEQRES and redundancy reduction are delegated to the database import)
+# it writes the output a3m files to the cache and also adds psipred a3m files to the chache
+# then it collects the current psipred a3m files to a directory that hhblitsdb.pl can work on
+
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  make_new_pdb_full - generate a new pdb_full database 
+SYNOPSIS
+  make_new_pdb_full [-v] <-m md5List> <-d dbName> 
+DESCRIPTION
+  make_new_pdb_full iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
+  runs build_hhblits_profile for each sequence (to get a3m files),
+  runs addss.pl on each a3m file (based on the best pdb structure for the sequence),
+  links the output a3m files to the psipred a3m directory
+  and finally runs hhblitsdb.pl on the psipred a3m directory.
+  This script assumes that the sequences given in the md5List are valid sequences,
+  any sorting out of DNA sequences, short sequences or some with too many non-amino acid residues
+  must happen in the process that constructs the md5List. 
+OPTIONS
+  -d          output name for new pdb_full
+  -m          file containing pdb Seqres md5s to run over 
+  -v          be verbose
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
+
+
+# parameters (will be overwritten by anything read from conf file)
+rootDir="/mnt/project/pssh/pssh2_project/" 
+pdb_full_dir=$rootDir"data/pdb_full/"
+pdb_derived_dir=$rootDir"data/pdb_derived/"
+psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
+
+#source_dir=$rootDir"src/pdb_full/"
+util_dir=$rootDir"src/util/"
+pa3mfile='query.uniprot20.psipred.a3m' 
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+force=1
+debug=0
+silent=0
+passOpt=" " 
+while getopts :sm:Rhd:u: opt
+do
+	case $opt in
+	D) debug=1;;
+	m) md5ListFile=$OPTARG;;
+	d) version=$OPTARG;;
+	h) usage; exit;;
+	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
+#	*) passOpt="$passOpt -$opt";;
+	esac
+done
+
+# Note for later:
+# how to count the ratio of Xs in SEQRES sequences and limit to protein 
+# don't know how to directly select only x_ratio below e.g. 0.5, but that can be handled subsequently
+# select `MD5_Hash`, group_concat(pdb_id separator ', ') as pdb_ids, SEQRES, length,  Replace (SEQRES, "X", "") as clean_seqres, length(Replace (SEQRES, "X", "")) as c_length,  ((length - length(Replace (SEQRES, "X", ""))) / length) as x_ratio from PDB_chain where type='Protein' and length>10 group by `MD5_Hash` order by x_ratio  desc limit 10;
+#
+
+if [ ! -s $md5ListFile ]
+then
+	echo The file of md5 numbers to iterate over does not exist or is empty
+	exit 1
+fi
+
+## loop over all md5s, make sure there is an input sequence, 
+# submit further processing to the queue  
+while read md5
+do
+	CC=`$util_dir/find_cache_path -m $md5`
+	input_seq_file=$CC/query.fasta
+
+	# check whether an input file already exists in $CC
+	if [ -s $input_seq_file ] 
+	then
+		old_md5=`cat $input_seq_file|fasta_to_md5`
+		if  [ $old_md5 == $md5 ]
+		then
+			echo "working with old file $input_seq_file, with md5: $old_md5"
+		else 
+			get_seq=1
+			echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
+		fi
+	else
+		get_seq=1
+	fi
+
+	if [ $get_seq -eq 1 ]
+	then 
+		temp_fasta_file=`get_fasta_for_md5 $md5`
+		if [ -s $temp_fasta_file ]
+		then	
+			### create cachedir if not existent
+			mkdir -p $CC
+			if [ -d $CC ] 
+			then
+				cp $temp_fasta_file $input_seq_file
+			else 
+				echo "ERROR: was not able to work on cache for $CC please go fix"
+			fi
+		fi
+	fi
+
+	if [ -s $input_seq_file ] 
+	then
+		qsub build_hhblits_structure_profile $add -p $CC		
+	else
+		s=`date +%s`
+		DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
+		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+	fi
+
+	# check whether the queue is too full (> 10000 jobs waiting)
+	# if yes, sleep a litle before we submit more
+	# TODO
+
+
+done < $md5ListFile
+
+## when all is done, loop over the md5s again and make links in the psipred_a3m_dir
+# TODO: check that hhblitsdb.pl can work with links!
+while read md5
+do
+	cachePath=`$util_dir/find_cache_path -m $md5`
+	ln -s $cachePath/$pa3mfile $psipred_a3m_dir/$md5.a3m	
+done < $md5ListFile
+
+
+## Generating pdb_full database files with HH-suite script hhblitsdb.pl and the MSAs with PSIPRED prediction received in (4.) as input 
+## (runs on jobtest, as hhblitsdb.pl uses multithread.pl).
+db=$pdb_full_dir$version
+rm -r $db 2>/dev/null #delete old db files
+mkdir $db 2>/dev/null
+
+hhblitsdb_log_dir=$rootDir"work/log_hhblitsdb/"
+mkdir $hhblitsdb_log_dir 2>/dev/null
+if $verbose ;
+then
+    echo calling hhblitsdb.pl on $psipred_a3m_dir "(see log in $hhblitsdb_log_dir)" 
+    echo $HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb.log
+fi  
+$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb.log   
