@@ -151,7 +151,7 @@ then
 					echo "file will be remade"
 				fi
 			fi
-		elif [ -s $a3mfile_gz]
+		elif [ -s $a3mfile_gz ]
 		then
 			a3m_stamp=`stat -c%Y $a3mfile_gz`
 	   		if [ $force -eq 1 ] 
