@@ -161,7 +161,7 @@ then
 		then
 			a3m_stamp=`stat -c%Y $a3mfile`
 		fi
-		if [ a3m_stamp -gt 0 ]
+		if [ $a3m_stamp -gt 0 ]
 		then
 			if [ $force -eq 1 ] 
 		    then
