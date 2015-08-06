@@ -86,11 +86,15 @@ fi
 while read md5
 do
 	qsub build_hhblits_structure_profile $add -m $md5		
-
 	# check whether the queue is too full (> 10000 jobs waiting)
 	# if yes, sleep a litle before we submit more
-	# TODO
-
+	n_waiting=1000
+	sleep_time=1 
+	while [ $n_waiting -gt 1000 ] 
+		sleep $sleep_time
+		n_waiting=`qstat -u $USER | grep qw | wc -l` 		
+		$sleep_time=$n_waiting 
+	if 
 
 done < $md5ListFile
 
