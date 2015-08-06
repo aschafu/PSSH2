@@ -79,45 +79,40 @@ export HHLIB=$hhlib
 CC=`$util_dir/find_cache_path -m $md5`
 input_seq_file=$CC/query.fasta
 
-	# check whether an input file already exists in $CC
-	if [ -s $input_seq_file ] 
+# check whether an input file already exists in $CC
+if [ -s $input_seq_file ] 
+then
+old_md5=`cat $input_seq_file|fasta_to_md5`
+	if  [ $old_md5 == $md5 ]
 	then
-		old_md5=`cat $input_seq_file|fasta_to_md5`
-		if  [ $old_md5 == $md5 ]
-		then
-			echo "working with old file $input_seq_file, with md5: $old_md5"
-		else 
-			get_seq=1
-			echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
-		fi
-	else
+		echo "working with old file $input_seq_file, with md5: $old_md5"
+	else 
 		get_seq=1
+		echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
 	fi
+else
+	get_seq=1
+fi
 
-	if [ $get_seq -eq 1 ]
-	then 
-		temp_fasta_file=`get_fasta_for_md5 $md5`
-		if [ -s $temp_fasta_file ]
-		then	
-			### create cachedir if not existent
-			mkdir -p $CC
-			if [ -d $CC ] 
-			then
-				cp $temp_fasta_file $input_seq_file
-			else 
-				echo "ERROR: was not able to work on cache for $CC please go fix"
-			fi
+if [ $get_seq -eq 1 ]
+then 
+	temp_fasta_file=`get_fasta_for_md5 $md5`
+	if [ -s $temp_fasta_file ]
+	then	
+		### create cachedir if not existent
+		mkdir -p $CC
+		if [ -d $CC ] 
+		then
+			cp $temp_fasta_file $input_seq_file
+		else 
+			echo "ERROR: was not able to work on cache for $CC please go fix"
 		fi
 	fi
+fi
 
-	if [ -s $input_seq_file ] 
-	then
-		qsub build_hhblits_structure_profile $add -p $CC		
-	else
-		s=`date +%s`
-		DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
-		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
-	fi
+if [ -s $input_seq_file ] 
+then
+	qsub build_hhblits_structure_profile $add -p $CC		
 
 
 
@@ -181,6 +176,13 @@ then
 		fi
 	fi
 fi
+else
+	s=`date +%s`
+	DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
+	echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+	exit
+fi
+
 
 if [ $skip_build -eq 0 ]
 then
