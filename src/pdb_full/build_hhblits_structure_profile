@@ -116,6 +116,7 @@ then
 fi
 
 a3m_stamp=0
+do_gunzip=0
 # now we should have input, check what needs to be done
 if [ -s $input_seq_file ] 
 then
