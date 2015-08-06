@@ -239,6 +239,7 @@ then
 	count=`grep -c "^>" $pa3mfile"`
 else
 	if [ $fail eq 0 ]
+	then
 		fail=-2
 	fi
 	count=$fail
