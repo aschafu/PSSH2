@@ -84,6 +84,7 @@ CC=`$util_dir/find_cache_path -m $md5`
 input_seq_file=$CC/query.fasta
 
 # check whether an input file already exists in $CC
+get_seq=0
 if [ -s $input_seq_file ] 
 then
 	old_md5=`cat $input_seq_file|fasta_to_md5`
