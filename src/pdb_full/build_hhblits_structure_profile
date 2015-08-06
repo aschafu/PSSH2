@@ -159,7 +159,8 @@ then
 		then
 			a3m_stamp=`stat -c%Y $a3mfile`
 		fi
-		
+		if [ a3m_stamp -gt 0 ]
+		then
 			if [ $force -eq 1 ] 
 		    then
 				db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
@@ -181,7 +182,7 @@ then
 					echo "file will be remade"
 				fi
 			fi
-
+		fi
 	fi
 else
 	# if there is no input, we exit now with an error
