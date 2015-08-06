@@ -120,7 +120,7 @@ do_gunzip=0
 # now we should have input, check what needs to be done
 if [ -s $input_seq_file ] 
 then
-	cd $path
+	cd $CC
 	skip_build=0
 	skip_add=0
 
@@ -194,7 +194,6 @@ else
 	exit
 fi
 
-cd $CC
 if [ $skip_build -eq 0 ]
 then
 	time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a $a3mfile -r query.uniprot20.hhr $passOpt
