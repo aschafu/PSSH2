@@ -109,6 +109,7 @@ then
 		if [ -d $CC ] 
 		then
 			cp $temp_fasta_file $input_seq_file
+			cd $CC
 		else 
 			echo "ERROR: was not able to work on cache for $CC please go fix"
 		fi
