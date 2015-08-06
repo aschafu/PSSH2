@@ -9,6 +9,7 @@ pdb_full_status_table="pdb_full_status"
 pa3mfile='query.uniprot20.psipred.a3m' 
 a3mfile='query.uniprot20.a3m' 
 a3mfile_gz=$a3mfile.gz
+#pa3mfile_gz=$pa3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
 hhlib=$rootDir'hhsuite-2.0.13'
 
