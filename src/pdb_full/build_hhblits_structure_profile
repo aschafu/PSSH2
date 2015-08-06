@@ -155,6 +155,7 @@ then
 		elif [ -s $a3mfile_gz ]
 		then
 			a3m_stamp=`stat -c%Y $a3mfile_gz`
+			do_gunzip=1
 		elif [ -s $a3mfile ]
 		then
 			a3m_stamp=`stat -c%Y $a3mfile`
