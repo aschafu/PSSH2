@@ -202,6 +202,7 @@ fi
 
 
 if [ $skip_add -eq 0 ]
+then
 	if [ -s $a3mfile ] 
 	then
 		# before giving the a3m with the md5 sum as input to addss.pl, we have to replace the id for the found pdb_id
