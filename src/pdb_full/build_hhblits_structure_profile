@@ -48,6 +48,7 @@ EOT
 exit 1
 }
 
+force=1
 debug=0
 passOpt=" " 
 add=1

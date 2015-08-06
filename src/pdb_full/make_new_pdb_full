@@ -45,9 +45,9 @@ psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 n_queue=10
 queue_max_wait=1000
 
-#source_dir=$rootDir"src/pdb_full/"
 util_dir=$rootDir"src/util/"
 pa3mfile='query.uniprot20.psipred.a3m' 
+#source_dir=$rootDir"src/pdb_full/"
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -55,9 +55,6 @@ then
 	source $conf_file
 fi
 
-force=1
-debug=0
-silent=0
 passOpt=" " 
 while getopts :sm:Rhd:u: opt
 do
