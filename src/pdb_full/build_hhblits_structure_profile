@@ -4,7 +4,7 @@ if [ -z "$conf_file" ]; then
 	conf_file='/etc/pssh2.conf'
 fi
 
-### parameters
+#### parameters (will be overwritten by anything read from conf file)
 pdb_full_status_table="pdb_full_status"
 pa3mfile='query.uniprot20.psipred.a3m' 
 a3mfile='query.uniprot20.a3m' 
@@ -12,6 +12,7 @@ a3mfile_gz=$a3mfile.gz
 #pa3mfile_gz=$pa3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
 hhlib=$rootDir'hhsuite-2.0.13'
+util_dir=$rootDir"src/util/"
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -48,9 +49,6 @@ EOT
 exit 1
 }
 
-# parameters (will be overwritten by anything read from conf file)
-rootDir="/mnt/project/pssh/pssh2_project/" 
-util_dir=$rootDir"src/util/"
 
 force=1
 debug=0
