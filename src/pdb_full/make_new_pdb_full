@@ -133,7 +133,7 @@ do
 	do
 		sleep $sleep_time
 		n_waiting=`qstat -u $USER | grep qw | wc -l` 		
-		sleep_time=$n_waiting/$n_queue 
+		sleep_time=$($n_waiting/$n_queue) 
 	done 
 
 done < $md5ListFile
