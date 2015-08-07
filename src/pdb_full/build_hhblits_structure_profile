@@ -9,6 +9,7 @@ pdb_full_status_table="pdb_full_status"
 pa3mfile='query.uniprot20.psipred.a3m' 
 a3mfile='query.uniprot20.a3m' 
 hmmfile='query.uniprot20.hhm'
+hhrfile='query.uniprot20.hhr'
 a3mfile_gz=$a3mfile.gz
 #pa3mfile_gz=$pa3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
@@ -264,17 +265,13 @@ DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" 
 ### compress things / delete
 if [ $debug -eq 0 ]
 then
-	if [ -s query.uniprot20.a3m ] 
+	if [ -s $a3mfile ] 
 	then
-		gzip query.uniprot20.a3m  
+		gzip $a3mfile  
 	fi	
 	if [ -s query.fasta.hhblits.log ]
 	then
 		rm query.fasta.hhblits.log
-	fi
-	if [ -s query.uniprot20.hhm.hhblits.log ]
-	then
-		rm query.uniprot20.hhm.hhblits.log
 	fi
 	if [ -s query.uniprot20.hhr ]
 	then
