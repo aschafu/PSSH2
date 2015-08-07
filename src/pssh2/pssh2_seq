@@ -173,7 +173,8 @@ fi
  
 if [ -s query.uniprot20.pdb.full.hhr ]
 then
- 	time nice parse_hhr_for_pssh2 -i $pdbhhrfile -s  query.fasta -o query.pssh2
+# 	time nice parse_hhr_for_pssh2 -i $pdbhhrfile -s query.fasta -o query.pssh2
+ 	time parse_hhr_for_pssh2 -i query.uniprot20.pdb.full.hhr -s $seqfile -o query.pssh2
 elif [ $fail -eq 0 ]
 then
  	fail=-2	
