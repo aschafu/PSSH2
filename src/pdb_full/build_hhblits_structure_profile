@@ -269,7 +269,7 @@ count=0
 if [ -s $pa3mfile ]
 then
 	count=`grep -c "^>" $pa3mfile`
-	ln -s $CC/$pa3mfile $pa3mdir
+	ln -s $CC/$pa3mfile $pa3mdir/$md5.a3m
 else
 	if [ $fail eq 0 ]
 	then
