@@ -62,6 +62,7 @@ OPTIONS
      1           run only if the profile is older than the last update of uniprot20 (default)
      2           always run, even if the profile exists 
   -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
+  -p          path to linke the a3m files to
   -s          Operate silently 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
