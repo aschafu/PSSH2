@@ -6,8 +6,8 @@
 # it writes the output a3m files to the cache and also adds psipred a3m files to the chache
 # then it collects the current psipred a3m files to a directory that hhblitsdb.pl can work on
 
+# make sure we pass on the conf file if there was one
 qsubFlag=''
-
 if [ -z "$conf_file" ]; then
 	conf_file='/etc/pssh2.conf'
 else
