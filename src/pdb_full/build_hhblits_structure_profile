@@ -46,7 +46,7 @@ cat << EOT
 NAME
   build_hhblits_structure_profile - generate a hhblits aligment file (called a3m) for a pdb sequence
 SYNOPSIS
-  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D]  <-m md5ToWorkOn> 
+  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D] [-p directoryCollectingA3ms] <-m md5ToWorkOn> 
 DESCRIPTION
   build_hhblits_profile takes an input sequence,
   calls build_hhblits_profile to scan agains uniprot20 and generate an a3m alignment, 
@@ -62,7 +62,7 @@ OPTIONS
      1           run only if the profile is older than the last update of uniprot20 (default)
      2           always run, even if the profile exists 
   -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
-  -p          path to linke the a3m files to
+  -p          path to link the a3m files to
   -s          Operate silently 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
