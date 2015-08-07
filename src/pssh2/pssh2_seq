@@ -35,6 +35,7 @@ fi
 # we better set the dependent parameters here
 logfile=$seqfile.$hhblitsLog
 a3mfile_gz=$a3mfile.gz
+logfilepdb=$hmmfile.$hhblitsLog
 
 
 # by default we want to use the system installation
