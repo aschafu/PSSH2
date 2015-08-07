@@ -205,7 +205,7 @@ fi
 
 if [ $skip_build -eq 0 ]
 then
-	time nice build_hhblits_profile -f  $seqfile -m  $hmmfile -a $a3mfile -r query.uniprot20.hhr $passOpt
+	time nice build_hhblits_profile -f  $seqfile -m  $hmmfile -a $a3mfile -r $hhrfile $passOpt
 else
 	if [ $do_gunzip -gt 0 ]
 	then
