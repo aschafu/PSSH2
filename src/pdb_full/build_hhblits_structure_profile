@@ -6,11 +6,11 @@ fi
 
 #### parameters (will be overwritten by anything read from conf file)
 pdb_full_status_table="pdb_full_status"
-pa3mfile='query.uniprot20.psipred.a3m' 
 a3mfile='query.uniprot20.a3m' 
 hmmfile='query.uniprot20.hhm'
 hhrfile='query.uniprot20.hhr'
 a3mfile_gz=$a3mfile.gz
+pa3mfile='query.uniprot20.psipred.a3m' 
 #pa3mfile_gz=$pa3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
 hhlib=$rootDir'hhsuite-2.0.13'
