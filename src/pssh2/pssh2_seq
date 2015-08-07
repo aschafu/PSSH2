@@ -220,6 +220,7 @@ then
 	 	gzip -f $hhrfile
 	fi
 	if [ -s $pdbhhrfile ]
+	then
  		gzip -f $pdbhhrfile
 	fi
 # 	gzip query.pssh2
