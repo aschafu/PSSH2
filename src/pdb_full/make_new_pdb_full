@@ -31,6 +31,7 @@ OPTIONS
   -d          output name for new pdb_full
   -m          file containing pdb Seqres md5s to run over 
   -h          print this help and exit
+  -D          give debug output (passed on to child scripts)
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
