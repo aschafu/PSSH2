@@ -152,7 +152,7 @@ while [ $n_in_queue -gt 0 ]
 do
 	sleep $sleep_time
 	n_in_queue=`qstat -u $USER | wc -l` 		
-	sleep_time=$n_in_queue/$n_queue 
+	sleep_time=$($n_in_queue/$n_queue) 
 done 
 
 
