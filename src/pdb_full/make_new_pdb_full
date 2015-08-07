@@ -143,7 +143,7 @@ done < $md5ListFile
 #done < $md5ListFile
 
 # wait until all jobs are finished
-while [ $n_waiting -gt $queue_max_wait ]
+while [ $n_waiting -gt 0 ]
 do
 	sleep $sleep_time
 	n_waiting=`qstat -u $USER | grep qw | wc -l` 		
