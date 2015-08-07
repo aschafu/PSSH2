@@ -7,7 +7,7 @@ fi
 #### parameters (will be overwritten by anything read from conf file)
 pdb_full_status_table="pdb_full_status"
 seqfile='query.fasta' 
-logfile={$seqfile}'hhblits.log'
+logfile={$seqfile}'.hhblits.log'
 a3mfile='query.uniprot20.a3m' 
 hmmfile='query.uniprot20.hhm'
 hhrfile='query.uniprot20.hhr'
