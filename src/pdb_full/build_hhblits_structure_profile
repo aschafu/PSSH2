@@ -92,6 +92,17 @@ then
 	set -x
 fi
 
+if [ -w $pa3mdir ]
+then
+	if [ $silent -eq 0 ]
+	then
+		echo "will link output to $pa3mdir"
+	fi
+else
+	echo "ERROR: cannot write to output directory $pa3mdir. Please fix!"
+	exit 1
+fi
+
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
