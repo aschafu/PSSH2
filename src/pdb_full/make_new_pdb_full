@@ -105,7 +105,7 @@ if [ -z $pa3mdir ]
 then
 	# if the output directory hadn't been set before, we set it now
 	pa3mdir=$pdb_derived_dir"psipred_a3m/"$version"/"
-	mkdir $db 2>/dev/null
+	mkdir $pa3mdir 2>/dev/null
 fi
 
 if [ -w $pa3mdir ]
