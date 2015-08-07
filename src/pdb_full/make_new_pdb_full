@@ -147,11 +147,11 @@ db=$pdb_full_dir$version
 rm -r $db 2>/dev/null #delete old db files
 mkdir $db 2>/dev/null
 
-hhblitsdb_log_dir=$rootDir"work/log_hhblitsdb/$version/"
+hhblitsdb_log_dir=$rootDir"work/log_hhblitsdb/"
 mkdir $hhblitsdb_log_dir 2>/dev/null
 if $verbose ;
 then
     echo calling hhblitsdb.pl on $psipred_a3m_dir "(see log in $hhblitsdb_log_dir)" 
     echo $HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb.log
 fi  
-$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb.log   
+$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $psipred_a3m_dir -cpu 10 -log $hhblitsdb_log_dir/$version_hhblitsdb.log   
