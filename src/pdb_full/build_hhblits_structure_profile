@@ -88,7 +88,7 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
 CC=`find_cache_path -m $md5`
-input_seq_file=$CC/query.fasta
+input_seq_file=$CC/$fastaFile
 
 # check whether an input file already exists in $CC
 get_seq=0
