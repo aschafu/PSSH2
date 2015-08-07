@@ -80,7 +80,8 @@ passOpt="$passOpt $@"
 
 export HHLIB=$hhlib
 
-CC=`$util_dir/find_cache_path -m $md5`
+find_cache_path={$utilDir}'find_cache_path'
+CC=`$find_cache_path -m $md5`
 input_seq_file=$CC/query.fasta
 
 # check whether an input file already exists in $CC
