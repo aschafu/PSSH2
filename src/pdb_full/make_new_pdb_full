@@ -148,7 +148,7 @@ sleep_time=0
 while [ $n_queue -gt 0 ]
 do
 	sleep $sleep_time
-	n_queue=`qstat -u $USER | grep qw | wc -l` 		
+	n_queue=`qstat -u $USER | wc -l` 		
 	sleep_time=$n_waiting/$n_queue 
 done 
 
