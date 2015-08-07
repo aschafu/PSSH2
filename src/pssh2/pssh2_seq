@@ -219,6 +219,8 @@ then
 	then
 	 	gzip -f $hhrfile
 	fi
- 	gzip -f $pdbhhrfile
+	if [ -s $pdbhhrfile ]
+ 		gzip -f $pdbhhrfile
+	fi
 # 	gzip query.pssh2
 fi
