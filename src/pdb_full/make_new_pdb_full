@@ -13,7 +13,7 @@ then
 else
 	# make sure we pass on the conf file if there was one
 	# CAVE: THis must be accessible on the queue!
-	qsubFlag=' -v conf_file="$conf_file"
+	qsubFlag=' -v conf_file="$conf_file"'
 fi
 
 usage()
