@@ -23,7 +23,7 @@ then
 	source $conf_file
 fi
 
-if [ $local_paths]
+if [ $local_paths ]
 then
 	PATH=$local_paths:$PATH
 	export $PATH
