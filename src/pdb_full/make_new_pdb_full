@@ -71,7 +71,7 @@ passOpt=" "
 while getopts :m:hd: opt
 do
 	case $opt in
-	D) debug=1;;
+	D) debug=1; passOpt="$passOpt -D";;
 	m) md5ListFile=$OPTARG;;
 	d) version=$OPTARG;;
 	h) usage; build_hhblits_structure_profile -h; exit;;
