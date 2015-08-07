@@ -17,13 +17,17 @@ hhlib=$rootDir'hhsuite-2.0.13'
 # but now we have the option to change the path and instead use the local variants
 local_paths=''
 
-
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
 	source $conf_file
 fi
 
+if [ $local_paths]
+then
+	PATH=$local_paths:$PATH
+	export $PATH
+fi
 
 usage()
 {
