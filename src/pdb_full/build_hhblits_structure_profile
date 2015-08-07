@@ -275,7 +275,7 @@ then
 	then
 		rm $logfile
 	fi
-	if [ -s query.uniprot20.hhr ]
+	if [ -s $hhrfile ]
 	then
 	 	gzip -f query.uniprot20.hhr
 	fi
