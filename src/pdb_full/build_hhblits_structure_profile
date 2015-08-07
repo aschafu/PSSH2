@@ -8,11 +8,9 @@ fi
 pdb_full_status_table="pdb_full_status"
 seqfile='query.fasta' 
 hhblitsLog='hhblits.log' 
-logfile=$seqfile.$hhblitsLog
 a3mfile='query.uniprot20.a3m' 
 hmmfile='query.uniprot20.hhm'
 hhrfile='query.uniprot20.hhr'
-a3mfile_gz=$a3mfile.gz
 pa3mfile='query.uniprot20.psipred.a3m' 
 #pa3mfile_gz=$pa3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
@@ -25,6 +23,9 @@ then
 	source $conf_file
 fi
 
+logfile=$seqfile.$hhblitsLog
+a3mfile_gz=$a3mfile.gz
+
 # by default we want to use the system installation
 # but if local_paths is set we have the option to change the path and instead use the local variants
 if [ $local_paths ]
@@ -33,6 +34,8 @@ then
 	export PATH
 	echo "Using path: $PATH"
 fi
+
+
 
 usage()
 {
