@@ -143,6 +143,7 @@ done < $md5ListFile
 #done < $md5ListFile
 
 # wait until all jobs are finished
+$n_queue=1
 while [ $n_queue -gt 0 ]
 do
 	sleep $sleep_time
