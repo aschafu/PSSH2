@@ -14,8 +14,9 @@ a3mfile_gz=$a3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
 hhlib=$rootDir'hhsuite-2.0.13'
 # by default we want to use the system installation
-# but now we have the option to set util_dir and instead use the local variants
-util_dir="""
+# but now we have the option to change the path and instead use the local variants
+local_paths=''
+
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
