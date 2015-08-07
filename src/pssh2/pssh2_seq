@@ -18,15 +18,23 @@ table_name="pssh2_active"
 local_data="/var/tmp/rost_db/data/"
 
 seqfile='query.fasta' 
+hhblitsLog='hhblits.log' 
 a3mfile='query.uniprot20.a3m' 
 hmmfile='query.uniprot20.hhm' 
 hhrfile='query.uniprot20.hhr'
+
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
 	source $conf_file
 fi
+
+# in case some of these parameters were changed in the conf_file
+# we better set the dependent parameters here
+logfile=$seqfile.$hhblitsLog
+a3mfile_gz=$a3mfile.gz
+
 
 usage()
 {
