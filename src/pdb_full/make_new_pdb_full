@@ -41,7 +41,7 @@ exit 1
 # parameters (will be overwritten by anything read from conf file)
 rootDir="/mnt/project/pssh/pssh2_project/" 
 pdb_full_dir=$rootDir"data/pdb_full/"
-pdb_derived_dir=$rootDir"data/pdb_derived/"
+#pdb_derived_dir=$rootDir"data/pdb_derived/"
 psipred_a3m_dir=$pdb_derived_dir"psipred_a3m/"
 n_queue=10
 queue_max_wait=1000
