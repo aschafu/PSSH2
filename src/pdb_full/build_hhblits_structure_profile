@@ -254,6 +254,31 @@ else
 	count=$fail
 fi
 
+### add output to the status db
 s=`date +%s`
 runtime=$SECONDS
 DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0 ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime " 
+
+
+### compress things / delete
+if [ $debug -eq 0 ]
+then
+	if [ -s query.uniprot20.a3m ] 
+	then
+		gzip query.uniprot20.a3m  
+	fi	
+	if [ -s query.fasta.hhblits.log ]
+	then
+		rm query.fasta.hhblits.log
+	fi
+	if [ -s query.uniprot20.hhm.hhblits.log ]
+	then
+		rm query.uniprot20.hhm.hhblits.log
+	fi
+	if [ -s query.uniprot20.hhr ]
+	then
+	 	gzip -f query.uniprot20.hhr
+	fi
+ 	gzip -f query.uniprot20.pdb.full.hhr
+# 	gzip query.pssh2
+fi
