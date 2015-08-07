@@ -12,9 +12,10 @@ a3mfile='query.uniprot20.a3m'
 hmmfile='query.uniprot20.hhm'
 hhrfile='query.uniprot20.hhr'
 pa3mfile='query.uniprot20.psipred.a3m' 
-pa3mdir=''
-#pa3mfile_gz=$pa3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
+pdb_derived_dir=$rootDir"data/pdb_derived/"
+pa3mdir=$pdb_derived_dir"psipred_a3m/"
+#pa3mfile_gz=$pa3mfile.gz
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
 
