@@ -279,6 +279,4 @@ then
 	then
 	 	gzip -f $hhrfile
 	fi
- 	gzip -f query.uniprot20.pdb.full.hhr
-# 	gzip query.pssh2
 fi
