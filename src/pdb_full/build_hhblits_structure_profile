@@ -13,6 +13,8 @@ a3mfile_gz=$a3mfile.gz
 #pa3mfile_gz=$pa3mfile.gz
 rootDir="/mnt/project/pssh/pssh2_project/" 
 hhlib=$rootDir'hhsuite-2.0.13'
+# by default we want to use the system installation
+# but now we have the option to set util_dir and instead use the local variants
 util_dir="""
 find_cache_path={$utilDir}'find_cache_path'
 get_fasta_for_md5={$utilDir}'get_fasta_for_md5'
