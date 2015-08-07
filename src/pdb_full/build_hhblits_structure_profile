@@ -229,7 +229,7 @@ then
 #		md5=`cat query.fasta|fasta_to_md5`
 		pdb_id=`find_best_pdb_for_seqres_md5 -m $md5`
 		sed 's/$md5/$pdb_id/g' < $a3mfile > $a3mfile_pdb
-		# addss.pl needs variables to be set in HHLIB 
+		# addss.pl needs variables to be set in HHLIB -> export that here
 		export HHLIB=$hhlib
 		$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
 		# remove the pdb id from the $pa3mfile_pdb 
