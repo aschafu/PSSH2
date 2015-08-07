@@ -30,7 +30,7 @@ DESCRIPTION
 OPTIONS
   -d          output name for new pdb_full
   -m          file containing pdb Seqres md5s to run over 
-  -v          be verbose
+  -h          print this help and exit
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -39,11 +39,10 @@ exit 1
 
 
 # parameters (will be overwritten by anything read from conf file)
+version='current'
 rootDir="/mnt/project/pssh/pssh2_project/" 
 pdb_full_dir=$rootDir"data/pdb_full/"
 pdb_derived_dir=$rootDir"data/pdb_derived/"
-pa3mdir=$pdb_derived_dir"psipred_a3m/"
-version='current'
 n_queue=10
 queue_max_wait=1000
 
@@ -87,6 +86,11 @@ fi
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
+
+if [ -s $pa3mdir ]
+then
+	if 
+pa3mdir=$pdb_derived_dir"psipred_a3m/"
 
 
 # Note for later:
