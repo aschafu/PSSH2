@@ -7,7 +7,8 @@
 # then it collects the current psipred a3m files to a directory that hhblitsdb.pl can work on
 
 qsubFlag=''
-if [ -z "$conf_file" ]; then
+if [ -z "$conf_file" ]
+then
 	conf_file='/etc/pssh2.conf'
 else
 	# make sure we pass on the conf file if there was one
