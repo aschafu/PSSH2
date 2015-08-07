@@ -65,6 +65,7 @@ then
 	PATH=$local_paths:$PATH
 	export PATH
 	echo "Using path: $PATH"
+	build_hhblits_structure_profile=`which $build_hhblits_structure_profile`
 fi
 
 debug=0
