@@ -16,15 +16,13 @@ hhlib=$rootDir'hhsuite-2.0.13'
 # by default we want to use the system installation
 # but now we have the option to set util_dir and instead use the local variants
 util_dir="""
-find_cache_path={$utilDir}'find_cache_path'
-get_fasta_for_md5={$utilDir}'get_fasta_for_md5'
-
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
 	source $conf_file
 fi
+
 
 usage()
 {
@@ -85,7 +83,7 @@ passOpt="$passOpt $@"
 
 export HHLIB=$hhlib
 
-CC=`$find_cache_path -m $md5`
+CC=`find_cache_path -m $md5`
 input_seq_file=$CC/query.fasta
 
 # check whether an input file already exists in $CC
