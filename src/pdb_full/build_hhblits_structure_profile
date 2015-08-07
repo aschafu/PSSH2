@@ -27,6 +27,7 @@ if [ $local_paths]
 then
 	PATH=$local_paths:$PATH
 	export $PATH
+	echo "Using path: $PATH"
 fi
 
 usage()
