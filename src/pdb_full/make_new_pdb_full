@@ -88,11 +88,10 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
-if [ -s $pa3mdir ]
+if [ -z $pa3mdir ]
 then
-	if 
-pa3mdir=$pdb_derived_dir"psipred_a3m/"
-
+	pa3mdir=$pdb_derived_dir"psipred_a3m/"$version"/"
+fi
 
 # Note for later:
 # how to count the ratio of Xs in SEQRES sequences and limit to protein 
