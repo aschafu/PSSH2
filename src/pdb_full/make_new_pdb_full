@@ -88,11 +88,6 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
-if [ -z $pa3mdir ]
-then
-	pa3mdir=$pdb_derived_dir"psipred_a3m/"$version"/"
-fi
-
 # Note for later:
 # how to count the ratio of Xs in SEQRES sequences and limit to protein 
 # don't know how to directly select only x_ratio below e.g. 0.5, but that can be handled subsequently
@@ -104,6 +99,20 @@ then
 	echo The file of md5 numbers to iterate over does not exist or is empty
 	exit 1
 fi
+
+if [ -z $pa3mdir ]
+then
+	pa3mdir=$pdb_derived_dir"psipred_a3m/"$version"/"
+fi
+
+if [ -w $pa3mdir ]
+then
+	echo "will link psipred a3ms to $pa3mdir"
+else
+	echo "ERROR: cannot write to output directory $pa3mdir. Please fix!"
+	exit 1
+fi
+
 
 ## loop over all md5s 
 # submit further processing to the queue  
