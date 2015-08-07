@@ -142,6 +142,15 @@ done < $md5ListFile
 #	ln -s $cachePath/$pa3mfile $psipred_a3m_dir/$md5.a3m	
 #done < $md5ListFile
 
+# wait until all jobs are finished
+while [ $n_waiting -gt $queue_max_wait ]
+do
+	sleep $sleep_time
+	n_waiting=`qstat -u $USER | grep qw | wc -l` 		
+	$sleep_time=$n_waiting/$n_queue 
+done 
+
+
 
 ## Generating pdb_full database files with HH-suite script hhblitsdb.pl and the MSAs with PSIPRED prediction received in last step 
 db=$pdb_full_dir$version
