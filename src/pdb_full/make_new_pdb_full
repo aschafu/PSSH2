@@ -109,12 +109,11 @@ do
 done < $md5ListFile
 
 ## when all is done, loop over the md5s again and make links in the psipred_a3m_dir
-# TODO: check that hhblitsdb.pl can work with links!
-while read md5
-do
-	cachePath=`$util_dir/find_cache_path -m $md5`
-	ln -s $cachePath/$pa3mfile $psipred_a3m_dir/$md5.a3m	
-done < $md5ListFile
+#while read md5
+#do
+#	cachePath=`$util_dir/find_cache_path -m $md5`
+#	ln -s $cachePath/$pa3mfile $psipred_a3m_dir/$md5.a3m	
+#done < $md5ListFile
 
 
 ## Generating pdb_full database files with HH-suite script hhblitsdb.pl and the MSAs with PSIPRED prediction received in last step 
