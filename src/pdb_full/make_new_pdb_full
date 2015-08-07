@@ -68,7 +68,7 @@ fi
 
 
 passOpt=" " 
-while getopts :m:hDd: opt
+while getopts :m:d:Dh opt
 do
 	case $opt in
 	D) debug=1; passOpt="$passOpt -D";;
