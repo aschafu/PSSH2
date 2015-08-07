@@ -47,7 +47,7 @@ version='current'
 n_queue=10
 queue_max_wait=1000
 
-util_dir=$rootDir"src/util/"
+#util_dir=$rootDir"src/util/"
 #pa3mfile='query.uniprot20.psipred.a3m' 
 #source_dir=$rootDir"src/pdb_full/"
 
