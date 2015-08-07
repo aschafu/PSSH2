@@ -103,6 +103,7 @@ fi
 if [ -z $pa3mdir ]
 then
 	pa3mdir=$pdb_derived_dir"psipred_a3m/"$version"/"
+	mkdir $db 2>/dev/null
 fi
 
 if [ -w $pa3mdir ]
