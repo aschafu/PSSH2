@@ -86,9 +86,6 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
-
-export HHLIB=$hhlib
-
 CC=`find_cache_path -m $md5`
 input_seq_file=$CC/query.fasta
 
@@ -202,6 +199,8 @@ else
 	echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
 	exit
 fi
+
+export HHLIB=$hhlib
 
 if [ $skip_build -eq 0 ]
 then
