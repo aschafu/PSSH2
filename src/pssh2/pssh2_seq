@@ -17,6 +17,11 @@ table_name="pssh2_active"
 ### data kept on the local file system
 local_data="/var/tmp/rost_db/data/"
 
+seqfile='query.fasta' 
+a3mfile='query.uniprot20.a3m' 
+hmmfile='query.uniprot20.hhm' 
+hhrfile='query.uniprot20.hhr'
+
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
@@ -98,8 +103,6 @@ passOpt="$passOpt $@"
 
 fail=0
 skip=0
-
-hmmfile='query.uniprot20.hhm' 
  
 if [ $force -le 1 ] 
 then
@@ -133,7 +136,8 @@ fi
 
 if [ $skip -eq 0 ] 
 then
-	time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
+#	time build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
+	time build_hhblits_profile -f  $seqfile -m  $hmmfile -a $a3mfile -r $hhrfile $passOpt
 else 
     if [ $silent -eq 0 ]
     then
