@@ -206,9 +206,9 @@ then
 	then
 		gzip $a3mfile  
 	fi	
-	if [ -s query.fasta.hhblits.log ]
+	if [ -s $logfile ]
 	then
-		rm query.fasta.hhblits.log
+		rm $logfile
 	fi
 	if [ -s query.uniprot20.hhm.hhblits.log ]
 	then
