@@ -128,7 +128,7 @@ fi
 # submit further processing to the queue  
 while read md5
 do
-	qsub $build_hhblits_structure_profile -m $md5 -p $pa3mdir $passOpt		
+	qsub $qsubFlag $build_hhblits_structure_profile -m $md5 -p $pa3mdir $passOpt		
 	# check whether the queue is too full (> 10000 jobs waiting)
 	# if yes, sleep a litle before we submit more
 	n_waiting=1001
