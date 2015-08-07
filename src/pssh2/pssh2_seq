@@ -202,9 +202,9 @@ fi
 ### compress things / delete
 if [ $debug -eq 0 ]
 then
-	if [ -s query.uniprot20.a3m ] 
+	if [ -s $a3mfile ] 
 	then
-		gzip query.uniprot20.a3m  
+		gzip $a3mfile  
 	fi	
 	if [ -s query.fasta.hhblits.log ]
 	then
