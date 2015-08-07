@@ -23,6 +23,7 @@ a3mfile='query.uniprot20.a3m'
 hmmfile='query.uniprot20.hhm' 
 hhrfile='query.uniprot20.hhr'
 pdbhhrfile='query.uniprot20.pdb.full.hhr'
+pssh2file='query.pssh2'
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
