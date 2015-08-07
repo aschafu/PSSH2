@@ -104,7 +104,7 @@ fi
 
 if [ $get_seq -eq 1 ]
 then 
-	temp_fasta_file=`$get_fasta_for_md5 $md5`
+	temp_fasta_file=`get_fasta_for_md5 $md5`
 	if [ -s $temp_fasta_file ]
 	then	
 		### create cachedir if not existent
