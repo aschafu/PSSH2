@@ -143,12 +143,12 @@ done < $md5ListFile
 #done < $md5ListFile
 
 # wait until all jobs are finished
-n_queue=1
+n_in_queue=1
 sleep_time=0
-while [ $n_queue -gt 0 ]
+while [ $n_in_queue -gt 0 ]
 do
 	sleep $sleep_time
-	n_queue=`qstat -u $USER | wc -l` 		
+	n_in_queue=`qstat -u $USER | wc -l` 		
 	sleep_time=$n_queue/$n_queue 
 done 
 
