@@ -23,6 +23,8 @@ then
 	source $conf_file
 fi
 
+# in case some of these parameters were changed in the conf_file
+# we better set the dependent parameters here
 logfile=$seqfile.$hhblitsLog
 a3mfile_gz=$a3mfile.gz
 
