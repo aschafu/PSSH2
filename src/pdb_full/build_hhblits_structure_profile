@@ -81,6 +81,7 @@ do
 	m) md5=$OPTARG;;
 	F) force=$OPTARG;;
 	R) force=0;;
+	p) pa3mdir=$OPTARG;;
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
