@@ -203,10 +203,6 @@ fi
 ### compress things / delete
 if [ $debug -eq 0 ]
 then
-	if [ -s $a3mfile ] 
-	then
-		gzip $a3mfile  
-	fi	
 	if [ -s $logfile ]
 	then
 		rm $logfile
@@ -215,6 +211,10 @@ then
 	then
 		rm $logfilepdb
 	fi
+	if [ -s $a3mfile ] 
+	then
+		gzip $a3mfile  
+	fi	
 	if [ -s $hhrfile ]
 	then
 	 	gzip -f $hhrfile
