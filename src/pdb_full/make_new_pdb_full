@@ -28,7 +28,7 @@ DESCRIPTION
   must happen in the process that constructs the md5List. 
   Any input behind "--" is passed on build_hhblits_structure_profile 
 OPTIONS
-  -d          output name for new pdb_full
+  -d          output name for new pdb_full (default: current)
   -m          file containing pdb Seqres md5s to run over 
   -h          print this help and exit
   -D          give debug output (passed on to child scripts)
