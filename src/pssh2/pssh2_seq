@@ -154,7 +154,7 @@ fi
 
 if [ $skip -eq 0 ] 
 then
-#	time build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
+#	time nice build_hhblits_profile -f  query.fasta -m  $hmmfile -a query.uniprot20.a3m -r query.uniprot20.hhr $passOpt
 	time build_hhblits_profile -f  $seqfile -m  $hmmfile -a $a3mfile -r $hhrfile $passOpt
 else 
     if [ $silent -eq 0 ]
@@ -165,6 +165,7 @@ fi
 
 if [ -s query.uniprot20.hhm ] 
 then
+# 	time nice scan_structures_hhblits -m  $hmmfile -r query.uniprot20.pdb.full.hhr $passOpt
  	time scan_structures_hhblits -m  $hmmfile -r query.uniprot20.pdb.full.hhr $passOpt
 else
 	fail=-1
