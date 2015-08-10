@@ -164,9 +164,9 @@ do
 	sleep $sleep_time
 	n_in_queue=`qstat -u $USER | wc -l` 		
 	sleep_time=$((n_in_queue/n_queue)) 
-	if [ $sleep_time -lt 1 ]
+	if [ $sleep_time -lt 10 ]
 	then
-		sleep_time = 1
+		sleep_time = 10
 	fi
 done 
 
