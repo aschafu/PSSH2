@@ -166,7 +166,7 @@ do
 	sleep_time=$((n_in_queue/n_queue)) 
 	if [ $sleep_time -lt 10 ]
 	then
-		sleep_time = 10
+		sleep_time=10
 	fi
 done 
 
