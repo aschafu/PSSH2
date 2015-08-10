@@ -164,6 +164,10 @@ do
 	sleep $sleep_time
 	n_in_queue=`qstat -u $USER | wc -l` 		
 	sleep_time=$((n_in_queue/n_queue)) 
+	if [ $sleep_time -lt 1 ]
+	then
+		sleep_time = 1
+	fi
 done 
 
 
