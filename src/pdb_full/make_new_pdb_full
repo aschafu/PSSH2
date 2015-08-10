@@ -15,6 +15,7 @@ else
 	# CAVE: THis must be accessible on the queue!
 	qsubFlag=' -v conf_file=$conf_file'
 fi
+echo "conf_file: $conf_file"
 
 usage()
 {
