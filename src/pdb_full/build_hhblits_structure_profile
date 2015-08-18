@@ -271,7 +271,7 @@ then
 	count=`grep -c "^>" $pa3mfile`
 	ln -s $CC/$pa3mfile $pa3mdir/$md5.a3m
 else
-	if [ $fail eq 0 ]
+	if [ $fail -eq 0 ]
 	then
 		fail=-2
 	fi
