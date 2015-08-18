@@ -6,14 +6,14 @@
 # it writes the output a3m files to the cache and also adds psipred a3m files to the chache
 # then it collects the current psipred a3m files to a directory that hhblitsdb.pl can work on
 
-qsubFlag=''
+qsubFlag='-e /mnt/project/pssh/pssh2_project/work/log_pdbFull/ -o /mnt/project/pssh/pssh2_project/work/log_pdbFull/'
 if [ -z "$conf_file" ]
 then
 	conf_file='/etc/pssh2.conf'
 else
 	# make sure we pass on the conf file if there was one
 	# CAVE: THis must be accessible on the queue!
-	qsubFlag=" -v conf_file=$conf_file"
+	qsubFlag="$qsubFlag -v conf_file=$conf_file"
 fi
 echo "conf_file: $conf_file, qsubFlag: $qsubFlag"
 
