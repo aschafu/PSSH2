@@ -183,4 +183,4 @@ then
     echo calling hhblitsdb.pl on $pa3mdir "(see log in $hhblitsdb_log_dir)" 
     echo $HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $pa3mdir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb_$version.log
 fi  
-$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $pa3mdir -cpu 10 -log $hhblitsdb_log_dir/$version_hhblitsdb.log   
+$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $pa3mdir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb_$version.log   
