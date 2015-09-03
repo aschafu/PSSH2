@@ -27,7 +27,7 @@ AUTHOR
 
 # if there are no arguments or -h, then print man entry
 if (@ARGV<1) {die ($usage);}
-our($dbg,$help,$md5);
+our($dbg,$help,$md5,$multi);
 $help = 0;
 $multi = 1;
 my $args_ok=GetOptions( 'debug'  => \$dbg,
