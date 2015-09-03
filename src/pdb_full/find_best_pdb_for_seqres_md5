@@ -15,10 +15,12 @@ DESCRIPTION
   2. select an X-ray structure 
   2a. slect an X-ray structure with good resolution
   3. select a new structure  
+  (by default we give only one structure)
 OPTIONS
   -h          The option -h displays help and exits.
   -d          Debug option: be verbose (not implemented yet!)
   -m		  md5 sum of SEQRES sequence to search
+  -
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans\@rostlab.org>
 \n";
@@ -27,9 +29,11 @@ AUTHOR
 if (@ARGV<1) {die ($usage);}
 our($dbg,$help,$md5);
 $help = 0;
+$multi = 1;
 my $args_ok=GetOptions( 'debug'  => \$dbg,
                         'help' => \$help,
-                        'md5=s' => \$md5
+                        'md5=s' => \$md5,
+                        'n=i' => \$multi 
 );
 
 if ($help || !$args_ok){
