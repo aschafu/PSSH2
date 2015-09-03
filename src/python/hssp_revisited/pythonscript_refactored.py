@@ -78,7 +78,7 @@ def main(argv):
     confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath', encoding="utf_8")	
 	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
-
+	
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-o", "--out", help="name of output file (csv format)")
 	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process")
