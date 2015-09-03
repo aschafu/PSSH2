@@ -105,7 +105,7 @@ def main(argv):
 	hhrdata = (process_hhr(hhrPath, checksum, spath, sname))
 	hhrlines, modelcount = hhrdata
 	
-	#hhmakemodel call, creating the models
+	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
 		print('-- building model for protein '+str(model))
 		subprocess.call([ hhPath+hhMakeModelScript, '-i '+spath+'/'+sname, '-ts '+spath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
