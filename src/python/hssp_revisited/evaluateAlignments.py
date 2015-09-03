@@ -132,7 +132,6 @@ def main(argv):
 		# make a fake pdb structure using the hhsuite tool
 		# -> rename the sequence in the a3m output file to the pdbcode, then create the 'true' structure file
 		# ... TODO 
-
 			
 
 		#maxcluster gdt comparison
