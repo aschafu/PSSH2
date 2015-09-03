@@ -65,12 +65,13 @@ def main(argv):
 	checksum = args.md5
 
 	#set run-time paths
+	# use find_cache_path to avoid having to get the config
 	p = subprocess.Popen(['find_cache_path', '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
 	cachePath = out.strip() 
 	hhrPath = (cachePath+'/query.uniprot20.pdb.full.hhr.gz')
 	sname = os.path.basename(hhrPath)[:-3]
-	spath = '/mnt/project/aliqeval/HSSP_revisited/dinhtest/models/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
+	spath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	
 	if not (os.path.isfile(hhrPath)):
 		print('-- hhr does not exist, check md5 checksum!\n-- stopping execution...')
