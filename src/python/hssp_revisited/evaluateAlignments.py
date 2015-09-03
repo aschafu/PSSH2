@@ -25,6 +25,7 @@ maxcldir = '/mnt/project/aliqeval/maxcluster'
 modeldir = '/mnt/project/psshcache/models'
 
 cleanup = True 
+maxTemplate = 5
 
 def add_section_header(properties_file, header_name):
 	"""we want to use the bash style config for pypthon, but
@@ -121,7 +122,8 @@ def main(argv):
 		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-m '+str(model)])
 
 	# now create the things to compare against (pdb file(s) the sequence comes from)
-	
+	# work out the pdb structures for this md5 sum
+	subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-m '+str(model)], '-n', maxTemplate)
 
 	# grep md5 sum and get result back
 	p = subprocess.Popen(['grep', checksum, md5mapdir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
