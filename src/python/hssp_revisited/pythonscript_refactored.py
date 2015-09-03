@@ -25,15 +25,18 @@ modeldir = '/mnt/project/psshcache/models'
 
 cleanup = True 
 
-# we want to use the bash style config for phtyon, so we need to add a fake section
 def add_section_header(properties_file, header_name):
-	# configparser.ConfigParser requires at least one section header in a properties file.
-	# Our properties file doesn't have one, so add a header to it on the fly.
+	"""we want to use the bash style config for pypthon, but
+	ConfigParser requires at least one section header in a properties file and
+	our bash config file doesn't have one, so add a header to it on the fly.
+	"""
 	yield '[{}]\n'.format(header_name)
 	for line in properties_file:
 		yield line
 
 def process_hhr(path, checksum, spath, sname):
+	""" work out how many models we want to create, so we have to unzip the hhr file and count
+	"""
 	hhrfile = gzip.open(path, 'rb')
 	s = hhrfile.read()	
 	
@@ -48,15 +51,14 @@ def process_hhr(path, checksum, spath, sname):
 	parsefile = open(spath+'/'+sname, 'rb')
 	linelist = parsefile.readlines()
 	
+	# skip until we reach the alignment overview:
 	#setting up loop vars
 	breaker = False
 	i = -1
-	
 	while (breaker==False):
 		i = i - 1
 		if ("No " in linelist[i]) and (len(linelist[i])<10):
 			breaker=True
-		
 		takenline = linelist[i]
 
 	iterationcount = int(float(takenline.split(' ')[1]))
@@ -86,7 +88,6 @@ def main(argv):
 # later add option for different formats
 	parser.set_defaults(format=csv)
 	args = parser.parse_args()
-
 	csvfilename = args.out
 	checksum = args.md5
 
@@ -102,6 +103,8 @@ def main(argv):
 		print('-- hhr does not exist, check md5 checksum!\n-- stopping execution...')
 		return
 	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
+	
+	
 	hhrdata = (process_hhr(hhrPath, checksum, spath, sname))
 	hhrlines, modelcount = hhrdata
 	
@@ -110,7 +113,7 @@ def main(argv):
 		print('-- building model for protein '+str(model))
 		subprocess.call([ hhPath+hhMakeModelScript, '-i '+spath+'/'+sname, '-ts '+spath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
 
-	#grep md5 sum and get result back
+	# grep md5 sum and get result back
 	p = subprocess.Popen(['grep', checksum, md5mapdir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
 	grepresults = out.replace('\t',' ').replace('\n',' ').replace('  ',' ').strip().split(' ') #normalize the results from grepping
