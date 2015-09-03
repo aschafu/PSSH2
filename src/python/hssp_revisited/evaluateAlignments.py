@@ -18,6 +18,7 @@ pdbhhrfile='query.uniprot20.pdb.full.hhr'
 
 #default paths
 hhMakeModelScript = '/scripts/hhmakemodel.pl' 
+bestPdbScript = 'find_best_pdb_for_seqres_md5'
 dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
 mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
