@@ -126,27 +126,15 @@ def main(argv):
 	# work out the pdb structures for this md5 sum
 	p = subprocess.Popen([ bestPdbScript, '-m ', checksum , '-n', maxTemplate, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
-	pdbCodes = out.strip().split(';') # normalize the results from grepping
+	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
 	
-	for chain in pdbCodes # iterate over all chains we found
+	for chain in pdbChainCodes # iterate over all chains we found
 		# make a fake pdb structure using the hhsuite tool
 		# -> rename the sequence in the a3m output file to the pdbcode
-	
-	
-	resultArray = [[] for s in range(len(grepresults)-2)] #resultArray[m][n], m = index of chain (A = 0, B = 1...) n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
-	h = 0 #iterations through the chain array
-	for chain in chainarray: #iterating over how many chains we found
-		pdbCode = grepresults[h][:-2]
-		print('-- creating .ent link to /mnt/project/rost_db/data/pdb/entries/'+grepresults[0][1:3]+'/pdb'+grepresults[0][:-2]+'.ent')
-		if not os.path.isfile(workPath+'/'+pdbCode+'.pdb'):
-			subprocess.call(['ln', '-s', '/mnt/project/rost_db/data/pdb/entries/'+grepresults[0][1:3]+'/pdb'+grepresults[0][:-2]+'.ent', workPath+'/'+pdbCode+'.pdb'])
-			print('-- link created!')
-		else:
-			print('-- link already exists. Using existing link...')
-	
-		subprocess.call([mayadir, '-m', 'Chains', '-c', chain, workPath+'/'+pdbCode+'.pdb'])
-		subprocess.call([mayadir, '-m', 'CAlphas', pdbCode+'Chain'+chain+'.pdb'])
-		
+		# ... TODO 
+
+			
+
 		#maxcluster gdt comparison
 		print('-- performing maxcluster comparison, output to maxclres.log')
 		#subprocess.call([maxcldir, '-gdt', '-e', 'experimentChainACAlphas.pdb', '-p', workPath+'/query.uniprot20.pdb.full.1.pdb', '-log', 'maxclres.log'])
