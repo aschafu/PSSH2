@@ -14,6 +14,7 @@ cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2.conf pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.pssh2_local pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.aquaria_local pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/get_fasta_for_md5 pssh2-package/
+cp -vp /mnt/project/pssh/pssh2_project/src/util/find_cache_path pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pdb_full/make_new_pdb_full pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pdb_full/build_hhblits_structure_profile pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pdb_full/find_best_pdb_for_seqres_md5 pssh2-package/
