@@ -11,14 +11,12 @@ import ConfigParser
 defaultConfig = """
 [pssh2Config]
 pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
-temp_work="/tmp/pssh2"
-local_data="/var/tmp/rost_db/data/"
 HHLIB="/usr/share/hhsuite/"
 """
 
 
 #default paths
-hhmmdir = '/usr/share/hhsuite/scripts/hhmakemodel.pl' 
+hhMakeModelScript = '/scripts/hhmakemodel.pl' 
 dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
 mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
@@ -78,6 +76,9 @@ def main(argv):
     confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath', encoding="utf_8")	
 	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
+
+	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
+	hhPath = config.get('pssh2Config', 'HHLIB')
 	
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-o", "--out", help="name of output file (csv format)")
@@ -91,13 +92,12 @@ def main(argv):
 
 	#set run-time paths
 	# use find_cache_path to avoid having to get the config
-	p = subprocess.Popen(['find_cache_path', '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	out, err = p.communicate()
-	cachePath = out.strip() 
+	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	hhrPath = (cachePath+'/query.uniprot20.pdb.full.hhr.gz')
 	sname = os.path.basename(hhrPath)[:-3]
 	spath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	
+	# check that we have the necessary input
 	if not (os.path.isfile(hhrPath)):
 		print('-- hhr does not exist, check md5 checksum!\n-- stopping execution...')
 		return
@@ -108,7 +108,7 @@ def main(argv):
 	#hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
 		print('-- building model for protein '+str(model))
-		subprocess.call([hhmmdir, '-i '+spath+'/'+sname, '-ts '+spath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
+		subprocess.call([ hhPath+hhMakeModelScript, '-i '+spath+'/'+sname, '-ts '+spath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
 
 	#grep md5 sum and get result back
 	p = subprocess.Popen(['grep', checksum, md5mapdir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
