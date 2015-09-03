@@ -8,6 +8,14 @@ import logging
 import time
 import ConfigParser
 
+defaultConfig = """
+pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+temp_work="/tmp/pssh2"
+local_data="/var/tmp/rost_db/data/"
+HHLIB="/usr/share/hhsuite/"
+"""
+
+
 #default paths
 hhmmdir = '/usr/share/hhsuite/scripts/hhmakemodel.pl' 
 dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
@@ -54,6 +62,12 @@ def process_hhr(path, checksum, spath, sname):
 	
 
 def main(argv):
+
+    config = ConfigParser.RawConfigParser()
+    config.readfp(io.BytesIO(defaultConfig))
+
+    confPath = os.getenv('conf_file', '/etc/pssh2.conf')
+	conffile=config.read(confPath)
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-o", "--out", help="name of output file (csv format)")
