@@ -155,6 +155,7 @@ else {
 my $lastIndex;
 if ($#selectedIds > $multi-1){
 	$lastIndex = $multi-1;
+}
 else {
 	$lastIndex = $#selectedIds;
 }
