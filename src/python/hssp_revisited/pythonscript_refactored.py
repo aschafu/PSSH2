@@ -40,8 +40,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 	"""
 	
 	# read the hhr file in its orignial location
-	hhrfile = gzip.open(path, 'rb')
-	s = hhrfile.read()	
+	hhrgzfile = gzip.open(path, 'rb')
+	s = hhrgzfile.read()	
 	
 	# check whether we can write to our desired output directory
 	try:
@@ -50,7 +50,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 		if exception.errno != errno.EEXIST:
 			raise
 			
-	
+	# write an unzipped verion to our work directory
 	open(workPath+'/'+pdbhhrfile, 'w').write(s)
 	parsefile = open(workPath+'/'+pdbhhrfile, 'rb')
 	linelist = parsefile.readlines()
@@ -68,7 +68,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	print('-- '+str(iterationcount)+' matching proteins found!')
 	
 
-	hhrfile.close()
+	hhrgzfile.close()
 	parsefile.close()
 	return linelist, iterationcount
 	
