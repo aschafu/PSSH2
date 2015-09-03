@@ -35,7 +35,7 @@ def add_section_header(properties_file, header_name):
 	for line in properties_file:
 		yield line
 
-def process_hhr(path, checksum, workPath, sname):
+def process_hhr(path, workPath, pdbhhrfile):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count
 	"""
 	
@@ -51,8 +51,8 @@ def process_hhr(path, checksum, workPath, sname):
 			raise
 			
 	
-	open(workPath+'/'+sname, 'w').write(s)
-	parsefile = open(workPath+'/'+sname, 'rb')
+	open(workPath+'/'+pdbhhrfile, 'w').write(s)
+	parsefile = open(workPath+'/'+pdbhhrfile, 'rb')
 	linelist = parsefile.readlines()
 	
 	# search from the end of the file until we reach the Number of the last alignment (in the alignment details)
@@ -110,13 +110,13 @@ def main(argv):
 	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
 	
 	
-	hhrdata = (process_hhr(hhrPath, checksum, workPath, sname))
+	hhrdata = (process_hhr(hhrPath, checksum, workPath, pdbhhrfile))
 	hhrlines, modelcount = hhrdata
 	
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
 		print('-- building model for protein '+str(model))
-		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+sname, '-ts '+workPath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
+		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
 
 	# grep md5 sum and get result back
 	p = subprocess.Popen(['grep', checksum, md5mapdir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -225,12 +225,12 @@ def main(argv):
 	if cleanup == True:
 		print('-- cleanup in 3 seconds...')
 		time.sleep(3)
-		print('-- deleting '+sname)
-		subprocess.call(['rm', workPath+'/'+sname])
+		print('-- deleting '+pdbhhrfile)
+		subprocess.call(['rm', workPath+'/'+pdbhhrfile])
 		
-		print('-- deleting '+sname[:-4]+'.*.pdb')
+		print('-- deleting '+pdbhhrfile[:-4]+'.*.pdb')
 		for z in range(1, modelcount+1):
-			subprocess.call(['rm', '-f', workPath+'/'+sname[:-3]+str(z)+'.pdb'])
+			subprocess.call(['rm', '-f', workPath+'/'+pdbhhrfile[:-3]+str(z)+'.pdb'])
 		
 		print('-- deleting mayachemtools pdbs')
 		subprocess.call(['rm', workPath+'/'+pdbCode+'.pdb'])
