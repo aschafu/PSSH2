@@ -99,7 +99,7 @@ def main(argv):
 	#set run-time paths
 	# use find_cache_path to avoid having to get the config
 	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
-	hhrPath = (cachePath+'/query.uniprot20.pdb.full.hhr.gz')
+	hhrPath = (cachePath+pdbhhrfile)
 	sname = os.path.basename(hhrPath)[:-3]
 	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	
