@@ -9,7 +9,7 @@ import time
 import ConfigParser
 
 defaultConfig = """
-[bashConfig]
+[pssh2Config]
 pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 temp_work="/tmp/pssh2"
 local_data="/var/tmp/rost_db/data/"
