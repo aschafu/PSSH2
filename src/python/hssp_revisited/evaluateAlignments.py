@@ -130,7 +130,7 @@ def main(argv):
 	
 	for chain in pdbChainCodes # iterate over all chains we found
 		# make a fake pdb structure using the hhsuite tool
-		# -> rename the sequence in the a3m output file to the pdbcode
+		# -> rename the sequence in the a3m output file to the pdbcode, then create the 'true' structure file
 		# ... TODO 
 
 			
