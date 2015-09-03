@@ -20,10 +20,10 @@ if [[ -z $pathPPchk ]];
 then
     blastpgp -F F -j 3 -b 3000 -e 1 -h 1e-3 -d /mnt/project/rost_db/data/big/big_80 -i query.fasta -o query.big80.blastPsiOut -C query.chk 
 else 
-    cp $pathPPchk query.chk
+    ln -s $pathPPchk query.chk
 fi
 blastpgp -F F -b 100000 -e 10 -d /mnt/project/rost_db/data/big/big -i query.fasta -o query.big.blastPsiOut -R query.chk
-rm query.chk
+#rm query.chk
 gzip query.big.blastPsiOut
 
 
