@@ -52,13 +52,25 @@ def process_hhr(path, checksum, spath, sname):
 	return linelist, iterationcount
 	
 
-def main():
-	print('Enter result csv file\'s name: ')
-	csvfilename = raw_input()
-	print('Enter protein\'s md5 checksum: ')
-	checksum = raw_input()
-	
+def main(argv):
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-o", "--out", help="name of output file (csv format)")
+	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process")
+# later add option for different formats
+	parser.set_defaults(format=csv)
+	args = parser.parse_args()
+
+	csvfilename = args.out
+	checksum = args.md5
+
 	#set run-time paths
+	p = subprocess.Popen(['find_cache_path', '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = p.communicate()
+	cachePath = out.strip() 
+	
+	
+	
 	hhrpath = ('/mnt/project/aliqeval/HSSP_revisited/result_cache_2014/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/query.uniprot20.pdb.full.hhr.gz')
 	sname = os.path.basename(hhrpath)[:-3]
 	spath = '/mnt/project/aliqeval/HSSP_revisited/dinhtest/models/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
