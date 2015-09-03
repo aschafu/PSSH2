@@ -126,15 +126,17 @@ if ($#bestIds > $multi-1){
     # evaluate the info
 	# check there are any xray structures
     if ($xray[0]){
+    	# if there is more than one xray structure we have to sort
 		if ($#xray > 0){
 			# sort by resolution
 		    foreach my $id(@xray){
 				my @sortedIds = sort sortByResolution @xray;
-				$selectedId = $sortedIds[0];
+				@selectedIds = @sortedIds[0..$multi-1];
 	    	}
 		}
 		else {
-	    	$selectedId = $xray[0];
+#	    	$selectedId = $xray[0];
+			@selectedIds = @xray;
 		}
     }
 	# take the most recent structure
