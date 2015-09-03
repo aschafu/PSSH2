@@ -109,7 +109,7 @@ def main(argv):
 		return
 	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
 	
-	
+	# work out how many models we want to create, get unzipped data
 	hhrdata = (process_hhr(hhrPath, checksum, workPath, pdbhhrfile))
 	hhrlines, modelcount = hhrdata
 	
