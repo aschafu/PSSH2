@@ -13,7 +13,7 @@ dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
 mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
 maxcldir = '/mnt/project/aliqeval/maxcluster'
-
+modeldir = '/mnt/project/psshcache/models'
 
 cleanup = True 
 
@@ -68,18 +68,15 @@ def main(argv):
 	p = subprocess.Popen(['find_cache_path', '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
 	cachePath = out.strip() 
-	
-	
-	
-	hhrpath = ('/mnt/project/aliqeval/HSSP_revisited/result_cache_2014/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/query.uniprot20.pdb.full.hhr.gz')
-	sname = os.path.basename(hhrpath)[:-3]
+	hhrPath = (cachePath+'/query.uniprot20.pdb.full.hhr.gz')
+	sname = os.path.basename(hhrPath)[:-3]
 	spath = '/mnt/project/aliqeval/HSSP_revisited/dinhtest/models/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	
-	if not (os.path.isfile(hhrpath)):
+	if not (os.path.isfile(hhrPath)):
 		print('-- hhr does not exist, check md5 checksum!\n-- stopping execution...')
 		return
 	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
-	hhrdata = (process_hhr(hhrpath, checksum, spath, sname))
+	hhrdata = (process_hhr(hhrPath, checksum, spath, sname))
 	hhrlines, modelcount = hhrdata
 	
 	#hhmakemodel call, creating the models
