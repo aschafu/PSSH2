@@ -151,7 +151,14 @@ else {
     @selectedIds = @bestIds;
 }
 
-print join(";", @selectedIds[0 .. $multi-1]), "\n";
+my $lastIndex;
+if ($#selectedIds > $multi-1){
+	$lastIndex = $multi-1;
+else {
+	$lastIndex = $#selectedIds;
+}
+
+print join(";", @selectedIds[0 .. $lastIndex]), "\n";
 
 
 
