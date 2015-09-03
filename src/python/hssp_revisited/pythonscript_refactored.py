@@ -70,16 +70,16 @@ def process_hhr(path, checksum, spath, sname):
 
 def main(argv):
 
-    config = ConfigParser.RawConfigParser()
-    config.readfp(io.BytesIO(defaultConfig))
-
-    confPath = os.getenv('conf_file', '/etc/pssh2.conf')
+	# get config info
+	config = ConfigParser.RawConfigParser()
+	config.readfp(io.BytesIO(defaultConfig))
+	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath', encoding="utf_8")	
 	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
-
 	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
 	hhPath = config.get('pssh2Config', 'HHLIB')
-	
+
+	# parse command line arguments	
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-o", "--out", help="name of output file (csv format)")
 	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process")
