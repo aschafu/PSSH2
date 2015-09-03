@@ -125,18 +125,12 @@ def main(argv):
 	# now create the things to compare against (pdb file(s) the sequence comes from)
 	# work out the pdb structures for this md5 sum
 	p = subprocess.Popen([ bestPdbScript, '-m ', checksum , '-n', maxTemplate, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-	# grep md5 sum and get result back
-	p = subprocess.Popen(['grep', checksum, md5mapdir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
-	grepresults = out.replace('\t',' ').replace('\n',' ').replace('  ',' ').strip().split(' ') #normalize the results from grepping
+	pdbCodes = out.strip().split(';') # normalize the results from grepping
 	
-	#fool mayachemtools by creating a link to our .pdb...
-	#ln -s /mnt/project/rost_db/data/pdb/entries/lj/pdb2lj7.ent experiment.pdb 
-
-	chainarray = [] #chain letters are being put into an array here
-	for v in range(len(grepresults)-2):
-		chainarray.append(grepresults[v][-1:])
+	for chain in pdbCodes # iterate over all chains we found
+		# make a fake pdb structure using the hhsuite tool
+	
 	
 	resultArray = [[] for s in range(len(grepresults)-2)] #resultArray[m][n], m = index of chain (A = 0, B = 1...) n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
 	h = 0 #iterations through the chain array
