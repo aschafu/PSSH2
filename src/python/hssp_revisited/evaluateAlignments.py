@@ -1,4 +1,4 @@
-# test script
+# new version of pythonscript_refactored using hhlib tools to process the structure file
 import os, sys
 import errno
 import gzip
