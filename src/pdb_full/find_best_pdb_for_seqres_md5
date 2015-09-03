@@ -17,7 +17,7 @@ DESCRIPTION
   3. select a new structure  
 OPTIONS
   -h          The option -h displays help and exits.
-  -d          Debug option: be verbose
+  -d          Debug option: be verbose (not implemented yet!)
   -m		  md5 sum of SEQRES sequence to search
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans\@rostlab.org>
