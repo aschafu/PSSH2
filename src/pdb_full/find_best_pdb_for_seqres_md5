@@ -42,7 +42,7 @@ if ($help || !$args_ok){
 }
 
 
-my $selectedId = '';
+my @selectedIds;
 
 #  1. find a structure with as much overlap between SEQRES and coordinates as possible
 #  get all chains for the given md5
@@ -131,7 +131,7 @@ if ($#bestIds > $multi-1){
 			# sort by resolution
 		    foreach my $id(@xray){
 				my @sortedIds = sort sortByResolution @xray;
-				@selectedIds = @sortedIds[0..$multi-1];
+				@selectedIds = @sortedIds[0 .. $multi-1];
 	    	}
 		}
 		else {
@@ -143,7 +143,7 @@ if ($#bestIds > $multi-1){
     else {
 		foreach my $id(@bestIds){
 	    	my @sortedIds = sort sortByPublished @bestIds;
-		    @selectedIds = @sortedIds[0..$multi-1];
+		    @selectedIds = @sortedIds[0 .. $multi-1];
 		}
     }
 }
