@@ -9,13 +9,15 @@ cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/parse_hhr_for_pssh2 pssh2-packa
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_seq pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2 pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_multi_md5 pssh2-package/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_aws pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2.conf pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.pssh2_local pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.aquaria_local pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/util/get_fasta_for_md5 pssh2-package/
 
 echo "now: "
-echo "consider redoing 'pssh2-package/pp_pssh2 -h | ~/software/txt2man > pssh2-package/debian/manpage.1' if that info has changed"
+#echo "consider redoing 'pssh2-package/pp_pssh2 -h | ~/software/txt2man > pssh2-package/debian/manpage.1' if that info has changed"
+echo "consider redoing 'pssh2-package/pssh2_multi_md5 -h | ~/software/txt2man > pssh2-package/debian/manpage.1' if that info has changed"
 echo "then 'cd pssh2-package/'"
 echo "consider 'dch' to update the changelog before building the package "
 echo "finally 'dpkg-buildpackage' to make the package ! "
