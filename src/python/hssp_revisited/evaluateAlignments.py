@@ -130,6 +130,7 @@ def main(argv):
 	
 	for chain in pdbCodes # iterate over all chains we found
 		# make a fake pdb structure using the hhsuite tool
+		# -> rename the sequence in the a3m output file to the pdbcode
 	
 	
 	resultArray = [[] for s in range(len(grepresults)-2)] #resultArray[m][n], m = index of chain (A = 0, B = 1...) n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
