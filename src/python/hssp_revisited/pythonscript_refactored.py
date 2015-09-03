@@ -6,6 +6,7 @@ import csv
 import subprocess
 import logging
 import time
+import ConfigParser
 
 #default paths
 hhmmdir = '/usr/share/hhsuite/scripts/hhmakemodel.pl' 
