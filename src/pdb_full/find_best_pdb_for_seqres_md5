@@ -103,7 +103,7 @@ BEST: foreach my $id(@sortedIds){
 #  2. select an X-ray structure
 #  2a. slect an X-ray structure with good resolution
 #  3. select a new structure
-if ($#bestIds > 0){
+if ($#bestIds > $multi-1){
     my @xray;
 	# get the info from the database and parse
     foreach my $id(@bestIds){
