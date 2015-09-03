@@ -146,10 +146,10 @@ if ($#bestIds > $multi-1){
     }
 }
 else {
-    $selectedId = $bestIds[0];
+    @selectedIds = @bestIds;
 }
 
-print $selectedId, "\n";
+print join(";", @selectedIds), "\n";
 
 
 
