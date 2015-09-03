@@ -83,6 +83,8 @@ def main(argv):
 	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
 	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
 	hhPath = config.get('pssh2Config', 'HHLIB')
+	pdbhhrfile= config.get('pssh2Config', 'pdbhhrfile')
+
 
 	# parse command line arguments	
 	parser = argparse.ArgumentParser()
