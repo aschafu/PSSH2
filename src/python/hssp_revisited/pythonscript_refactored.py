@@ -12,6 +12,7 @@ defaultConfig = """
 [pssh2Config]
 pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 HHLIB="/usr/share/hhsuite/"
+pdbhhrfile='query.uniprot20.pdb.full.hhr'
 """
 
 
@@ -34,25 +35,27 @@ def add_section_header(properties_file, header_name):
 	for line in properties_file:
 		yield line
 
-def process_hhr(path, checksum, spath, sname):
+def process_hhr(path, checksum, workPath, sname):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count
 	"""
+	
+	# read the hhr file in its orignial location
 	hhrfile = gzip.open(path, 'rb')
 	s = hhrfile.read()	
 	
+	# check whether we can write to our desired output directory
 	try:
-		os.makedirs(spath)
+		os.makedirs(workPath)
 	except OSError as exception:
 		if exception.errno != errno.EEXIST:
 			raise
 			
 	
-	open(spath+'/'+sname, 'w').write(s)
-	parsefile = open(spath+'/'+sname, 'rb')
+	open(workPath+'/'+sname, 'w').write(s)
+	parsefile = open(workPath+'/'+sname, 'rb')
 	linelist = parsefile.readlines()
 	
-	# skip until we reach the alignment overview:
-	#setting up loop vars
+	# search from the end of the file until we reach the Number of the last alignment (in the alignment details)
 	breaker = False
 	i = -1
 	while (breaker==False):
@@ -96,7 +99,7 @@ def main(argv):
 	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	hhrPath = (cachePath+'/query.uniprot20.pdb.full.hhr.gz')
 	sname = os.path.basename(hhrPath)[:-3]
-	spath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
+	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	
 	# check that we have the necessary input
 	if not (os.path.isfile(hhrPath)):
@@ -105,13 +108,13 @@ def main(argv):
 	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
 	
 	
-	hhrdata = (process_hhr(hhrPath, checksum, spath, sname))
+	hhrdata = (process_hhr(hhrPath, checksum, workPath, sname))
 	hhrlines, modelcount = hhrdata
 	
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
 		print('-- building model for protein '+str(model))
-		subprocess.call([ hhPath+hhMakeModelScript, '-i '+spath+'/'+sname, '-ts '+spath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
+		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+sname, '-ts '+workPath+'/query.uniprot20.pdb.full.'+str(model)+'.pdb', '-d '+dparam,'-m '+str(model)])
 
 	# grep md5 sum and get result back
 	p = subprocess.Popen(['grep', checksum, md5mapdir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -130,21 +133,21 @@ def main(argv):
 	for chain in chainarray: #iterating over how many chains we found
 		pdbCode = grepresults[h][:-2]
 		print('-- creating .ent link to /mnt/project/rost_db/data/pdb/entries/'+grepresults[0][1:3]+'/pdb'+grepresults[0][:-2]+'.ent')
-		if not os.path.isfile(spath+'/'+pdbCode+'.pdb'):
-			subprocess.call(['ln', '-s', '/mnt/project/rost_db/data/pdb/entries/'+grepresults[0][1:3]+'/pdb'+grepresults[0][:-2]+'.ent', spath+'/'+pdbCode+'.pdb'])
+		if not os.path.isfile(workPath+'/'+pdbCode+'.pdb'):
+			subprocess.call(['ln', '-s', '/mnt/project/rost_db/data/pdb/entries/'+grepresults[0][1:3]+'/pdb'+grepresults[0][:-2]+'.ent', workPath+'/'+pdbCode+'.pdb'])
 			print('-- link created!')
 		else:
 			print('-- link already exists. Using existing link...')
 	
-		subprocess.call([mayadir, '-m', 'Chains', '-c', chain, spath+'/'+pdbCode+'.pdb'])
+		subprocess.call([mayadir, '-m', 'Chains', '-c', chain, workPath+'/'+pdbCode+'.pdb'])
 		subprocess.call([mayadir, '-m', 'CAlphas', pdbCode+'Chain'+chain+'.pdb'])
 		
 		#maxcluster gdt comparison
 		print('-- performing maxcluster comparison, output to maxclres.log')
-		#subprocess.call([maxcldir, '-gdt', '-e', 'experimentChainACAlphas.pdb', '-p', spath+'/query.uniprot20.pdb.full.1.pdb', '-log', 'maxclres.log'])
+		#subprocess.call([maxcldir, '-gdt', '-e', 'experimentChainACAlphas.pdb', '-p', workPath+'/query.uniprot20.pdb.full.1.pdb', '-log', 'maxclres.log'])
 
 		for i in range (1, modelcount+1): #iterating over the single models
-			p = subprocess.Popen([maxcldir, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', spath+'/query.uniprot20.pdb.full.'+str(i)+'.pdb'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			p = subprocess.Popen([maxcldir, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', workPath+'/query.uniprot20.pdb.full.'+str(i)+'.pdb'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			
 			print('-- maxCluster\'d chain '+chain+ ' with model no. '+str(i))
 			
@@ -221,14 +224,14 @@ def main(argv):
 		print('-- cleanup in 3 seconds...')
 		time.sleep(3)
 		print('-- deleting '+sname)
-		subprocess.call(['rm', spath+'/'+sname])
+		subprocess.call(['rm', workPath+'/'+sname])
 		
 		print('-- deleting '+sname[:-4]+'.*.pdb')
 		for z in range(1, modelcount+1):
-			subprocess.call(['rm', '-f', spath+'/'+sname[:-3]+str(z)+'.pdb'])
+			subprocess.call(['rm', '-f', workPath+'/'+sname[:-3]+str(z)+'.pdb'])
 		
 		print('-- deleting mayachemtools pdbs')
-		subprocess.call(['rm', spath+'/'+pdbCode+'.pdb'])
+		subprocess.call(['rm', workPath+'/'+pdbCode+'.pdb'])
 		for chain in chainarray: #iterating over how many PDBs we found
 	
 			subprocess.call(['rm', pdbCode+'Chain'+chain+'.pdb'])
