@@ -20,7 +20,7 @@ OPTIONS
   -h          The option -h displays help and exits.
   -d          Debug option: be verbose (not implemented yet!)
   -m		  md5 sum of SEQRES sequence to search
-  -
+  -n N		  return up to N pdb ids with longest overlap with SEQRES
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans\@rostlab.org>
 \n";
