@@ -151,6 +151,7 @@ else {
     @selectedIds = @bestIds;
 }
 
+# work out the slice we want to return
 my $lastIndex;
 if ($#selectedIds > $multi-1){
 	$lastIndex = $multi-1;
