@@ -123,7 +123,7 @@ def main(argv):
 
 	# now create the things to compare against (pdb file(s) the sequence comes from)
 	# work out the pdb structures for this md5 sum
-	subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-m '+str(model)], '-n', maxTemplate)
+	subprocess.call([ bestPdbScript, '-m ', checksum , '-n', maxTemplate)
 
 	# grep md5 sum and get result back
 	p = subprocess.Popen(['grep', checksum, md5mapdir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
