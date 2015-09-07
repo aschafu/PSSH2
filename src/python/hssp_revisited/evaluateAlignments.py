@@ -65,15 +65,15 @@ def process_hhr(path, workPath, pdbhhrfile):
 		if ("No " in linelist[i]) and (len(linelist[i])<10):
 			breaker=True
 		takenline = linelist[i]
-
+	
 	iterationcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(iterationcount)+' matching proteins found!')
 	
-
+	
 	hhrgzfile.close()
 	parsefile.close()
 	return linelist, iterationcount
-	
+
 
 def main(argv):
 
@@ -240,9 +240,7 @@ def main(argv):
 
 
 if '__name__' == '__main__':
- 	main()
-
-main()
+ 	main(sys.argv[1:])	
 
 
 
