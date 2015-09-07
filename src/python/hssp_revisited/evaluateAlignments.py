@@ -19,9 +19,9 @@ pdbhhrfile='query.uniprot20.pdb.full.hhr'
 #default paths
 hhMakeModelScript = '/scripts/hhmakemodel.pl' 
 bestPdbScript = 'find_best_pdb_for_seqres_md5'
-dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
-md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
-mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
+#dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
+#md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
+#mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
 maxcldir = '/mnt/project/aliqeval/maxcluster'
 modeldir = '/mnt/project/psshcache/models'
 
@@ -76,6 +76,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 
 
 def main(argv):
+	""" here we do the real work"""
 
 	# get config info
 	config = ConfigParser.RawConfigParser()
@@ -86,6 +87,7 @@ def main(argv):
 	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
 	hhPath = config.get('pssh2Config', 'HHLIB')
 	pdbhhrfile= config.get('pssh2Config', 'pdbhhrfile')
+	pdba3mfile= config.get('pssh2Config', 'pdba3mfile')
 
 
 	# parse command line arguments	
@@ -97,7 +99,13 @@ def main(argv):
 	args = parser.parse_args()
 	csvfilename = args.out
 	checksum = args.md5
+	evaluateSingle(checksum)
 
+	
+def evaluateSingle(checksum):
+	""" evaluate the alignment for a single md5
+	"""
+	
 	#set run-time paths
 	# use find_cache_path to avoid having to get the config
 	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
@@ -131,8 +139,9 @@ def main(argv):
 	for chain in pdbChainCodes # iterate over all chains we found
 		# make a fake pdb structure using the hhsuite tool
 		# -> rename the sequence in the a3m output file to the pdbcode, then create the 'true' structure file
-		# ... TODO 
-			
+		# ... TODO
+		
+		
 
 		#maxcluster gdt comparison
 		print('-- performing maxcluster comparison, output to maxclres.log')
@@ -245,7 +254,7 @@ if '__name__' == '__main__':
 
 
 
-""""
+"""
 todo:
 - automate md5 checksum input (list)
 """
