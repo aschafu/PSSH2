@@ -13,6 +13,7 @@ defaultConfig = """
 pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 HHLIB="/usr/share/hhsuite/"
 pdbhhrfile='query.uniprot20.pdb.full.hhr'
+pdba3mfile='query.uniprot20.pdb.full.a3m'
 """
 
 
