@@ -90,8 +90,15 @@ def process_hhr(path, workPath, pdbhhrfile):
 		modelStatistics[model]['aligned_cols'] = parseLinePieces[5]
 
 	# finally look in the alignment details to find the % identity
-	for model in range (1, modelcount+1):
-		
+	model = ''
+	for lineCount in range (9+modelcount, linelist.length-1):
+		if ('No ' in linelist[lineCount]):
+			model = linelist[lineCount][3:].strip()
+		elsif ('Probab' in linelist[lineCount]):
+			detailPieces = linelist[lineCount].split(' ')
+			identities = detailPieces[4].replace('Identities=')
+			identities = identities.replace('%')
+			modelStatistics[model]['identities'] = identities
 		
 	return modelStatistics, modelCount
 
