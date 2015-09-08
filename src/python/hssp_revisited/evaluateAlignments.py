@@ -210,29 +210,10 @@ def evaluateSingle(checksum):
 			resultStore[model]['avrg']['validResult'] = False
 	
 	printSummaryFile(resultStore)
-	return resultStore
-	
-
-def printSummaryFile(resultStore, fileName, subset):
-
-	#create csvfile and writer object
-	csvfile = open(fileName, 'w')
-	csvWriter = csv.writer(csvfile, delimiter=',')
-	csvWriter.writerow(['query md5', 'Hit code', 'model id', 'avg. GDT', 'avg. TM', 'avg. RMSD', 'Prob.', 'E-value', 'P-value', 'HH score', 'Columns', 'Query HMM', 'Template', 'HMM'])
-	
-	
-			csvWriter.writerow([checksum, hhrlines[9+i][4:10], str(i+1), 'n/a', 'n/a', 'n/a', blitsParseLine[0], blitsParseLine[1], blitsParseLine[2], blitsParseLine[3],  blitsParseLine[5], blitsParseLine[6], blitsParseLine[7], blitsParseLine[8]])
-		else:
-			csvWriter.writerow([checksum, hhrlines[9+i][4:10], str(i+1), str(avgGDT/float(chainCount)), str(avgTM/float(chainCount)), str(avgRMSD/float(chainCount)), blitsParseLine[0], blitsParseLine[1], blitsParseLine[2], blitsParseLine[3], blitsParseLine[5], blitsParseLine[6], blitsParseLine[7], blitsParseLine[8]])
-	
-	csvfile.close()
-		
 
 #clean up everything
 
-	if cleanup == True:
-		print('-- cleanup in 3 seconds...')
-		time.sleep(3)
+	if cleanup == True: # TODO
 		print('-- deleting '+pdbhhrfile)
 		subprocess.call(['rm', workPath+'/'+pdbhhrfile])
 		
@@ -240,8 +221,23 @@ def printSummaryFile(resultStore, fileName, subset):
 		for z in range(1, modelcount+1):
 			subprocess.call(['rm', '-f', workPath+'/'+pdbhhrfile[:-3]+str(z)+'.pdb'])
 				
-		print('-- deleting maxclres.log')
-		subprocess.call(['rm', 'maxclres.log'])
+	return resultStore
+	
+
+def printSummaryFile(resultStore, checksum, fileName, subset):
+
+	#create csvfile and writer object
+	csvfile = open(fileName, 'w')
+	csvWriter = csv.writer(csvfile, delimiter=',')
+	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob.', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
+
+	for model in range(1, modelcount+1): 
+		for chain in subset:
+			if resultStore[model][chain]['validResult']:
+				csvWriter.writerow([checksum, resultStore[model]['md5'], model, resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'], resultStore[model][chain]['grmsd'], resultStore[model][chain]['maxsub'], resultStore[model][chain]['len'], resultStore[model][chain]['tm'])
+	
+	csvfile.close()
+	
 
 
 	
