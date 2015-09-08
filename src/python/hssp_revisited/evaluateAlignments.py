@@ -79,14 +79,16 @@ def tune_seqfile(seqLines, chainCode, workPath):
 	"""replace the sequence id in the input sequence file with the pdb code (inlcuding chain) 
 	of the structure this sequence refers to"""
 	
-	outFileHandle = open(workPath+'/'+chainCode+'.fas', 'w')
+	outFileName = workPath+'/'+chainCode+'.fas'
+	outFileHandle = open(outFileName, 'w')
 	outFileHandle.write('>'+chainCode+'\n')	
 	outFileHandle.write(seqLines)
 	outFileHandle.close()
+	return outFileName
 
 	
 def evaluateSingle(checksum):
-	""" evaluate the alignment for a single md5"""
+	"""evaluate the alignment for a single md5"""
 	
 	#set run-time paths
 	# use find_cache_path to avoid having to get the config
