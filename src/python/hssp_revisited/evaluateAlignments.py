@@ -242,7 +242,6 @@ def evaluateSingle(checksum):
 
 	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
 	avrgFileHandle = open(avrgFile, 'w')
-
 	subset = [ 'avrg' ]
 	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
