@@ -8,6 +8,13 @@ import getopt
 import logging
 import time
 
+defaultConfig = """
+pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+temp_work="/tmp/pssh2"
+local_data="/var/tmp/rost_db/data/"
+HHLIB="/usr/share/hhsuite/"
+"""
+
 #default paths
 hhmmdir = '/usr/share/hhsuite/scripts/hhmakemodel.pl' 
 dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'

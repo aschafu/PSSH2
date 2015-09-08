@@ -91,6 +91,31 @@ def tune_seqfile(seqLines, chainCode, workPath):
 def getModelFileName(workPath, pdbhhrfile, model):
 	"""utility to make sure the naming is consistent"""
 	return workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb'
+
+
+def parse_maxclusterResult(result):
+	"""parse out the result from maxcluster
+	Example: > maxcluster -gdt 4 -e exeriment.pdb -p model.00003.pdb 
+	Iter 1: Pairs= 175, RMSD= 0.541, MAXSUB=0.874. Len= 177. gRMSD= 0.821, TM=0.879
+	Percentage aligned at distance 1.000 = 82.32
+	Percentage aligned at distance 2.000 = 88.38
+	Percentage aligned at distance 4.000 = 88.38
+	Percentage aligned at distance 8.000 = 89.39
+	GDT= 87.121
+	"""
+	maxclResultLines = out.splitlines(result)
+	# The final GDT is in the last line
+	
+	
+	# search from the end of the result until we reach the last iteration superimpostion
+	breaker = False
+	i = -1
+	while (breaker==False):
+		i = i - 1
+		if ("Iter " in linelist[i])):
+			breaker=True
+	# now we can parse the line with Iter
+				
 	
 def evaluateSingle(checksum):
 	"""evaluate the alignment for a single md5 """"
@@ -148,31 +173,10 @@ def evaluateSingle(checksum):
 			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
-			
+			(rmsd, tm, gdt) = parse_maxclusterResult(out)
+			resultArray[model].append(chain, gdt, tm, rmsd))
 
-		with open('maxclres.log') as g:
-			lines = g.readlines()
-
-		#we have the chain letter currently available in the iteration, so we will just iterate over the result here
-		print('-- we got '+str(len(lines))+' lines')
-		for lineNo in range(0, len(lines)):
-			if '== results for Chain '+chain+' compared to model' in lines[lineNo]:
-				brk = False
-				it = 0
-				while brk == False:
-					it = it+1
-					if 'GDT=' in lines[lineNo+it]:
-						brk = True
-						gdt = lines[lineNo+it].replace('GDT=','').strip()
-				
-				rmsd = 0.000
-				tm = 0.000
-				if 'GDT= ' not in lines[lineNo+1]:
-					rmsd = lines[lineNo+1][26:31]
-					tm = lines[lineNo+1][74:-2]
-				
-				resultArray[h].append((int((lines[lineNo].split(' ')[8])[:-2]), gdt, tm, rmsd))
-		h = h +1
+	
 
 		
 			
@@ -227,8 +231,6 @@ def evaluateSingle(checksum):
 		subprocess.call(['rm', 'maxclres.log'])
 
 
-	
-	
 	
 def main(argv):
 	""" here we initiate the real work"""
