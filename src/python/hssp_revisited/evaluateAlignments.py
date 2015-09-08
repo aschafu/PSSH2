@@ -105,16 +105,23 @@ def parse_maxclusterResult(result):
 	"""
 	maxclResultLines = out.splitlines(result)
 	# The final GDT is in the last line
-	
-	
-	# search from the end of the result until we reach the last iteration superimpostion
-	breaker = False
-	i = -1
-	while (breaker==False):
-		i = i - 1
-		if ("Iter " in linelist[i])):
-			breaker=True
-	# now we can parse the line with Iter
+	gdt = maxclResultLines[-1].replace('GDT=','').strip()
+	pairs = maxclResultLines[-6][14:18].strip()
+	rmsd = maxclResultLines[-6][25:31].strip()
+	maxsub = maxclResultLines[-6][40:45]
+	len = maxclResultLines[-6][40:45].strip()
+	grmsd = maxclResultLines[-6][63:69].strip()
+	tm = maxclResultLines[-6][74:79]
+	structureStatistics = {
+		'gdt': float(gdt),
+		'pairs': int(pairs),
+		'rmsd': float(rmsd),
+		'maxsub': float(maxsub),
+		'len': int(len),
+		'grmsd': float(grmsd),
+		'tm': float(tm)
+	}
+	return structureStatistics
 				
 	
 def evaluateSingle(checksum):
@@ -164,6 +171,8 @@ def evaluateSingle(checksum):
 		subprocess.call([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 
 	# iterate over all models and  do the comparison (maxcluster)
+	# store the data
+	# resultArray[m][n], m = name of chain  n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
 	print('-- performing maxcluster comparison')
 	for model in range(1, modelcount+1): 
 
@@ -267,4 +276,5 @@ if '__name__' == '__main__':
 """
 todo:
 - automate md5 checksum input (list)
+
 """
