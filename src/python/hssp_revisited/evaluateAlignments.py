@@ -13,12 +13,13 @@ defaultConfig = """
 pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 HHLIB="/usr/share/hhsuite/"
 pdbhhrfile='query.uniprot20.pdb.full.hhr'
-pdba3mfile='query.uniprot20.pdb.full.a3m'
+seqfile='query.fasta'
 """
 
 
 #default paths
-hhMakeModelScript = '/scripts/hhmakemodel.pl' 
+hhMakeModelScript = '/scripts/hhmakemodel.pl'
+renumberScript = 'renumberpdb.pl'
 bestPdbScript = 'find_best_pdb_for_seqres_md5'
 #dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 #md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
@@ -39,8 +40,7 @@ def add_section_header(properties_file, header_name):
 		yield line
 
 def process_hhr(path, workPath, pdbhhrfile):
-	""" work out how many models we want to create, so we have to unzip the hhr file and count
-	"""
+	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
 	
 	# read the hhr file in its orignial location
 	hhrgzfile = gzip.open(path, 'rb')
@@ -69,43 +69,24 @@ def process_hhr(path, workPath, pdbhhrfile):
 	
 	iterationcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(iterationcount)+' matching proteins found!')
-	
-	
+		
 	hhrgzfile.close()
 	parsefile.close()
 	return linelist, iterationcount
 
 
-def main(argv):
-	""" here we do the real work"""
-
-	# get config info
-	config = ConfigParser.RawConfigParser()
-	config.readfp(io.BytesIO(defaultConfig))
-	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
-	confFileHandle = open(confPath', encoding="utf_8")	
-	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
-	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
-	hhPath = config.get('pssh2Config', 'HHLIB')
-	pdbhhrfile= config.get('pssh2Config', 'pdbhhrfile')
-	pdba3mfile= config.get('pssh2Config', 'pdba3mfile')
-
-
-	# parse command line arguments	
-	parser = argparse.ArgumentParser()
-	parser.add_argument("-o", "--out", help="name of output file (csv format)")
-	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process")
-# later add option for different formats
-	parser.set_defaults(format=csv)
-	args = parser.parse_args()
-	csvfilename = args.out
-	checksum = args.md5
-	evaluateSingle(checksum)
+def tune_seqfile(seqLines, chainCode, workPath):
+	"""replace the sequence id in the input sequence file with the pdb code (inlcuding chain) 
+	of the structure this sequence refers to"""
+	
+	outFileHandle = open(workPath+'/'+chainCode+'.fas', 'w')
+	outFileHandle.write('>'+chainCode+'\n')	
+	outFileHandle.write(seqLines)
+	outFileHandle.close()
 
 	
 def evaluateSingle(checksum):
-	""" evaluate the alignment for a single md5
-	"""
+	""" evaluate the alignment for a single md5"""
 	
 	#set run-time paths
 	# use find_cache_path to avoid having to get the config
@@ -127,8 +108,8 @@ def evaluateSingle(checksum):
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
 		print('-- building model for protein '+str(model))
-#		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
-		# we don't need -d any more since now hhsuite is properly set up at rostlab
+		#  we don't need -d any more since now hhsuite is properly set up at rostlab
+		# subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
 		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-m '+str(model)])
 
 	# now create the things to compare against (pdb file(s) the sequence comes from)
@@ -136,11 +117,18 @@ def evaluateSingle(checksum):
 	p = subprocess.Popen([ bestPdbScript, '-m ', checksum , '-n', maxTemplate, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
 	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
+
+	# read the sequence file only once (we will produce fake sequence files with the pdb codes later
+	seqLines = open(cachePath+seqfile, 'r').readlines()
+	seqLines.pop(0)
+
 	
-	for chain in pdbChainCodes # iterate over all chains we found
+	for chain in pdbChainCodes: # iterate over all chains we found
 		# make a fake pdb structure using the hhsuite tool
-		# -> rename the sequence in the a3m output file to the pdbcode, then create the 'true' structure file
+		# -> rename the sequence in the fasta sequence file to the pdbcode, then create the 'true' structure file
 		# ... TODO
+		pdbseqfile = tune_seqfile(seqLines, chain, workPath)
+		subprocess.call([ renumberScript, pdbseqfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-m '+str(model)])
 		
 		
 
@@ -246,6 +234,30 @@ def evaluateSingle(checksum):
 		
 	
 	
+def main(argv):
+	"""" here we do the real work""""
+
+	# get config info
+	config = ConfigParser.RawConfigParser()
+	config.readfp(io.BytesIO(defaultConfig))
+	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
+	confFileHandle = open(confPath', encoding="utf_8")	
+	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
+	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
+	hhPath = config.get('pssh2Config', 'HHLIB')
+	pdbhhrfile = config.get('pssh2Config', 'pdbhhrfile')
+	pdba3mfile = config.get('pssh2Config', 'pdba3mfile')
+
+	# parse command line arguments	
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-o", "--out", help="name of output file (csv format)")
+	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process")
+# later add option for different formats
+	parser.set_defaults(format=csv)
+	args = parser.parse_args()
+	csvfilename = args.out
+	checksum = args.md5
+	evaluateSingle(checksum)
 	
 
 
