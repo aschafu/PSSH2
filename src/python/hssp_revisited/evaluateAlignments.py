@@ -240,10 +240,10 @@ def evaluateSingle(checksum):
 	detailsFileHandle = open(detailsFile, 'w')
 	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
 
-	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
-	avrgFileHandle = open(avrgFile, 'w')
-	subset = [ 'avrg' ]
-	printSummaryFile(resultStore, checksum, avrgFile, subset)
+#	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
+#	avrgFileHandle = open(avrgFile, 'w')
+#	subset = [ 'avrg' ]
+#	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
 #clean up everything
 
@@ -309,8 +309,13 @@ def main(argv):
 	elsif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
+		avrgFile = csvfilename
+		avrgFileHandle = open(avrgFile, 'w')
+		subset = [ 'avrg' ]
 		for chksm in md5list:
-			evaluateSingle(chksm.replace("\n",""))
+			checksum = chksm.replace("\n","")
+			resultStore = evaluateSingle(checksum))
+			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 
 
 	
