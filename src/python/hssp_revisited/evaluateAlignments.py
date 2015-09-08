@@ -40,6 +40,7 @@ def add_section_header(properties_file, header_name):
 	for line in properties_file:
 		yield line
 
+
 def process_hhr(path, workPath, pdbhhrfile):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
 	
@@ -207,14 +208,17 @@ def evaluateSingle(checksum):
 					resultStore[model]['avrg'][valType] /= validChainCounter 	
 		else:
 			resultStore[model]['avrg']['validResult'] = False
-		
-		return resultStore
 	
+	printSummaryFile(resultStore)
+	return resultStore
 	
+
+def printSummaryFile(resultStore, fileName, subset):
+
 	#create csvfile and writer object
-	csvfile = open(csvfilename+'.csv', 'w')
+	csvfile = open(fileName, 'w')
 	csvWriter = csv.writer(csvfile, delimiter=',')
-	csvWriter.writerow(['md5 checksum', 'Hit code', 'model number', 'avg. GDT', 'avg. TM', 'avg. RMSD', 'Prob.', 'E-value', 'P-value', 'HH score', 'Columns', 'Query HMM', 'Template', 'HMM'])
+	csvWriter.writerow(['query md5', 'Hit code', 'model id', 'avg. GDT', 'avg. TM', 'avg. RMSD', 'Prob.', 'E-value', 'P-value', 'HH score', 'Columns', 'Query HMM', 'Template', 'HMM'])
 	
 	
 			csvWriter.writerow([checksum, hhrlines[9+i][4:10], str(i+1), 'n/a', 'n/a', 'n/a', blitsParseLine[0], blitsParseLine[1], blitsParseLine[2], blitsParseLine[3],  blitsParseLine[5], blitsParseLine[6], blitsParseLine[7], blitsParseLine[8]])
