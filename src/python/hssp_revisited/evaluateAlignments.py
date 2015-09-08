@@ -316,8 +316,6 @@ def main(argv):
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum))
 			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
-
-
 	
 
 
