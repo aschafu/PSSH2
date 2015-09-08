@@ -21,10 +21,11 @@ seqfile='query.fasta'
 hhMakeModelScript = '/scripts/hhmakemodel.pl'
 renumberScript = 'renumberpdb.pl'
 bestPdbScript = 'find_best_pdb_for_seqres_md5'
+maxclScript = '/mnt/project/aliqeval/maxcluster'
+
 #dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 #md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
 #mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
-maxcldir = '/mnt/project/aliqeval/maxcluster'
 modeldir = '/mnt/project/psshcache/models'
 
 cleanup = True 
@@ -86,6 +87,10 @@ def tune_seqfile(seqLines, chainCode, workPath):
 	outFileHandle.close()
 	return outFileName
 
+
+def getModelFileName(workPath, pdbhhrfile, model):
+	"""utility to make sure the naming is consistent"""
+	return workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb'
 	
 def evaluateSingle(checksum):
 	"""evaluate the alignment for a single md5 """"
@@ -111,58 +116,43 @@ def evaluateSingle(checksum):
 		print('-- building model for protein '+str(model))
 		#  we don't need -d any more since now hhsuite is properly set up at rostlab
 		# subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
-		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-m '+str(model)])
+		modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+ modelFileWithPath, '-m '+str(model)])
 
 	# now create the things to compare against (pdb file(s) the sequence comes from)
-	# work out the pdb structures for this md5 sum
-	p = subprocess.Popen([ bestPdbScript, '-m ', checksum , '-n', maxTemplate, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	out, err = p.communicate()
-	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
+	# make a fake pdb structure using the hhsuite tool
+	# -> rename the sequence in the fasta sequence file to the pdbcode, then create the 'true' structure file
 
 	# read the sequence file only once (we will produce fake sequence files with the pdb codes later)
 	seqLines = open(cachePath+seqfile, 'r').readlines()
 	seqLines.pop(0)
 
+	# work out the pdb structures for this md5 sum
+	p = subprocess.Popen([bestPdbScript, '-m ', checksum , '-n', maxTemplate], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = p.communicate()
+	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
 
-
-	
-def bla:
-	
-	
-	
-	
-
-	
-	for chain in pdbChainCodes: # iterate over all chains we found
-		# make a fake pdb structure using the hhsuite tool
-		# -> rename the sequence in the fasta sequence file to the pdbcode, then create the 'true' structure file
-		# ... TODO
+	# iterate over all chains we found and prepare files to compare agains
+	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, workPath)
-		subprocess.call([ renumberScript, pdbseqfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-m '+str(model)])
-		
-		
+		pdbstrucfile = workPath+chain+'.pdb'
+		subprocess.call([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 
-		#maxcluster gdt comparison
-		print('-- performing maxcluster comparison, output to maxclres.log')
-		#subprocess.call([maxcldir, '-gdt', '-e', 'experimentChainACAlphas.pdb', '-p', workPath+'/query.uniprot20.pdb.full.1.pdb', '-log', 'maxclres.log'])
+	# iterate over all models and  do the comparison (maxcluster)
+	print('-- performing maxcluster comparison')
+	for model in range(1, modelcount+1): 
 
-		for i in range (1, modelcount+1): #iterating over the single models
-			p = subprocess.Popen([maxcldir, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', workPath+'/query.uniprot20.pdb.full.'+str(i)+'.pdb'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		for chain in pdbChainCodes:
 			
-			print('-- maxCluster\'d chain '+chain+ ' with model no. '+str(i))
-			
+			print('-- maxCluster\'d chain '+chain+ ' with model no. '+str(model))
+			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			
-			res = open('maxclres.log', 'a')
-			res.write('== results for Chain '+chain+' compared to model '+str(i)+':\n')
-			res.write(out)
-			time.sleep(0.05)
-		
-		res.close()
-		time.sleep(2)
+
 		with open('maxclres.log') as g:
 			lines = g.readlines()
-			
+
 		#we have the chain letter currently available in the iteration, so we will just iterate over the result here
 		print('-- we got '+str(len(lines))+' lines')
 		for lineNo in range(0, len(lines)):
@@ -183,6 +173,9 @@ def bla:
 				
 				resultArray[h].append((int((lines[lineNo].split(' ')[8])[:-2]), gdt, tm, rmsd))
 		h = h +1
+
+		
+			
 	#create csvfile and writer object
 	csvfile = open(csvfilename+'.csv', 'w')
 	csvWriter = csv.writer(csvfile, delimiter=',')
@@ -195,8 +188,8 @@ def bla:
 		avgTM = 0.000
 		avgRMSD = 0.000
 		chainCount = 0
-		for j in range(len(chainarray)): #iterating for every chain
-			#print('length of chainarray = '+str(len(chainarray)))
+		for j in range(len(pdbChainCodes)): #iterating for every chain
+			#print('length of pdbChainCodes = '+str(len(pdbChainCodes)))
 			#print('resArr ji1: '+str(resultArray[j][i][1]) + ' / resArr ji3: '+str(resultArray[j][i][3]))
 			if not float(resultArray[j][i][1])+float(resultArray[j][i][3])==0.000:
 				chainCount += 1
@@ -229,29 +222,21 @@ def bla:
 		print('-- deleting '+pdbhhrfile[:-4]+'.*.pdb')
 		for z in range(1, modelcount+1):
 			subprocess.call(['rm', '-f', workPath+'/'+pdbhhrfile[:-3]+str(z)+'.pdb'])
-		
-		print('-- deleting mayachemtools pdbs')
-		subprocess.call(['rm', workPath+'/'+pdbCode+'.pdb'])
-		for chain in chainarray: #iterating over how many PDBs we found
-	
-			subprocess.call(['rm', pdbCode+'Chain'+chain+'.pdb'])
-			subprocess.call(['rm', pdbCode+'Chain'+chain+'CAlphas.pdb'])
-		
+				
 		print('-- deleting maxclres.log')
 		subprocess.call(['rm', 'maxclres.log'])
-		
 
-		
+
+	
 	
 	
 def main(argv):
-	"""" here we do the real work""""
-
+	""" here we initiate the real work"""
 	# get config info
 	config = ConfigParser.RawConfigParser()
 	config.readfp(io.BytesIO(defaultConfig))
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
-	confFileHandle = open(confPath', encoding="utf_8")	
+	confFileHandle = open(confPath, encoding="utf_8")	
 	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
 	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
 	hhPath = config.get('pssh2Config', 'HHLIB')
