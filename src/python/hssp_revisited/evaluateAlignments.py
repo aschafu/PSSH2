@@ -213,13 +213,13 @@ def evaluateSingle(checksum):
 
 #clean up everything
 
-	if cleanup == True: # TODO
-		print('-- deleting '+pdbhhrfile)
-		subprocess.call(['rm', workPath+'/'+pdbhhrfile])
-		
-		print('-- deleting '+pdbhhrfile[:-4]+'.*.pdb')
-		for z in range(1, modelcount+1):
-			subprocess.call(['rm', '-f', workPath+'/'+pdbhhrfile[:-3]+str(z)+'.pdb'])
+# 	if cleanup == True: # TODO
+# 		print('-- deleting '+pdbhhrfile)
+# 		subprocess.call(['rm', workPath+'/'+pdbhhrfile])
+# 		
+# 		print('-- deleting '+pdbhhrfile[:-4]+'.*.pdb')
+# 		for z in range(1, modelcount+1):
+# 			subprocess.call(['rm', '-f', workPath+'/'+pdbhhrfile[:-3]+str(z)+'.pdb'])
 				
 	return resultStore
 	
@@ -229,12 +229,12 @@ def printSummaryFile(resultStore, checksum, fileName, subset):
 	#create csvfile and writer object
 	csvfile = open(fileName, 'w')
 	csvWriter = csv.writer(csvfile, delimiter=',')
-	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob.', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
+	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
 
 	for model in range(1, modelcount+1): 
 		for chain in subset:
 			if resultStore[model][chain]['validResult']:
-				csvWriter.writerow([checksum, resultStore[model]['md5'], model, resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'], resultStore[model][chain]['grmsd'], resultStore[model][chain]['maxsub'], resultStore[model][chain]['len'], resultStore[model][chain]['tm'])
+				csvWriter.writerow([checksum, resultStore[model]['match md5'], model, resultStore[model]['prob'], resultStore[model]['eval'], resultStore[model]['pval'], resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'], resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'], resultStore[model][chain]['grmsd'], resultStore[model][chain]['maxsub'], resultStore[model][chain]['len'], resultStore[model][chain]['tm'])
 	
 	csvfile.close()
 	
