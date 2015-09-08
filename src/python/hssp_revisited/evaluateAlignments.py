@@ -73,6 +73,11 @@ def process_hhr(path, workPath, pdbhhrfile):
 	
 	iterationcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(iterationcount)+' matching proteins found!')
+	
+	# now work out the statistics data 
+	for i in range (1, modelcount+1):
+		parseLine = linelist[8+i]
+		
 		
 	return modelStatistics, modelCount
 
