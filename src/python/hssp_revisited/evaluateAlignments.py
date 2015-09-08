@@ -182,8 +182,8 @@ def evaluateSingle(checksum):
 			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
-			(rmsd, tm, gdt) = parse_maxclusterResult(out)
-			resultArray[model].append(chain, gdt, tm, rmsd))
+			structureStatistics = parse_maxclusterResult(out)
+			resultStore[model][chain] = parse_maxclusterResult(out)
 
 	
 
