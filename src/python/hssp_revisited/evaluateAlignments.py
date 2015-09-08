@@ -209,7 +209,11 @@ def evaluateSingle(checksum):
 		else:
 			resultStore[model]['avrg']['validResult'] = False
 	
-	printSummaryFile(resultStore)
+	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'
+	printSummaryFile(resultStore, checksum, detailsFile, pdbChainCodes)
+	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
+	subset = [ 'avrg' ]
+	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
 #clean up everything
 
