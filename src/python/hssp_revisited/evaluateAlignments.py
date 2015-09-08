@@ -105,22 +105,28 @@ def parse_maxclusterResult(result):
 	"""
 	maxclResultLines = out.splitlines(result)
 	# The final GDT is in the last line
-	gdt = maxclResultLines[-1].replace('GDT=','').strip()
-	pairs = maxclResultLines[-6][14:18].strip()
-	rmsd = maxclResultLines[-6][25:31].strip()
-	maxsub = maxclResultLines[-6][40:45]
-	len = maxclResultLines[-6][40:45].strip()
-	grmsd = maxclResultLines[-6][63:69].strip()
-	tm = maxclResultLines[-6][74:79]
-	structureStatistics = {
-		'gdt': float(gdt),
-		'pairs': int(pairs),
-		'rmsd': float(rmsd),
-		'maxsub': float(maxsub),
-		'len': int(len),
-		'grmsd': float(grmsd),
-		'tm': float(tm)
-	}
+	if 'GDT' in maxclResultLines[-1]:
+		gdt = maxclResultLines[-1].replace('GDT=','').strip()
+		pairs = maxclResultLines[-6][14:18].strip()
+		rmsd = maxclResultLines[-6][25:31].strip()
+		maxsub = maxclResultLines[-6][40:45]
+		len = maxclResultLines[-6][40:45].strip()
+		grmsd = maxclResultLines[-6][63:69].strip()
+		tm = maxclResultLines[-6][74:79]
+		structureStatistics = {
+			'validResult': True,
+			'gdt': float(gdt),
+			'pairs': int(pairs),
+			'rmsd': float(rmsd),
+			'maxsub': float(maxsub),
+			'len': int(len),
+			'grmsd': float(grmsd),
+			'tm': float(tm)
+		}
+	else:
+		structureStatistics = {
+			'validResult': False
+		}
 	return structureStatistics
 				
 	
@@ -176,6 +182,7 @@ def evaluateSingle(checksum):
 	print('-- performing maxcluster comparison')
 	for model in range(1, modelcount+1): 
 
+		validChainCounter = 0
 		for chain in pdbChainCodes:
 			
 			print('-- maxCluster\'d chain '+chain+ ' with model no. '+str(model))
@@ -183,40 +190,33 @@ def evaluateSingle(checksum):
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			structureStatistics = parse_maxclusterResult(out)
-			resultStore[model][chain] = parse_maxclusterResult(out)
-
-	
-
-		
 			
+			if structureStatistics['validResult']:
+				validChainCounter += 1
+				resultStore[model][chain] = structureStatistics
+				for valType in structureStatistics.keys():
+					if valType == 'validResult':
+						resultStore[model]['avrg'][valType] = True
+					else:
+						resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
+
+		# calculate the average over the different pdb structures
+		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
+			for valType in resultStore[model]['avrg'].keys():
+				if valType != 'validResult':
+					resultStore[model]['avrg'][valType] /= validChainCounter 	
+		else:
+			resultStore[model]['avrg']['validResult'] = False
+		
+		return resultStore
+	
+	
 	#create csvfile and writer object
 	csvfile = open(csvfilename+'.csv', 'w')
 	csvWriter = csv.writer(csvfile, delimiter=',')
 	csvWriter.writerow(['md5 checksum', 'Hit code', 'model number', 'avg. GDT', 'avg. TM', 'avg. RMSD', 'Prob.', 'E-value', 'P-value', 'HH score', 'Columns', 'Query HMM', 'Template', 'HMM'])
 	
 	
-	for i in range (modelcount): #iterating over the resultArray for every model
-		print(str(i)+' of modelcount = '+str(modelcount))
-		avgGDT =0.000
-		avgTM = 0.000
-		avgRMSD = 0.000
-		chainCount = 0
-		for j in range(len(pdbChainCodes)): #iterating for every chain
-			#print('length of pdbChainCodes = '+str(len(pdbChainCodes)))
-			#print('resArr ji1: '+str(resultArray[j][i][1]) + ' / resArr ji3: '+str(resultArray[j][i][3]))
-			if not float(resultArray[j][i][1])+float(resultArray[j][i][3])==0.000:
-				chainCount += 1
-				avgGDT += float(resultArray[j][i][1])
-				avgTM += float(resultArray[j][i][2])
-				avgRMSD += float(resultArray[j][i][3])
-		blitsParseLine = hhrlines[9+i][36:]
-		blitsParseLine = blitsParseLine.replace('(',' ')
-		blitsParseLine = blitsParseLine.replace(')',' ')
-		while '  ' in blitsParseLine:
-			blitsParseLine = blitsParseLine.replace('  ', ' ')
-		blitsParseLine = blitsParseLine.split(' ')
-		#blitsParseLine values: 0 = 
-		if avgGDT + avgRMSD == 0.000:
 			csvWriter.writerow([checksum, hhrlines[9+i][4:10], str(i+1), 'n/a', 'n/a', 'n/a', blitsParseLine[0], blitsParseLine[1], blitsParseLine[2], blitsParseLine[3],  blitsParseLine[5], blitsParseLine[6], blitsParseLine[7], blitsParseLine[8]])
 		else:
 			csvWriter.writerow([checksum, hhrlines[9+i][4:10], str(i+1), str(avgGDT/float(chainCount)), str(avgTM/float(chainCount)), str(avgRMSD/float(chainCount)), blitsParseLine[0], blitsParseLine[1], blitsParseLine[2], blitsParseLine[3], blitsParseLine[5], blitsParseLine[6], blitsParseLine[7], blitsParseLine[8]])
