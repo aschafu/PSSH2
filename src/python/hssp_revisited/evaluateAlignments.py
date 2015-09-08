@@ -59,6 +59,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 	open(workPath+'/'+pdbhhrfile, 'w').write(s)
 	parsefile = open(workPath+'/'+pdbhhrfile, 'rb')
 	linelist = parsefile.readlines()
+	hhrgzfile.close()
+	parsefile.close()
 	
 	# search from the end of the file until we reach the Number of the last alignment (in the alignment details)
 	breaker = False
@@ -72,9 +74,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	iterationcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(iterationcount)+' matching proteins found!')
 		
-	hhrgzfile.close()
-	parsefile.close()
-	return linelist, iterationcount
+	return modelStatistics, modelCount
 
 
 def tune_seqfile(seqLines, chainCode, workPath):
@@ -148,7 +148,7 @@ def evaluateSingle(checksum):
 	# work out how many models we want to create, get unzipped data
 	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	hhrdata = (process_hhr(hhrPath, checksum, workPath, pdbhhrfile))
-	hhrlines, modelcount = hhrdata
+	resultStore, modelCount = hhrdata
 
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
