@@ -74,16 +74,23 @@ def process_hhr(path, workPath, pdbhhrfile):
 	iterationcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(iterationcount)+' matching proteins found!')
 	
-	# now work out the statistics data 
-	for i in range (1, modelcount+1):
-		parseLine = linelist[8+i][36:]
+	# now work out the statistics data from the summary
+	for model in range (1, modelcount+1):
+		parseLine = linelist[8+model][36:]
 		parseLine = blitsParseLine.replace('(',' ')
 		parseLine = blitsParseLine.replace(')',' ')
 		while '  ' in parseLine:
 			parseLine = blitsParseLine.replace('  ', ' ')
 		parseLinePieces = blitsParseLine.split(' ')
-		
-	
+#		'E-value', 'P-value', 'HH score', 'Columns'
+		modelStatistics[model]['prob'] = parseLinePieces[0]
+		modelStatistics[model]['eval'] = parseLinePieces[1]
+		modelStatistics[model]['pval'] = parseLinePieces[2] 
+		modelStatistics[model]['hhscore'] = parseLinePieces[3] 
+		modelStatistics[model]['aligned_cols'] = parseLinePieces[5]
+
+	# finally look in the alignment details to find the % identity
+	for model in range (1, modelcount+1):
 		
 		
 	return modelStatistics, modelCount
