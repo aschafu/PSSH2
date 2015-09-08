@@ -88,25 +88,24 @@ def tune_seqfile(seqLines, chainCode, workPath):
 
 	
 def evaluateSingle(checksum):
-	"""evaluate the alignment for a single md5"""
-	
-	#set run-time paths
+	"""evaluate the alignment for a single md5 """"
+
+	# find the data for this md5 
 	# use find_cache_path to avoid having to get the config
 	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	hhrPath = (cachePath+pdbhhrfile+'.gz')
-#	sname = os.path.basename(hhrPath)[:-3] --> rename sname to pdbhhrfile
-	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
-	
+
 	# check that we have the necessary input
 	if not (os.path.isfile(hhrPath)):
 		print('-- hhr does not exist, check md5 checksum!\n-- stopping execution...')
 		return
 	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
-	
+
 	# work out how many models we want to create, get unzipped data
+	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	hhrdata = (process_hhr(hhrPath, checksum, workPath, pdbhhrfile))
 	hhrlines, modelcount = hhrdata
-	
+
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
 		print('-- building model for protein '+str(model))
@@ -120,9 +119,18 @@ def evaluateSingle(checksum):
 	out, err = p.communicate()
 	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
 
-	# read the sequence file only once (we will produce fake sequence files with the pdb codes later
+	# read the sequence file only once (we will produce fake sequence files with the pdb codes later)
 	seqLines = open(cachePath+seqfile, 'r').readlines()
 	seqLines.pop(0)
+
+
+
+	
+def bla:
+	
+	
+	
+	
 
 	
 	for chain in pdbChainCodes: # iterate over all chains we found
