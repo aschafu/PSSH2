@@ -235,9 +235,14 @@ def evaluateSingle(checksum):
 		else:
 			resultStore[model]['avrg']['validResult'] = False
 	
-	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'
-	printSummaryFile(resultStore, checksum, detailsFile, pdbChainCodes)
+	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
+	#create csvfile and writer object
+	detailsFileHandle = open(detailsFile, 'w')
+	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
+
 	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
+	avrgFileHandle = open(avrgFile, 'w')
+
 	subset = [ 'avrg' ]
 	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
@@ -254,11 +259,9 @@ def evaluateSingle(checksum):
 	return resultStore
 	
 
-def printSummaryFile(resultStore, checksum, fileName, subset):
+def printSummaryFile(resultStore, checksum, fileHandle, subset):
 
-	#create csvfile and writer object
-	csvfile = open(fileName, 'w')
-	csvWriter = csv.writer(csvfile, delimiter=',')
+	csvWriter = csv.writer(fileHandle, delimiter=',')
 	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
 
 	for model in range(1, modelcount+1): 
@@ -300,7 +303,17 @@ def main(argv):
 	csvfilename = args.out
 
 	checksum = args.md5
-	evaluateSingle(checksum)
+	list = args.list
+
+	if checksum:
+		evaluateSingle(checksum)
+	elsif list:
+		md5listfile = open(list, 'rb')
+		md5list = md5listfile.readlines()
+		for chksm in md5list:
+			evaluateSingle(chksm.replace("\n",""))
+
+
 	
 
 
