@@ -245,13 +245,11 @@ def evaluateSingle(checksum):
 #	subset = [ 'avrg' ]
 #	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
-#clean up everything
-
- 	if cleanup == True: 
- 		print('-- deleting ' + workPath+'/'+pdbhhrfile+'*'+ ' and ' + workPath+'/'+chainCode+'*')
- 		subprocess.call(['rm', workPath+'/'+pdbhhrfile+'*'])
- 		subprocess.call(['rm', workPath+'/'+chainCode+'*'])
- 		 						
+	if cleanup == True: 
+		print('-- deleting '+workPath+'/'+pdbhhrfile+'*'+' and '+workPath+'/'+chainCode+'*')
+		subprocess.call(['rm', workPath+'/'+pdbhhrfile+'*'])
+		subprocess.call(['rm', workPath+'/'+chainCode+'*'])
+ 	
 	return resultStore
 	
 
@@ -292,6 +290,8 @@ def main(argv):
 	parser.add_argument("-o", "--out", help="name of output file (csv format)")
 	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process")
 	parser.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
+#	parser.add_argument("-k", "--keep", help="keep work files (no cleanup)")
+
 
 # later add option for different formats
 	parser.set_defaults(format=csv)
@@ -301,8 +301,10 @@ def main(argv):
 	checksum = args.md5
 	list = args.list
 
+#   cleanup = False
+
 	if checksum:
-		evaluateSingle(checksum)
+		evaluateSingle(checksum, cleanup)
 	elsif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
@@ -311,7 +313,7 @@ def main(argv):
 		subset = [ 'avrg' ]
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
-			resultStore = evaluateSingle(checksum))
+			resultStore = evaluateSingle(checksum, cleanup)
 			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	
 
