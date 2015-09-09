@@ -247,14 +247,11 @@ def evaluateSingle(checksum):
 
 #clean up everything
 
-# 	if cleanup == True: # TODO
-# 		print('-- deleting '+pdbhhrfile)
-# 		subprocess.call(['rm', workPath+'/'+pdbhhrfile])
-# 		
-# 		print('-- deleting '+pdbhhrfile[:-4]+'.*.pdb')
-# 		for z in range(1, modelcount+1):
-# 			subprocess.call(['rm', '-f', workPath+'/'+pdbhhrfile[:-3]+str(z)+'.pdb'])
-				
+ 	if cleanup == True: 
+ 		print('-- deleting ' + workPath+'/'+pdbhhrfile+'*'+ ' and ' + workPath+'/'+chainCode+'*')
+ 		subprocess.call(['rm', workPath+'/'+pdbhhrfile+'*'])
+ 		subprocess.call(['rm', workPath+'/'+chainCode+'*'])
+ 		 						
 	return resultStore
 	
 
