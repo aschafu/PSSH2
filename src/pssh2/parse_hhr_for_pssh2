@@ -96,133 +96,131 @@ output: \@alis, @alis format: ($seqres_md5sum, $evalue, $identity/100.0, $gaples
 =cut
 
 sub read_hhr{
-	my ($i, $v) = @_;
-
-	# changed 09/2015: no mapping needed any more: pdb_full now uses md5 sums, not pdb IDs
-#	my %id_md5sum = ();
-#	open (READ, "$mapping") or die "could not open $mapping";
-#	for my $line (<READ>) {
-#  	# CAVE: If the mapping file we use for evaluating a hhr file 
-#  	# does not fit the pdb_full database that was used for generating the hhr file
-#  	# this might fail (because the id of the representative might have changed)!
-#	  	if ($line =~ /^(\S*).*\t(\S*)\t/){
-#			$id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
-#		}
-#		if ($line =~ /^(\S*).*\t(\S*)\t/){
-#	  		my $md5 = $2;
-#			my @cols = split /\t/, $line;
-#			my @ids = split /\s/, $cols[0];
-#			foreach my $id(@ids){
-#				$id_md5sum{$id} = $md5; # $1=target_id, $2=seqres_md5sum
-#			}
-#		}
-#	} 
-#	close READ;
-#	if ($v) {print "\%id_md5sum size: ".scalar(keys(%id_md5sum))."\n";}
-
-	## parse the hhr file and write the output hash %alis
-  	if ($v) {print "Parsing the hhr file ...\n";}
-  	my $align_lines = 0;
-  	my $ali_start;
-
-	my $query_id;
-	my $substr_query_id;
-	my $full_target_id;
-	my $substr_target_id;
-
-	my @alis;
-	my $target_id; #e.g. 1bab_A
-	my $seqres_md5sum;
-	my $evalue;
-	my $identity;
-
-	my $query_ali_start;
-	my $target_ali_start;
-	my $query_ali = ""; 
-	my $target_ali = "";
-	my $gapless_blocks;
-
-  	open (READ, "$i") or die "could not open $i";
-  	for my $line (<READ>) {
-
-    	if ($line =~ /^Query\s*(\S*)/) { #query
-			$query_id = $1;
-			$substr_query_id = substr($query_id, 0, 14);
-			$substr_query_id =~ s/\|/\\\|/g;
-			if ($v) {print "Query: ".$query_id."\n\n";}
-    	}
-    
-    	if ($align_lines) {   #alignments   
-    		if ($line =~ /^>(\S+)\s(.+)/) { #1st line of an alignment
-        		$full_target_id = $1;
-				$substr_target_id = substr($full_target_id, 0, 14);
-#				$substr_target_id =~ s/\|/\\\|/g;
-				$ali_start = 1; #so that new alignment start positions will be read
-				$query_ali = ""; #set to empty to read the new alignment
-				$target_ali = "";
- 				if ($v) {print "Target: ".$full_target_id."\n";}
-      		}   
-
-      		if ($line =~ /^Probab/) { #2nd line of an alignment
-		        my @p = split(/\s+/, $line);
-		        $evalue = $p[1]; 
-		        $identity = $p[4];
-
-		        $evalue =~ /=(.+)/; 
-		        $evalue = $1; 
-		        $identity =~ /=(.+)\%/;
-		        $identity = $1; 
-      		}
-      
-      		#alignment blocks
-      		#alignment start positions
-      		if ($ali_start) {
-        		if ($line =~ /^Q\s+$substr_query_id\s+(\S+)\s/){ 
-          			$query_ali_start = $1;	
-        		}
-        		if ($line =~ /^T\s+$substr_target_id\s+(\S+)\s/){
-          			$target_ali_start = $1;
-          			$ali_start = 0; #ready with alignment start positions
-          		}
-          	}
-          	#alignment sequences
-          	if ($line =~ /^Q\s+$substr_query_id\s+\S+\s(\S+)/){
-          		$query_ali .= $1;
-          	}
-          	if ($line =~ /^T\s+$substr_target_id\s+\S+\s(\S+)/){
-          		$target_ali .= $1;
-          	}
-
-      		if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment
-
-				# changed 09/2015 from pdb_id type to md5
-        		if ($full_target_id =~ /(\w{32})/){
-        			$target_id = $1;
-        			if ($v) {print "target ID: ".$target_id."\n";}
- 		       	} else{
-        			print "Error: full target ID in wrong format!\n";
-        			exit(1);
-        		}
-
-        		$seqres_md5sum = $target_id;
-        		if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
-		    	$gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
-
-        		my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks);
-        		if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, gapless_blocks):", join ", ", @ali_values, "\n";} 
-        		push (@alis, \@ali_values);      
-      		}
-    	}
-
-		if ($line =~ /^No 1 /) { #first alignment begins
-      		$align_lines = 1;  
-    	}   
-
+  my ($i, $v) = @_;
+  my %id_md5sum = ();
+  open (READ, "$mapping") or die "could not open $mapping";
+  for my $line (<READ>) {
+  # CAVE: If the mapping file we use for evaluating a hhr file 
+  # does not fit the pdb_full database that was used for generating the hhr file
+  # this might fail (because the id of the representative might have changed)!
+  	if ($line =~ /^(\S*).*\t(\S*)\t/){
+  	  $id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
   	}
-  	close READ;
-  	return \@alis;
-}
+  	if ($line =~ /^(\S*).*\t(\S*)\t/){
+	  my $md5 = $2;
+	  my @cols = split /\t/, $line;
+	  my @ids = split /\s/, $cols[0];
+	  foreach my $id(@ids){
+	  	$id_md5sum{$id} = $md5; # $1=target_id, $2=seqres_md5sum
+	  }
+	}
+  } 
+  close READ;
+  if ($v) {print "\%id_md5sum size: ".scalar(keys(%id_md5sum))."\n";}
 
+
+  ## parse the hhr file and write the output hash %alis
+  if ($v) {print "Parsing the hhr file ...\n";}
+  my $align_lines = 0;
+  my $ali_start;
+
+  my $query_id;
+  my $substr_query_id;
+  my $full_target_id;
+  my $substr_target_id;
+
+  my @alis;
+  my $target_id; #e.g. 1bab_A
+  my $seqres_md5sum;
+  my $evalue;
+  my $identity;
+
+  my $query_ali_start;
+  my $target_ali_start;
+  my $query_ali = ""; 
+  my $target_ali = "";
+  my $gapless_blocks;
+
+  open (READ, "$i") or die "could not open $i";
+  for my $line (<READ>) {
+
+    if ($line =~ /^Query\s*(\S*)/) { #query
+	$query_id = $1;
+	$substr_query_id = substr($query_id, 0, 14);
+	$substr_query_id =~ s/\|/\\\|/g;
+	if ($v) {print "Query: ".$query_id."\n\n";}
+    }
+    
+    if ($align_lines) {   #alignments   
+      if ($line =~ /^>(\S+)\s(.+)/) { #1st line of an alignment
+        $full_target_id = $1;
+	$substr_target_id = substr($full_target_id, 0, 14);
+	$substr_target_id =~ s/\|/\\\|/g;
+	$ali_start = 1; #so that new alignment start positions will be read
+	$query_ali = ""; #set to empty to read the new alignment
+	$target_ali = "";
+ 	if ($v) {print "Target: ".$full_target_id."\n";}
+      }   
+
+      if ($line =~ /^Probab/) { #2nd line of an alignment
+        my @p = split(/\s+/, $line);
+        $evalue = $p[1]; 
+        $identity = $p[4];
+
+        $evalue =~ /=(.+)/; 
+        $evalue = $1; 
+        $identity =~ /=(.+)\%/;
+        $identity = $1; 
+      }
+      
+      #alignment blocks
+      #alignment start positions
+      if ($ali_start) {
+        if ($line =~ /^Q\s+$substr_query_id\s+(\S+)\s/){ 
+          $query_ali_start = $1;	
+        }
+        if ($line =~ /^T\s+$substr_target_id\s+(\S+)\s/){
+          $target_ali_start = $1;
+          $ali_start = 0; #ready with alignment start positions
+        }
+      }
+      #alignment sequences
+      if ($line =~ /^Q\s+$substr_query_id\s+\S+\s(\S+)/){
+        $query_ali .= $1;
+      }
+      if ($line =~ /^T\s+$substr_target_id\s+\S+\s(\S+)/){
+        $target_ali .= $1;
+      }
+
+      if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment
+
+        if ($full_target_id =~ /^(\w{32})/){
+        	$target_id = $1;
+        	if ($v) {print "target ID: ".$target_id."\n";}
+        }else{
+        	print "Error: full target ID in wrong format!\n";
+        	exit(1);
+        }
+
+        $seqres_md5sum = $target_id;
+
+        $gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
+
+        my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks);
+        if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, gapless_blocks):", join ", ", @ali_values, "\n";} 
+        push (@alis, \@ali_values);      
+      }
+    }
+
+    if ($line =~ /^No 1 /) { #first alignment begins
+      $align_lines = 1;  
+    }   
+
+  }
+  close READ;
+
+  return \@alis;
+}
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 =head 3 Subroutine parse_gapless_blocks
