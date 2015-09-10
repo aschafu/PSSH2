@@ -139,7 +139,7 @@ sub read_hhr{
     	}
     
     	if ($align_lines) {   #alignments   
-    		if ($line =~ /^>(\S+)\s(.+)/) { #1st line of an alignment
+    		if ($line =~ /^>(\S+)\s/) { #1st line of an alignment
         		$full_target_id = $1;
 				$substr_target_id = substr($full_target_id, 0, 14);
 #				$substr_target_id =~ s/\|/\\\|/g;
