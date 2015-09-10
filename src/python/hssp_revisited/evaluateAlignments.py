@@ -315,7 +315,7 @@ def main(argv):
 		md5list = md5listfile.readlines()
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
-			resultStore = evaluateSingle(checksum, cleanup)
+			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check
 		printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	
 
