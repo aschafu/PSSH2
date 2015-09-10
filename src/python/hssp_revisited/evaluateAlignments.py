@@ -287,7 +287,8 @@ def main(argv):
 
 	# parse command line arguments	
 	parser = argparse.ArgumentParser()
-	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process (output will got to cache path)")
+	helpString = "md5 sum of sequence to process (output will got to "+modeldir+")"
+	parser.add_argument("-m", "--md5", help="md5 sum of sequence to process (output will got to )")
 	parser.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
 	parser.add_argument("-o", "--out", help="name of output file (csv format)")
 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
