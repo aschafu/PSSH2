@@ -309,14 +309,13 @@ def main(argv):
 	subset = [ 'avrg' ]
 	if checksum:
 		resultStore = evaluateSingle(checksum, cleanup)
-		printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	elif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
-		printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	
 
 
