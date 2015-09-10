@@ -304,18 +304,19 @@ def main(argv):
 	if args.keep:
 		cleanup = False
 
+	avrgFile = csvfilename
+	avrgFileHandle = open(avrgFile, 'w')
+	subset = [ 'avrg' ]
 	if checksum:
-		evaluateSingle(checksum, cleanup)
-	elsif list:
+		resultStore = evaluateSingle(checksum, cleanup)
+		printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+	elif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
-		avrgFile = csvfilename
-		avrgFileHandle = open(avrgFile, 'w')
-		subset = [ 'avrg' ]
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup)
-			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+		printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	
 
 
