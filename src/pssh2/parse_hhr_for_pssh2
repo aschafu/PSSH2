@@ -195,30 +195,23 @@ sub read_hhr{
 
       		if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment
 
-			# changed 09/2015 from pdb_id type to md5
-        	if ($full_target_id =~ /(\w{32}/){
-        		$target_id = $1;
-        		if ($v) {print "target ID: ".$target_id."\n";}
-        	}else{
-        		print "Error: full target ID in wrong format!\n";
-        		exit(1);
-        	}
+				# changed 09/2015 from pdb_id type to md5
+        		if ($full_target_id =~ /(\w{32}/){
+        			$target_id = $1;
+        			if ($v) {print "target ID: ".$target_id."\n";}
+ 		       	} else{
+        			print "Error: full target ID in wrong format!\n";
+        			exit(1);
+        		}
+        		$seqres_md5sum = $target_id;
+        		if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
+		    	$gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
 
-        if (defined $id_md5sum{$target_id}){
-        	$seqres_md5sum = $id_md5sum{$target_id};
-        	if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
-        }else{
-        	print "Error: SEQRES md5sum of '".$target_id."' not initialized!\n";
-        	exit(1);
-        }
-
-        $gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
-
-        my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks);
-        if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, gapless_blocks):", join ", ", @ali_values, "\n";} 
-        push (@alis, \@ali_values);      
-      }
-    }
+        		my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks);
+        		if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, gapless_blocks):", join ", ", @ali_values, "\n";} 
+        		push (@alis, \@ali_values);      
+      		}
+    	}
 
     if ($line =~ /^No 1 /) { #first alignment begins
       $align_lines = 1;  
