@@ -97,27 +97,32 @@ output: \@alis, @alis format: ($seqres_md5sum, $evalue, $identity/100.0, $gaples
 
 sub read_hhr{
   my ($i, $v) = @_;
+
+  ## read the mapping and make a hash, which refers target PDB ID to its SEQRES md5sum:
+  if ($v) {print "Creating a hash of PDB IDs and SEQRES MD5-sums ...\n";}
+
   my %id_md5sum = ();
   open (READ, "$mapping") or die "could not open $mapping";
   for my $line (<READ>) {
-  # CAVE: If the mapping file we use for evaluating a hhr file 
-  # does not fit the pdb_full database that was used for generating the hhr file
-  # this might fail (because the id of the representative might have changed)!
+  	# CAVE: If the mapping file we use for evaluating a hhr file 
+  	# does not fit the pdb_full database that was used for generating the hhr file
+  	# this might fail (because the id of the representative might have changed)!
+#  	if ($line =~ /^(\S*).*\t(\S*)\t/){
+#		$id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
+#	}
   	if ($line =~ /^(\S*).*\t(\S*)\t/){
-  	  $id_md5sum{$1} = $2; # $1=target_id, $2=seqres_md5sum
-  	}
-  	if ($line =~ /^(\S*).*\t(\S*)\t/){
-	  my $md5 = $2;
-	  my @cols = split /\t/, $line;
-	  my @ids = split /\s/, $cols[0];
-	  foreach my $id(@ids){
-	  	$id_md5sum{$id} = $md5; # $1=target_id, $2=seqres_md5sum
-	  }
+  		my $md5 = $2;
+		my @cols = split /\t/, $line;
+		my @ids = split /\s/, $cols[0];
+		foreach my $id(@ids){
+			$id_md5sum{$id} = $md5; # $1=target_id, $2=seqres_md5sum
+		}
 	}
+
+
   } 
   close READ;
   if ($v) {print "\%id_md5sum size: ".scalar(keys(%id_md5sum))."\n";}
-
 
   ## parse the hhr file and write the output hash %alis
   if ($v) {print "Parsing the hhr file ...\n";}
@@ -194,7 +199,7 @@ sub read_hhr{
 
       if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment
 
-        if ($full_target_id =~ /^(\w{32})/){
+        if ($full_target_id =~ /(\w{4}_\w)/){
         	$target_id = $1;
         	if ($v) {print "target ID: ".$target_id."\n";}
         }else{
@@ -202,7 +207,13 @@ sub read_hhr{
         	exit(1);
         }
 
-        $seqres_md5sum = $target_id;
+        if (defined $id_md5sum{$target_id}){
+        	$seqres_md5sum = $id_md5sum{$target_id};
+        	if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
+        }else{
+        	print "Error: SEQRES md5sum of '".$target_id."' not initialized!\n";
+        	exit(1);
+        }
 
         $gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
 
@@ -221,6 +232,7 @@ sub read_hhr{
 
   return \@alis;
 }
+
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 =head 3 Subroutine parse_gapless_blocks
