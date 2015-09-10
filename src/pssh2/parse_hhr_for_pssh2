@@ -153,7 +153,7 @@ sub read_hhr{
     	}
     
     	if ($align_lines) {   #alignments   
-      		if ($line =~ /^>(\S+)\s(.+)/) { #1st line of an alignment
+    		if ($line =~ /^>(\S+)\s(.+)/) { #1st line of an alignment
         		$full_target_id = $1;
 				$substr_target_id = substr($full_target_id, 0, 14);
 #				$substr_target_id =~ s/\|/\\\|/g;
@@ -196,13 +196,14 @@ sub read_hhr{
       		if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment
 
 				# changed 09/2015 from pdb_id type to md5
-        		if ($full_target_id =~ /(\w{32}/){
+        		if ($full_target_id =~ /(\w{32})/){
         			$target_id = $1;
         			if ($v) {print "target ID: ".$target_id."\n";}
  		       	} else{
         			print "Error: full target ID in wrong format!\n";
         			exit(1);
         		}
+
         		$seqres_md5sum = $target_id;
         		if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
 		    	$gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
@@ -213,14 +214,13 @@ sub read_hhr{
       		}
     	}
 
-    if ($line =~ /^No 1 /) { #first alignment begins
-      $align_lines = 1;  
-    }   
+		if ($line =~ /^No 1 /) { #first alignment begins
+      		$align_lines = 1;  
+    	}   
 
-  }
-  close READ;
-
-  return \@alis;
+  	}
+  	close READ;
+  	return \@alis;
 }
 
 
