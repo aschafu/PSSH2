@@ -100,7 +100,7 @@ BEST: foreach my $id(@sortedIds){
 }
 #print "best Ids: ", join (',', @bestIds), "\n";
 
-# if there is more than one with the longest alignment length
+# if there is more than we need with the longest alignment length
 # take the next steps:
 #  2. select an X-ray structure
 #  2a. slect an X-ray structure with good resolution
