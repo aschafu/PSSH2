@@ -76,6 +76,8 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 get_seq=0
 
+mkdir temp_work
+
 for md5 in $md5list 
 do
 
