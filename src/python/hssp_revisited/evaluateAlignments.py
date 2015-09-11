@@ -158,7 +158,7 @@ def parse_maxclusterResult(result):
 		}
 	return structureStatistics
 				
-def evaluateSingle(checksum):
+def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
 	# find the data for this md5 
