@@ -4,6 +4,11 @@
 #$ -e /mnt/project/pssh/pssh2_project/work/copy_log/
 
 # fist make sure that /mnt/project/pssh/pssh2_project/data/pdb_full/pdb_full.tgz is up to date!
+# cd <NEW_PDB_FULL>
+# tar -cvzf $PSSH/data/pdb_full/pdb_full.<STAMP>.tgz *
+# cd ..
+# rm pdb_full.tgz
+# ln -s $PSSH/data/pdb_full/pdb_full.<STAMP>.tgz pdb_full.tgz
 
 set -x
 
