@@ -319,10 +319,11 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 # 			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
 # 	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 def main(argv):
-	print "Hello World"	
+	print "main Hello World"	
 
 
 if '__name__' == '__main__':
+	print "Hello World"	
  	main(sys.argv[1:])	
 
 
