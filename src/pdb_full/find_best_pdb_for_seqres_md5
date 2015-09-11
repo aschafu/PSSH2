@@ -29,8 +29,8 @@ AUTHOR
 if (@ARGV<1) {die ($usage);}
 our($dbg,$help,$md5,$multi,$acceptRatio);
 $help = 0;
-$multi = 1;
-$acceptRatio=0.9;
+$multi = 1;  # how many structure we return 
+$acceptRatio=0.9; # how long the less long alignments can be compared to the longest
 my $args_ok=GetOptions( 'debug'  => \$dbg,
                         'help' => \$help,
                         'md5=s' => \$md5,
