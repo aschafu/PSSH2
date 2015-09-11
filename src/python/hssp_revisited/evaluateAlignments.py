@@ -322,7 +322,8 @@ def main(argv):
 	print "main Hello World"	
 
 
-if '__name__' == '__main__':
+if __name__ == "__main__":
+	main(sys.argv[1:])
 	print "Hello World"	
  	main(sys.argv[1:])	
 
