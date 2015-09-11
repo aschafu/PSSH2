@@ -138,7 +138,7 @@ if ($#bestIds > $multi-1){
 		}
 		else {
 #	    	$selectedId = $xray[0];
-			@selectedIds = @xray;
+			push @selectedIds, $xray[0];
 		}
     }
 	# if we don't have xray, take the most recent structure
