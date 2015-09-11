@@ -289,9 +289,10 @@ def main(argv):
 
 	# parse command line arguments	
 	parser = argparse.ArgumentParser()
+	inputGroup = parser.add_mutually_exclusive_group(required=True)
 	helpString = "md5 sum of sequence to process (csv output will go to "+modeldir+")"
-	parser.add_argument("-m", "--md5", help=helpString)
-	parser.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
+	inputGroup.add_argument("-m", "--md5", help=helpString)
+	inputGroup.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
 	parser.add_argument("-o", "--out", required=True, help="name of summary output file (csv format)")
 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
 
