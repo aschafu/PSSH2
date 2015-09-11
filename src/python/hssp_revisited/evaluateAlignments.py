@@ -219,6 +219,7 @@ def evaluateSingle(checksum, cleanup):
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbCode+'Chain'+chain+'CAlphas.pdb', '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			structureStatistics = parse_maxclusterResult(out)
+			print structureStatistics
 			
 			if structureStatistics['validResult']:
 				validChainCounter += 1
