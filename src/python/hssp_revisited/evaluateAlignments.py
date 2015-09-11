@@ -1,14 +1,14 @@
 #!/usr/bin/python
 
 # new version of pythonscript_refactored using hhlib tools to process the structure file
-import os, sys
-import errno
-import gzip
-import csv
-import subprocess
-import logging
-import time
-import ConfigParser
+# import os, sys
+# import errno
+# import gzip
+# import csv
+# import subprocess
+# import logging
+# import time
+# import ConfigParser
 
 # defaultConfig = """
 # [pssh2Config]
