@@ -240,7 +240,7 @@ def evaluateSingle(checksum, cleanup):
 	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
 	#create csvfile and writer object
 	detailsFileHandle = open(detailsFile, 'w')
-	printSummaryFile(resultStore, modelcount, checksum, detailsFileHandle, pdbChainCodes)
+	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
 
 #	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
 #	avrgFileHandle = open(avrgFile, 'w')
@@ -260,6 +260,7 @@ def printSummaryFile(resultStore, modelcount, checksum, fileHandle, subset):
 	csvWriter = csv.writer(fileHandle, delimiter=',')
 	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
 
+	modelcount = resultStore.length + 1
 	for model in range(1, modelcount+1): 
 		for chain in subset:
 			if resultStore[model][chain]['validResult']:
