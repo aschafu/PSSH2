@@ -126,7 +126,7 @@ if ($#bestIds > $multi-1){
     }
 
     # evaluate the info
-	# sort by length, resolution, date structures
+	# sort by length, resolution, published date
 	@selectedIds = sort sortByLengthAndResolutionAndDate @bestIds;
 }
 else {
@@ -156,5 +156,3 @@ sub sortByLengthAndResolutionAndDate {
     $published{$b} <=> $published{$a};
 }
 
-sub sortByPublished {
-}
