@@ -102,8 +102,7 @@ BEST: foreach my $id(@sortedIds){
 
 # if there is more than we need with the longest alignment length
 # take the next steps:
-#  2. select an X-ray structure
-#  2a. slect an X-ray structure with good resolution
+#  2. select structure(s) with good resolution
 #  3. select a new structure
 if ($#bestIds > $multi-1){
 	# get the info from the database and parse
