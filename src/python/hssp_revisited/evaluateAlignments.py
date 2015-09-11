@@ -283,7 +283,8 @@ def main(argv):
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath)	
 	config.read(add_section_header(confFileHandle, 'pssh2Config'))
-	global pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
+	global pssh2_cache_path
+	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
 	hhPath = config.get('pssh2Config', 'HHLIB')
 	pdbhhrfile = config.get('pssh2Config', 'pdbhhrfile')
 
