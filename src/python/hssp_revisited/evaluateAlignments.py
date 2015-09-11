@@ -2,163 +2,163 @@
 
 # new version of pythonscript_refactored using hhlib tools to process the structure file
 import os, sys, argparse
-# import errno
-# import gzip
-# import csv
-# import subprocess
-# import logging
-# import time
-# import ConfigParser
+import errno
+import gzip
+import csv
+import subprocess
+import logging
+import time
+import ConfigParser
 
-# defaultConfig = """
-# [pssh2Config]
-# pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
-# HHLIB="/usr/share/hhsuite/"
-# pdbhhrfile='query.uniprot20.pdb.full.hhr'
-# seqfile='query.fasta'
-# """
-# 
-# 
-# #default paths
-# hhMakeModelScript = '/scripts/hhmakemodel.pl'
-# renumberScript = 'renumberpdb.pl'
-# bestPdbScript = 'find_best_pdb_for_seqres_md5'
-# maxclScript = '/mnt/project/aliqeval/maxcluster'
-# 
-# #dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
-# #md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
-# #mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
-# modeldir = '/mnt/project/psshcache/models'
-# 
-# cleanup = True 
-# maxTemplate = 5
+defaultConfig = """
+[pssh2Config]
+pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+HHLIB="/usr/share/hhsuite/"
+pdbhhrfile='query.uniprot20.pdb.full.hhr'
+seqfile='query.fasta'
+"""
 
-# def add_section_header(properties_file, header_name):
-# 	"""we want to use the bash style config for pypthon, but
-# 	ConfigParser requires at least one section header in a properties file and
-# 	our bash config file doesn't have one, so add a header to it on the fly.
-# 	"""
-# 	yield '[{}]\n'.format(header_name)
-# 	for line in properties_file:
-# 		yield line
-# 
-# 
-# def process_hhr(path, workPath, pdbhhrfile):
-# 	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
-# 	
-# 	# read the hhr file in its orignial location
-# 	hhrgzfile = gzip.open(path, 'rb')
-# 	s = hhrgzfile.read()	
-# 	
-# 	# check whether we can write to our desired output directory
-# 	try:
-# 		os.makedirs(workPath)
-# 	except OSError as exception:
-# 		if exception.errno != errno.EEXIST:
-# 			raise
-# 			
-# 	# write an unzipped verion to our work directory
-# 	open(workPath+'/'+pdbhhrfile, 'w').write(s)
-# 	parsefile = open(workPath+'/'+pdbhhrfile, 'rb')
-# 	linelist = parsefile.readlines()
-# 	hhrgzfile.close()
-# 	parsefile.close()
-# 	
-# 	# search from the end of the file until we reach the Number of the last alignment (in the alignment details)
-# 	breaker = False
-# 	i = -1
-# 	while (breaker==False):
-# 		i = i - 1
-# 		if ("No " in linelist[i]) and (len(linelist[i])<10):
-# 			breaker=True
-# 		takenline = linelist[i]
-# 	
-# 	iterationcount = int(float(takenline.split(' ')[1]))
-# 	print('-- '+str(iterationcount)+' matching proteins found!')
-# 	
-# 	# now work out the statistics data from the summary
-# 	for model in range (1, modelcount+1):
-# 		parseLine = linelist[8+model][36:]
-# 		parseLine = blitsParseLine.replace('(',' ')
-# 		parseLine = blitsParseLine.replace(')',' ')
-# 		while '  ' in parseLine:
-# 			parseLine = blitsParseLine.replace('  ', ' ')
-# 		parseLinePieces = blitsParseLine.split(' ')
-# #		'E-value', 'P-value', 'HH score', 'Columns'
-# 		modelStatistics[model]['prob'] = parseLinePieces[0]
-# 		modelStatistics[model]['eval'] = parseLinePieces[1]
-# 		modelStatistics[model]['pval'] = parseLinePieces[2] 
-# 		modelStatistics[model]['hhscore'] = parseLinePieces[3] 
-# 		modelStatistics[model]['aligned_cols'] = parseLinePieces[5]
-# 
-# 	# finally look in the alignment details to find the % identity
-# 	model = ''
-# 	for lineCount in range (9+modelcount, linelist.length-1):
-# 		if ('No ' in linelist[lineCount]):
-# 			model = linelist[lineCount][3:].strip()
-# 		elif ('Probab' in linelist[lineCount]):
-# 			detailPieces = linelist[lineCount].split(' ')
-# 			identities = detailPieces[4].replace('Identities=')
-# 			identities = identities.replace('%')
-# 			modelStatistics[model]['identities'] = identities
-# 		
-# 	return modelStatistics, modelCount
-# 
-# 
-# def tune_seqfile(seqLines, chainCode, workPath):
-# 	"""replace the sequence id in the input sequence file with the pdb code (inlcuding chain) 
-# 	of the structure this sequence refers to"""
-# 	
-# 	outFileName = workPath+'/'+chainCode+'.fas'
-# 	outFileHandle = open(outFileName, 'w')
-# 	outFileHandle.write('>'+chainCode+'\n')	
-# 	outFileHandle.write(seqLines)
-# 	outFileHandle.close()
-# 	return outFileName
-# 
-# 
-# def getModelFileName(workPath, pdbhhrfile, model):
-# 	"""utility to make sure the naming is consistent"""
-# 	return workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb'
-# 
-# 
-# def parse_maxclusterResult(result):
-# 	"""parse out the result from maxcluster
-# 	Example: > maxcluster -gdt 4 -e exeriment.pdb -p model.00003.pdb 
-# 	Iter 1: Pairs= 175, RMSD= 0.541, MAXSUB=0.874. Len= 177. gRMSD= 0.821, TM=0.879
-# 	Percentage aligned at distance 1.000 = 82.32
-# 	Percentage aligned at distance 2.000 = 88.38
-# 	Percentage aligned at distance 4.000 = 88.38
-# 	Percentage aligned at distance 8.000 = 89.39
-# 	GDT= 87.121
-# 	"""
-# 	maxclResultLines = out.splitlines(result)
-# 	# The final GDT is in the last line
-# 	if 'GDT' in maxclResultLines[-1]:
-# 		gdt = maxclResultLines[-1].replace('GDT=','').strip()
-# 		pairs = maxclResultLines[-6][14:18].strip()
-# 		rmsd = maxclResultLines[-6][25:31].strip()
-# 		maxsub = maxclResultLines[-6][40:45]
-# 		len = maxclResultLines[-6][40:45].strip()
-# 		grmsd = maxclResultLines[-6][63:69].strip()
-# 		tm = maxclResultLines[-6][74:79]
-# 		structureStatistics = {
-# 			'validResult': True,
-# 			'gdt': float(gdt),
-# 			'pairs': int(pairs),
-# 			'rmsd': float(rmsd),
-# 			'maxsub': float(maxsub),
-# 			'len': int(len),
-# 			'grmsd': float(grmsd),
-# 			'tm': float(tm)
-# 		}
-# 	else:
-# 		structureStatistics = {
-# 			'validResult': False
-# 		}
-# 	return structureStatistics
-# 				
-# 	
+
+#default paths
+hhMakeModelScript = '/scripts/hhmakemodel.pl'
+renumberScript = 'renumberpdb.pl'
+bestPdbScript = 'find_best_pdb_for_seqres_md5'
+maxclScript = '/mnt/project/aliqeval/maxcluster'
+
+#dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
+#md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
+#mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
+modeldir = '/mnt/project/psshcache/models'
+
+cleanup = True 
+maxTemplate = 5
+
+def add_section_header(properties_file, header_name):
+	"""we want to use the bash style config for pypthon, but
+	ConfigParser requires at least one section header in a properties file and
+	our bash config file doesn't have one, so add a header to it on the fly.
+	"""
+	yield '[{}]\n'.format(header_name)
+	for line in properties_file:
+		yield line
+
+
+def process_hhr(path, workPath, pdbhhrfile):
+	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
+	
+	# read the hhr file in its orignial location
+	hhrgzfile = gzip.open(path, 'rb')
+	s = hhrgzfile.read()	
+	
+	# check whether we can write to our desired output directory
+	try:
+		os.makedirs(workPath)
+	except OSError as exception:
+		if exception.errno != errno.EEXIST:
+			raise
+			
+	# write an unzipped verion to our work directory
+	open(workPath+'/'+pdbhhrfile, 'w').write(s)
+	parsefile = open(workPath+'/'+pdbhhrfile, 'rb')
+	linelist = parsefile.readlines()
+	hhrgzfile.close()
+	parsefile.close()
+	
+	# search from the end of the file until we reach the Number of the last alignment (in the alignment details)
+	breaker = False
+	i = -1
+	while (breaker==False):
+		i = i - 1
+		if ("No " in linelist[i]) and (len(linelist[i])<10):
+			breaker=True
+		takenline = linelist[i]
+	
+	iterationcount = int(float(takenline.split(' ')[1]))
+	print('-- '+str(iterationcount)+' matching proteins found!')
+	
+	# now work out the statistics data from the summary
+	for model in range (1, modelcount+1):
+		parseLine = linelist[8+model][36:]
+		parseLine = blitsParseLine.replace('(',' ')
+		parseLine = blitsParseLine.replace(')',' ')
+		while '  ' in parseLine:
+			parseLine = blitsParseLine.replace('  ', ' ')
+		parseLinePieces = blitsParseLine.split(' ')
+#		'E-value', 'P-value', 'HH score', 'Columns'
+		modelStatistics[model]['prob'] = parseLinePieces[0]
+		modelStatistics[model]['eval'] = parseLinePieces[1]
+		modelStatistics[model]['pval'] = parseLinePieces[2] 
+		modelStatistics[model]['hhscore'] = parseLinePieces[3] 
+		modelStatistics[model]['aligned_cols'] = parseLinePieces[5]
+
+	# finally look in the alignment details to find the % identity
+	model = ''
+	for lineCount in range (9+modelcount, linelist.length-1):
+		if ('No ' in linelist[lineCount]):
+			model = linelist[lineCount][3:].strip()
+		elif ('Probab' in linelist[lineCount]):
+			detailPieces = linelist[lineCount].split(' ')
+			identities = detailPieces[4].replace('Identities=')
+			identities = identities.replace('%')
+			modelStatistics[model]['identities'] = identities
+		
+	return modelStatistics, modelCount
+
+
+def tune_seqfile(seqLines, chainCode, workPath):
+	"""replace the sequence id in the input sequence file with the pdb code (inlcuding chain) 
+	of the structure this sequence refers to"""
+	
+	outFileName = workPath+'/'+chainCode+'.fas'
+	outFileHandle = open(outFileName, 'w')
+	outFileHandle.write('>'+chainCode+'\n')	
+	outFileHandle.write(seqLines)
+	outFileHandle.close()
+	return outFileName
+
+
+def getModelFileName(workPath, pdbhhrfile, model):
+	"""utility to make sure the naming is consistent"""
+	return workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb'
+
+
+def parse_maxclusterResult(result):
+	"""parse out the result from maxcluster
+	Example: > maxcluster -gdt 4 -e exeriment.pdb -p model.00003.pdb 
+	Iter 1: Pairs= 175, RMSD= 0.541, MAXSUB=0.874. Len= 177. gRMSD= 0.821, TM=0.879
+	Percentage aligned at distance 1.000 = 82.32
+	Percentage aligned at distance 2.000 = 88.38
+	Percentage aligned at distance 4.000 = 88.38
+	Percentage aligned at distance 8.000 = 89.39
+	GDT= 87.121
+	"""
+	maxclResultLines = out.splitlines(result)
+	# The final GDT is in the last line
+	if 'GDT' in maxclResultLines[-1]:
+		gdt = maxclResultLines[-1].replace('GDT=','').strip()
+		pairs = maxclResultLines[-6][14:18].strip()
+		rmsd = maxclResultLines[-6][25:31].strip()
+		maxsub = maxclResultLines[-6][40:45]
+		len = maxclResultLines[-6][40:45].strip()
+		grmsd = maxclResultLines[-6][63:69].strip()
+		tm = maxclResultLines[-6][74:79]
+		structureStatistics = {
+			'validResult': True,
+			'gdt': float(gdt),
+			'pairs': int(pairs),
+			'rmsd': float(rmsd),
+			'maxsub': float(maxsub),
+			'len': int(len),
+			'grmsd': float(grmsd),
+			'tm': float(tm)
+		}
+	else:
+		structureStatistics = {
+			'validResult': False
+		}
+	return structureStatistics
+				
+	
 # def evaluateSingle(checksum):
 # 	"""evaluate the alignment for a single md5 """
 # 
