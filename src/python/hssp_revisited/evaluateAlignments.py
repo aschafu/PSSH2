@@ -274,51 +274,52 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 	csvfile.close()
 	
 	
-def main(argv):
-	""" here we initiate the real work"""
-	# get config info
-	config = ConfigParser.RawConfigParser()
-	config.readfp(io.BytesIO(defaultConfig))
-	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
-	confFileHandle = open(confPath, encoding="utf_8")	
-	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
-	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
-	hhPath = config.get('pssh2Config', 'HHLIB')
-	pdbhhrfile = config.get('pssh2Config', 'pdbhhrfile')
-	pdba3mfile = config.get('pssh2Config', 'pdba3mfile')
-
-	# parse command line arguments	
-	parser = argparse.ArgumentParser()
-	helpString = "md5 sum of sequence to process (csv output will got to "+modeldir+")"
-	parser.add_argument("-m", "--md5", help=helpstring)
-	parser.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
-	parser.add_argument("-o", "--out", help="name of summary output file (csv format)")
-	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
-
-
-# later add option for different formats
-	parser.set_defaults(format=csv)
-	args = parser.parse_args()
-	csvfilename = args.out
-
-	checksum = args.md5
-	list = args.list
-	if args.keep:
-		cleanup = False
-
-	avrgFile = csvfilename
-	avrgFileHandle = open(avrgFile, 'w')
-	subset = [ 'avrg' ]
-	if checksum:
-		resultStore = evaluateSingle(checksum, cleanup)  # TODO: Check resultStore syntax!
-	elif list:
-		md5listfile = open(list, 'rb')
-		md5list = md5listfile.readlines()
-		for chksm in md5list:
-			checksum = chksm.replace("\n","")
-			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
-	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
-	
+# def main(argv):
+# 	""" here we initiate the real work"""
+# 	# get config info
+# 	config = ConfigParser.RawConfigParser()
+# 	config.readfp(io.BytesIO(defaultConfig))
+# 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
+# 	confFileHandle = open(confPath, encoding="utf_8")	
+# 	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
+# 	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
+# 	hhPath = config.get('pssh2Config', 'HHLIB')
+# 	pdbhhrfile = config.get('pssh2Config', 'pdbhhrfile')
+# 	pdba3mfile = config.get('pssh2Config', 'pdba3mfile')
+# 
+# 	# parse command line arguments	
+# 	parser = argparse.ArgumentParser()
+# 	helpString = "md5 sum of sequence to process (csv output will got to "+modeldir+")"
+# 	parser.add_argument("-m", "--md5", help=helpstring)
+# 	parser.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
+# 	parser.add_argument("-o", "--out", help="name of summary output file (csv format)")
+# 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
+# 
+# 
+# # later add option for different formats
+# 	parser.set_defaults(format=csv)
+# 	args = parser.parse_args()
+# 	csvfilename = args.out
+# 
+# 	checksum = args.md5
+# 	list = args.list
+# 	if args.keep:
+# 		cleanup = False
+# 
+# 	avrgFile = csvfilename
+# 	avrgFileHandle = open(avrgFile, 'w')
+# 	subset = [ 'avrg' ]
+# 	if checksum:
+# 		resultStore = evaluateSingle(checksum, cleanup)  # TODO: Check resultStore syntax!
+# 	elif list:
+# 		md5listfile = open(list, 'rb')
+# 		md5list = md5listfile.readlines()
+# 		for chksm in md5list:
+# 			checksum = chksm.replace("\n","")
+# 			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
+# 	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+ def main(argv):
+	print "Hello World"	
 
 
 if '__name__' == '__main__':
