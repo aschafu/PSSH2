@@ -94,7 +94,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	for lineCount in range (9+modelcount, linelist.length-1):
 		if ('No ' in linelist[lineCount]):
 			model = linelist[lineCount][3:].strip()
-		elsif ('Probab' in linelist[lineCount]):
+		elif ('Probab' in linelist[lineCount]):
 			detailPieces = linelist[lineCount].split(' ')
 			identities = detailPieces[4].replace('Identities=')
 			identities = identities.replace('%')
