@@ -18,7 +18,6 @@ pdbhhrfile='query.uniprot20.pdb.full.hhr'
 seqfile='query.fasta'
 """
 
-
 #default paths
 hhMakeModelScript = '/scripts/hhmakemodel.pl'
 renumberScript = 'renumberpdb.pl'
