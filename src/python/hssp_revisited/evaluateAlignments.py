@@ -320,8 +320,12 @@ import os, sys
 # 	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 def main(argv):
 
+#	parser = argparse.ArgumentParser()
+#	parser.add_argument("foo", help="some dummy parameter")
+#	args = parser.parse_args()
+#	foo = args.foo
 	print "main Hello World"	
-
+#	print foo
 
 if __name__ == "__main__":
 	print "Hello World"	
