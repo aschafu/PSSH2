@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # new version of pythonscript_refactored using hhlib tools to process the structure file
-import os, sys, argparse
+import os, sys, io, argparse
 import errno
 import gzip
 import csv
@@ -32,6 +32,7 @@ modeldir = '/mnt/project/psshcache/models'
 cleanup = True 
 maxTemplate = 5
 
+
 def add_section_header(properties_file, header_name):
 	"""we want to use the bash style config for pypthon, but
 	ConfigParser requires at least one section header in a properties file and
@@ -40,7 +41,6 @@ def add_section_header(properties_file, header_name):
 	yield '[{}]\n'.format(header_name)
 	for line in properties_file:
 		yield line
-
 
 def process_hhr(path, workPath, pdbhhrfile):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
@@ -104,6 +104,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	return modelStatistics, modelCount
 
 
+
 def tune_seqfile(seqLines, chainCode, workPath):
 	"""replace the sequence id in the input sequence file with the pdb code (inlcuding chain) 
 	of the structure this sequence refers to"""
@@ -119,6 +120,7 @@ def tune_seqfile(seqLines, chainCode, workPath):
 def getModelFileName(workPath, pdbhhrfile, model):
 	"""utility to make sure the naming is consistent"""
 	return workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb'
+
 
 
 def parse_maxclusterResult(result):
@@ -157,7 +159,6 @@ def parse_maxclusterResult(result):
 		}
 	return structureStatistics
 				
-	
 def evaluateSingle(checksum):
 	"""evaluate the alignment for a single md5 """
 
@@ -272,61 +273,64 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 	
 	csvfile.close()
 	
-# 	
-# def main(argv):
-# 	""" here we initiate the real work"""
-# 	# get config info
-# 	config = ConfigParser.RawConfigParser()
-# 	config.readfp(io.BytesIO(defaultConfig))
-# 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
-# 	confFileHandle = open(confPath, encoding="utf_8")	
-# 	config.readfp(add_section_header(confFileHandle, 'pssh2Config'))
-# 	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
-# 	hhPath = config.get('pssh2Config', 'HHLIB')
-# 	pdbhhrfile = config.get('pssh2Config', 'pdbhhrfile')
-# 	pdba3mfile = config.get('pssh2Config', 'pdba3mfile')
-# 
-# 	# parse command line arguments	
-# 	parser = argparse.ArgumentParser()
-# 	helpString = "md5 sum of sequence to process (csv output will got to "+modeldir+")"
-# 	parser.add_argument("-m", "--md5", help=helpstring)
-# 	parser.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
-# 	parser.add_argument("-o", "--out", help="name of summary output file (csv format)")
-# 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
-# 
-# 
-# # later add option for different formats
-# 	parser.set_defaults(format=csv)
-# 	args = parser.parse_args()
-# 	csvfilename = args.out
-# 
-# 	checksum = args.md5
-# 	list = args.list
-# 	if args.keep:
-# 		cleanup = False
-# 
-# 	avrgFile = csvfilename
-# 	avrgFileHandle = open(avrgFile, 'w')
-# 	subset = [ 'avrg' ]
-# 	if checksum:
-# 		resultStore = evaluateSingle(checksum, cleanup)  # TODO: Check resultStore syntax!
-# 	elif list:
-# 		md5listfile = open(list, 'rb')
-# 		md5list = md5listfile.readlines()
-# 		for chksm in md5list:
-# 			checksum = chksm.replace("\n","")
-# 			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
-# 	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
-def main(argv):
 
-#	parser = argparse.ArgumentParser()
-#	parser.add_argument("foo", help="some dummy parameter")
-#	args = parser.parse_args()
-#	foo = args.foo
-	print "main Hello World"	
-#	print foo
+	
+def main(argv):
+	""" here we initiate the real work"""
+	# get config info
+	config = ConfigParser.RawConfigParser()
+	config.readfp(io.BytesIO(defaultConfig))
+	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
+	confFileHandle = open(confPath)	
+	config.read(add_section_header(confFileHandle, 'pssh2Config'))
+	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
+	hhPath = config.get('pssh2Config', 'HHLIB')
+	pdbhhrfile = config.get('pssh2Config', 'pdbhhrfile')
+
+	# parse command line arguments	
+	parser = argparse.ArgumentParser()
+	helpString = "md5 sum of sequence to process (csv output will go to "+modeldir+")"
+	parser.add_argument("-m", "--md5", help=helpString)
+	parser.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
+	parser.add_argument("-o", "--out", required=True, help="name of summary output file (csv format)")
+	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
+
+
+# later add option for different formats
+	parser.set_defaults(format=csv)
+	args = parser.parse_args()
+	csvfilename = args.out
+
+	checksum = args.md5
+	list = args.list
+	if args.keep:
+		cleanup = False
+
+	avrgFile = csvfilename
+	avrgFileHandle = open(avrgFile, 'w')
+	subset = [ 'avrg' ]
+	if checksum:
+		resultStore = evaluateSingle(checksum, cleanup)  # TODO: Check resultStore syntax!
+		printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+	elif list:
+		md5listfile = open(list, 'rb')
+		md5list = md5listfile.readlines()
+		for chksm in md5list:
+			checksum = chksm.replace("\n","")
+			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
+			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+	avrgFileHandle.close()
+
+
+# def main(argv):
+# 
+# #	parser = argparse.ArgumentParser()
+# #	parser.add_argument("foo", help="some dummy parameter")
+# #	args = parser.parse_args()
+# #	foo = args.foo
+# 	print "main Hello World"	
+# #	print foo
 
 if __name__ == "__main__":
 	print "Hello World"	
 	main(sys.argv[1:])
-
