@@ -150,11 +150,11 @@ sub sortByAliLength {
     $aliLength{$b} <=> $aliLength{$a};
 }
 
-sub sortByLengthAndResolution {
+sub sortByLengthAndResolutionAndDate {
     $aliLength{$b} <=> $aliLength{$a} ||
-    $resolution{$a} <=> $resolution{$b};
+    $resolution{$a} <=> $resolution{$b} ||
+    $published{$b} <=> $published{$a};
 }
 
 sub sortByPublished {
-    $published{$b} <=> $published{$a};
 }
