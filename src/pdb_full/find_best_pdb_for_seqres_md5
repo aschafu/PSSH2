@@ -127,27 +127,7 @@ if ($#bestIds > $multi-1){
 
     # evaluate the info
 	# sort by length, resolution, date structures
-    if ($xray[0]){
-    	# if there is more than one xray structure we have to sort
-		if ($#xray > 0){
-			# sort by resolution
-		    foreach my $id(@xray){
-				my @sortedIds = sort sortByLengthAndResolution @xray;
-				@selectedIds = @sortedIds;
-	    	}
-		}
-		else {
-#	    	$selectedId = $xray[0];
-			push @selectedIds, $xray[0];
-		}
-    }
-	# if we don't have xray, take the most recent structure
-    if ($#selectedIds
-		foreach my $id(@bestIds){
-	    	my @sortedIds = sort sortByPublished @bestIds;
-		    @selectedIds = @sortedIds;
-		}
-    }
+	@selectedIds = sort sortByLengthAndResolutionAndDate @bestIds;
 }
 else {
     @selectedIds = @bestIds;
