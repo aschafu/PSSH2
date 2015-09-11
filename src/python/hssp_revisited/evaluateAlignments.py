@@ -207,7 +207,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
-	# resultArray[m][n], m = name of chain  n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
+	# resultStore[m][n], m = name of chain  n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
 	print('-- performing maxcluster comparison')
 	for model in range(1, modelcount+1): 
 
