@@ -27,9 +27,10 @@ AUTHOR
 
 # if there are no arguments or -h, then print man entry
 if (@ARGV<1) {die ($usage);}
-our($dbg,$help,$md5,$multi);
+our($dbg,$help,$md5,$multi,$acceptRatio);
 $help = 0;
 $multi = 1;
+$acceptRatio=0.9;
 my $args_ok=GetOptions( 'debug'  => \$dbg,
                         'help' => \$help,
                         'md5=s' => \$md5,
@@ -85,13 +86,14 @@ foreach my $line(@alignLines){
 #print %aliLength, "\n";
 
 # find longest alignment(s)
+# accept everything that is at least x% of the longest alignment
 my @sortedIds = sort sortByAliLength (keys %aliLength);
 #print "sorted Ids: ", join (',', @sortedIds), "\n";
 my $maxAliLength = $aliLength{$sortedIds[0]};
 #print $maxAliLength, "\n";
 my @bestIds;
 BEST: foreach my $id(@sortedIds){
-    if ($aliLength{$id} >= $maxAliLength){
+    if ($aliLength{$id} >= $maxAliLength*$acceptRatio){
 		push @bestIds, $id;
     }
     else {last BEST};
