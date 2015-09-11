@@ -333,5 +333,5 @@ def main(argv):
 # #	print foo
 
 if __name__ == "__main__":
-	print "Hello World"	
+#	print "Hello World"	
 	main(sys.argv[1:])
