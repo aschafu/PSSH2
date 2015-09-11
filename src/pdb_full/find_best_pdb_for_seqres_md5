@@ -132,7 +132,7 @@ if ($#bestIds > $multi-1){
 		if ($#xray > 0){
 			# sort by resolution
 		    foreach my $id(@xray){
-				my @sortedIds = sort sortByLengthandResolution @xray;
+				my @sortedIds = sort sortByLengthAndResolution @xray;
 				@selectedIds = @sortedIds;
 	    	}
 		}
@@ -170,7 +170,8 @@ sub sortByAliLength {
     $aliLength{$b} <=> $aliLength{$a};
 }
 
-sub sortByResolution {
+sub sortByLengthAndResolution {
+    $aliLength{$b} <=> $aliLength{$a} ||
     $resolution{$a} <=> $resolution{$b};
 }
 
