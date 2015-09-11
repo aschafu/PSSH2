@@ -318,7 +318,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 # 			checksum = chksm.replace("\n","")
 # 			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
 # 	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
- def main(argv):
+def main(argv):
 	print "Hello World"	
 
 
