@@ -1,26 +1,7 @@
 #!/usr/bin/python
 
 # new version of pythonscript_refactored using hhlib tools to process the structure file
-import os, sys
-
-def main(argv):
-
-#	parser = argparse.ArgumentParser()
-#	parser.add_argument("foo", help="some dummy parameter")
-#	args = parser.parse_args()
-#	foo = args.foo
-	print "main Hello World"	
-#	print foo
-
-if __name__ == "__main__":
-	print "Hello World"	
-	main(sys.argv[1:])
-
-
-
-
-
-
+import os, sys, argparse
 
 # import errno
 # import gzip
