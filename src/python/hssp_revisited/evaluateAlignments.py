@@ -169,7 +169,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# check that we have the necessary input
 	if not (os.path.isfile(hhrPath)):
-		print('-- hhr does not exist, check md5 checksum!\n-- stopping execution...')
+		print('-- hhr '+hhrPath+' does not exist, check md5 checksum!\n-- stopping execution...')
 		return
 	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
 
