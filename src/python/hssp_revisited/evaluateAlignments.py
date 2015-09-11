@@ -318,4 +318,16 @@ import os, sys, argparse
 # 			checksum = chksm.replace("\n","")
 # 			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
 # 	printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+def main(argv):
+
+#	parser = argparse.ArgumentParser()
+#	parser.add_argument("foo", help="some dummy parameter")
+#	args = parser.parse_args()
+#	foo = args.foo
+	print "main Hello World"	
+#	print foo
+
+if __name__ == "__main__":
+	print "Hello World"	
+	main(sys.argv[1:])
 
