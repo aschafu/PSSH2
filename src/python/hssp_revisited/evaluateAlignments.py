@@ -255,7 +255,7 @@ def evaluateSingle(checksum, cleanup):
 	return resultStore
 	
 
-def printSummaryFile(resultStore, checksum, fileHandle, subset):
+def printSummaryFile(resultStore, modelcount, checksum, fileHandle, subset):
 
 	csvWriter = csv.writer(fileHandle, delimiter=',')
 	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
