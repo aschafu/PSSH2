@@ -29,7 +29,6 @@ maxclScript = '/mnt/project/aliqeval/maxcluster'
 #mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
 modeldir = '/mnt/project/psshcache/models'
 
-cleanup = True 
 maxTemplate = 5
 
 
@@ -304,6 +303,7 @@ def main(argv):
 
 	checksum = args.md5
 	list = args.list
+	cleanup = True 
 	if args.keep:
 		cleanup = False
 
