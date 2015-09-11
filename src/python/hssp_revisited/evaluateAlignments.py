@@ -240,7 +240,7 @@ def evaluateSingle(checksum, cleanup):
 	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
 	#create csvfile and writer object
 	detailsFileHandle = open(detailsFile, 'w')
-	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
+	printSummaryFile(resultStore, modelcount, checksum, detailsFileHandle, pdbChainCodes)
 
 #	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
 #	avrgFileHandle = open(avrgFile, 'w')
