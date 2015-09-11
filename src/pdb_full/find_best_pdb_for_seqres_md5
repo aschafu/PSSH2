@@ -11,9 +11,8 @@ SYNOPSIS
 DESCRIPTION
   find_best_pdb_for_seqres_md5 takes an input md5 and runs searches on the pdb tables in Aquaria
   selection criteria are:
-  1. find a structure with as much overlap between SEQRES and coordinates as possible
-  2. select an X-ray structure 
-  2a. slect an X-ray structure with good resolution
+  1. find structure(s) with as much overlap between SEQRES and coordinates as possible
+  2. select structure(s) with good resolution
   3. select a new structure  
   (by default we give only one structure)
 OPTIONS
