@@ -308,7 +308,7 @@ def main(argv):
 	avrgFileHandle = open(avrgFile, 'w')
 	subset = [ 'avrg' ]
 	if checksum:
-		resultStore = evaluateSingle(checksum, cleanup)
+		resultStore = evaluateSingle(checksum, cleanup)  # TODO: Check resultStore syntax!
 	elif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()

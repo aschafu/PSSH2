@@ -3,6 +3,8 @@
 #$ -o /mnt/project/pssh/pssh2_project/work/copy_log/
 #$ -e /mnt/project/pssh/pssh2_project/work/copy_log/
 
+# fist make sure that /mnt/project/pssh/pssh2_project/data/pdb_full/pdb_full.tgz is up to date!
+
 set -x
 
 mkdir -p /var/tmp/rost_db/data/hhblits/ 2>/dev/null
