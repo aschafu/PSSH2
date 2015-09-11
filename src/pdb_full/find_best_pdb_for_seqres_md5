@@ -119,7 +119,7 @@ if ($#bestIds > $multi-1){
 		$published{$id} = $columns[0];
 		$method{$id} = $columns[1];
 		$resolution{$id} = $columns[2];
-		if ($method{$id} !~ /X-ray/){
+		unless ($resolution{$id}){
 			# set the resolution to a fake (bad) value
 			$resolution{$id} = 4.0
 		}
