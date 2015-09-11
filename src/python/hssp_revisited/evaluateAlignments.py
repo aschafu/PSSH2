@@ -158,7 +158,7 @@ def parse_maxclusterResult(result):
 				
 	
 def evaluateSingle(checksum):
-	"""evaluate the alignment for a single md5 """"
+	"""evaluate the alignment for a single md5 """
 
 	# find the data for this md5 
 	# use find_cache_path to avoid having to get the config
