@@ -295,7 +295,7 @@ def main(argv):
 	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
 	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
 	print "Got config (from default and "+confPath+": "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile
-	if (pssh2_cache_path.length<1):
+	if (pssh2_cache_path.len()<1):
 		raise Exception('Insufficient conf info!')
 		
 	# parse command line arguments	
