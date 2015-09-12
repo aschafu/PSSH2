@@ -276,6 +276,11 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 	csvfile.close()
 	
 
+def cleanupConfVal(confString):
+	confString = confString.replace("\"","")
+	confString = confString.replace("\'","")
+
+
 	
 def main(argv):
 	""" here we initiate the real work"""
@@ -286,9 +291,9 @@ def main(argv):
 	confFileHandle = open(confPath)	
 	config.read(add_section_header(confFileHandle, 'pssh2Config'))
 	global pssh2_cache_path, hhPath, pdbhhrfile
-	pssh2_cache_path = config.get('pssh2Config', 'pssh2_cache')
-	hhPath = config.get('pssh2Config', 'HHLIB')
-	pdbhhrfile = config.get('pssh2Config', 'pdbhhrfile')
+	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
+	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
+	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
 
 	# parse command line arguments	
 	parser = argparse.ArgumentParser()
