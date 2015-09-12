@@ -164,7 +164,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# find the data for this md5 
 	# use find_cache_path to avoid having to get the config
-	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
+	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/'
 	hhrPath = (cachePath+pdbhhrfile+'.gz')
 
 	# check that we have the necessary input
@@ -294,7 +294,10 @@ def main(argv):
 	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
 	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
 	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
-
+	print "Got config (from default and "+confPath+": "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile
+	if (! pssh2_cache_path):
+		raise Exception('Insufficient conf info!')
+		
 	# parse command line arguments	
 	parser = argparse.ArgumentParser()
 	inputGroup = parser.add_mutually_exclusive_group(required=True)
