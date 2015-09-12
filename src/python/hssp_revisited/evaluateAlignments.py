@@ -279,8 +279,8 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 def cleanupConfVal(confString):
 	confString = confString.replace("\"","")
 	confString = confString.replace("\'","")
-
-
+	return confString
+	
 	
 def main(argv):
 	""" here we initiate the real work"""
