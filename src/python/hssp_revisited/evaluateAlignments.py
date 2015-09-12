@@ -77,11 +77,11 @@ def process_hhr(path, workPath, pdbhhrfile):
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
 		parseLine = linelist[8+model][36:]
-		parseLine = blitsParseLine.replace('(',' ')
-		parseLine = blitsParseLine.replace(')',' ')
+		parseLine = parseLine.replace('(',' ')
+		parseLine = parseLine.replace(')',' ')
 		while '  ' in parseLine:
-			parseLine = blitsParseLine.replace('  ', ' ')
-		parseLinePieces = blitsParseLine.split(' ')
+			parseLine = parseLine.replace('  ', ' ')
+		parseLinePieces = parseLine.split(' ')
 #		'E-value', 'P-value', 'HH score', 'Columns'
 		modelStatistics[model]['prob'] = parseLinePieces[0]
 		modelStatistics[model]['eval'] = parseLinePieces[1]
