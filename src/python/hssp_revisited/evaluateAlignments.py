@@ -171,16 +171,16 @@ def evaluateSingle(checksum, cleanup):
 	if not (os.path.isfile(hhrPath)):
 		print('-- hhr '+hhrPath+' does not exist, check md5 checksum!\n-- stopping execution...')
 		return
-	print('-- hhr file found. Calling hhmakemodel to create pdb model...') 
+	print('-- hhr file found. Parsing data ...') 
 
 	# work out how many models we want to create, get unzipped data
 	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
-	hhrdata = (process_hhr(hhrPath, checksum, workPath, pdbhhrfile))
+	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
 	resultStore, modelCount = hhrdata
 
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
-		print('-- building model for protein '+str(model))
+		print('-- building model for protein: model nr '+str(model))
 		#  we don't need -d any more since now hhsuite is properly set up at rostlab
 		# subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
 		modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
