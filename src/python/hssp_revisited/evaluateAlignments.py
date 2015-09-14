@@ -183,7 +183,7 @@ def evaluateSingle(checksum, cleanup):
 	# work out how many models we want to create, get unzipped data
 	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
-	resultStore, modelCount = hhrdata
+	resultStore, modelcount = hhrdata
 
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
