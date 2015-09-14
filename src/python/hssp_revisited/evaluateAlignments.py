@@ -83,6 +83,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			parseLine = parseLine.replace('  ', ' ')
 		parseLinePieces = parseLine.split(' ')
 #		'E-value', 'P-value', 'HH score', 'Columns'
+		# TODO: We need to initialise 	modelStatistics somewhere!	
 		modelStatistics[model]['prob'] = parseLinePieces[0]
 		modelStatistics[model]['eval'] = parseLinePieces[1]
 		modelStatistics[model]['pval'] = parseLinePieces[2] 
