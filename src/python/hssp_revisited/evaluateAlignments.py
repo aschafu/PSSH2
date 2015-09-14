@@ -56,7 +56,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 			raise
 			
 	# write an unzipped verion to our work directory
-	open(workPath+'/'+pdbhhrfile, 'w').write(s)
+	# -- but also tune this file to 
+#	open(workPath+'/'+pdbhhrfile, 'w').write(s)
+	hhrfilehandle = open(workPath+'/'+pdbhhrfile, 'w')
 	parsefile = open(workPath+'/'+pdbhhrfile, 'rb')
 	linelist = parsefile.readlines()
 	hhrgzfile.close()
@@ -95,6 +97,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 		statisticsValues['hhscore'] = parseLinePieces[3] 
 		statisticsValues['aligned_cols'] = parseLinePieces[5]
 		modelStatistics.append(statisticsValues)
+
+	for lineCount in range (0, 8+modelcount):
+		hhrfilehandle.write(linelist[lineCount])
 
 	# finally look in the alignment details to find the % identity
 	model = ''
