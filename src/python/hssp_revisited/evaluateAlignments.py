@@ -75,6 +75,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 	print('-- '+str(modelcount)+' matching proteins found!')
 	
 	modelStatistics = []
+	# make an empty entry at 0 (so the index is the same as the model number)
+	statisticsValues = {}
+	modelStatistics.append(statisticsValues)
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
 		statisticsValues = {}
@@ -91,7 +94,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 		statisticsValues['pval'] = parseLinePieces[2] 
 		statisticsValues['hhscore'] = parseLinePieces[3] 
 		statisticsValues['aligned_cols'] = parseLinePieces[5]
-		modelStatistics[model] = statisticsValues
+		modelStatistics.append(statisticsValues)
 
 	# finally look in the alignment details to find the % identity
 	model = ''
