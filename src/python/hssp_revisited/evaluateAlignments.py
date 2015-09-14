@@ -74,8 +74,10 @@ def process_hhr(path, workPath, pdbhhrfile):
 	modelcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(modelcount)+' matching proteins found!')
 	
+	modelStatistics = {}
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
+		statisticsValues = {}
 		parseLine = linelist[8+model][36:]
 		parseLine = parseLine.replace('(',' ')
 		parseLine = parseLine.replace(')',' ')
@@ -84,11 +86,12 @@ def process_hhr(path, workPath, pdbhhrfile):
 		parseLinePieces = parseLine.split(' ')
 #		'E-value', 'P-value', 'HH score', 'Columns'
 		# TODO: We need to initialise 	modelStatistics somewhere!	
-		modelStatistics[model]['prob'] = parseLinePieces[0]
-		modelStatistics[model]['eval'] = parseLinePieces[1]
-		modelStatistics[model]['pval'] = parseLinePieces[2] 
-		modelStatistics[model]['hhscore'] = parseLinePieces[3] 
-		modelStatistics[model]['aligned_cols'] = parseLinePieces[5]
+		statisticsValues['prob'] = parseLinePieces[0]
+		statisticsValues['eval'] = parseLinePieces[1]
+		statisticsValues['pval'] = parseLinePieces[2] 
+		statisticsValues['hhscore'] = parseLinePieces[3] 
+		statisticsValues['aligned_cols'] = parseLinePieces[5]
+		modelStatistics[model] = statisticsValues
 
 	# finally look in the alignment details to find the % identity
 	model = ''
