@@ -74,7 +74,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	modelcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(modelcount)+' matching proteins found!')
 	
-	modelStatistics = {}
+	modelStatistics = []
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
 		statisticsValues = {}
@@ -97,7 +97,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	model = ''
 	for lineCount in range (9+modelcount, len(linelist)-1):
 		if ('No ' in linelist[lineCount]):
-			model = linelist[lineCount][3:].strip()
+			model = int(linelist[lineCount][3:].strip())
 		elif ('Probab' in linelist[lineCount]):
 			detailPieces = linelist[lineCount].split(' ')
 			identities = detailPieces[4].replace('Identities=')
