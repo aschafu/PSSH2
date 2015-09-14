@@ -97,11 +97,12 @@ def process_hhr(path, workPath, pdbhhrfile):
 		statisticsValues['aligned_cols'] = parseLinePieces[5]
 		modelStatistics.append(statisticsValues)
 
+	# write out the beginning into the unzipped hrr file
 	for lineCount in range (0, 8+modelcount):
 		hhrfilehandle.write(linelist[lineCount])
 
 	# finally look in the alignment details to find the % identity
-	# -- also edit the alignment details to contain the pdb code!
+	# -- also edit the alignment details to contain the pdb code (needed for making the models)!
 	# TODO
 	model = ''
 	for lineCount in range (9+modelcount, len(linelist)-1):
@@ -119,7 +120,11 @@ def process_hhr(path, workPath, pdbhhrfile):
 			p = subprocess.Popen([bestPdbScript, '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			pdbChainCode = out.strip()
+			idLineOrig = 'T '.checksum[:13]
+			idLineFake = 'T '.pdbChainCode    # TODO : add spaces
 			lineList[lineCount] = '>'.pdbChainCode.' '.checksum.'\n'
+		elif (idLineOrig in linelist[lineCount]):
+			linelist[lineCount].replace(idLineOrig, idLineFake)
 		hhrfilehandle.write(linelist[lineCount])
 		
 	return modelStatistics, modelcount
