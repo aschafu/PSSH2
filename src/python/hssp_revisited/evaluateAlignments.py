@@ -95,7 +95,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 
 	# finally look in the alignment details to find the % identity
 	model = ''
-	for lineCount in range (9+modelcount, linelist.length-1):
+	for lineCount in range (9+modelcount, len(linelist)-1):
 		if ('No ' in linelist[lineCount]):
 			model = linelist[lineCount][3:].strip()
 		elif ('Probab' in linelist[lineCount]):
