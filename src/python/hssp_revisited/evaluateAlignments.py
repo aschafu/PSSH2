@@ -90,7 +90,6 @@ def process_hhr(path, workPath, pdbhhrfile):
 			parseLine = parseLine.replace('  ', ' ')
 		parseLinePieces = parseLine.split(' ')
 #		'E-value', 'P-value', 'HH score', 'Columns'
-		# TODO: We need to initialise 	modelStatistics somewhere!	
 		statisticsValues['prob'] = parseLinePieces[0]
 		statisticsValues['eval'] = parseLinePieces[1]
 		statisticsValues['pval'] = parseLinePieces[2] 
@@ -102,15 +101,26 @@ def process_hhr(path, workPath, pdbhhrfile):
 		hhrfilehandle.write(linelist[lineCount])
 
 	# finally look in the alignment details to find the % identity
+	# -- also edit the alignment details to contain the pdb code!
+	# TODO
 	model = ''
 	for lineCount in range (9+modelcount, len(linelist)-1):
 		if ('No ' in linelist[lineCount]):
 			model = int(linelist[lineCount][3:].strip())
+			pdbChainCode = ''
 		elif ('Probab' in linelist[lineCount]):
 			detailPieces = linelist[lineCount].split(' ')
 			identities = detailPieces[4].replace('Identities=','')
 			identities = identities.replace('%','')
 			modelStatistics[model]['identities'] = identities
+		elif ('>'  in linelist[lineCount]):
+			# work out the pdb structures for this md5 sum
+			checksum = linelist[lineCount].strip().replace('>','')
+			p = subprocess.Popen([bestPdbScript, '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			out, err = p.communicate()
+			pdbChainCode = out.strip()
+			lineList[lineCount] = '>'.pdbChainCode.' '.checksum.'\n'
+		hhrfilehandle.write(linelist[lineCount])
 		
 	return modelStatistics, modelcount
 
@@ -335,7 +345,7 @@ def main(argv):
 	avrgFileHandle = open(avrgFile, 'w')
 	subset = [ 'avrg' ]
 	if checksum:
-		resultStore = evaluateSingle(checksum, cleanup)  # TODO: Check resultStore syntax!
+		resultStore = evaluateSingle(checksum, cleanup)  
 		if resultStore:
 			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	elif list:
@@ -343,7 +353,7 @@ def main(argv):
 		md5list = md5listfile.readlines()
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
-			resultStore = evaluateSingle(checksum, cleanup) # TODO: Check resultStore syntax!
+			resultStore = evaluateSingle(checksum, cleanup) 
 			if resultStore:
 				printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	avrgFileHandle.close()
