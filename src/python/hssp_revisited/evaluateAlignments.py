@@ -100,8 +100,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 			model = int(linelist[lineCount][3:].strip())
 		elif ('Probab' in linelist[lineCount]):
 			detailPieces = linelist[lineCount].split(' ')
-			identities = detailPieces[4].replace('Identities=')
-			identities = identities.replace('%')
+			identities = detailPieces[4].replace('Identities=','')
+			identities = identities.replace('%','')
 			modelStatistics[model]['identities'] = identities
 		
 	return modelStatistics, modelcount
