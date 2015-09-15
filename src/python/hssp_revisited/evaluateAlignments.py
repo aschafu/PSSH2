@@ -121,9 +121,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 			p = subprocess.Popen([bestPdbScript, '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			pdbChainCode = out.strip()
-			idLineOrig = 'T '.checksum[:13]
+			idLineOrig = 'T ' + checksum[:13]
 			nCodeLetters = len(pdbChainCode)
-			idLineFake = 'T '.pdbChainCode.spaces[:-nCodeLetters]    # TODO : add spaces
+			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    # TODO : add spaces
 			lineList[lineCount] = '>'.pdbChainCode.' '.checksum.'\n'
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount].replace(idLineOrig, idLineFake)
