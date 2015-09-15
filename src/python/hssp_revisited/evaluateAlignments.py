@@ -127,7 +127,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			idLineOrig = 'T ' + checksum[:13]
 			nCodeLetters = len(pdbChainCode)
 			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    # TODO : add spaces
-			lineList[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
+			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount].replace(idLineOrig, idLineFake)
 		hhrfilehandle.write(linelist[lineCount])
