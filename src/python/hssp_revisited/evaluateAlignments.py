@@ -57,9 +57,10 @@ def process_hhr(path, workPath, pdbhhrfile):
 			
 	# write an unzipped verion to our work directory
 	# -- but also tune this file to 
-#	open(workPath+'/'+pdbhhrfile, 'w').write(s)
+	pdbhhrfiletmp = pdbhhrfile+'.tmp'
+	open(workPath+'/'+pdbhhrfiletmp, 'w').write(s)
 	hhrfilehandle = open(workPath+'/'+pdbhhrfile, 'w')
-	parsefile = open(workPath+'/'+pdbhhrfile, 'rb')
+	parsefile = open(workPath+'/'+pdbhhrfiletmp, 'rb')
 	linelist = parsefile.readlines()
 	hhrgzfile.close()
 	parsefile.close()
@@ -128,6 +129,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount].replace(idLineOrig, idLineFake)
 		hhrfilehandle.write(linelist[lineCount])
+	hhrfilehandle.close()	
 		
 	return modelStatistics, modelcount
 
