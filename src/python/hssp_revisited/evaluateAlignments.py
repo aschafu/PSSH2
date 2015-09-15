@@ -107,6 +107,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 	# TODO
 	model = ''
 	spaces = '             '
+	idLineOrig = 'T '
+	idLineFake = 'T '
 	for lineCount in range (9+modelcount, len(linelist)-1):
 		if ('No ' in linelist[lineCount]):
 			model = int(linelist[lineCount][3:].strip())
