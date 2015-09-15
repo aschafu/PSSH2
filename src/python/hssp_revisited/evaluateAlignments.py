@@ -203,7 +203,7 @@ def evaluateSingle(checksum, cleanup):
 	print('-- hhr file found. Parsing data ...') 
 
 	# work out how many models we want to create, get unzipped data
-	workPath = modeldir+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
+	workPath = modeldir+'/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
 	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
 	resultStore, modelcount = hhrdata
 
