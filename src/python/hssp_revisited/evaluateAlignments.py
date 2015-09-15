@@ -105,6 +105,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	# -- also edit the alignment details to contain the pdb code (needed for making the models)!
 	# TODO
 	model = ''
+	spaces = '             '
 	for lineCount in range (9+modelcount, len(linelist)-1):
 		if ('No ' in linelist[lineCount]):
 			model = int(linelist[lineCount][3:].strip())
@@ -121,7 +122,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 			out, err = p.communicate()
 			pdbChainCode = out.strip()
 			idLineOrig = 'T '.checksum[:13]
-			idLineFake = 'T '.pdbChainCode    # TODO : add spaces
+			nCodeLetters = len(pdbChainCode)
+			idLineFake = 'T '.pdbChainCode.spaces[:-nCodeLetters]    # TODO : add spaces
 			lineList[lineCount] = '>'.pdbChainCode.' '.checksum.'\n'
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount].replace(idLineOrig, idLineFake)
