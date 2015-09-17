@@ -20,7 +20,7 @@ seqfile='query.fasta'
 
 #default paths
 hhMakeModelScript = '/scripts/hhmakemodel.pl'
-renumberScript = 'renumberpdb.pl'
+renumberScript = '/mnt/project/pssh/pssh2_project//src/util/renumberpdb.pl'
 bestPdbScript = 'find_best_pdb_for_seqres_md5'
 maxclScript = '/mnt/project/aliqeval/maxcluster'
 
