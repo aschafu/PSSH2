@@ -270,6 +270,7 @@ def evaluateSingle(checksum, cleanup):
 			if structureStatistics['validResult']:
 				validChainCounter += 1
 				resultStore[model][chain] = structureStatistics
+				resultStore[model]['avrg'] = {}
 				for valType in structureStatistics.keys():
 					if valType == 'validResult':
 						resultStore[model]['avrg'][valType] = True
