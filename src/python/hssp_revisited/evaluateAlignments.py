@@ -330,7 +330,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 			print 'modelcount is big: ', modelcount, ' set it to 5'
 			modelcount = 5
 
-	for model in range(1, modelcount+1): 
+	for model in range(1, modelcount): 
 		print model, resultStore[model]
 		for chain in subset:
 			print model, chain, resultStore[model][chain]
