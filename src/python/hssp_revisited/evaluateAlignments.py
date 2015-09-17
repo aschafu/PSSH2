@@ -115,8 +115,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 			pdbChainCode = ''
 		elif ('Probab' in linelist[lineCount]):
 			# Probab=99.96  E-value=5.5e-35  Score=178.47  Aligned_cols=64  Identities=100%  Similarity=1.384  Sum_probs=63.4
-			detailPieces = linelist[lineCount].split(' ')
-			print detailPieces, linelist[lineCount].split(' ')
+			detailPieces = linelist[lineCount].split()
+			print detailPieces, linelist[lineCount]
 			identities = detailPieces[4].replace('Identities=','')
 			identities = identities.replace('%','')
 			print identities
@@ -269,7 +269,7 @@ def evaluateSingle(checksum, cleanup):
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			structureStatistics = parse_maxclusterResult(out)
-			print structureStatistics
+#			print structureStatistics
 			
 			if structureStatistics['validResult']:
 				validChainCounter += 1
@@ -295,7 +295,7 @@ def evaluateSingle(checksum, cleanup):
 	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
 	#create csvfile and writer object
 	detailsFileHandle = open(detailsFile, 'w')
-	print resultStore
+#	print resultStore
 	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
 	detailsFileHandle.close()
 
