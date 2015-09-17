@@ -122,6 +122,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			# work out the pdb structures for this md5 sum
 			checksum = linelist[lineCount].strip().replace('>','')
 			p = subprocess.Popen([bestPdbScript, '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			print bestPdbScript, '-m ', checksum
 			out, err = p.communicate()
 			print out, err
 			pdbChainCode = out.strip()
