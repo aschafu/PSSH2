@@ -211,6 +211,11 @@ def evaluateSingle(checksum, cleanup):
 	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
 	resultStore, modelcount = hhrdata
 
+	if test:
+		if modelcount > 5:
+			print 'modelcount is big: ', modelcount, ' set it to 5'
+			modelcount = 5
+
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
 		print('-- building model for protein: model nr '+str(model))
