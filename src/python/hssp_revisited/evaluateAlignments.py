@@ -360,6 +360,8 @@ def main(argv):
 	if args.keep:
 		cleanup = False
 
+	os.putenv('HHLIB', hhPath)
+
 	avrgFile = csvfilename
 	avrgFileHandle = open(avrgFile, 'w')
 	subset = [ 'avrg' ]
