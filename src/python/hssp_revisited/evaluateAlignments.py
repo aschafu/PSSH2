@@ -323,10 +323,11 @@ def main(argv):
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath)	
 	config.read(add_section_header(confFileHandle, 'pssh2Config'))
-	global pssh2_cache_path, hhPath, pdbhhrfile
+	global pssh2_cache_path, hhPath, pdbhhrfile, seqfile
 	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
 	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
 	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
+	seqfile = cleanupConfVal(config.get('pssh2Config', 'seqfile'))
 	print "Got config (from default and "+confPath+": "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile
 	if (len(pssh2_cache_path)<1):
 		raise Exception('Insufficient conf info!')
