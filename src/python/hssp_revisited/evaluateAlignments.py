@@ -131,7 +131,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			print '|', idLineFake, '|'
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
 		elif (idLineOrig in linelist[lineCount]):
-			linelist[lineCount].replace(idLineOrig, idLineFake)
+			linelist[lineCount] = linelist[lineCount].replace(idLineOrig, idLineFake)
 			print 'replaced ', idLineOrig, '->' , linelist[lineCount]
 		hhrfilehandle.write(linelist[lineCount])
 	hhrfilehandle.close()	
