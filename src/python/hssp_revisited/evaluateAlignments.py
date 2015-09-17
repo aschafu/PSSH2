@@ -106,7 +106,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 	# -- also edit the alignment details to contain the pdb code (needed for making the models)!
 	# TODO
 	model = ''
-	spaces = '             '
+	spaces = '              '
 	idLineOrig = 'T '
 	idLineFake = 'T '
 	for lineCount in range (9+modelcount, len(linelist)-1):
@@ -124,7 +124,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			pdbChainCode = out.strip()
-			idLineOrig = 'T ' + checksum[:13]
+			idLineOrig = 'T ' + checksum[:14]
 			print '|', idLineOrig, '|'
 			nCodeLetters = len(pdbChainCode)
 			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    # TODO : add spaces
