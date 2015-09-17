@@ -155,7 +155,7 @@ def getModelFileName(workPath, pdbhhrfile, model):
 
 def getStrucReferenceFileName(workPath, pdbChainCode):
 	"""utility to make sure the naming is consistent"""
-	return	workPath+'/'+pdbChainCode+'.pdb'
+	return workPath+'/'+pdbChainCode+'.pdb'
 
 
 def parse_maxclusterResult(result):
@@ -244,7 +244,7 @@ def evaluateSingle(checksum, cleanup):
 	# iterate over all chains we found and prepare files to compare agains
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
-		pdbstrucfile = workPath+'/'+chain+'.pdb'
+		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
 		print('-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile)
 		subprocess.call([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 
