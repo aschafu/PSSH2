@@ -123,6 +123,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			checksum = linelist[lineCount].strip().replace('>','')
 			p = subprocess.Popen([bestPdbScript, '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
+			print out, err
 			pdbChainCode = out.strip()
 			idLineOrig = 'T ' + checksum[:13]
 			nCodeLetters = len(pdbChainCode)
