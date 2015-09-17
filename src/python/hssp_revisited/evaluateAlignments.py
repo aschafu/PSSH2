@@ -314,6 +314,11 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
 
 	modelcount = len(resultStore) + 1
+	if test:
+	if modelcount > 5:
+		print 'modelcount is big: ', modelcount, ' set it to 5'
+		modelcount = 5
+
 	for model in range(1, modelcount+1): 
 		print model, resultStore[model]
 		for chain in subset:
