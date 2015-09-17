@@ -144,7 +144,7 @@ def tune_seqfile(seqLines, chainCode, workPath):
 	outFileName = workPath+'/'+chainCode+'.fas'
 	outFileHandle = open(outFileName, 'w')
 	outFileHandle.write('>'+chainCode+'\n')	
-	outFileHandle.write(seqLines)
+	outFileHandle.writelines(seqLines)
 	outFileHandle.close()
 	return outFileName
 
