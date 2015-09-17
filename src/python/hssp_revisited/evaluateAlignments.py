@@ -275,7 +275,7 @@ def evaluateSingle(checksum, cleanup):
 					if valType == 'validResult':
 						resultStore[model]['avrg'][valType] = True
 					else:
-						if resultStore[model]['avrg'][valType]:
+						if  valType in resultStore[model]['avrg']:
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
