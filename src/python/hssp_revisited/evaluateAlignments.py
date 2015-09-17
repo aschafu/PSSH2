@@ -168,7 +168,7 @@ def parse_maxclusterResult(result):
 	Percentage aligned at distance 8.000 = 89.39
 	GDT= 87.121
 	"""
-	print result
+#	print result
 	maxclResultLines = result.splitlines()
 	# The final GDT is in the last line
 	if 'GDT' in maxclResultLines[-1]:
@@ -179,7 +179,7 @@ def parse_maxclusterResult(result):
 		len = maxclResultLines[-6][52:55].strip()
 		grmsd = maxclResultLines[-6][63:69].strip()
 		tm = maxclResultLines[-6][74:79]
-		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
+#		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
 		structureStatistics = {
 			'validResult': True,
 			'gdt': float(gdt),
