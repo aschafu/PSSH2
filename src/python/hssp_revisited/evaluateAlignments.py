@@ -179,6 +179,7 @@ def parse_maxclusterResult(result):
 		len = maxclResultLines[-6][40:45].strip()
 		grmsd = maxclResultLines[-6][63:69].strip()
 		tm = maxclResultLines[-6][74:79]
+		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
 		structureStatistics = {
 			'validResult': True,
 			'gdt': float(gdt),
