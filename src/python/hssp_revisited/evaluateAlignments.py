@@ -323,7 +323,8 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 	'gRMSD', 'maxsub', 'len', 
 	'TM'])
 
-	modelcount = len(resultStore) + 1
+	# len counts the element at 0
+	modelcount = len(resultStore)
 	if test:
 		if modelcount > 5:
 			print 'modelcount is big: ', modelcount, ' set it to 5'
