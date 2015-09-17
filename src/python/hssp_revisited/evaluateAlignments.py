@@ -275,7 +275,7 @@ def evaluateSingle(checksum, cleanup):
 					if valType == 'validResult':
 						resultStore[model]['avrg'][valType] = True
 					else:
-						if  valType in resultStore[model]['avrg']:
+						if valType in resultStore[model]['avrg']:
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
@@ -311,7 +311,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 	csvWriter = csv.writer(fileHandle, delimiter=',')
 	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
 
-	modelcount = resultStore.length + 1
+	modelcount = len(resultStore) + 1
 	for model in range(1, modelcount+1): 
 		for chain in subset:
 			if resultStore[model][chain]['validResult']:
