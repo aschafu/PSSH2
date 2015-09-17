@@ -242,6 +242,7 @@ def evaluateSingle(checksum, cleanup):
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, workPath)
 		pdbstrucfile = workPath+chain+'.pdb'
+		print('-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile)
 		subprocess.call([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 
 	# iterate over all models and  do the comparison (maxcluster)
