@@ -176,7 +176,7 @@ def parse_maxclusterResult(result):
 		pairs = maxclResultLines[-6][14:18].strip()
 		rmsd = maxclResultLines[-6][25:31].strip()
 		maxsub = maxclResultLines[-6][40:45]
-		len = maxclResultLines[-6][40:45].strip()
+		len = maxclResultLines[-6][52:55].strip()
 		grmsd = maxclResultLines[-6][63:69].strip()
 		tm = maxclResultLines[-6][74:79]
 		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
