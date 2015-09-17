@@ -240,7 +240,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# iterate over all chains we found and prepare files to compare agains
 	for chain in pdbChainCodes:
-		pdbseqfile = tune_seqfile(seqLines, chain, workPath)
+		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = workPath+'/'+chain+'.pdb'
 		print('-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile)
 		subprocess.call([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
