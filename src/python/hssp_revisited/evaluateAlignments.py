@@ -137,13 +137,13 @@ def process_hhr(path, workPath, pdbhhrfile):
 
 
 
-def tune_seqfile(seqLines, chainCode, workPath):
+def tune_seqfile(seqLines, chainCode, checksum, workPath):
 	"""replace the sequence id in the input sequence file with the pdb code (inlcuding chain) 
 	of the structure this sequence refers to"""
 	
 	outFileName = workPath+'/'+chainCode+'.fas'
 	outFileHandle = open(outFileName, 'w')
-	outFileHandle.write('>'+chainCode+'\n')	
+	outFileHandle.write('>'+chainCode+ ' '+ checksum +'\n')	
 	outFileHandle.writelines(seqLines)
 	outFileHandle.close()
 	return outFileName
