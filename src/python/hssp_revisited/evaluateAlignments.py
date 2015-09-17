@@ -121,8 +121,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 		elif ('>'  in linelist[lineCount]):
 			# work out the pdb structures for this md5 sum
 			checksum = linelist[lineCount].strip().replace('>','')
-			p = subprocess.Popen([bestPdbScript, '-m ', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			print bestPdbScript, '-m ', checksum
+			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			print bestPdbScript, '-m', checksum
 			out, err = p.communicate()
 			print out, err
 			pdbChainCode = out.strip()
@@ -230,7 +230,7 @@ def evaluateSingle(checksum, cleanup):
 	seqLines.pop(0)
 
 	# work out the pdb structures for this md5 sum
-	p = subprocess.Popen([bestPdbScript, '-m ', checksum , '-n', maxTemplate], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	p = subprocess.Popen([bestPdbScript, '-m', checksum , '-n', maxTemplate], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
 	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
 
