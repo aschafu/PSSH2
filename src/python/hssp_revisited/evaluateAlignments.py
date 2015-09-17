@@ -90,7 +90,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 		while '  ' in parseLine:
 			parseLine = parseLine.replace('  ', ' ')
 		parseLinePieces = parseLine.split(' ')
-#		'E-value', 'P-value', 'HH score', 'Columns'
+#		 Prob E-value P-value  Score    SS Cols
 		statisticsValues['prob'] = parseLinePieces[0]
 		statisticsValues['eval'] = parseLinePieces[1]
 		statisticsValues['pval'] = parseLinePieces[2] 
@@ -114,6 +114,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			model = int(linelist[lineCount][3:].strip())
 			pdbChainCode = ''
 		elif ('Probab' in linelist[lineCount]):
+			# Probab=99.96  E-value=5.5e-35  Score=178.47  Aligned_cols=64  Identities=100%  Similarity=1.384  Sum_probs=63.4
 			detailPieces = linelist[lineCount].split(' ')
 			identities = detailPieces[4].replace('Identities=','')
 			identities = identities.replace('%','')
@@ -312,7 +313,12 @@ def evaluateSingle(checksum, cleanup):
 def printSummaryFile(resultStore, checksum, fileHandle, subset):
 
 	csvWriter = csv.writer(fileHandle, delimiter=',')
-	csvWriter.writerow(['query md5', 'match md5', 'model id', 'Prob', 'E-value', 'P-value', 'HH score', 'Aligned_cols', 'Identities', 'GDT', 'pairs', 'RMSD', 'gRMSD', 'maxsub', 'len', 'TM'])
+	csvWriter.writerow(['query md5', 'match md5', 'model id', 
+	'Prob', 'E-value', 'P-value', 
+	'HH score', 'Aligned_cols', 'Identities', 
+	'GDT', 'pairs', 'RMSD', 
+	'gRMSD', 'maxsub', 'len', 
+	'TM'])
 
 	modelcount = len(resultStore) + 1
 	if test:
@@ -326,8 +332,9 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 				csvWriter.writerow(
-					[ checksum, resultStore[model]['match md5'], model, resultStore[model]['prob'], resultStore[model]['eval'],
-					resultStore[model]['pval'], resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'],
+					[ checksum, resultStore[model]['match md5'], model, 
+					resultStore[model]['prob'], resultStore[model]['eval'], resultStore[model]['pval'], 
+					resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'],
 					resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'],
 					resultStore[model][chain]['grmsd'], resultStore[model][chain]['maxsub'], resultStore[model][chain]['len'],
 					resultStore[model][chain]['tm'] ]
