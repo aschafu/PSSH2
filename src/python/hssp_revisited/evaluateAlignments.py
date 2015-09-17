@@ -294,6 +294,7 @@ def evaluateSingle(checksum, cleanup):
 	detailsFileHandle = open(detailsFile, 'w')
 	print resultStore
 	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
+	detailsFileHandle.close()
 
 #	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
 #	avrgFileHandle = open(avrgFile, 'w')
@@ -331,9 +332,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 					resultStore[model][chain]['grmsd'], resultStore[model][chain]['maxsub'], resultStore[model][chain]['len'],
 					resultStore[model][chain]['tm'] ]
 				)
-	
-	csvWriter.close()
-	
+		
 
 def cleanupConfVal(confString):
 	confString = confString.replace("\"","")
