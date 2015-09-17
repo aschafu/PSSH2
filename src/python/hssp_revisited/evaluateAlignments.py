@@ -153,6 +153,9 @@ def getModelFileName(workPath, pdbhhrfile, model):
 	"""utility to make sure the naming is consistent"""
 	return workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb'
 
+def getStrucReferenceFileName(workPath, pdbChainCode):
+	"""utility to make sure the naming is consistent"""
+	return	workPath+'/'+pdbChainCode+'.pdb'
 
 
 def parse_maxclusterResult(result):
