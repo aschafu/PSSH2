@@ -90,6 +90,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 		while '  ' in parseLine:
 			parseLine = parseLine.replace('  ', ' ')
 		parseLinePieces = parseLine.split(' ')
+		print parseLine, parseLinePieces
 #		 Prob E-value P-value  Score    SS Cols
 		statisticsValues['prob'] = parseLinePieces[0]
 		statisticsValues['eval'] = parseLinePieces[1]
@@ -116,10 +117,10 @@ def process_hhr(path, workPath, pdbhhrfile):
 		elif ('Probab' in linelist[lineCount]):
 			# Probab=99.96  E-value=5.5e-35  Score=178.47  Aligned_cols=64  Identities=100%  Similarity=1.384  Sum_probs=63.4
 			detailPieces = linelist[lineCount].split()
-			print detailPieces, linelist[lineCount]
+#			print detailPieces, linelist[lineCount]
 			identities = detailPieces[4].replace('Identities=','')
 			identities = identities.replace('%','')
-			print identities
+#			print identities
 			modelStatistics[model]['identities'] = identities
 		elif ('>'  in linelist[lineCount]):
 			# work out the pdb structures for this md5 sum
