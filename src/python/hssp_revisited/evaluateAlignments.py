@@ -292,6 +292,7 @@ def evaluateSingle(checksum, cleanup):
 	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
 	#create csvfile and writer object
 	detailsFileHandle = open(detailsFile, 'w')
+	print resultStore
 	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
 
 #	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
@@ -379,6 +380,7 @@ def main(argv):
 	if checksum:
 		resultStore = evaluateSingle(checksum, cleanup)  
 		if resultStore:
+			print resultStore
 			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	elif list:
 		md5listfile = open(list, 'rb')
@@ -387,6 +389,7 @@ def main(argv):
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) 
 			if resultStore:
+				print resultStore
 				printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	avrgFileHandle.close()
 
