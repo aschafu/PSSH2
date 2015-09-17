@@ -315,7 +315,9 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 
 	modelcount = len(resultStore) + 1
 	for model in range(1, modelcount+1): 
+		print model, resultStore[model]
 		for chain in subset:
+			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 				csvWriter.writerow(
 					[ checksum, resultStore[model]['match md5'], model, resultStore[model]['prob'], resultStore[model]['eval'],
