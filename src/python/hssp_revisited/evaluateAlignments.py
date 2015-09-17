@@ -332,7 +332,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 					resultStore[model][chain]['tm'] ]
 				)
 	
-	csvfile.close()
+	csvWriter.close()
 	
 
 def cleanupConfVal(confString):
