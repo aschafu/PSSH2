@@ -315,9 +315,9 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 
 	modelcount = len(resultStore) + 1
 	if test:
-	if modelcount > 5:
-		print 'modelcount is big: ', modelcount, ' set it to 5'
-		modelcount = 5
+		if modelcount > 5:
+			print 'modelcount is big: ', modelcount, ' set it to 5'
+			modelcount = 5
 
 	for model in range(1, modelcount+1): 
 		print model, resultStore[model]
