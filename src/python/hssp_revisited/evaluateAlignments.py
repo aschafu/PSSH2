@@ -84,12 +84,12 @@ def process_hhr(path, workPath, pdbhhrfile):
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
 		statisticsValues = {}
-		parseLine = linelist[8+model][36:]
-		parseLine = parseLine.replace('(',' ')
-		parseLine = parseLine.replace(')',' ')
-		while '  ' in parseLine:
-			parseLine = parseLine.replace('  ', ' ')
-		parseLinePieces = parseLine.split(' ')
+		parseLine = linelist[8+model][35:]
+#		parseLine = parseLine.replace('(',' ')
+#		parseLine = parseLine.replace(')',' ')
+#		while '  ' in parseLine:
+#			parseLine = parseLine.replace('  ', ' ')
+		parseLinePieces = parseLine.split()
 		print parseLine, parseLinePieces
 #		 Prob E-value P-value  Score    SS Cols
 		statisticsValues['prob'] = parseLinePieces[0]
