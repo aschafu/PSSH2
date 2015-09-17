@@ -30,7 +30,7 @@ maxclScript = '/mnt/project/aliqeval/maxcluster'
 modeldir = '/mnt/project/psshcache/models'
 
 maxTemplate = 5
-
+test = True
 
 def add_section_header(properties_file, header_name):
 	"""we want to use the bash style config for pypthon, but
