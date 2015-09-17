@@ -30,7 +30,7 @@ maxclScript = '/mnt/project/aliqeval/maxcluster'
 modeldir = '/mnt/project/psshcache/models'
 
 maxTemplate = 5
-test = True
+test = False
 
 def add_section_header(properties_file, header_name):
 	"""we want to use the bash style config for pypthon, but
@@ -316,7 +316,7 @@ def evaluateSingle(checksum, cleanup):
 def printSummaryFile(resultStore, checksum, fileHandle, subset):
 
 	csvWriter = csv.writer(fileHandle, delimiter=',')
-	csvWriter.writerow(['query md5', 'match md5', 'model id', 
+	csvWriter.writerow(['query md5', 'query struc', 'match md5', 'model id', 
 	'Prob', 'E-value', 'P-value', 
 	'HH score', 'Aligned_cols', 'Identities', 
 	'GDT', 'pairs', 'RMSD', 
@@ -335,7 +335,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset):
 			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 				csvWriter.writerow(
-					[ checksum, resultStore[model]['match md5'], model, 
+					[ checksum, chain, resultStore[model]['match md5'], model, 
 					resultStore[model]['prob'], resultStore[model]['eval'], resultStore[model]['pval'], 
 					resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'],
 					resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'],
@@ -396,7 +396,7 @@ def main(argv):
 	if checksum:
 		resultStore = evaluateSingle(checksum, cleanup)  
 		if resultStore:
-			print resultStore
+#			print resultStore
 			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	elif list:
 		md5listfile = open(list, 'rb')
@@ -405,7 +405,7 @@ def main(argv):
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) 
 			if resultStore:
-				print resultStore
+#				print resultStore
 				printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
 	avrgFileHandle.close()
 
