@@ -318,15 +318,16 @@ def evaluateSingle(checksum, cleanup):
 	return resultStore
 	
 
-def printSummaryFile(resultStore, checksum, fileHandle, subset):
+def printSummaryFile(resultStore, checksum, fileHandle, subset, skipFirst=False):
 
 	csvWriter = csv.writer(fileHandle, delimiter=',')
-	csvWriter.writerow(['query md5', 'query struc', 'match md5', 'model id', 
-	'Prob', 'E-value', 'P-value', 
-	'HH score', 'Aligned_cols', 'Identities', 
-	'GDT', 'pairs', 'RMSD', 
-	'gRMSD', 'maxsub', 'len', 
-	'TM'])
+	if !skipFirst:
+		csvWriter.writerow(['query md5', 'query struc', 'match md5', 'model id', 
+		'Prob', 'E-value', 'P-value', 
+		'HH score', 'Aligned_cols', 'Identities', 
+		'GDT', 'pairs', 'RMSD', 
+		'gRMSD', 'maxsub', 'len', 
+		'TM'])
 
 	# len counts the element at 0
 	modelcount = len(resultStore)
