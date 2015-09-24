@@ -272,10 +272,11 @@ def evaluateSingle(checksum, cleanup):
 			out, err = p.communicate()
 			structureStatistics = parse_maxclusterResult(out)
 #			print structureStatistics
+			resultStore[model][chain] = structureStatistics
 			
 			if structureStatistics['validResult']:
 				validChainCounter += 1
-				resultStore[model][chain] = structureStatistics
+#				resultStore[model][chain] = structureStatistics
 				resultStore[model]['avrg'] = {}
 				for valType in structureStatistics.keys():
 					if valType == 'validResult':
@@ -285,8 +286,8 @@ def evaluateSingle(checksum, cleanup):
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
-			else:
-				resultStore[model][chain] = structureStatistics
+#			else:
+#				resultStore[model][chain] = structureStatistics
 
 		# calculate the average over the different pdb structures
 		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
