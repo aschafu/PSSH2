@@ -407,12 +407,14 @@ def main(argv):
 	elif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
+		skipFirst = False
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) 
 			if resultStore:
 #				print resultStore
-				printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+				printSummaryFile(resultStore, checksum, avrgFileHandle, subset, skipFirst)
+				skipFirst = True
 	avrgFileHandle.close()
 
 
