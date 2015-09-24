@@ -318,10 +318,10 @@ def evaluateSingle(checksum, cleanup):
 	return resultStore
 	
 
-def printSummaryFile(resultStore, checksum, fileHandle, subset, skipFirst=False):
+def printSummaryFile(resultStore, checksum, fileHandle, subset, skipHeader=False):
 
 	csvWriter = csv.writer(fileHandle, delimiter=',')
-	if !skipFirst:
+	if !skipHeader:
 		csvWriter.writerow(['query md5', 'query struc', 'match md5', 'model id', 
 		'Prob', 'E-value', 'P-value', 
 		'HH score', 'Aligned_cols', 'Identities', 
@@ -408,14 +408,14 @@ def main(argv):
 	elif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
-		skipFirst = False
+		skipHeader = False
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) 
 			if resultStore:
 #				print resultStore
-				printSummaryFile(resultStore, checksum, avrgFileHandle, subset, skipFirst)
-				skipFirst = True
+				printSummaryFile(resultStore, checksum, avrgFileHandle, subset, skipHeader)
+				skipHeader = True
 	avrgFileHandle.close()
 
 
