@@ -90,7 +90,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 #		while '  ' in parseLine:
 #			parseLine = parseLine.replace('  ', ' ')
 		parseLinePieces = parseLine.split()
-		print parseLine, parseLinePieces
+#		print parseLine, parseLinePieces
 #		 Prob E-value P-value  Score    SS Cols
 		statisticsValues['prob'] = parseLinePieces[0]
 		statisticsValues['eval'] = parseLinePieces[1]
