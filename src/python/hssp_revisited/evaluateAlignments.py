@@ -292,6 +292,7 @@ def evaluateSingle(checksum, cleanup):
 				if valType != 'validResult':
 					resultStore[model]['avrg'][valType] /= validChainCounter 	
 		else:
+			resultStore[model]['avrg'] = {}
 			resultStore[model]['avrg']['validResult'] = False
 	
 	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
