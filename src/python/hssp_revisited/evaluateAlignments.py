@@ -175,7 +175,7 @@ def parse_maxclusterResult(result):
 	"""
 #	print result
 	maxclResultLines = result.splitlines()
-	print maxclResultLines
+#	print maxclResultLines
 	# The final GDT is in the last line
 	if len(maxclResultLines) > 1 and 'GDT' in maxclResultLines[-1] :
 		gdt = maxclResultLines[-1].replace('GDT=','').strip()
