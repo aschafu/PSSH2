@@ -285,6 +285,8 @@ def evaluateSingle(checksum, cleanup):
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
+			else:
+				resultStore[model][chain] = structureStatistics
 
 		# calculate the average over the different pdb structures
 		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
