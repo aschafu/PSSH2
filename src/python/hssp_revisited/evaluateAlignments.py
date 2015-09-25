@@ -329,7 +329,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset, skipHeader=False
 
 	csvWriter = csv.writer(fileHandle, delimiter=',')
 	if not skipHeader:
-		csvWriter.writerow(['query md5', 'query struc', 'match md5', 'model id', 
+		csvWriter.writerow(['query md5', 'query struc', 'nReferences', 'match md5', 'model id', 
 		'Prob', 'E-value', 'P-value', 
 		'HH score', 'Aligned_cols', 'Identities', 
 		'GDT', 'pairs', 'RMSD', 
