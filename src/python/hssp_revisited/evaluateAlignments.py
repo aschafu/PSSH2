@@ -290,6 +290,7 @@ def evaluateSingle(checksum, cleanup):
 #				resultStore[model][chain] = structureStatistics
 
 		# calculate the average over the different pdb structures
+		resultStore[model]['avrg']['nReferences'] = validChainCounter
 		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
 			for valType in resultStore[model]['avrg'].keys():
 				if valType != 'validResult':
@@ -297,6 +298,7 @@ def evaluateSingle(checksum, cleanup):
 		else:
 			resultStore[model]['avrg'] = {}
 			resultStore[model]['avrg']['validResult'] = False
+		
 	
 	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
 	#create csvfile and writer object
