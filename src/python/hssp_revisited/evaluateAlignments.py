@@ -314,7 +314,7 @@ def evaluateSingle(checksum, cleanup):
 		for model in range(1, modelcount+1): 
 			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 			print('-- deleting '+modelFileWithPath)
-			subprocess.call(['rm', modelFileWithPath)
+			subprocess.call(['rm', modelFileWithPath])
 			
 #		for chain in pdbChainCodes:
 #			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
