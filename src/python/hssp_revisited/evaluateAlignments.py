@@ -349,7 +349,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset, skipHeader=False
 #			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 				csvWriter.writerow(
-					[ checksum, chain, resultStore[model]['nReferences'], resultStore[model]['match md5'], model, 
+					[ checksum, chain, resultStore[model][chain]['nReferences'], resultStore[model]['match md5'], model, 
 					resultStore[model]['prob'], resultStore[model]['eval'], resultStore[model]['pval'], 
 					resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'],
 					resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'],
