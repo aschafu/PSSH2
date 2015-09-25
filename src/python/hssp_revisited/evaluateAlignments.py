@@ -29,7 +29,7 @@ maxclScript = '/mnt/project/aliqeval/maxcluster'
 #mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
 modeldir = '/mnt/project/psshcache/models'
 
-maxTemplate = 5
+maxTemplate = 8
 test = False
 
 def add_section_header(properties_file, header_name):
