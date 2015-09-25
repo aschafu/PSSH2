@@ -188,6 +188,7 @@ def parse_maxclusterResult(result):
 #		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
 		structureStatistics = {
 			'validResult': True,
+			'nReferences': 1,
 			'gdt': float(gdt),
 			'pairs': int(pairs),
 			'rmsd': float(rmsd),
