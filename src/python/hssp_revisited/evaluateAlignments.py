@@ -311,9 +311,13 @@ def evaluateSingle(checksum, cleanup):
 #	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
 	if cleanup == True: 
-		print('-- deleting '+workPath+'/'+pdbhhrfile+'*'+' and '+workPath+'/'+chainCode+'*')
-		subprocess.call(['rm', workPath+'/'+pdbhhrfile+'*'])
-		subprocess.call(['rm', workPath+'/'+chainCode+'*'])
+		for model in range(1, modelcount+1): 
+			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+			print('-- deleting '+modelFileWithPath)
+			subprocess.call(['rm', modelFileWithPath)
+			
+#		for chain in pdbChainCodes:
+#			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
  	
 	return resultStore
 	
