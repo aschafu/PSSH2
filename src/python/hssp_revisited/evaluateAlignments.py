@@ -248,6 +248,7 @@ def evaluateSingle(checksum, cleanup):
 
 	out, err = p.communicate()
 	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
+	nReferences = len(pdbChainCodes)
 
 	# iterate over all chains we found and prepare files to compare agains
 	for chain in pdbChainCodes:
