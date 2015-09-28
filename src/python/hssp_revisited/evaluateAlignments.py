@@ -252,9 +252,10 @@ def evaluateSingle(checksum, cleanup):
 	seqLines.pop(0)
 
 	# work out the pdb structures for this md5 sum
-	p = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-	out, err = p.communicate()
+	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = bp.communicate()
+	if err:
+		print err
 	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
 
 	# iterate over all chains we found and prepare files to compare agains
