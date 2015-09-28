@@ -279,6 +279,7 @@ def evaluateSingle(checksum, cleanup):
 			resultStore[model][chain] = structureStatistics
 			
 			if structureStatistics['validResult']:
+				print('--- GDT: ', structureStatistics['gdt'])
 				validChainCounter += 1
 #				resultStore[model][chain] = structureStatistics
 				resultStore[model]['avrg'] = {}
@@ -295,7 +296,7 @@ def evaluateSingle(checksum, cleanup):
 #				resultStore[model][chain] = structureStatistics
 
 		# calculate the average over the different pdb structures
-		print(validChainCounter+ ' valid comparisons found')
+		print(validChainCounter, ' valid comparisons found')
 		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
 			for valType in resultStore[model]['avrg'].keys():
 				if valType != 'validResult':
