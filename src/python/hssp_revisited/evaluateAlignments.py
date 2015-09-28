@@ -237,7 +237,9 @@ def evaluateSingle(checksum, cleanup):
 		#  we don't need -d any more since now hhsuite is properly set up at rostlab
 		# subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
 		modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
-		subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+ modelFileWithPath, '-m '+str(model)])
+		hhmm=subprocess.Popen([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+ modelFileWithPath, '-m '+str(model)],
+							stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		out, err = hhmm.communicate()
 
 	# now create the things to compare against (pdb file(s) the sequence comes from)
 	# make a fake pdb structure using the hhsuite tool
