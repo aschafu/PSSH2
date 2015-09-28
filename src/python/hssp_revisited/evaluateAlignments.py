@@ -296,11 +296,12 @@ def evaluateSingle(checksum, cleanup):
 #				resultStore[model][chain] = structureStatistics
 
 		# calculate the average over the different pdb structures
-		print(validChainCounter, ' valid comparisons found')
+		print('-- maxCluster summary: ', validChainCounter, ' valid comparisons found')
 		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
 			for valType in resultStore[model]['avrg'].keys():
 				if valType != 'validResult':
 					resultStore[model]['avrg'][valType] /= validChainCounter 	
+					print('-- ', valType, ':', resultStore[model]['avrg'][valType])
 		else:
 			resultStore[model]['avrg'] = {}
 			resultStore[model]['avrg']['validResult'] = False
