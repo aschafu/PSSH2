@@ -176,9 +176,12 @@ def parse_maxclusterResult(result):
 #	print result
 	maxclResultLines = result.splitlines()
 #	print maxclResultLines
-	# The final GDT is in the last line
+	# We sometimes get a core dump. And sometimes the structures just don't align. 
+	# So we only want to evaluate this 
 	if len(maxclResultLines) > 2 and 'GDT' in maxclResultLines[-1] :
+		# The final GDT is in the last line
 		gdt = maxclResultLines[-1].replace('GDT=','').strip()
+		# The other values are on the 6th line from the bottom.
 		pairs = maxclResultLines[-6][14:18].strip()
 		rmsd = maxclResultLines[-6][25:31].strip()
 		maxsub = maxclResultLines[-6][40:45]
