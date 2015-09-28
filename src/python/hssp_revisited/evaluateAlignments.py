@@ -269,7 +269,7 @@ def evaluateSingle(checksum, cleanup):
 		validChainCounter = 0
 		for chain in pdbChainCodes:
 			
-			print('-- maxCluster\'d chain '+chain+ ' with model no. '+str(model))
+			print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
 			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -295,6 +295,7 @@ def evaluateSingle(checksum, cleanup):
 #				resultStore[model][chain] = structureStatistics
 
 		# calculate the average over the different pdb structures
+		print(validChainCounter+ ' valid comparisons found')
 		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
 			for valType in resultStore[model]['avrg'].keys():
 				if valType != 'validResult':
