@@ -128,6 +128,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 			modelStatistics[model]['match md5'] = checksum			
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
+			if err:
+				print err
 			pdbChainCode = out.strip()
 			idLineOrig = 'T ' + checksum[:14]
 			nCodeLetters = len(pdbChainCode)
