@@ -267,6 +267,8 @@ def evaluateSingle(checksum, cleanup):
 	for model in range(1, modelcount+1): 
 
 		validChainCounter = 0
+		resultStore[model]['avrg'] = {}
+		
 		for chain in pdbChainCodes:
 			
 			print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
@@ -282,7 +284,6 @@ def evaluateSingle(checksum, cleanup):
 				print('--- GDT: ', structureStatistics['gdt'])
 				validChainCounter += 1
 #				resultStore[model][chain] = structureStatistics
-				resultStore[model]['avrg'] = {}
 				for valType in structureStatistics.keys():
 					if valType == 'validResult':
 						resultStore[model]['avrg'][valType] = True
@@ -290,8 +291,10 @@ def evaluateSingle(checksum, cleanup):
 						print ('----', resultStore[model]['avrg'])
 						if valType in resultStore[model]['avrg']:
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
+							print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
+							print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 			else:
 				print('--- no valid result!')
 #				resultStore[model][chain] = structureStatistics
