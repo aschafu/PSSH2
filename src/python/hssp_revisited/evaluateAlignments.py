@@ -284,6 +284,8 @@ def evaluateSingle(checksum, cleanup):
 			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
+			if err:
+				print err
 			structureStatistics = parse_maxclusterResult(out)
 #			print structureStatistics
 			resultStore[model][chain] = structureStatistics
