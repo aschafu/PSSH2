@@ -305,7 +305,7 @@ def evaluateSingle(checksum, cleanup):
 			for valType in resultStore[model]['avrg'].keys():
 				if valType != 'validResult':
 					resultStore[model]['avrg'][valType] /= validChainCounter 	
-					print('-- ', valType, ':', resultStore[model]['avrg'][valType])
+#					print('-- ', valType, ':', resultStore[model]['avrg'][valType])
 		else:
 			resultStore[model]['avrg'] = {}
 			resultStore[model]['avrg']['validResult'] = False
