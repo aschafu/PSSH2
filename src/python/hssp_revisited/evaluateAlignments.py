@@ -281,20 +281,20 @@ def evaluateSingle(checksum, cleanup):
 			resultStore[model][chain] = structureStatistics
 			
 			if structureStatistics['validResult']:
-				print('--- GDT: ', structureStatistics['gdt'])
+#				print('--- GDT: ', structureStatistics['gdt'])
 				validChainCounter += 1
 #				resultStore[model][chain] = structureStatistics
 				for valType in structureStatistics.keys():
 					if valType == 'validResult':
 						resultStore[model]['avrg'][valType] = True
 					else:
-						print ('----', resultStore[model]['avrg'])
+#						print ('----', resultStore[model]['avrg'])
 						if valType in resultStore[model]['avrg']:
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
-							print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+#							print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
-							print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+#							print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 			else:
 				print('--- no valid result!')
 #				resultStore[model][chain] = structureStatistics
