@@ -24,6 +24,7 @@ DESCRIPTION
   Defaults are configured in $conf_file.
 OPTIONS
   -h          The option -h displays help and exits.
+  -o          Specify an output directory where to cache results
   -D          Debug option
   Any other parameters behind "--" are passed on to the child scripts.
 AUTHOR
