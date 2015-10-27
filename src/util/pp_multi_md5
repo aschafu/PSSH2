@@ -32,14 +32,8 @@ AUTHOR
 EOT
 }
 
-### base path to cache
-pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 ### work directory
 temp_work="/tmp/pp"
-### table to store pssh2 calculation status in
-status_table="pp_status"
-### local database path (to avoid NFS)
-DB="/var/tmp/rost_db/data"
 local_paths=''
 
 
@@ -59,7 +53,7 @@ then
 fi
 
 
-pp_status_table="pp_status"
+#pp_status_table="pp_status"
 
 debug=0
 passOpt=" " 
@@ -122,8 +116,7 @@ do
 	if [ -s $input_seq_file ] 
 	then
 		cd $CC
-#		pssh2_seq $passOpt
-		predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge -d $passOpt
+#		predictprotein --seqfile $input_seq_file  -c 4 --blast-processors 1  --bigblastdb $DB/big/big --big80blastdb $DB/big/big_80 --pfam2db $DB/pfam_legacy/Pfam_ls --pfam3db $DB/pfam/Pfam-A.hmm --prositedat $DB/prosite/prosite.dat --prositeconvdat $DB/prosite/prosite_convert.dat  --swissblastdb $DB/swissprot/uniprot_sprot --cache-merge -d $passOpt
 		pp_output_path=`ppc_fetch --seqfile query.fasta -d`
 		count=0
 		if [ $pp_output_path ]
@@ -134,13 +127,13 @@ do
 				ln -s $pp_output_path $CC
 			fi
 		fi
-		s=`date +%s`
-		echo "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS"
-		DB.pssh2_local "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$SECONDS "         
+#		s=`date +%s`
+		echo "retrieved results for md5=\"$md5\" : count=$count"
+#		DB.pssh2_local "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$SECONDS ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$SECONDS "         
 		cd $temp_work
 	else 
-		s=`date +%s`
-		DB.pssh2_local "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
+#		s=`date +%s`
+#		DB.pssh2_local "insert into pssh2_local.$pp_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=$SECONDS" 
 		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
 	fi
 
