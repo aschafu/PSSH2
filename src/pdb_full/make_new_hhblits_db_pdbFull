@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# rewrite of make_new_pdb_full (just call the general make_new_hhblitsdb)
+# this script works based on the pdb table in the mysql database
+# (-> extracting SEQRES and redundancy reduction are delegated to the database import)
+# it writes the output a3m files to the cache and also adds psipred a3m files to the chache
+# then it collects the current psipred a3m files to a directory that hhblitsdb.pl can work on
+
+qsubFlag='-e /mnt/project/pssh/pssh2_project/work/log_pdbFull/ -o /mnt/project/pssh/pssh2_project/work/log_pdbFull/'
+if [ -z "$conf_file" ]
+then
+	conf_file='/etc/pssh2.conf'
+else
+	# make sure we pass on the conf file if there was one
+	# CAVE: THis must be accessible on the queue!
+	qsubFlag="$qsubFlag -v conf_file=$conf_file"
+fi
+echo "conf_file: $conf_file, qsubFlag: $qsubFlag"
+
+usage()
+{
+cat << EOT
+NAME
+  make_new_pdb_full - generate a new pdb_full database 
+SYNOPSIS
+  make_new_pdb_full [-v] <-m md5List> [-d dbName]
+DESCRIPTION
+  make_new_pdb_full iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
+  runs build_hhblits_profile for each sequence (to get a3m files),
+  runs addss.pl on each a3m file (based on the best pdb structure for the sequence),
+  links the output a3m files to the psipred a3m directory
+  and finally runs hhblitsdb.pl on the psipred a3m directory.
+  This script assumes that the sequences given in the md5List are valid sequences,
+  any sorting out of DNA sequences, short sequences or some with too many non-amino acid residues
+  must happen in the process that constructs the md5List. 
+  Any input behind "--" is passed on build_hhblits_structure_profile 
+OPTIONS
+  -d          output name for new pdb_full (default: current)
+  -m          file containing pdb Seqres md5s to run over 
+  -h          print this help and exit
+  -D          give debug output (passed on to child scripts)
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
