@@ -21,9 +21,9 @@ usage()
 {
 cat << EOT
 NAME
-  make_new_pdb_full - generate a new pdb_full database 
+  make_new_hhblits_db_pdbFull - generate a new pdb_full database 
 SYNOPSIS
-  make_new_pdb_full [-v] <-m md5List> [-d dbName]
+  make_new_hhblits_db_pdbFull <-m md5List> [-d dbVersion]
 DESCRIPTION
   make_new_pdb_full iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
   runs build_hhblits_profile for each sequence (to get a3m files),
