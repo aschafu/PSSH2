@@ -41,7 +41,21 @@ exit 1
 
 # parameters (will be overwritten by anything read from conf file or the command line)
 dbName='pdb_full'   # for pdbFull this is pdb_full
-dbVersion='current'  # for pdbFull this has been db_yyyymmdd
+dbDate='current'
 
+debug=0
+passOpt=" " 
+while getopts :m:n:d:Dh opt
+do
+	case $opt in
+	D) debug=1; passOpt="$passOpt -D";;
+	m) md5ListFile=$OPTARG;;
+	d) dbDate=$OPTARG;;
+	h) usage; build_hhblits_structure_profile -h; exit;;
+	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
+#	*) passOpt="$passOpt -$opt";;
+	esac
+done
 
-make_new_hhblits_db 
+make_new_hhblits_db -n $dbName -m $md5ListFile -d $dbDate
+
