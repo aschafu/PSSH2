@@ -25,7 +25,7 @@ NAME
 SYNOPSIS
   make_new_hhblits_db <-m md5List> [-d dbName]
 DESCRIPTION
-  make_new_hhblits_db iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
+  make_new_hhblits_db iterates over sequences given in the md5List,
   runs build_hhblits_profile for each sequence (to get a3m files),
   runs addss.pl on each a3m file (based on the best pdb structure for the sequence),
   links the output a3m files to the psipred a3m directory
