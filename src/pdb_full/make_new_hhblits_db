@@ -48,11 +48,11 @@ exit 1
 
 
 # parameters (will be overwritten by anything read from conf file)
-dbName='hhblitsdb'
-dbVersion='current'
+dbName='hhblitsdb'   # for pdbFull this is pdb_full
+dbVersion='current'  # for pdbFull this has been db_yyyymmdd
 rootDir="/mnt/project/pssh/pssh2_project/" 
 hhblitsdb_result_dir=$rootDir"data/"$dbName
-hhblitsdb_data_dir=$rootDir"data/"$dbName"_workData"
+hhblitsdb_data_dir=$rootDir"data/"$dbName"_workData"  # for pdb_full this has been pdb_derived
 n_queue=10
 queue_max_wait=1000
 build_hhblits_structure_profile='build_hhblits_structure_profile'
