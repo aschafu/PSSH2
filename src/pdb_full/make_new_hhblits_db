@@ -47,7 +47,7 @@ exit 1
 }
 
 
-# parameters (will be overwritten by anything read from conf file)
+# parameters (will be overwritten by anything read from conf file or the command line)
 dbName='hhblitsdb'   # for pdbFull this is pdb_full
 dbVersion='current'  # for pdbFull this has been db_yyyymmdd
 rootDir="/mnt/project/pssh/pssh2_project/" 
