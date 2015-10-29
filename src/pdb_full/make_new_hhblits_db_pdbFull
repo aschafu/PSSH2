@@ -25,14 +25,8 @@ NAME
 SYNOPSIS
   make_new_hhblits_db_pdbFull <-m md5List> [-d dbVersion]
 DESCRIPTION
-  make_new_pdb_full iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
-  runs build_hhblits_profile for each sequence (to get a3m files),
-  runs addss.pl on each a3m file (based on the best pdb structure for the sequence),
-  links the output a3m files to the psipred a3m directory
-  and finally runs hhblitsdb.pl on the psipred a3m directory.
-  This script assumes that the sequences given in the md5List are valid sequences,
-  any sorting out of DNA sequences, short sequences or some with too many non-amino acid residues
-  must happen in the process that constructs the md5List. 
+  make_new_hhblits_db_pdbFull iterates over sequences given in the md5List (coming fron the pdb table of Aquaria),
+  see make_new_hhblits_db for more info
   Any input behind "--" is passed on build_hhblits_structure_profile 
 OPTIONS
   -d          output name for new pdb_full (default: current)
