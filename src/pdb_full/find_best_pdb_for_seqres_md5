@@ -131,12 +131,17 @@ else {
     @selectedIds = @bestIds;
 }
 
+# check whether we found anything at all
+unless (defined $selectedIds[0] &&  $selectedIds[0]=~/\w/){
+	push @selecteIds, '0xxx';
+}
+
 # work out the slice we want to return
 my $lastIndex;
 if ($#selectedIds > $multi-1){
 	$lastIndex = $multi-1;
 }
-else {
+else{
 	$lastIndex = $#selectedIds;
 }
 
