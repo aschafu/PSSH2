@@ -171,7 +171,7 @@ done
 
 
 ## Generating pdb_full database files with HH-suite script hhblitsdb.pl and the MSAs with PSIPRED prediction received in last step 
-db=$hhblitsdb_result_dir"/"$dbVersion
+db=$hhblitsdb_result_dir"/"$dbDate
 rm -r $db 2>/dev/null #delete old db files
 mkdir -p $db 2>/dev/null
 
@@ -180,6 +180,6 @@ mkdir $hhblitsdb_log_dir 2>/dev/null
 if $verbose ;
 then
     echo calling hhblitsdb.pl on $pa3mdir "(see log in $hhblitsdb_log_dir)" 
-    echo $HHLIB/scripts/hhblitsdb.pl -o $db/$dbName -ia3m $pa3mdir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb_$dbName_$dbVersion.log
+    echo $HHLIB/scripts/hhblitsdb.pl -o $db/$dbName -ia3m $pa3mdir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb_$dbName_$dbDate.log
 fi  
-$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $pa3mdir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb_$dbName_$dbVersion.log   
+$HHLIB/scripts/hhblitsdb.pl -o $db/pdb_full -ia3m $pa3mdir -cpu 10 -log $hhblitsdb_log_dir/hhblitsdb_$dbName_$dbDate.log   
