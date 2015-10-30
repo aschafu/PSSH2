@@ -1,4 +1,8 @@
-How to update pdb_full:
+# How to update pdb_full:
+# =======================
+
+# 1. Update the mysql database
+-------------------------------
 # After pdb at rostlab has been updated:
 # Update PDB database in mysql:
 cd $Aquaria/fromSparkleshare/Aquaria/work/PDB/
