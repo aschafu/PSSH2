@@ -21,4 +21,11 @@ ln -s $Aquaria/fromSparkleshare/Aquaria/work/PDB/biounit/ /var/tmp/Data/PDB/biou
 # c. only take sequences that have at least 50% standard residues and are longer than 10 residues
 DB.aquaria_local "select MD5_Hash from tmp_pdb_chain_clean_seqres_yyyymmmdd t where t.x_ratio < 0.5 and t.c_length > 10" > pdbChain.uniq.xlt50.clgt10.yyyymmmdd.md5
 
-# 
+# 3. Make the profiles and the database
+---------------------------------------
+
+
+
+How to generate any other hhblits database:
+===========================================
+1. Create a list of md5 sums to run over, make sure the sequences are included in the 
