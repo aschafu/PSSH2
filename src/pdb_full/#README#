@@ -1,12 +1,13 @@
 # How to update pdb_full:
 # =======================
 
-# 1. Update the mysql database
--------------------------------
+# 1. Update the mysql database (example for rostlab setup)
+-----------------------------------------------------------
 # After pdb at rostlab has been updated:
-# Update PDB database in mysql:
 cd $Aquaria/fromSparkleshare/Aquaria/work/PDB/
 rsync -rlt -v -z --delete --port=33444 rsync.wwpdb.org::ftp_data/biounit/coordinates/divided/ ./biounit/ >& rsync.log &
+# Make sure the links still exist or redo them:
 ln -s /mnt/project/rost_db/data/pdb/entries/ /var/tmp/Data/PDB/structures
 ln -s $Aquaria/fromSparkleshare/Aquaria/work/PDB/biounit/ /var/tmp/Data/PDB/biounit
-../../src/PDB/Update.pl -v -d 2 -s > & Update.20150811.log &
+# run the update process
+../../src/PDB/Update.pl -v -d 2 -s > & Update.yyyymmdd.log &
