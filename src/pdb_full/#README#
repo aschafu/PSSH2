@@ -29,6 +29,8 @@ make_new_hhblits_db -n pdb_full -m pdbChain.uniq.xlt50.clgt10.yyyymmmdd.md5 -d y
 # How to generate any other hhblits database:
 # ===========================================
 # 1. Create a list of md5 sums to run over, make sure the sequences are included in the protein_sequence tables used for getting sequences from mysql
-# 2. Make the 
+# 2. Make the profiles and the database
+make_new_hhblits_db -n pdb_full -m pdbChain.uniq.xlt50.clgt10.yyyymmmdd.md5 -d yyyymmdd
+
 
 
