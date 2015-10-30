@@ -1,0 +1,21 @@
+# How to update pdb_full:
+# =======================
+
+# 1. Update the mysql database (example for rostlab setup)
+-----------------------------------------------------------
+# After pdb at rostlab has been updated:
+cd $Aquaria/fromSparkleshare/Aquaria/work/PDB/
+rsync -rlt -v -z --delete --port=33444 rsync.wwpdb.org::ftp_data/biounit/coordinates/divided/ ./biounit/ >& rsync.log &
+# Make sure the links still exist or redo them:
+ln -s /mnt/project/rost_db/data/pdb/entries/ /var/tmp/Data/PDB/structures
+ln -s $Aquaria/fromSparkleshare/Aquaria/work/PDB/biounit/ /var/tmp/Data/PDB/biounit
+# run the update process (replace yyyymmmdd with appropriate date)
+../../src/PDB/Update.pl -v -d 2 -s > & Update.yyyymmdd.log &
+
+# 2. Make the list of md5s to run over
+--------------------------------------
+# create a temporary table in Aquaria MYSQL:
+# 1. generate a SEQRES version without Xs
+# 2. generate a column that compares the length wit
+# create table tmp_pdb_chain_clean_seqres_yyyymmmdd as select `MD5_Hash`, group_concat(pdb_id, `Chain` separator ', ') as pdb_ids, SEQRES, length,  Replace (SEQRES, "X", "") as clean_seqres, length(Replace (SEQRES, "X", "")) as c_length,  ((length - length(Replace (SEQRES, "X", ""))) / length) as x_ratio from PDB_chain where type='Protein' and length>10 group by `MD5_Hash`;
+DB.aquaria_local "select MD5_Hash from tmp_pdb_chain_clean_seqres_yyyymmmdd t where t.x_ratio < 0.5 and t.c_length > 10" > pdbChain.uniq.xlt50.clgt10.yyyymmmdd.md5
