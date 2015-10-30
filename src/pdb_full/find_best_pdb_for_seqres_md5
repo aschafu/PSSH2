@@ -133,7 +133,7 @@ else {
 
 # check whether we found anything at all
 unless (defined $selectedIds[0] &&  $selectedIds[0]=~/\w/){
-	push @selecteIds, '0xxx';
+	push @selectedIds, '0xxx';
 }
 
 # work out the slice we want to return
