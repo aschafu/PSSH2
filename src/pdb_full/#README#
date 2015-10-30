@@ -26,8 +26,9 @@ DB.aquaria_local "select MD5_Hash from tmp_pdb_chain_clean_seqres_yyyymmmdd t wh
 make_new_hhblits_db -n pdb_full -m pdbChain.uniq.xlt50.clgt10.yyyymmmdd.md5 -d yyyymmdd
 
 
-How to generate any other hhblits database:
-===========================================
-1. Create a list of md5 sums to run over, make sure the sequences are included in the 
+# How to generate any other hhblits database:
+# ===========================================
+# 1. Create a list of md5 sums to run over, make sure the sequences are included in the protein_sequence tables used for getting sequences from mysql
+# 2. Make the 
 
 
