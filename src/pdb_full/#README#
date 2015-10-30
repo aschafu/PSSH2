@@ -11,3 +11,5 @@ ln -s /mnt/project/rost_db/data/pdb/entries/ /var/tmp/Data/PDB/structures
 ln -s $Aquaria/fromSparkleshare/Aquaria/work/PDB/biounit/ /var/tmp/Data/PDB/biounit
 # run the update process (replace yyyymmmdd with appropriate date)
 ../../src/PDB/Update.pl -v -d 2 -s > & Update.yyyymmdd.log &
+
+# 2. 
