@@ -218,7 +218,7 @@ then
 else
 	# if there is no input, we exit now with an error
 	s=`date +%s`
-	DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
+	DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
 	echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
 	exit
 fi
@@ -281,7 +281,7 @@ fi
 ### add output to the status db
 s=`date +%s`
 runtime=$SECONDS
-DB.pssh2_local "insert into pssh2_local.$pdb_full_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0 ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime " 
+DB.pssh2_local "insert into pssh2_local.$status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0 ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime " 
 
 
 ### compress things / delete
