@@ -5,7 +5,7 @@ if [ -z "$conf_file" ]; then
 fi
 
 #### parameters (will be overwritten by anything read from conf file)
-build_hhblits_structure_profile_status="build_hhblits_structure_profile_status"
+status_table="build_hhblits_structure_profile_status"
 seqfile='query.fasta' 
 hhblitsLog='hhblits.log' 
 a3mfile='query.uniprot20.a3m' 
