@@ -114,7 +114,7 @@ if [ -z $pa3mdir ]
 then
 	# if the output directory hadn't been set before, we set it now
 	pa3mdir=$hhblitsdb_data_dir"/psipred_a3m/"$dbDate"/"
-	mkdir $pa3mdir 2>/dev/null
+	mkdir -p $pa3mdir 2>/dev/null
 fi
 
 if [ -w $pa3mdir ]
