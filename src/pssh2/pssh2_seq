@@ -195,7 +195,12 @@ then
 else
 	if [ $fail -eq 0 ]
  	then
- 		fail=-3
+ 		if [ -e query.pssh2 ]
+ 		then
+ 			fail = -4
+ 		else
+	 		fail=-3
+	 	fi
  	fi
  	DB.pssh2_local "insert into $status_table set md5=\"$md5\" , count=$fail , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$fail , stamp=$s, runtime=$runtime " 		
 fi
