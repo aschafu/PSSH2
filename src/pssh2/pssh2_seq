@@ -198,7 +198,7 @@ else
 		# we distinguish between empty pssh2 files and cases where we didn't get a pssh2
  		if [ -e query.pssh2 ]
  		then
- 			fail = -4
+ 			fail=-4
  		else
 	 		fail=-3
 	 	fi
