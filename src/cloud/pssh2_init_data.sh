@@ -6,6 +6,7 @@
 set -x
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
+cd /mnt/data
 mkdir /mnt/data/hhblits/
 chmod a+tw /mnt/data/hhblits/
 curl -o uniprot20_2015_06.tgz http://wwwuser.gwdg.de/~compbiol/data/hhsuite/databases/hhsuite_dbs/uniprot20_2015_06.tgz
