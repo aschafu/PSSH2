@@ -12,5 +12,5 @@ curl -o uniprot20_2015_06.tgz http://wwwuser.gwdg.de/~compbiol/data/hhsuite/data
 tar -xvf uniprot20_2015_06.tgz  -C /mnt/data/hhblits/
 rm uniprot20_2015_06.tgz
 curl -o pdb_full.current.tgz ftp://rostlab.org/pssh2/pdb_full/pdb_full.current.tgz
-tar -xvf pdb_full.current.tgz
+tar -xvf pdb_full.current.tgz   -C /mnt/data/hhblits/
 rm pdb_full.current.tgz
