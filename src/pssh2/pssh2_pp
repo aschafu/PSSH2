@@ -52,7 +52,7 @@ while getopts :h opt
 do
 	case $opt in
 	h) usage; echo " "; pssh2_seq -h; exit;;
-	D) debug=1; passOpt="$passOpt -$opt";; 
+	D) debug=1; silent=0; passOpt="$passOpt -$opt";; 
 #	*) passOpt="$passOpt -$opt";;
 	esac
 done
