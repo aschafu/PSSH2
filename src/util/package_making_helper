@@ -7,7 +7,7 @@ cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/scan_structures_hhblits pssh2-p
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/parse_hhr_for_pssh2 pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_seq pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pp_pssh2 pssh2-package/
+cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_pp pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_multi_md5 pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_aws pssh2-package/
 cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2.conf pssh2-package/
