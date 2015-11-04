@@ -25,6 +25,7 @@ EOT
 }
 
 hmmfile='query.uniprot20.hhm' 
+hhrfile='query.uniprot20.hhr'
 pssh2file='query.pssh2'
 
 ### base path to cache
