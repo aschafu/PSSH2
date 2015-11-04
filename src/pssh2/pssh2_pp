@@ -95,12 +95,12 @@ fi
 pssh2_seq $sOpt -t pssh2_pp $passOpt
 
 if [ -e $pssh2file ]
-	cp --preserve=timestamp $pssh2file $ppDir
+	cp --preserve=timestamp $pssh2file $ppDir/
 fi
 if [ -e $hmmfile ]
-	cp --preserve=timestamp $hmmfile $ppDir
+	cp --preserve=timestamp $hmmfile $ppDir/
 fi
 if [ -e $hhrfile.gz ]
-	cp --preserve=timestamp $hhrfile.gz $ppDir
+	cp --preserve=timestamp $hhrfile.gz $ppDir/
 fi
 cd $ppDir
