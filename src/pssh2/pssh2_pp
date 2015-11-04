@@ -85,7 +85,13 @@ else
 	cd $CC
 fi
 
-pssh2_seq -s -t pssh2_pp $passOpt
+sOpt=''
+if [ $silent -eq 1 ]
+then
+	sOpt='-s'
+fi
+
+pssh2_seq $sOpt -t pssh2_pp $passOpt
 
 if [ -e $pssh2file ]
 	cp --preserve=timestamp $pssh2file $ppDir
