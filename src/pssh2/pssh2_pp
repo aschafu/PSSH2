@@ -82,3 +82,9 @@ pssh2_seq -s -t pssh2_pp $passOpt
 if [ -e $pssh2file ]
 	cp --preserve=timestamp $pssh2file $ppDir
 fi
+if [ -e $hmmfile ]
+	cp --preserve=timestamp $hmmfile $ppDir
+fi
+if [ -e $hhrfile.gz ]
+	cp --preserve=timestamp $hhrfile $ppDir
+fi
