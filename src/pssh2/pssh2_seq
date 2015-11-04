@@ -133,6 +133,7 @@ then
 	    if [ $force -eq 1 ] 
 	    then
 			db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
+			if [ $db_stamp ]
 			if [ $hmm_stamp -gt $db_stamp ]
 			then
 		    	skip=1
