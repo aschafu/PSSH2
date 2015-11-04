@@ -5,7 +5,7 @@
 # * your system is up to date (apt-get update, upgrade)
 
 set -x
-exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
+exec > >(tee /var/log/user-data-pssh2intall.log|logger -t user-data ) 2>&1
 
 wget ftp://rostlab.org/pssh2/package/pssh2_0.1+nmu1_amd64.deb
 dpkg -i pssh2_0.1+nmu1_amd64.deb
