@@ -86,5 +86,5 @@ if [ -e $hmmfile ]
 	cp --preserve=timestamp $hmmfile $ppDir
 fi
 if [ -e $hhrfile.gz ]
-	cp --preserve=timestamp $hhrfile $ppDir
+	cp --preserve=timestamp $hhrfile.gz $ppDir
 fi
