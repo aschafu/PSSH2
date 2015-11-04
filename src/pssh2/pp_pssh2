@@ -12,7 +12,8 @@ SYNOPSIS
 DESCRIPTION
   wrapper around pssh2_seq: 
   operates silently (sets -s) 
-  and writes to mysql table pssh2_pp (sets tableName to pssh2_pp).
+  and writes to mysql table pssh2_pp (sets tableName to pssh2_pp),
+  also communicates with the cache (getting data, storing data).
   Any other parameters behind "--" are passed on to the child scripts.
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
