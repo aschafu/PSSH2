@@ -10,12 +10,12 @@ usage()
 {
 cat << EOT
 NAME
-  pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
+  pssh2_pp - generate pssh2 type sequence-to-structrue alignments for PredictProtein
 SYNOPSIS
-  pp_pssh2 [-h] [-- ...]
+  pp_pssh2 [-h] [-D] [-- ...]
 DESCRIPTION
   wrapper around pssh2_seq: 
-  operates silently (sets -s) 
+  operates silently (sets -s -- unless you set -D for debugging purposes) 
   and writes to mysql table pssh2_pp (sets tableName to pssh2_pp),
   also communicates with the cache (getting data, storing data).
   Any other parameters behind "--" are passed on to the child scripts.
