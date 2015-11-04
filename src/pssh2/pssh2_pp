@@ -2,6 +2,10 @@
 ## run the necessary things for pssh2 predictions
 ### run and parse hhblits
 
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
 usage()
 {
 cat << EOT
