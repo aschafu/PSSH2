@@ -81,6 +81,7 @@ then
 	cd $CC
 else
 	mkdir -p $CC
+	cp query.fasta $CC
 	cd $CC
 fi
 
