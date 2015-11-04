@@ -95,6 +95,7 @@ EOT
 force=1
 debug=0
 silent=0
+getTime='time'
 passOpt=" " 
 while getopts :sDF:Rht: opt
 do
