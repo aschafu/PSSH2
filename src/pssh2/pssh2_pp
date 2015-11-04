@@ -49,7 +49,7 @@ fi
 silent=1
 debug=0
 passOpt=" " 
-while getopts :h opt
+while getopts :hD opt
 do
 	case $opt in
 	h) usage; echo " "; pssh2_seq -h; exit;;
