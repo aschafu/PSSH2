@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# assumes that 
+# to be executed as root, assumes that 
 # * you have a set up the system to have a '/mnt/data' with storage space available
 # * your system is up to date (update, upgrade)
 
