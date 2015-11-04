@@ -4,7 +4,7 @@
 # * you have a set up the system to have a '/mnt/data' with storage space available
 
 set -x
-exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
+exec > >(tee /var/log/user-pssh2-data.log|logger -t user-data ) 2>&1
 
 cd /mnt/data
 mkdir /mnt/data/hhblits/
