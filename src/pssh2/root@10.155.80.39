@@ -1,0 +1,99 @@
+#!/bin/bash
+## run the necessary things for pssh2 predictions
+### run and parse hhblits
+
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  pp_pssh2 - generate pssh2 type sequence-to-structrue alignments for PredictProtein
+SYNOPSIS
+  pp_pssh2 [-h] [-- ...]
+DESCRIPTION
+  wrapper around pssh2_seq: 
+  operates silently (sets -s) 
+  and writes to mysql table pssh2_pp (sets tableName to pssh2_pp),
+  also communicates with the cache (getting data, storing data).
+  Any other parameters behind "--" are passed on to the child scripts.
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+}
+
+hmmfile='query.uniprot20.hhm' 
+hhrfile='query.uniprot20.hhr'
+pssh2file='query.pssh2'
+
+### base path to cache
+pssh2_cache="/mnt/project/psshcache/result_cache/"
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+# by default we want to use the system installation
+# but if local_paths is set we have the option to change the path and instead use the local variants
+if [ $local_paths ]
+then
+	PATH=$local_paths:$PATH
+	export PATH
+	echo "Using path: $PATH"
+fi
+
+
+silent=1
+passOpt=" " 
+while getopts :h opt
+do
+	case $opt in
+	h) usage; echo " "; pssh2_seq -h; exit;;
+	D) debug=1; passOpt="$passOpt -$opt";; 
+#	*) passOpt="$passOpt -$opt";;
+	esac
+done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+shift $(expr $OPTIND - 1 )
+passOpt=$@
+
+# get data from the cache
+
+md5=`fasta_to_md5 query.fasta`
+# get subdir names for cache structure
+M=`echo $md5|cut -b1,2`
+M2=`echo $md5|cut -b3,4`
+### full path to cachedir
+CC="$pssh2_cache$M/$M2/$md5"
+
+ppDir=`pwd`
+
+if [ -d $CC ]
+then
+	cd $CC
+else
+	mkdir -p $CC
+	cp query.fasta $CC
+	cd $CC
+fi
+
+pssh2_seq -s -t pssh2_pp $passOpt
+
+if [ -e $pssh2file ]
+	cp --preserve=timestamp $pssh2file $ppDir
+fi
+if [ -e $hmmfile ]
+	cp --preserve=timestamp $hmmfile $ppDir
+fi
+if [ -e $hhrfile.gz ]
+	cp --preserve=timestamp $hhrfile.gz $ppDir
+fi
+cd $ppDir
