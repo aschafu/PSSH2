@@ -2,7 +2,7 @@
 
 # to be executed as root, assumes that 
 # * you have a set up the system to have a '/mnt/data' with storage space available
-# * your system is up to date (update, upgrade)
+# * your system is up to date (apt-get update, upgrade)
 
 set -x
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
