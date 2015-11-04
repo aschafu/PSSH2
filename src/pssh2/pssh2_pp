@@ -63,9 +63,14 @@ M2=`echo $md5|cut -b3,4`
 ### full path to cachedir
 CC="$pssh2_cache$M/$M2/$md5"
 
+ppDir=`pwd`
+
 if [ -d $CC ]
 then
-	cp --preserve=timestamps query.* .
+	cd $CC
+else
+	mkdir -p $CC
+	cd $CC
 fi
 
 pssh2_seq -s -t pssh2_pp $passOpt
