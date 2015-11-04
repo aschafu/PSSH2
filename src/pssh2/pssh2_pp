@@ -70,4 +70,3 @@ fi
 
 pssh2_seq -s -t pssh2_pp $passOpt
 
-# possibly delete more files... 
