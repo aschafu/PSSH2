@@ -200,7 +200,7 @@ else
 	if [ $fail -eq 0 ]
  	then
 		# we distinguish between empty pssh2 files and cases where we didn't get a pssh2
- 		if [ -e query.pssh2 ]
+ 		if [ -e $pssh2file ]
  		then
  			fail=-4
  		else
