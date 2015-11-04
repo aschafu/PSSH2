@@ -79,7 +79,6 @@ fi
 
 pssh2_seq -s -t pssh2_pp $passOpt
 
-if [ -e query.pssh2 ]
-	cp --preserve=timestamp query.pssh2 $ppDir
+if [ -e $pssh2file ]
+	cp --preserve=timestamp $pssh2file $ppDir
 fi
-if [ -e query.uniprot20.hhm ]
