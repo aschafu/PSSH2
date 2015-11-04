@@ -88,3 +88,4 @@ fi
 if [ -e $hhrfile.gz ]
 	cp --preserve=timestamp $hhrfile.gz $ppDir
 fi
+cd $ppDir
