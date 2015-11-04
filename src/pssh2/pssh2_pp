@@ -47,6 +47,7 @@ fi
 
 
 silent=1
+debug=0
 passOpt=" " 
 while getopts :h opt
 do
