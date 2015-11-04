@@ -56,6 +56,12 @@ do
 #	*) passOpt="$passOpt -$opt";;
 	esac
 done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
 shift $(expr $OPTIND - 1 )
 passOpt=$@
 
