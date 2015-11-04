@@ -24,6 +24,9 @@ AUTHOR
 EOT
 }
 
+hmmfile='query.uniprot20.hhm' 
+pssh2file='query.pssh2'
+
 ### base path to cache
 pssh2_cache="/mnt/project/psshcache/result_cache/"
 # get configurable options, e.g. local file paths
@@ -75,3 +78,7 @@ fi
 
 pssh2_seq -s -t pssh2_pp $passOpt
 
+if [ -e query.pssh2 ]
+	cp --preserve=timestamp query.pssh2 $ppDir
+fi
+if [ -e query.uniprot20.hhm ]
