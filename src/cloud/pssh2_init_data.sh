@@ -15,3 +15,4 @@ rm uniprot20_2015_06.tgz
 curl -o pdb_full.current.tgz ftp://rostlab.org/pssh2/pdb_full/pdb_full.current.tgz
 tar -xvzf pdb_full.current.tgz   -C /mnt/data/hhblits/
 rm pdb_full.current.tgz
+chown -R ppuser.ppuser /mnt/data/hhblits/
