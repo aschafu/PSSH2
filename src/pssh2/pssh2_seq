@@ -169,7 +169,7 @@ else
 	fi
 fi
 
-if [ -s query.uniprot20.hhm ] 
+if [ -s $hmmfile ] 
 then
 # 	time nice scan_structures_hhblits -m  $hmmfile -r query.uniprot20.pdb.full.hhr $passOpt
  	time scan_structures_hhblits -m  $hmmfile -r $pdbhhrfile $passOpt
