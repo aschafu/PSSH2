@@ -25,7 +25,7 @@ EOT
 }
 
 ### base path to cache
-pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+pssh2_cache="/mnt/project/psshcache/result_cache/"
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
