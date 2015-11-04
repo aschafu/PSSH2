@@ -54,11 +54,12 @@ done
 shift $(expr $OPTIND - 1 )
 passOpt=$@
 
+# get data from the cache
+
 md5=`fasta_to_md5 query.fasta`
 # get subdir names for cache structure
 M=`echo $md5|cut -b1,2`
 M2=`echo $md5|cut -b3,4`
-
 ### full path to cachedir
 CC="$pssh2_cache$M/$M2/$md5"
 
