@@ -391,7 +391,7 @@ def main(argv):
 	""" here we initiate the real work"""
 	# get config info
 	config = ConfigParser.RawConfigParser()
-	config.readfp(io.BytesIO(defaultConfig))
+#	config.readfp(io.BytesIO(defaultConfig))
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath)	
 	add_section_header(confFileHandle, 'pssh2Config')
