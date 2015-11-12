@@ -394,6 +394,7 @@ def main(argv):
 	config.readfp(io.BytesIO(defaultConfig))
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath)	
+	add_section_header(confFileHandle, 'pssh2Config')
 	config.read(add_section_header(confFileHandle, 'pssh2Config'))
 	global pssh2_cache_path, hhPath, pdbhhrfile, seqfile
 	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
