@@ -9,6 +9,7 @@ import subprocess
 import logging
 import time
 import ConfigParser
+from StringIO import StringIO
 
 defaultConfig = """
 [pssh2Config]
@@ -31,15 +32,6 @@ modeldir = '/mnt/project/psshcache/models'
 
 maxTemplate = 8
 test = False
-
-def add_section_header(properties_file, header_name):
-	"""we want to use the bash style config for pypthon, but
-	ConfigParser requires at least one section header in a properties file and
-	our bash config file doesn't have one, so add a header to it on the fly.
-	"""
-	yield '[{}]\n'.format(header_name)
-	for line in properties_file:
-		yield line
 
 def process_hhr(path, workPath, pdbhhrfile):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
@@ -391,11 +383,13 @@ def main(argv):
 	""" here we initiate the real work"""
 	# get config info
 	config = ConfigParser.RawConfigParser()
-#	config.readfp(io.BytesIO(defaultConfig))
+	config.readfp(io.BytesIO(defaultConfig))
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath)	
-	print add_section_header(confFileHandle, 'pssh2Config')
-	config.read(add_section_header(confFileHandle, 'pssh2Config'))
+#  add a fake section
+	fakeConfFileHandle = StringIO("[pssh2Config]\n" + confFileHandle.read())
+	config.readfp(fakeConfFileHandle)
+#	print config.sections()
 	global pssh2_cache_path, hhPath, pdbhhrfile, seqfile
 	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
 	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
