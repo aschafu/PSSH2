@@ -348,7 +348,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset, skipHeader=False
 	if not skipHeader:
 		csvWriter.writerow(['query_md5', 'query_struc', 'nReferences', 'match_md5', 'model_id', 
 		'HH_Prob', 'HH_E-value', 'HH_P-value', 
-		'HH_Score', 'HH_Aligned_cols', 'HH_Identities', 'HH_Similarity' 
+		'HH_Score', 'HH_Aligned_cols', 'HH_Identities', 'HH_Similarity', 
 		'GDT', 'pairs', 'RMSD', 
 		'gRMSD', 'maxsub', 'len', 
 		'TM'])
