@@ -114,6 +114,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 			identities = identities.replace('%','')
 #			print identities
 			modelStatistics[model]['identities'] = identities
+			similarity = detailPieces[5].replace('Similarity=','')
+			modelStatistics[model]['similarity'] = similarity
 		elif ('>'  in linelist[lineCount]):
 			# work out the pdb structures for this md5 sum
 			checksum = linelist[lineCount].strip().replace('>','')
