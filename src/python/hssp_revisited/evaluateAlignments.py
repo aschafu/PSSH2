@@ -346,9 +346,9 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset, skipHeader=False
 
 	csvWriter = csv.writer(fileHandle, delimiter=',')
 	if not skipHeader:
-		csvWriter.writerow(['query md5', 'query struc', 'nReferences', 'match md5', 'model id', 
-		'Prob', 'E-value', 'P-value', 
-		'HH score', 'Aligned_cols', 'Identities', 
+		csvWriter.writerow(['query_md5', 'query_struc', 'nReferences', 'match_md5', 'model_id', 
+		'HH_Prob', 'HH_E-value', 'HH_P-value', 
+		'HH_Score', 'HH_Aligned_cols', 'HH_Identities', 'HH_Similarity' 
 		'GDT', 'pairs', 'RMSD', 
 		'gRMSD', 'maxsub', 'len', 
 		'TM'])
@@ -368,7 +368,7 @@ def printSummaryFile(resultStore, checksum, fileHandle, subset, skipHeader=False
 				csvWriter.writerow(
 					[ checksum, chain, resultStore[model][chain]['nReferences'], resultStore[model]['match md5'], model, 
 					resultStore[model]['prob'], resultStore[model]['eval'], resultStore[model]['pval'], 
-					resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'],
+					resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'], resultStore[model]['similarity'],
 					resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'],
 					resultStore[model][chain]['grmsd'], resultStore[model][chain]['maxsub'], resultStore[model][chain]['len'],
 					resultStore[model][chain]['tm'] ]
