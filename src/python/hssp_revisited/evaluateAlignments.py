@@ -297,6 +297,8 @@ def evaluateSingle(checksum, cleanup):
 					if valType == 'validResult':
 						resultStore[model]['avrg'][valType] = True
 						resultStore[model]['range'][valType] = True
+						resultStore[model]['min'][valType] = True
+						resultStore[model]['max'][valType] = True
 					else:
 #						print ('----', resultStore[model]['avrg'])
 						if valType in resultStore[model]['avrg']:
