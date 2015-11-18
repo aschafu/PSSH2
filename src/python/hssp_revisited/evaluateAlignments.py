@@ -323,6 +323,7 @@ def evaluateSingle(checksum, cleanup):
 			for valType in resultStore[model]['avrg'].keys():
 				if valType != 'validResult':
 					resultStore[model]['avrg'][valType] /= validChainCounter 	
+					resultStore[model]['range'][valType] = resultStore[model]['max'][valType] - resultStore[model]['min'][valType]
 #					print('-- ', valType, ':', resultStore[model]['avrg'][valType])
 		else:
 			resultStore[model]['avrg'] = {}
