@@ -439,7 +439,7 @@ def main(argv):
 
 	avrgFile = csvfilename
 	avrgFileHandle = open(avrgFile, 'w')
-	subset = [ 'avrg' ]
+	subset = [ 'avrg', 'range' ]
 	if checksum:
 		resultStore = evaluateSingle(checksum, cleanup)  
 		if resultStore:
