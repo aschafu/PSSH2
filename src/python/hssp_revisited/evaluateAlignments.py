@@ -301,17 +301,18 @@ def evaluateSingle(checksum, cleanup):
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
 #							print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+
 						if valType in resultStore[model]['max']:
 							if structureStatistics[valType] > resultStore[model]['max'][valType]:
 								resultStore[model]['max'][valType] = structureStatistics[valType]
 						else:
 							resultStore[model]['max'][valType] = structureStatistics[valType]
+
 						if valType in resultStore[model]['min']:
-							if structureStatistics[valType] > resultStore[model]['min'][valType]:
+							if structureStatistics[valType] < resultStore[model]['min'][valType]:
 								resultStore[model]['min'][valType] = structureStatistics[valType]
 						else:
 							resultStore[model]['min'][valType] = structureStatistics[valType]
-						
 			else:
 				print('--- no valid result!')
 #				resultStore[model][chain] = structureStatistics
