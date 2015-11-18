@@ -334,6 +334,8 @@ def evaluateSingle(checksum, cleanup):
 		else:
 			resultStore[model]['avrg'] = {}
 			resultStore[model]['avrg']['validResult'] = False
+			resultStore[model]['range'] = {}
+			resultStore[model]['range']['validResult'] = False
 		resultStore[model]['avrg']['nReferences'] = validChainCounter
 		resultStore[model]['range']['nReferences'] = validChainCounter
 		
