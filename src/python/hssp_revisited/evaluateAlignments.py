@@ -333,7 +333,6 @@ def evaluateSingle(checksum, cleanup):
 			resultStore[model]['avrg']['validResult'] = False
 		resultStore[model]['avrg']['nReferences'] = validChainCounter
 		resultStore[model]['range']['nReferences'] = validChainCounter
-
 		
 	
 	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
