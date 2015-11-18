@@ -272,6 +272,9 @@ def evaluateSingle(checksum, cleanup):
 
 		validChainCounter = 0
 		resultStore[model]['avrg'] = {}
+		resultStore[model]['max'] = {}
+		resultStore[model]['min'] = {}
+		resultStore[model]['range'] = {}
 		
 		for chain in pdbChainCodes:
 			
