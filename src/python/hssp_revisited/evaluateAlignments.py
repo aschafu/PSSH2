@@ -188,7 +188,7 @@ def parse_maxclusterResult(result):
 	   L   = The number of residues in the experimental structure
 	   d   = 1.24 x cube_root(N-15) - 1.8
 	==> score between 0 (no match) and 1 (full match); not comparable between different exp. struc. lengths, because d depends on N
-
+ 		The expected TM-score value for a random pair of proteins is 0.17.
 	"""
 #	print result
 	maxclResultLines = result.splitlines()
