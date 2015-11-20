@@ -160,7 +160,7 @@ def getStrucReferenceFileName(workPath, pdbChainCode):
 
 
 def parse_maxclusterResult(result):
-	"""parse out the result from maxcluster
+	"""parse out the result from maxcluster (see http://www.sbg.bio.ic.ac.uk/~maxcluster)
 	Example: > maxcluster -gdt 4 -e exeriment.pdb -p model.00003.pdb 
 	Iter 1: Pairs= 175, RMSD= 0.541, MAXSUB=0.874. Len= 177. gRMSD= 0.821, TM=0.879
 	Percentage aligned at distance 1.000 = 82.32
