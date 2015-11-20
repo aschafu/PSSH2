@@ -168,6 +168,27 @@ def parse_maxclusterResult(result):
 	Percentage aligned at distance 4.000 = 88.38
 	Percentage aligned at distance 8.000 = 89.39
 	GDT= 87.121
+    	      1    M
+	MaxSub = ---  Sum [ 1 / { 1 + (di^2 / d^2) } ]
+    	      N    i
+	Where:
+		di  = Distance between identical residues i
+		 d   = Distance threshold
+		 M   = The number of residues in the MaxSub
+		 N   = The number of residues in the experimental structure
+	==> score between 0 (no match) and 1 (full match); not comparable between different exp. struc. lengths
+
+		        1    N
+	TM-score = ---  Sum [ 1 / { 1 + (di^2 / d^2) } ]
+        	    L    i
+	Where:
+	   di  = Distance between identical residues i
+	   d   = Distance threshold
+	   N   = The number of residue pairs
+	   L   = The number of residues in the experimental structure
+	   d   = 1.24 x cube_root(N-15) - 1.8
+	==> score between 0 (no match) and 1 (full match); not comparable between different exp. struc. lengths, because d depends on N
+
 	"""
 #	print result
 	maxclResultLines = result.splitlines()
@@ -188,13 +209,13 @@ def parse_maxclusterResult(result):
 		structureStatistics = {
 			'validResult': True,
 			'nReferences': 1,
-			'gdt': float(gdt),
-			'pairs': int(pairs),
-			'rmsd': float(rmsd),
-			'maxsub': float(maxsub),
-			'len': int(length),
-			'grmsd': float(grmsd),
-			'tm': float(tm)
+			'gdt': float(gdt),		# score based on MaxSub superposition distance threshold (-d option)
+			'pairs': int(pairs),	# Number of pairs in the MaxSub
+			'rmsd': float(rmsd),	# RMSD of the MaxSub atoms
+			'maxsub': float(maxsub),# MaxSub score
+			'len': int(length),		# Number of matched pairs (all equivalent residues)
+			'grmsd': float(grmsd),	# Global RMSD using the MaxSub superposition
+			'tm': float(tm)			# TM-score
 		}
 	else:
 		structureStatistics = {
