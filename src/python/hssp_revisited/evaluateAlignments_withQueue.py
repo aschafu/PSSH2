@@ -462,7 +462,6 @@ def main(argv):
 
 	os.putenv('HHLIB', hhPath)
 
-	subset = [ 'avrg', 'range' ]
 	if checksum:
 		resultStore = evaluateSingle(checksum, cleanup)  
 	elif list:
