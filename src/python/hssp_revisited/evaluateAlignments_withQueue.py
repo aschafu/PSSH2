@@ -474,7 +474,7 @@ def main(argv):
 		resultStore = evaluateSingle(checksum, cleanup)  
 		if resultStore:
 #			print resultStore
-			printSummaryFile(resultStore, checksum, avrgFileHandle, subset)
+			storeSummary(resultStore, checksum, avrgFileHandle, subset)
 	elif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
@@ -484,8 +484,7 @@ def main(argv):
 			resultStore = evaluateSingle(checksum, cleanup) 
 			if resultStore:
 #				print resultStore
-				printSummaryFile(resultStore, checksum, avrgFileHandle, subset, skipHeader)
-				skipHeader = True
+				storeSummary(resultStore, checksum, avrgFileHandle, subset)
 	avrgFileHandle.close()
 
 
