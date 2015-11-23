@@ -467,20 +467,12 @@ def main(argv):
 	subset = [ 'avrg', 'range' ]
 	if checksum:
 		resultStore = evaluateSingle(checksum, cleanup)  
-		if resultStore:
-#			print resultStore
-			storeSummary(resultStore, checksum, avrgFileHandle, subset)
 	elif list:
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
-		skipHeader = False
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) 
-			if resultStore:
-#				print resultStore
-				storeSummary(resultStore, checksum, avrgFileHandle, subset)
-	avrgFileHandle.close()
 
 
 # def main(argv):
