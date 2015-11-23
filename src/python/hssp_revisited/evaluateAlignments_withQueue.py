@@ -361,12 +361,7 @@ def evaluateSingle(checksum, cleanup):
 		resultStore[model]['range']['nReferences'] = validChainCounter
 		
 	
-	detailsFile = workPath+'/'+pdbhhrfile+'.details.csv'	
-	#create csvfile and writer object
-	detailsFileHandle = open(detailsFile, 'w')
-#	print resultStore
-	printSummaryFile(resultStore, checksum, detailsFileHandle, pdbChainCodes)
-	detailsFileHandle.close()
+	storeSummary(resultStore, checksum, databaseName, pdbChainCodes)
 
 #	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
 #	avrgFileHandle = open(avrgFile, 'w')
