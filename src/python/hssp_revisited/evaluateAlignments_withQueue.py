@@ -10,6 +10,8 @@ import logging
 import time
 import ConfigParser
 from StringIO import StringIO
+from DatabaseTools import *
+
 
 defaultConfig = """
 [pssh2Config]
@@ -453,6 +455,9 @@ def main(argv):
 	parser.set_defaults(format=csv)
 	args = parser.parse_args()
 	csvfilename = args.out
+
+	DB_Connection = SequenceStructureDatabase.getConnection()
+
 
 	checksum = args.md5
 	list = args.list
