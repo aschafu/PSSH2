@@ -385,14 +385,10 @@ def evaluateSingle(checksum, cleanup):
 def storeSummary(resultStore, checksum, table):
 
 	mysqlInsert = "INSERT INTO %s " % table
-	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
-	mysqlInsert += "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
+#	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
+#	mysqlInsert += "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 		
-		# TODO: add more stuff to insert, if we really need that
-#		add_sequence = (insertBegin
-#		                "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
-#		                "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)i, %(description)s)")
-		sequence_data = {
+	sequence_data = {
 			'primary_accession' : seq_id,
 			'source' : source,
 			'organism_id' : organism_id,
