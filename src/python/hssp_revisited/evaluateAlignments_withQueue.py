@@ -490,8 +490,9 @@ def main(argv):
 	args = parser.parse_args()
 	tableName = args.table
 
-	global submitConnection
-	submitConnection = SequenceStructureDatabase.DB_Connection.getConnection('pssh2_local','updating')
+	global submitConnection, dbConnection
+	dbConnection = SequenceStructureDatabase.DB_Connection()
+	submitConnection = dbConnection.getConnection('pssh2_local','updating')
 
 	checksum = args.md5
 	list = args.list
