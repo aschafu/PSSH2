@@ -417,34 +417,34 @@ def storeSummary(resultStore, checksum, table):
 #			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 
-			model_data = {
-				'query_md5': checksum, 
-				'query_struc': chain, 
-				'nReferences': str(resultStore[model][chain]['nReferences']),
-				'match_md5': resultStore[model]['match md5'], 
-				'model_id': model, 
-				'HH_Prob': resultStore[model]['prob'], 
-				'HH_E-value': resultStore[model]['eval'], 
-				'HH_P-value': resultStore[model]['pval'], 
-				'HH_Score':	resultStore[model]['hhscore'], 
-				'HH_Aligned_cols': resultStore[model]['aligned_cols'], 
-				'HH_Identities': resultStore[model]['identities'], 
-				'HH_Similarity': resultStore[model]['similarity'],
-				'GDT': str(resultStore[model][chain]['gdt']), 
-				'pairs': str(resultStore[model][chain]['pairs']), 
-				'RMSD': str(resultStore[model][chain]['rmsd']),
-				'gRMSD': str(resultStore[model][chain]['grmsd']), 
-				'maxsub': str(resultStore[model][chain]['maxsub']), 
-				'len': str(resultStore[model][chain]['len']),
-				'TM': str(resultStore[model][chain]['tm']) 
-			}
+				model_data = {
+					'query_md5': checksum, 
+					'query_struc': chain, 
+					'nReferences': str(resultStore[model][chain]['nReferences']),
+					'match_md5': resultStore[model]['match md5'], 
+					'model_id': model, 
+					'HH_Prob': resultStore[model]['prob'], 
+					'HH_E-value': resultStore[model]['eval'], 
+					'HH_P-value': resultStore[model]['pval'], 
+					'HH_Score':	resultStore[model]['hhscore'], 
+					'HH_Aligned_cols': resultStore[model]['aligned_cols'], 
+					'HH_Identities': resultStore[model]['identities'], 
+					'HH_Similarity': resultStore[model]['similarity'],
+					'GDT': str(resultStore[model][chain]['gdt']), 
+					'pairs': str(resultStore[model][chain]['pairs']), 
+					'RMSD': str(resultStore[model][chain]['rmsd']),
+					'gRMSD': str(resultStore[model][chain]['grmsd']), 
+					'maxsub': str(resultStore[model][chain]['maxsub']), 
+					'len': str(resultStore[model][chain]['len']),
+					'TM': str(resultStore[model][chain]['tm']) 
+				}
 		
 #			print mysqlInsert, '\n', model_data
-			try:
-				cursor.execute(mysqlInsert, sequence_data)
-			except mysql.connector.IntegrityError as err:
-				print("Error: {}".format(err))
-				warnings.warn("Will skip this match: \n" + query_md5 + " " + chain + " match_md5 ")
+				try:
+					cursor.execute(mysqlInsert, sequence_data)
+				except mysql.connector.IntegrityError as err:
+					print("Error: {}".format(err))
+					warnings.warn("Will skip this match: \n" + query_md5 + " " + chain + " match_md5 ")
 
 	submitConnection.commit()
 	cursor.close()
