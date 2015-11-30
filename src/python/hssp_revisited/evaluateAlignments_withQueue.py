@@ -410,6 +410,7 @@ def storeSummary(resultStore, checksum, table):
 			print 'modelcount is big: ', modelcount, ' set it to 5'
 			modelcount = 5
 
+	cursor = submitConnection.cursor()
 	for model in range(1, modelcount): 
 #		print model, resultStore[model]
 		for chain in subset:
@@ -439,14 +440,13 @@ def storeSummary(resultStore, checksum, table):
 			}
 		
 #			print mysqlInsert, '\n', model_data
-			cursor = submitConnection.cursor()
 			try:
 				cursor.execute(mysqlInsert, sequence_data)
 			except mysql.connector.IntegrityError as err:
 				print("Error: {}".format(err))
 				warnings.warn("Will skip this match: \n" + query_md5 + " " + chain + " match_md5 ")
-			submitConnection.commit()
-			cursor.close()
+	submitConnection.commit()
+	cursor.close()
 
 			
 
