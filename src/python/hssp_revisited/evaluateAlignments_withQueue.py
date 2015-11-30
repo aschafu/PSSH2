@@ -186,8 +186,8 @@ def parse_maxclusterResult(result):
 	Where:
 	   di  = Distance between identical residues i
 	   d   = Distance threshold
-	   N   = The number of residue pairs
-	   L   = The number of residues in the experimental structure
+	   N   = The number of residue pairs (same as 'Pairs')
+	   L   = The number of residues in the experimental structure (same as 'Len')
 	   d   = 1.24 x cube_root(N-15) - 1.8
 	==> score between 0 (no match) and 1 (full match); not comparable between different exp. struc. lengths, because d depends on N
  		The expected TM-score value for a random pair of proteins is 0.17.
@@ -420,17 +420,17 @@ def storeSummary(resultStore, checksum, table):
 				'query_md5': checksum, 
 				'query_struc': chain, 
 				'nReferences': str(resultStore[model][chain]['nReferences']),
-					resultStore[model]['match md5'], 
-					model, 
-					resultStore[model]['prob'], 
-					resultStore[model]['eval'], 
-					resultStore[model]['pval'], 
-					resultStore[model]['hhscore'], 
-					resultStore[model]['aligned_cols'], 
-					resultStore[model]['identities'], 
-					resultStore[model]['similarity'],
-					resultStore[model][chain]['gdt'], 
-					resultStore[model][chain]['pairs'], 
+				'match_md5': resultStore[model]['match md5'], 
+				'model_id': model, 
+				'HH_Prob': resultStore[model]['prob'], 
+				'HH_E-value': resultStore[model]['eval'], 
+				'HH_P-value': resultStore[model]['pval'], 
+				'HH_Score':	resultStore[model]['hhscore'], 
+				'HH_Aligned_cols': resultStore[model]['aligned_cols'], 
+				'HH_Identities': resultStore[model]['identities'], 
+				'HH_Similarity': resultStore[model]['similarity'],
+				'GDT': resultStore[model][chain]['gdt'], 
+				'pairs': resultStore[model][chain]['pairs'], 
 					resultStore[model][chain]['rmsd'],
 					resultStore[model][chain]['grmsd'], 
 					resultStore[model][chain]['maxsub'], 
