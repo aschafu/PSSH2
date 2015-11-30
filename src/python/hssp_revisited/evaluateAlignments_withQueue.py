@@ -186,10 +186,10 @@ def parse_maxclusterResult(result):
 	Where:
 	   di  = Distance between identical residues i
 	   d   = Distance threshold
-	   N   = The number of residue pairs (same as 'Pairs')
-	   L   = The number of residues in the experimental structure (same as 'Len')
+	   N   = The number of residue pairs (same as 'Pairs') = M in MaxSub
+	   L   = The number of residues in the experimental structure (same as 'Len') = N in MaxSub
 	   d   = 1.24 x cube_root(N-15) - 1.8
-	==> score between 0 (no match) and 1 (full match); not comparable between different exp. struc. lengths, because d depends on N
+	==> score between 0 (no match) and 1 (full match); comparable between different exp. struc. lengths, because d depends on N
  		The expected TM-score value for a random pair of proteins is 0.17.
 	"""
 #	print result
@@ -429,21 +429,13 @@ def storeSummary(resultStore, checksum, table):
 				'HH_Aligned_cols': resultStore[model]['aligned_cols'], 
 				'HH_Identities': resultStore[model]['identities'], 
 				'HH_Similarity': resultStore[model]['similarity'],
-				'GDT': resultStore[model][chain]['gdt'], 
-				'pairs': resultStore[model][chain]['pairs'], 
-					resultStore[model][chain]['rmsd'],
-					resultStore[model][chain]['grmsd'], 
-					resultStore[model][chain]['maxsub'], 
-					resultStore[model][chain]['len'],
-					resultStore[model][chain]['tm'] ]
-		
-				'primary_accession' : seq_id,
-				'source' : source,
-				'organism_id' : organism_id,
-				'sequence' : sequence,
-				'md5' : md5,
-				'length' : str(len(sequence)),
-				'description' : description
+				'GDT': str(resultStore[model][chain]['gdt']), 
+				'pairs': str(resultStore[model][chain]['pairs']), 
+				'RMSD': str(resultStore[model][chain]['rmsd']),
+				'gRMSD': str(resultStore[model][chain]['grmsd']), 
+				'maxsub': str(resultStore[model][chain]['maxsub']), 
+				'len': str(resultStore[model][chain]['len']),
+				'TM': str(resultStore[model][chain]['tm']) 
 			}
 		
 #			print mysqlInsert, '\n', model_data
