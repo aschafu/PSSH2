@@ -439,7 +439,6 @@ def storeSummary(resultStore, checksum, table):
 			}
 		
 #			print mysqlInsert, '\n', model_data
-		
 			cursor = submitConnection.cursor()
 			try:
 				cursor.execute(mysqlInsert, sequence_data)
