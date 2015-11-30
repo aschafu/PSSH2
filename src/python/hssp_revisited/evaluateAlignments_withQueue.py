@@ -445,11 +445,11 @@ def storeSummary(resultStore, checksum, table):
 			except mysql.connector.IntegrityError as err:
 				print("Error: {}".format(err))
 				warnings.warn("Will skip this match: \n" + query_md5 + " " + chain + " match_md5 ")
+
 	submitConnection.commit()
 	cursor.close()
 
 			
-
 def cleanupConfVal(confString):
 	confString = confString.replace("\"","")
 	confString = confString.replace("\'","")
