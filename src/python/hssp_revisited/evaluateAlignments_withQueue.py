@@ -448,7 +448,6 @@ def storeSummary(resultStore, checksum, table):
 			submitConnection.commit()
 			cursor.close()
 
-
 			
 
 def cleanupConfVal(confString):
