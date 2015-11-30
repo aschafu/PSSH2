@@ -385,39 +385,23 @@ def evaluateSingle(checksum, cleanup):
 def storeSummary(resultStore, checksum, table):
 
 	mysqlInsert = "INSERT INTO %s " % table
+	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, model_id, "
+	mysqlInsert += "HH_Prob, HH_E-value, HH_P-value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, "
+	mysqlInsert += "GDT, pairs, RMSD, gRMSD, maxsub, len, TM) "
+	mysqlInsert += "VALUES (%(query_md5)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 #	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
-#	mysqlInsert += "VALUES (%(primary_accession)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
-		
-	sequence_data = {
-			'primary_accession' : seq_id,
-			'source' : source,
-			'organism_id' : organism_id,
-			'sequence' : sequence,
-			'md5' : md5,
-			'length' : str(len(sequence)),
-			'description' : description
-			}
-		
-		print mysqlInsert, '\n', sequence_data
-		
-		cursor = submitConnection.cursor()
-		try:
-			cursor.execute(mysqlInsert, sequence_data)
-		except mysql.connector.IntegrityError as err:
-			print("Error: {}".format(err))
-			warnings.warn("Will skip this sequence: \n" + fastaString)
-		submitConnection.commit()
-		cursor.close()
-
-
-	csvWriter = csv.writer(fileHandle, delimiter=',')
-	if not skipHeader:
-		csvWriter.writerow(['query_md5', 'query_struc', 'nReferences', 'match_md5', 'model_id', 
-		'HH_Prob', 'HH_E-value', 'HH_P-value', 
-		'HH_Score', 'HH_Aligned_cols', 'HH_Identities', 'HH_Similarity', 
-		'GDT', 'pairs', 'RMSD', 
-		'gRMSD', 'maxsub', 'len', 
-		'TM'])
+	mysqlInsert += "VALUES (%(primary_accession)s, %(query_struc)s, %(nReferences)s, %(match_md5)s, %(model_id)s, "
+	mysqlInsert += "%(HH_Prob)s, %(HH_E-value)s, %(HH_P-value)s, %(HH_Score)s, %(HH_Aligned_cols)s, %(HH_Identities)s, %(HH_Similarity)s, "
+	mysqlInsert += "%(GDT)s, %(pairs)s, %(RMSD)s, %(gRMSD), %(maxsub)s, %(len)s, %(TM)s)"
+	
+# 	csvWriter = csv.writer(fileHandle, delimiter=',')
+# 	if not skipHeader:
+# 		csvWriter.writerow(['query_md5', 'query_struc', 'nReferences', 'match_md5', 'model_id', 
+# 		'HH_Prob', 'HH_E-value', 'HH_P-value', 
+# 		'HH_Score', 'HH_Aligned_cols', 'HH_Identities', 'HH_Similarity', 
+# 		'GDT', 'pairs', 'RMSD', 
+# 		'gRMSD', 'maxsub', 'len', 
+# 		'TM'])
 
 	# len counts the element at 0
 	modelcount = len(resultStore)
@@ -431,15 +415,50 @@ def storeSummary(resultStore, checksum, table):
 		for chain in subset:
 #			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
-				csvWriter.writerow(
-					[ checksum, chain, resultStore[model][chain]['nReferences'], resultStore[model]['match md5'], model, 
-					resultStore[model]['prob'], resultStore[model]['eval'], resultStore[model]['pval'], 
-					resultStore[model]['hhscore'], resultStore[model]['aligned_cols'], resultStore[model]['identities'], resultStore[model]['similarity'],
-					resultStore[model][chain]['gdt'], resultStore[model][chain]['pairs'], resultStore[model][chain]['rmsd'],
-					resultStore[model][chain]['grmsd'], resultStore[model][chain]['maxsub'], resultStore[model][chain]['len'],
+
+			model_data = {
+				'query_md5': checksum, 
+				'query_struc': chain, 
+				'nReferences': str(resultStore[model][chain]['nReferences']),
+					resultStore[model]['match md5'], 
+					model, 
+					resultStore[model]['prob'], 
+					resultStore[model]['eval'], 
+					resultStore[model]['pval'], 
+					resultStore[model]['hhscore'], 
+					resultStore[model]['aligned_cols'], 
+					resultStore[model]['identities'], 
+					resultStore[model]['similarity'],
+					resultStore[model][chain]['gdt'], 
+					resultStore[model][chain]['pairs'], 
+					resultStore[model][chain]['rmsd'],
+					resultStore[model][chain]['grmsd'], 
+					resultStore[model][chain]['maxsub'], 
+					resultStore[model][chain]['len'],
 					resultStore[model][chain]['tm'] ]
-				)
 		
+				'primary_accession' : seq_id,
+				'source' : source,
+				'organism_id' : organism_id,
+				'sequence' : sequence,
+				'md5' : md5,
+				'length' : str(len(sequence)),
+				'description' : description
+			}
+		
+#			print mysqlInsert, '\n', model_data
+		
+			cursor = submitConnection.cursor()
+			try:
+				cursor.execute(mysqlInsert, sequence_data)
+			except mysql.connector.IntegrityError as err:
+				print("Error: {}".format(err))
+				warnings.warn("Will skip this sequence: \n" + fastaString)
+			submitConnection.commit()
+			cursor.close()
+
+
+			
 
 def cleanupConfVal(confString):
 	confString = confString.replace("\"","")
