@@ -491,7 +491,7 @@ def main(argv):
 	tableName = args.table
 
 	global submitConnection
-	submitConnection = DB_Connection.getConnection('pssh2_local','updating')
+	submitConnection = SequenceStructureDatabase.DB_Connection.getConnection('pssh2_local','updating')
 
 	checksum = args.md5
 	list = args.list
