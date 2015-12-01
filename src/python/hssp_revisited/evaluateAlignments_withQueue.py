@@ -382,7 +382,7 @@ def evaluateSingle(checksum, cleanup):
 	return resultStore
 	
 
-def storeSummary(resultStore, checksum):
+def storeSummary(resultStore, checksum, chains):
 
 	mysqlInsert = "INSERT INTO %s " % tableName
 	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, model_id, "
@@ -413,7 +413,7 @@ def storeSummary(resultStore, checksum):
 	cursor = submitConnection.cursor()
 	for model in range(1, modelcount): 
 #		print model, resultStore[model]
-		for chain in subset:
+		for chain in chains:
 #			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 
