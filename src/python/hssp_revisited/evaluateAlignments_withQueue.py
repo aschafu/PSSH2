@@ -364,7 +364,9 @@ def evaluateSingle(checksum, cleanup):
 		
 	chains = []
 	chains.extend(pdbChainCodes)
-	chains.append('avrg', 'range')
+	chains.append('avrg')
+	chains.append('range')
+
 	storeSummary(resultStore, checksum, chains)
 
 #	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
