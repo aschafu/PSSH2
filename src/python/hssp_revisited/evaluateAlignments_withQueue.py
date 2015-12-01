@@ -11,6 +11,9 @@ import time
 import ConfigParser
 from StringIO import StringIO
 from DatabaseTools import *
+import mysql.connector
+from mysql.connector import errorcode
+
 
 
 defaultConfig = """
