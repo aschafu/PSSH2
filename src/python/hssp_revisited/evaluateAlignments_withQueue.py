@@ -446,7 +446,7 @@ def storeSummary(resultStore, checksum, chains):
 					'TM': str(resultStore[model][chain]['tm']) 
 				}
 		
-				print mysqlInsert, '\n', model_data
+#				print mysqlInsert, '\n', model_data
 				try:
 					cursor.execute(mysqlInsert, model_data)
 				except (mysql.connector.IntegrityError, mysql.connector.errors.ProgrammingError) as err:
