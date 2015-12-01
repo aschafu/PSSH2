@@ -363,7 +363,7 @@ def evaluateSingle(checksum, cleanup):
 		resultStore[model]['range']['nReferences'] = validChainCounter
 		
 	
-	storeSummary(resultStore, checksum, databaseName, pdbChainCodes)
+	storeSummary(resultStore, checksum)
 
 #	avrgFile = workPath+'/'+pdbhhrfile+'.avrg.csv'
 #	avrgFileHandle = open(avrgFile, 'w')
@@ -382,7 +382,7 @@ def evaluateSingle(checksum, cleanup):
 	return resultStore
 	
 
-def storeSummary(resultStore, checksum, table):
+def storeSummary(resultStore, checksum):
 
 	mysqlInsert = "INSERT INTO %s " % table
 	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, model_id, "
