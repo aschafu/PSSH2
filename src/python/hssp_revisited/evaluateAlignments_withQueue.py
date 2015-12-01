@@ -429,7 +429,7 @@ def storeSummary(resultStore, checksum, chains):
 					'query_struc': chain, 
 					'nReferences': str(resultStore[model][chain]['nReferences']),
 					'match_md5': resultStore[model]['match md5'], 
-					'model_id': model, 
+					'model_id': str(model), 
 					'HH_Prob': resultStore[model]['prob'], 
 					'HH_E-value': resultStore[model]['eval'], 
 					'HH_P-value': resultStore[model]['pval'], 
