@@ -452,7 +452,7 @@ def storeSummary(resultStore, checksum, chains):
 				except (mysql.connector.IntegrityError, mysql.connector.errors.ProgrammingError) as err:
 					print("Error: {}".format(err))
 					print cursor.statement
-					warnings.warn("Will skip this match: \n" + checksum + " " + chain + " match_md5 ")
+					warnings.warn("Will skip this match: \n" + checksum + " " + chain + " match_md5: " +  resultStore[model]['match md5'] + " " + model)
 
 	submitConnection.commit()
 	cursor.close()
