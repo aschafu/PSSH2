@@ -384,7 +384,7 @@ def evaluateSingle(checksum, cleanup):
 
 def storeSummary(resultStore, checksum):
 
-	mysqlInsert = "INSERT INTO %s " % table
+	mysqlInsert = "INSERT INTO %s " % tableName
 	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, model_id, "
 	mysqlInsert += "HH_Prob, HH_E-value, HH_P-value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, "
 	mysqlInsert += "GDT, pairs, RMSD, gRMSD, maxsub, len, TM) "
