@@ -481,13 +481,14 @@ def main(argv):
 	inputGroup = parser.add_mutually_exclusive_group(required=True)
 	inputGroup.add_argument("-m", "--md5", help="md5 sum of sequence to process")
 	inputGroup.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
-	parser.add_argument("-t", "--table", required=True, help="name of table in mysql to write to (must exist!)")
+	parser.add_argument("-t", "--, required=True, help="name of table in mysql to write to (must exist!)")
 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
 
 
 # later add option for different formats
 	parser.set_defaults(format=csv)
 	args = parser.parse_args()
+	global tableName
 	tableName = args.table
 
 	global submitConnection, dbConnection
