@@ -395,9 +395,9 @@ def storeSummary(resultStore, checksum, chains):
 	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, model_id, "
 	mysqlInsert += "HH_Prob, HH_E-value, HH_P-value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, "
 	mysqlInsert += "GDT, pairs, RMSD, gRMSD, maxsub, len, TM) "
-	mysqlInsert += "VALUES (%(query_md5)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
+#	mysqlInsert += "VALUES (%(query_md5)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 #	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
-#	mysqlInsert += "VALUES (%(primary_accession)s, %(query_struc)s, %(nReferences)s, %(match_md5)s, %(model_id)s, "
+	mysqlInsert += "VALUES (%(primary_accession)s, %(query_struc)s, %(nReferences)s, %(match_md5)s, %(model_id)s, "
 	mysqlInsert += "%(HH_Prob)s, %(HH_E-value)s, %(HH_P-value)s, %(HH_Score)s, %(HH_Aligned_cols)s, %(HH_Identities)s, %(HH_Similarity)s, "
 	mysqlInsert += "%(GDT)s, %(pairs)s, %(RMSD)s, %(gRMSD), %(maxsub)s, %(len)s, %(TM)s)"
 	
