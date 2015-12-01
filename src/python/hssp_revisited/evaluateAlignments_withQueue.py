@@ -393,7 +393,7 @@ def storeSummary(resultStore, checksum, chains):
 
 	mysqlInsert = "INSERT INTO %s " % tableName
 	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, model_id, "
-	mysqlInsert += "HH_Prob, HH_E-value, HH_P-value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, "
+	mysqlInsert += "HH_Prob, HH_E_value, HH_P_value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, "
 	mysqlInsert += "GDT, pairs, RMSD, gRMSD, maxsub, len, TM) "
 #	mysqlInsert += "VALUES (%(query_md5)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 #	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
