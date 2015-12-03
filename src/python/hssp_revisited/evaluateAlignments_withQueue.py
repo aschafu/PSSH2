@@ -230,14 +230,19 @@ def parse_maxclusterResult(result):
 				
 
 def getCathInfo(chain):
-	""" do a query to Aquaria to work out the Cath hierarchy code for this chain
-	"""
+	""" do a query to Aquaria to work out the Cath hierarchy code for this chain"""
+	cathIDqueryBegin = '\"select CATH_ID from CathMappingEBI_pdbChain_uniprot where PDB=\'';
+	cathIDQueryMiddle = '\' and CHAIN = \''; 
+	cathIDqueryEnd = '\'\"'; 
+	aquariaDBcall = 'DB.aquaria_local'
+
 	if '_' in chain:
 		(pdbCode, pdbChain) = chain.split('_')
 	else:
 		pdbCode = chain
 		pdbChain = ''
-	cathp = subprocess.Popen([cathInfoScript, '-p', chain], stdout=subprocess.PIPE, stderr=subprocess.PIPE)	
+	cathIDQuery = cathIDqueryBegin + pdbCode + cathIDQueryMiddle + pdbChain + cathIDqueryEnd
+	cathp = subprocess.Popen([aquariaDBcall, cathIDQuery], stdout=subprocess.PIPE, stderr=subprocess.PIPE)	
 	out, err = cathp.communicate()
 
 
