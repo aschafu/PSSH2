@@ -135,7 +135,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
 			# also remember the cathCode(s) for this template
 			cathCodes = getCathInfo(pdbChainCode)
-			modelStatistics[model]['cath'] = cathCodes
+			modelStatistics[model]['cathCodes'] = cathCodes
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount] = linelist[lineCount].replace(idLineOrig, idLineFake)
 		hhrfilehandle.write(linelist[lineCount])
@@ -369,6 +369,9 @@ def evaluateSingle(checksum, cleanup):
 								resultStore[model]['min'][valType] = structureStatistics[valType]
 						else:
 							resultStore[model]['min'][valType] = structureStatistics[valType]
+				# compare cath codes
+				resultStore[model][chain]['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model][
+				
 			else:
 				print('--- no valid result!')
 #				resultStore[model][chain] = structureStatistics
