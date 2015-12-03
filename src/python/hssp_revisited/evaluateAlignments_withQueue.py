@@ -390,7 +390,7 @@ def evaluateSingle(checksum, cleanup):
 							resultStore[model]['min'][valType] = structureStatistics[valType]
 				# compare cath codes
 				resultStore[model][chain]['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
-				
+								
 			else:
 				print('--- no valid result!')
 #				resultStore[model][chain] = structureStatistics
