@@ -280,7 +280,7 @@ def evaluateSingle(checksum, cleanup):
 		print err
 	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
 
-	# iterate over all chains we found and prepare files to compare agains
+	# iterate over all chains we found and prepare files to compare against
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
