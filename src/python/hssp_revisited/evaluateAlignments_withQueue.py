@@ -272,7 +272,7 @@ def getCathSimilarity(listA, listB):
 					break
 			if currentSimilarity > overallSimilarity:
 				overallSimilarity = currentSimilarity
-	print listA, listB, '-> overall cath similarity: overallSimilarity'
+	print listA, listB, '-> overall cath similarity: ', overallSimilarity
 	return overallSimilarity
 	
 	
