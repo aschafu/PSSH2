@@ -253,12 +253,15 @@ def getCathInfo(chain):
 def getCathSimilarity(listA, listB):
 	""" compare two lists of cath codes and return maxmium of agreements between the code pairs"""
 
-	similarity = 0
+	overallSimilarity = 0
 	for codeA in listA:
 		piecesA = codeA.split('.')
 		for codeB in listB:
 			piecesB = codeB.split('.')
-				
+			currentSimilarity = 0
+			for i in range(10)
+				if piecesA[i] == piecesB[i]:
+					si
 			
 	
 def evaluateSingle(checksum, cleanup):
