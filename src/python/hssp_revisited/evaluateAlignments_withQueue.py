@@ -229,6 +229,19 @@ def parse_maxclusterResult(result):
 	return structureStatistics
 				
 
+def getCathInfo(chain):
+	""" do a query to Aquaria to work out the Cath hierarchy code for this chain
+	"""
+	if '_' in chain:
+		(pdbCode, pdbChain) = chain.split('_')
+	else:
+		pdbCode = chain
+		pdbChain = ''
+	cathp = subprocess.Popen([cathInfoScript, '-p', chain], stdout=subprocess.PIPE, stderr=subprocess.PIPE)	
+	out, err = cathp.communicate()
+
+
+
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
@@ -288,16 +301,10 @@ def evaluateSingle(checksum, cleanup):
 		print '-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile
 		rn = subprocess.Popen([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 		out, err = rn.communicate()
-		
 		if err:
 			print err
-		if '_' in chain:
-			(pdbCode, pdbChain) = chain.split('_')
-		else:
-			pdbCode = chain
-			pdbChain = ''
+		cathCode = getCathInfo(chain)
 		
-
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
 	# resultStore[m][n], m = name of chain  n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
