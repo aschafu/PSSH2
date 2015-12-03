@@ -121,7 +121,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			similarity = detailPieces[5].replace('Similarity=','')
 			modelStatistics[model]['similarity'] = similarity
 		elif ('>'  in linelist[lineCount]):
-			# work out the pdb structures for this md5 sum
+			# work out the pdb structures for this md5 sum and edit the hhr result file accordingly
 			checksum = linelist[lineCount].strip().replace('>','')
 			modelStatistics[model]['match md5'] = checksum			
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
