@@ -247,7 +247,8 @@ def getCathInfo(chain):
 	out, err = grepp.communicate()
 	cathLines = out.split('\n')
 	for line in cathLines:
-		if not line continue
+		if not line: 
+			continue
 		values = line.split('\t')
 		if len(values) > 10:
 			cathCode = cathSeparator.join(values[1:10])
