@@ -239,7 +239,9 @@ def getCathInfo(chain):
 		pdbChain = ''
 	grepp = subprocess.Popen(['grep', pdbCode+pdbChain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = grepp.communicate()
-
+	cathLines = out.split('\n')
+	for line in cathLines:
+		(domainId,c,a,t,h,s,o,l,i,d,len,res) = line.split('\t')
 
 
 def evaluateSingle(checksum, cleanup):
