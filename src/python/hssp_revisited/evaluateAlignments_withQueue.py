@@ -378,13 +378,13 @@ def evaluateSingle(checksum, cleanup):
 						resultStore[model]['min'][valType] = True
 						resultStore[model]['max'][valType] = True
 					else:
-#						print ('----', resultStore[model]['avrg'])
+						print ('----', resultStore[model]['avrg'])
 						if valType in resultStore[model]['avrg']:
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
-#							print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+							print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 						else:
 							resultStore[model]['avrg'][valType] = structureStatistics[valType]
-#							print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+							print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 
 						if valType in resultStore[model]['max']:
 							if structureStatistics[valType] > resultStore[model]['max'][valType]:
