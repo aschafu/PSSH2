@@ -280,9 +280,15 @@ def getCathSimilarity(listA, listB):
 	overallSimilarity = 0
 	for codeA in listA:
 		piecesA = codeA.split(cathSeparator)
+		if length(piecesA) <10:
+			print 'something weird here: cath code looks unhealty: '+ codeA
 		for codeB in listB:
 			piecesB = codeB.split(cathSeparator)
+			if length(piecesA) <10:
+				print 'something weird here: cath code looks unhealty: '+ codeB
+
 			currentSimilarity = 0
+
 			for i in range(10):
 				if piecesA[i] == piecesB[i]:
 					currentSimilarity += 1
