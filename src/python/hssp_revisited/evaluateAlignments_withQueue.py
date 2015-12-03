@@ -253,6 +253,7 @@ def getCathInfo(chain):
 			cathCode = cathSeparator.join(values[1:10])
 			cathCodes.append(cathCode)
 	return cathCodes
+
 	
 def getCathSimilarity(listA, listB):
 	""" compare two lists of cath codes and return maxmium of agreements between the code pairs"""
