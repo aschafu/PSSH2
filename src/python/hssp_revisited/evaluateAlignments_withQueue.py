@@ -243,16 +243,24 @@ def getCathInfo(chain):
 	else:
 		pdbCode = chain
 		pdbChain = ''
-	grepp = subprocess.Popen(['grep', pdbCode+pdbChain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	out, err = grepp.communicate()
-	cathLines = out.split('\n')
-	for line in cathLines:
-		if not line: 
-			continue
-		values = line.split('\t')
-		if len(values) > 10:
-			cathCode = cathSeparator.join(values[1:10])
-			cathCodes.append(cathCode)
+	grep_cath_p = subprocess.Popen(['grep', pdbCode+pdbChain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = grep_cath_p.communicate()
+	if not pdbCode in out:
+		grepp_mapping_p = subprocess.Popen(['grep', pdbCode+pdbChain, 'pdb_chain_cath_uniprot.csv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		out, err = grepp_mapping_p.communicate()
+
+	
+	if pdbCode in out:
+		cathLines = out.split('\n')
+		for line in cathLines:
+			if not line: 
+				continue
+			values = line.split('\t')
+			if len(values) > 10:
+				cathCode = cathSeparator.join(values[1:10])
+				cathCodes.append(cathCode)
+	
+
 	return cathCodes
 
 	
