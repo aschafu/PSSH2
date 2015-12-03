@@ -135,6 +135,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
 			# also remember the cathCode(s) for this template
 			cathCodes = getCathInfo(pdbChainCode)
+			modelStatistics[model]['cath'] = cathCodes
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount] = linelist[lineCount].replace(idLineOrig, idLineFake)
 		hhrfilehandle.write(linelist[lineCount])
