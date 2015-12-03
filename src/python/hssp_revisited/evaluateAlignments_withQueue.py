@@ -259,9 +259,9 @@ def getCathSimilarity(listA, listB):
 
 	overallSimilarity = 0
 	for codeA in listA:
-		piecesA = codeA.split('.')
+		piecesA = codeA.split(cathSeparator)
 		for codeB in listB:
-			piecesB = codeB.split('.')
+			piecesB = codeB.split(cathSeparator)
 			currentSimilarity = 0
 			for i in range(10)
 				if piecesA[i] == piecesB[i]:
