@@ -301,6 +301,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# iterate over all chains we found and prepare files to compare against
 	# also get Cath information
+	cathCodes = []
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
@@ -309,7 +310,7 @@ def evaluateSingle(checksum, cleanup):
 		out, err = rn.communicate()
 		if err:
 			print err
-		cathCode = getCathInfo(chain)
+		cathCodes.extend(getCathInfo(chain))
 		
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
