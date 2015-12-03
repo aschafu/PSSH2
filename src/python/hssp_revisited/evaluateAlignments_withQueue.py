@@ -245,6 +245,7 @@ def getCathInfo(chain):
 	cathLines = out.split('\n')
 	separator = '.'
 	for line in cathLines:
+		if not line continue
 		values = line.split('\t')
 		cathCode = separator.join(values[1:10])
 		cathCodes.append(cathCode)
