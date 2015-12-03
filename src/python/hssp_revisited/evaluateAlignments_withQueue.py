@@ -102,7 +102,6 @@ def process_hhr(path, workPath, pdbhhrfile):
 
 	# finally look in the alignment details to find the % identity
 	# -- also edit the alignment details to contain the pdb code (needed for making the models)!
-	# TODO
 	model = ''
 	spaces = '              '
 	idLineOrig = 'T '
@@ -132,7 +131,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			pdbChainCode = out.strip()
 			idLineOrig = 'T ' + checksum[:14]
 			nCodeLetters = len(pdbChainCode)
-			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    # TODO : add spaces
+			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount] = linelist[lineCount].replace(idLineOrig, idLineFake)
