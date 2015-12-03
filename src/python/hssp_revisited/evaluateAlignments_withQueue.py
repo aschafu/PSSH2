@@ -246,7 +246,8 @@ def getCathInfo(chain):
 		values = line.split('\t')
 		cathCode = separator.join(values[1:10])
 		cathCodes.append(cathCode)
-
+	return cathCodes
+	
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
