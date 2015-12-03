@@ -355,6 +355,8 @@ def evaluateSingle(checksum, cleanup):
 			if err:
 				print err
 			structureStatistics = parse_maxclusterResult(out)
+			# compare cath codes
+			structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
 #			print structureStatistics
 			resultStore[model][chain] = structureStatistics
 			
@@ -388,9 +390,6 @@ def evaluateSingle(checksum, cleanup):
 								resultStore[model]['min'][valType] = structureStatistics[valType]
 						else:
 							resultStore[model]['min'][valType] = structureStatistics[valType]
-				# compare cath codes
-				resultStore[model][chain]['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
-								
 			else:
 				print('--- no valid result!')
 #				resultStore[model][chain] = structureStatistics
