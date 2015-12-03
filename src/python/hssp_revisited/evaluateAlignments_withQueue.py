@@ -38,6 +38,9 @@ modeldir = '/mnt/project/psshcache/models'
 maxTemplate = 8
 test = False
 
+cathSeparator = '.'
+
+
 def process_hhr(path, workPath, pdbhhrfile):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
 	
@@ -243,12 +246,12 @@ def getCathInfo(chain):
 	grepp = subprocess.Popen(['grep', pdbCode+pdbChain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = grepp.communicate()
 	cathLines = out.split('\n')
-	separator = '.'
 	for line in cathLines:
 		if not line continue
 		values = line.split('\t')
-		cathCode = separator.join(values[1:10])
-		cathCodes.append(cathCode)
+		if len(values) > 10:
+			cathCode = separator.join(values[1:10])
+			cathCodes.append(cathCode)
 	return cathCodes
 	
 def getCathSimilarity(listA, listB):
