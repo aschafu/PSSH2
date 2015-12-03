@@ -250,7 +250,7 @@ def getCathInfo(chain):
 		if not line continue
 		values = line.split('\t')
 		if len(values) > 10:
-			cathCode = separator.join(values[1:10])
+			cathCode = cathSeparator.join(values[1:10])
 			cathCodes.append(cathCode)
 	return cathCodes
 	
