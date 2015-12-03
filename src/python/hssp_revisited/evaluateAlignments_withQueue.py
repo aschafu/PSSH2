@@ -265,7 +265,7 @@ def getCathSimilarity(listA, listB):
 		for codeB in listB:
 			piecesB = codeB.split(cathSeparator)
 			currentSimilarity = 0
-			for i in range(10)
+			for i in range(10):
 				if piecesA[i] == piecesB[i]:
 					currentSimilarity += 1
 				else:
