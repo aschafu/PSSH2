@@ -281,14 +281,22 @@ def evaluateSingle(checksum, cleanup):
 	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
 
 	# iterate over all chains we found and prepare files to compare against
+	# also get Cath information
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
 		print '-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile
 		rn = subprocess.Popen([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 		out, err = rn.communicate()
+		
 		if err:
 			print err
+		if '_' in chain:
+			(pdbCode, pdbChain) = chain.split('_')
+		else:
+			pdbCode = chain
+			pdbChain = ''
+		
 
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
