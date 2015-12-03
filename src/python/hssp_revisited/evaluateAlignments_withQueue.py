@@ -250,6 +250,17 @@ def getCathInfo(chain):
 		cathCodes.append(cathCode)
 	return cathCodes
 	
+def getCathSimilarity(listA, listB):
+	""" compare two lists of cath codes and return maxmium of agreements between the code pairs"""
+
+	similarity = 0
+	for codeA in listA:
+		piecesA = codeA.split('.')
+		for codeB in listB:
+			piecesB = codeB.split('.')
+				
+			
+	
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
