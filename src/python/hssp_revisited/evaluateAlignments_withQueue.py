@@ -258,7 +258,8 @@ def getCathInfo(chain):
 				if len(values) > 3:
 					cathDomain = values[3]
 					grep_cath_p = subprocess.Popen(['grep', cathDomain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-							
+					grep2out, grep2err = grep_cath_p.communicate()
+					out.append(grep2out)
 	
 	if pdbCode in out:
 		cathLines = out.split('\n')
