@@ -232,6 +232,7 @@ def parse_maxclusterResult(result):
 def getCathInfo(chain):
 	""" do a query to Aquaria to work out the Cath hierarchy code for this chain"""
 
+	cathCodes = []
 	if '_' in chain:
 		(pdbCode, pdbChain) = chain.split('_')
 	else:
@@ -240,9 +241,11 @@ def getCathInfo(chain):
 	grepp = subprocess.Popen(['grep', pdbCode+pdbChain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = grepp.communicate()
 	cathLines = out.split('\n')
+	separator = '.'
 	for line in cathLines:
-		(domainId,c,a,t,h,s,o,l,i,d,len,res) = line.split('\t')
-
+		values = line.split('\t')
+		cathCode = separator.join(values[1:10])
+		cathCodes.append(cathCode)
 
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
