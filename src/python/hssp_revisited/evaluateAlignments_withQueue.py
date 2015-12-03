@@ -507,7 +507,7 @@ def storeSummary(resultStore, checksum, chains):
 					'HH_Aligned_cols': resultStore[model]['aligned_cols'], 
 					'HH_Identities': resultStore[model]['identities'], 
 					'HH_Similarity': resultStore[model]['similarity'],
-					'CathSimilarity': str(resultStore[model]['cathSimilarity']),
+					'CathSimilarity': str(resultStore[model][chain]['cathSimilarity']),
 					'GDT': str(resultStore[model][chain]['gdt']), 
 					'pairs': str(resultStore[model][chain]['pairs']), 
 					'RMSD': str(resultStore[model][chain]['rmsd']),
