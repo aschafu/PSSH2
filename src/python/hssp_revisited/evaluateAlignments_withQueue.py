@@ -261,7 +261,7 @@ def getCathInfo(chain):
 					grep2out, grep2err = grep_cath_p.communicate()
 					out.append(grep2out)
 	
-	if pdbCode in out:
+	if '\t' in out:
 		cathLines = out.split('\n')
 		for line in cathLines:
 			if not line: 
