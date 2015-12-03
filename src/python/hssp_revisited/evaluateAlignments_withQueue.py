@@ -246,9 +246,19 @@ def getCathInfo(chain):
 	grep_cath_p = subprocess.Popen(['grep', pdbCode+pdbChain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = grep_cath_p.communicate()
 	if not pdbCode in out:
-		grepp_mapping_p = subprocess.Popen(['grep', pdbCode+pdbChain, 'pdb_chain_cath_uniprot.csv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		out, err = grepp_mapping_p.communicate()
-
+		out = ''
+		grepp_mapping_p = subprocess.Popen(['grep', pdbCode+','+pdbChain, 'pdb_chain_cath_uniprot.csv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		mapOut, mapErr = grepp_mapping_p.communicate()
+		if pdbCode in out:
+			mapLines = mapOut.split('\n')
+			for line in mapLines:
+				if not line: 
+					continue
+				values = line.split(',')
+				if len(values) > 3:
+					cathDomain = values[3]
+					grep_cath_p = subprocess.Popen(['grep', cathDomain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+							
 	
 	if pdbCode in out:
 		cathLines = out.split('\n')
