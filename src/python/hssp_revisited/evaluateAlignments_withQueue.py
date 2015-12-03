@@ -261,8 +261,13 @@ def getCathSimilarity(listA, listB):
 			currentSimilarity = 0
 			for i in range(10)
 				if piecesA[i] == piecesB[i]:
-					si
-			
+					currentSimilarity += 1
+				else:
+					break
+			if currentSimilarity > overallSimilarity:
+				overallSimilarity = currentSimilarity
+	return overallSimilarity
+	
 	
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
