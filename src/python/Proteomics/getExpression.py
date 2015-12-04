@@ -36,6 +36,7 @@ class ProteinExpressionRetrieval():
  		except (httplib.HTTPException, socket.error) as ex:
  			print "Error: %s" % ex		
 			retry = True
+		# if the connection failed, reiterate
 		if retry and count<10:
 			count += 1
 			jsonResult = self.connectAndRetrieve(count)
