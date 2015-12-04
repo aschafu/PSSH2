@@ -24,6 +24,7 @@ class ProteinExpressionRetrieval():
 		
 	def connectAndRetrieve(self, count=0):
  		body = ''
+ 		json = ''
 		retry = False 
 		try:
 			hconn = httplib.HTTPSConnection( "%s:%d" % (self.host,self.port) )
