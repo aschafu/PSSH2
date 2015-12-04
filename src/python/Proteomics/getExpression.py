@@ -22,8 +22,9 @@ class ProteinExpressionRetrieval():
 		# Get expression of a given protein in any tissue
 		self.expressionurl = '''/proteomicsdb/logic/api/proteinexpression.xsodata/InputParams(PROTEINFILTER=\'''' + accession_number + '''\',MS_LEVEL=1,TISSUE_ID_SELECTION='',TISSUE_CATEGORY_SELECTION='tissue;fluid',SCOPE_SELECTION=1,GROUP_BY_TISSUE=1,CALCULATION_METHOD=0,EXP_ID=-1)/Results?$select=UNIQUE_IDENTIFIER,TISSUE_ID,TISSUE_NAME,UNNORMALIZED_INTENSITY,NORMALIZED_INTENSITY,MIN_NORMALIZED_INTENSITY,MAX_NORMALIZED_INTENSITY,SAMPLES&$format=json '''
 		
-	def connectAndRetrieve(self):
+	def connectAndRetrieve(self, count=0):
  		body = ''
+		retry = False 
 		try:
 			hconn = httplib.HTTPSConnection( "%s:%d" % (self.host,self.port) )
  			hconn.request("GET", self.expressionurl, headers = self.default_headers)
@@ -31,7 +32,11 @@ class ProteinExpressionRetrieval():
  			print resp.status, resp.reason
  			body = resp.read()
  		except (httplib.HTTPException, socket.error) as ex:
- 		   print "Error: %s" % ex		
+ 			print "Error: %s" % ex		
+			retry = True
+		if retry and count<10:
+			count += 1
+			self.connectAndRetrieve(count)
  		return json.loads(body)
 
 
