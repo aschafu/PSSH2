@@ -23,13 +23,15 @@ class ProteinExpressionRetrieval():
 		self.expressionurl = '''/proteomicsdb/logic/api/proteinexpression.xsodata/InputParams(PROTEINFILTER=\'''' + accession_number + '''\',MS_LEVEL=1,TISSUE_ID_SELECTION='',TISSUE_CATEGORY_SELECTION='tissue;fluid',SCOPE_SELECTION=1,GROUP_BY_TISSUE=1,CALCULATION_METHOD=0,EXP_ID=-1)/Results?$select=UNIQUE_IDENTIFIER,TISSUE_ID,TISSUE_NAME,UNNORMALIZED_INTENSITY,NORMALIZED_INTENSITY,MIN_NORMALIZED_INTENSITY,MAX_NORMALIZED_INTENSITY,SAMPLES&$format=json '''
 		
 	def connectAndRetrieve(self):
-		hconn = httplib.HTTPSConnection( "%s:%d" % (self.host,self.port) )
-#		hconn.set_debuglevel(3)
-		hconn.request("GET", self.expressionurl, headers = self.default_headers)
-		resp = hconn.getresponse()
-		print resp.status, resp.reason
-		body = resp.read()
-		return json.loads(body)
+ 		body = ''
+		try:
+ 			hconn.request("GET", self.expressionurl, headers = self.default_headers)
+ 			resp = hconn.getresponse()
+ 			print resp.status, resp.reason
+ 			body = resp.read()
+ 		except (httplib.HTTPException, socket.error) as ex:
+ 		   print "Error: %s" % ex		
+ 		return json.loads(body)
 
 
 	
