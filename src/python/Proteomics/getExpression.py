@@ -24,7 +24,7 @@ class ProteinExpressionRetrieval():
 		
 	def connectAndRetrieve(self, count=0):
  		body = ''
- 		json = ''
+ 		jsonResult = ''
 		retry = False 
 		try:
 			hconn = httplib.HTTPSConnection( "%s:%d" % (self.host,self.port) )
@@ -32,13 +32,14 @@ class ProteinExpressionRetrieval():
  			resp = hconn.getresponse()
  			print resp.status, resp.reason
  			body = resp.read()
+ 			json.loads(body)
  		except (httplib.HTTPException, socket.error) as ex:
  			print "Error: %s" % ex		
 			retry = True
 		if retry and count<10:
 			count += 1
 			self.connectAndRetrieve(count)
- 		return json.loads(body)
+ 		return json
 
 
 	
