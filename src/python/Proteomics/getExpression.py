@@ -2,6 +2,7 @@
 
 import urllib2, urllib
 import httplib
+import socket
 import json
 import base64
 import csv
