@@ -23,7 +23,6 @@ class ProteinExpressionRetrieval():
 		self.expressionurl = '''/proteomicsdb/logic/api/proteinexpression.xsodata/InputParams(PROTEINFILTER=\'''' + accession_number + '''\',MS_LEVEL=1,TISSUE_ID_SELECTION='',TISSUE_CATEGORY_SELECTION='tissue;fluid',SCOPE_SELECTION=1,GROUP_BY_TISSUE=1,CALCULATION_METHOD=0,EXP_ID=-1)/Results?$select=UNIQUE_IDENTIFIER,TISSUE_ID,TISSUE_NAME,UNNORMALIZED_INTENSITY,NORMALIZED_INTENSITY,MIN_NORMALIZED_INTENSITY,MAX_NORMALIZED_INTENSITY,SAMPLES&$format=json '''
 		
 	def connectAndRetrieve(self, count=0):
- 		body = ''
  		jsonResult = ''
 		retry = False 
 		try:
