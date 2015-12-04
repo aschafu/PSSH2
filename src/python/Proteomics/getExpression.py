@@ -25,6 +25,7 @@ class ProteinExpressionRetrieval():
 	def connectAndRetrieve(self):
  		body = ''
 		try:
+			hconn = httplib.HTTPSConnection( "%s:%d" % (self.host,self.port) )
  			hconn.request("GET", self.expressionurl, headers = self.default_headers)
  			resp = hconn.getresponse()
  			print resp.status, resp.reason
