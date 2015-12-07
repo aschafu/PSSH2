@@ -275,6 +275,7 @@ def getCathInfo(chain):
 			values = line.split('\t')
 			if len(values) > 10:
 				cathCode = cathSeparator.join(values[1:10])
+				# make sure we only get every cathCode once				
 				if not cathCode in cathCodes:
 					cathCodes.append(cathCode)
 	
