@@ -271,33 +271,34 @@ def getCathInfo(chain):
 				cathCode = cathSeparator.join(values[1:10])
 				cathCodes.append(cathCode)
 	
-	print "cath code(s) for " + chain + ":  " + cathCodes
+	print "cath code(s) for " + chain + ":  " + ', '.join(cathCodes)
 	return cathCodes
 
 	
 def getCathSimilarity(listA, listB):
 	""" compare two lists of cath codes and return maxmium of agreements between the code pairs"""
 
-	overallSimilarity = 0
+	overallSimilarity = -1
 	for codeA in listA:
 		piecesA = codeA.split(cathSeparator)
-		if len(piecesA) <10:
+		if len(piecesA) <9:
 			print 'something weird here: cath code looks unhealty: '+ codeA
 			continue
 		for codeB in listB:
 			piecesB = codeB.split(cathSeparator)
-			if len(piecesA) <10:
+			if len(piecesA) <9:
 				print 'something weird here: cath code looks unhealty: '+ codeB
-				continues
+				continue
 			currentSimilarity = 0
 
-			for i in range(10):
+			for i in range(9):
 				if piecesA[i] == piecesB[i]:
 					currentSimilarity += 1
 				else:
 					break
 			if currentSimilarity > overallSimilarity:
 				overallSimilarity = currentSimilarity
+
 	print listA, listB, '-> overall cath similarity: ', overallSimilarity
 	return overallSimilarity
 	
@@ -502,7 +503,7 @@ def storeSummary(resultStore, checksum, chains):
 #			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 
-				print "storing " + checksum + " " + chain + " - " + model + " "
+				print "storing " + checksum + " " + chain + " - " + str(model)
 				model_data = {
 					'query_md5': checksum, 
 					'query_struc': chain, 
