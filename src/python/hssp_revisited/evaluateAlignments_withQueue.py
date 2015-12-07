@@ -250,7 +250,7 @@ def getCathInfo(chain):
 	# if the return value doesn't contain the pdb code, we didn't get a result
 	if not pdbCode in out:
 		out = ''
-		# therefore check whether the mapping file has more info
+		# therefore check whether the mapping file has more info (mapping to a catch domain)
 		grepp_mapping_p = subprocess.Popen(['grep', pdbCode+','+pdbChain, 'pdb_chain_cath_uniprot.csv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		mapOut, mapErr = grepp_mapping_p.communicate()
 		if pdbCode in out:
