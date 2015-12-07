@@ -503,11 +503,7 @@ def storeSummary(resultStore, checksum, chains):
 #			print model, chain, resultStore[model][chain]
 			if resultStore[model][chain]['validResult']:
 
-<<<<<<< HEAD
-				print "storing " + checksum + " " + chain + " - " + str(model) 
-=======
 				print "storing " + checksum + " " + chain + " - " + str(model)
->>>>>>> da20106d3752cb851fd7dfdc42b360e54f6cfcc4
 				model_data = {
 					'query_md5': checksum, 
 					'query_struc': chain, 
