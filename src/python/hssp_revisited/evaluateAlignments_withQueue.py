@@ -271,6 +271,7 @@ def getCathInfo(chain):
 				cathCode = cathSeparator.join(values[1:10])
 				cathCodes.append(cathCode)
 	
+	print "cath code(s) for " + chain + ":  " + cathCodes
 	return cathCodes
 
 	
