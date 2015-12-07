@@ -243,10 +243,14 @@ def getCathInfo(chain):
 	else:
 		pdbCode = chain
 		pdbChain = ''
+	# first look whether we can find this directly in the cath domain list
 	grep_cath_p = subprocess.Popen(['grep', pdbCode+pdbChain, 'CathDomainList.tsv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = grep_cath_p.communicate()
+
+	# if the return value doesn't contain the pdb code, we didn't get a result
 	if not pdbCode in out:
 		out = ''
+		# therefore
 		grepp_mapping_p = subprocess.Popen(['grep', pdbCode+','+pdbChain, 'pdb_chain_cath_uniprot.csv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		mapOut, mapErr = grepp_mapping_p.communicate()
 		if pdbCode in out:
