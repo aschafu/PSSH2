@@ -170,7 +170,7 @@ def getStrucReferenceFileName(workPath, pdbChainCode):
 	return workPath+'/'+pdbChainCode+'.pdb'
 
 
-def parse_maxclusterResult(result):
+def parse_maxclusterResult(result, prefix=''):
 	"""parse out the result from maxcluster (see http://www.sbg.bio.ic.ac.uk/~maxcluster)
 	Example: > maxcluster -gdt 4 -e exeriment.pdb -p model.00003.pdb 
 	Iter 1: Pairs= 175, RMSD= 0.541, MAXSUB=0.874. Len= 177. gRMSD= 0.821, TM=0.879
@@ -218,15 +218,15 @@ def parse_maxclusterResult(result):
 		tm = maxclResultLines[-6][74:79]
 #		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
 		structureStatistics = {
-			'validResult': True,
-			'nReferences': 1,
-			'gdt': float(gdt),		# score based on MaxSub superposition distance threshold (-d option)
-			'pairs': int(pairs),	# Number of pairs in the MaxSub
-			'rmsd': float(rmsd),	# RMSD of the MaxSub atoms
-			'maxsub': float(maxsub),# MaxSub score
-			'len': int(length),		# Number of matched pairs (all equivalent residues)
-			'grmsd': float(grmsd),	# Global RMSD using the MaxSub superposition
-			'tm': float(tm)			# TM-score
+			prefix+'validResult': True,
+			prefix+'nReferences': 1,
+			prefix+'gdt': float(gdt),		# score based on MaxSub superposition distance threshold (-d option)
+			prefix+'pairs': int(pairs),	# Number of pairs in the MaxSub
+			prefix+'rmsd': float(rmsd),	# RMSD of the MaxSub atoms
+			prefix+'maxsub': float(maxsub),# MaxSub score
+			prefix+'len': int(length),		# Number of matched pairs (all equivalent residues)
+			prefix+'grmsd': float(grmsd),	# Global RMSD using the MaxSub superposition
+			prefix+'tm': float(tm)			# TM-score
 		}
 	else:
 		structureStatistics = {
