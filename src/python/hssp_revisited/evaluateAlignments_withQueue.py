@@ -391,13 +391,27 @@ def evaluateSingle(checksum, cleanup):
 		for chain in pdbChainCodes:
 			
 			print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
+			
+			# create/find file names
 			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
+
+			# first check how the model maps onto the experimental structure
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out, err = p.communicate()
 			if err:
 				print err
 			structureStatistics = parse_maxclusterResult(out)
+			
+			# now check how the experimental structure maps onto the model 
+			# important for short models to find whether that at least agrees with the experimental structure
+			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			r_out, r_err = r_p.communicate()
+			if r_err:
+				print r_err
+			structureStatistics = parse_maxclusterResult(r_out)
+			
+			
 			# compare cath codes
 			structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
 #			print structureStatistics
