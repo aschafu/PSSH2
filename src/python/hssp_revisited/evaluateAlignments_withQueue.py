@@ -549,13 +549,13 @@ def storeSummary(resultStore, checksum, chains):
 					'maxsub': str(resultStore[model][chain]['maxsub']), 
 					'len': str(resultStore[model][chain]['len']),
 					'TM': str(resultStore[model][chain]['tm']) 
-					'r_GDT': str(resultStore[model][chain]['gdt']), 
-					'r_pairs': str(resultStore[model][chain]['pairs']), 
-					'r_RMSD': str(resultStore[model][chain]['rmsd']),
-					'r_gRMSD': str(resultStore[model][chain]['grmsd']), 
-					'r_maxsub': str(resultStore[model][chain]['maxsub']), 
-					'r_len': str(resultStore[model][chain]['len']),
-					'r_TM': str(resultStore[model][chain]['tm']) 
+					'r_GDT': str(resultStore[model][chain]['r_gdt']), 
+					'r_pairs': str(resultStore[model][chain]['r_pairs']), 
+					'r_RMSD': str(resultStore[model][chain]['r_rmsd']),
+					'r_gRMSD': str(resultStore[model][chain]['r_grmsd']), 
+					'r_maxsub': str(resultStore[model][chain]['r_maxsub']), 
+					'r_len': str(resultStore[model][chain]['r_len']),
+					'r_TM': str(resultStore[model][chain]['r_tm']) 
 				}
 		
 #				print mysqlInsert, '\n', model_data
