@@ -600,6 +600,7 @@ def main(argv):
 		cleanup = False
 
 	if args.test:
+		global test
 		test = True
 
 	os.putenv('HHLIB', hhPath)
