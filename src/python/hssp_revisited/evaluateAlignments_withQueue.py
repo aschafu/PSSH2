@@ -409,7 +409,7 @@ def evaluateSingle(checksum, cleanup):
 			r_out, r_err = r_p.communicate()
 			if r_err:
 				print r_err
-			structureStatistics = parse_maxclusterResult(r_out)
+			structureStatistics = parse_maxclusterResult(r_out, prefix='r_')
 			
 			
 			# compare cath codes
