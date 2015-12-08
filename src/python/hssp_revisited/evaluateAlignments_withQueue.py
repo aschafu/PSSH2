@@ -414,7 +414,7 @@ def evaluateSingle(checksum, cleanup):
 						resultStore[model]['min'][valType] = True
 						resultStore[model]['max'][valType] = True
 					else:
-						print ('----', resultStore[model]['avrg'])
+#						print ('----', resultStore[model]['avrg'])
 						if valType in resultStore[model]['avrg']:
 							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
 #							print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
