@@ -266,7 +266,7 @@ def getCathInfo(chain):
 					grep2out, grep2err = grep_cath_p.communicate()
 					out.append(grep2out)
 	
-	# now look at all the greop output we got and extract cath identifiers
+	# now look at all the grep output we got and extract cath identifiers
 	if '\t' in out:
 		cathLines = out.split('\n')
 		for line in cathLines:
