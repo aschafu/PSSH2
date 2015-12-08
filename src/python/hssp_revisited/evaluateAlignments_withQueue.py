@@ -230,7 +230,7 @@ def parse_maxclusterResult(result, prefix=''):
 		}
 	else:
 		structureStatistics = {
-			'validResult': False
+			prefix+'validResult': False
 		}
 	return structureStatistics
 				
