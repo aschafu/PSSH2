@@ -580,6 +580,7 @@ def main(argv):
 	inputGroup.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
 	parser.add_argument("-t", "--table", required=True, help="name of table in mysql to write to (must exist!)")
 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
+	parser.add_argument("--test", action='store_true', help="run in test mode (only 5 models per query)")
 
 
 # later add option for different formats
