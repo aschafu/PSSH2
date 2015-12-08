@@ -599,6 +599,9 @@ def main(argv):
 	if args.keep:
 		cleanup = False
 
+	if args.test:
+		test = True
+
 	os.putenv('HHLIB', hhPath)
 
 	if checksum:
