@@ -347,8 +347,12 @@ def evaluateSingle(checksum, cleanup):
 		# subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
 		modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 		hhmm=subprocess.Popen([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+ modelFileWithPath, '-m '+str(model)],
-							stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		out, err = hhmm.communicate()
+								stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		try: 
+			out, err = hhmm.communicate(timeout=60)
+		except TimeoutExpired:
+ 			hhmm.kill()
+ 			out, err = hhmm.communicate()
 		if err:
 			print err
 
