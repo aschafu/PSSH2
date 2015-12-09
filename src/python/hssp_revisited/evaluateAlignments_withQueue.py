@@ -147,7 +147,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 				out = ''
 				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum
 			else: 
-				out, err = p.communicate(timeout=60)
+				out, err = p.communicate()
 #			try: 
 #				out, err = p.communicate(timeout=60)
 #			except subprocess.TimeoutExpired:
