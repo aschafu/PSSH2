@@ -219,7 +219,7 @@ def parse_maxclusterResult(result, prefix=''):
 	   di  = Distance between identical residues i
 	   d   = Distance threshold
 	   N   = The number of residue pairs (same as 'Pairs') = M in MaxSub
-	   L   = The number of residues in the experimental structure (same as 'Len') = N in MaxSub
+	   L   = The number of residues in the experimental structure  = N in MaxSub
 	   d   = 1.24 x cube_root(N-15) - 1.8
 	==> score between 0 (no match) and 1 (full match); comparable between different exp. struc. lengths, because d depends on N
  		The expected TM-score value for a random pair of proteins is 0.17.
