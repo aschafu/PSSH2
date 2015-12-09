@@ -450,10 +450,10 @@ def evaluateSingle(checksum, cleanup):
 			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 			if check_timeout(r_p):
-				out = ''
-				err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + '-p' + pdbstrucfile
+				r_out = ''
+				r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + '-p' + pdbstrucfile
 			else: 
-				out, err = r_p.communicate()
+				r_out, r_err = r_p.communicate()
 #			try: 
 #				r_out, r_err = r_p.communicate(timeout=60)
 #			except subprocess.TimeoutExpired:
