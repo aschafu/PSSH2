@@ -473,7 +473,7 @@ def evaluateSingle(checksum, cleanup):
 #			print structureStatistics
 			resultStore[model][chain] = structureStatistics
 			
-			if (structureStatistics['validResult'] and structureStatistics['r_validResult']:
+			if (structureStatistics['validResult'] and structureStatistics['r_validResult']):
 #				print('--- GDT: ', structureStatistics['gdt'])
 				validChainCounter += 1
 #				resultStore[model][chain] = structureStatistics
