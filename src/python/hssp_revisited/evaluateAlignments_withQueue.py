@@ -505,6 +505,8 @@ def evaluateSingle(checksum, cleanup):
 							resultStore[model]['min'][valType] = structureStatistics[valType]
 			else:
 				print('--- no valid result!')
+				structureStatistics['validResult']  = False
+				structureStatistics['r_validResult']  = False
 #				resultStore[model][chain] = structureStatistics
 
 		# calculate the average over the different pdb structures
