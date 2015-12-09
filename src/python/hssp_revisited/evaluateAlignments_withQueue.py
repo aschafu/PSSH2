@@ -129,7 +129,11 @@ def process_hhr(path, workPath, pdbhhrfile):
 			checksum = linelist[lineCount].strip().replace('>','')
 			modelStatistics[model]['match md5'] = checksum			
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			out, err = p.communicate()
+			try: 
+				out, err = p.communicate(timeout=60)
+			except TimeoutExpired:
+ 				p.kill()
+ 				out, err = p.communicate()
 			if err:
 				print err
 			pdbChainCode = out.strip()
@@ -411,7 +415,7 @@ def evaluateSingle(checksum, cleanup):
 			
 			# now check how the experimental structure maps onto the model 
 			# important for short models to find whether that at least agrees with the experimental structure
-			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			try: 
 				r_out, r_err = r_p.communicate()
 			except TimeoutExpired:
