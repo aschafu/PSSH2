@@ -412,7 +412,11 @@ def evaluateSingle(checksum, cleanup):
 			# now check how the experimental structure maps onto the model 
 			# important for short models to find whether that at least agrees with the experimental structure
 			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			r_out, r_err = r_p.communicate()
+			try: 
+				r_out, r_err = r_p.communicate()
+			except TimeoutExpired:
+			    r_p.kill()
+    			r_out, r_err = r_p.communicate()
 			if r_err:
 				print r_err
 			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_')
