@@ -464,9 +464,9 @@ def evaluateSingle(checksum, cleanup):
 				print r_err
 			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_')
 
-			validResult = structureStatistics['validResult'] and r_structureStatistics['validResult']
-
 			# add the reverse values to the dictionary for the normal values
+			# and make sure that we only count this if the superpositioning worked in both directions
+			validResult = structureStatistics['validResult'] and r_structureStatistics['validResult']
 			structureStatistics.update(r_structureStatistics)
 			structureStatistics['validResult'] = validResult
 			
