@@ -402,7 +402,7 @@ def evaluateSingle(checksum, cleanup):
 			try: 
 				out, err = p.communicate(timeout=60)
 			except TimeoutExpired:
-			    proc.kill()
+			    p.kill()
     			out, err = p.communicate()
 			if err:
 				print err
