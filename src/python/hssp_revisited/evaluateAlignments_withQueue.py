@@ -371,7 +371,7 @@ def evaluateSingle(checksum, cleanup):
 			out = ''
 			err = 'Process timed out: '+hhPath+hhMakeModelScript + ' -i '+workPath+'/'+pdbhhrfile+ ' -ts '+ modelFileWithPath+ ' -m '+str(model)
 		else: 
-			out, err = hhmm.communicate(timeout=60)
+			out, err = hhmm.communicate()
 #		try: 
 #			out, err = hhmm.communicate(timeout=60)
 #		except subprocess.TimeoutExpired:
