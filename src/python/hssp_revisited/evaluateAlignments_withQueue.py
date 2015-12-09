@@ -466,16 +466,14 @@ def evaluateSingle(checksum, cleanup):
 
 			# add the reverse values to the dictionary for the normal values
 			# and make sure that we only count this if the superpositioning worked in both directions
-			validResult = structureStatistics['validResult'] and r_structureStatistics['validResult']
 			structureStatistics.update(r_structureStatistics)
-			structureStatistics['validResult'] = validResult
 			
 			# compare cath codes
 			structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
 #			print structureStatistics
 			resultStore[model][chain] = structureStatistics
 			
-			if structureStatistics['validResult']:
+			if (structureStatistics['validResult'] and structureStatistics['r_validResult']:
 #				print('--- GDT: ', structureStatistics['gdt'])
 				validChainCounter += 1
 #				resultStore[model][chain] = structureStatistics
