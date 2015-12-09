@@ -566,7 +566,7 @@ def storeSummary(resultStore, checksum, chains):
 					'gRMSD': str(resultStore[model][chain]['grmsd']), 
 					'maxsub': str(resultStore[model][chain]['maxsub']), 
 					'len': str(resultStore[model][chain]['len']),
-					'TM': str(resultStore[model][chain]['tm']) 
+					'TM': str(resultStore[model][chain]['tm']), 
 					'r_GDT': str(resultStore[model][chain]['r_gdt']), 
 					'r_pairs': str(resultStore[model][chain]['r_pairs']), 
 					'r_RMSD': str(resultStore[model][chain]['r_rmsd']),
