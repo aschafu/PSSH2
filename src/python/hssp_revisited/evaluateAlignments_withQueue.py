@@ -409,7 +409,7 @@ def evaluateSingle(checksum, cleanup):
 
 			try: 
 				out, err = p.communicate(timeout=60)
-			except TimeoutExpired:
+			except subprocess.TimeoutExpired:
 			    p.kill()
     			out, err = p.communicate()
 			if err:
@@ -421,8 +421,8 @@ def evaluateSingle(checksum, cleanup):
 			# important for short models to find whether that at least agrees with the experimental structure
 			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			try: 
-				r_out, r_err = r_p.communicate()
-			except TimeoutExpired:
+				r_out, r_err = r_p.communicate(timeout=60)
+			except subprocess.TimeoutExpired:
 			    r_p.kill()
     			r_out, r_err = r_p.communicate()
 			if r_err:
