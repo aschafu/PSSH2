@@ -432,7 +432,7 @@ def evaluateSingle(checksum, cleanup):
 
 			if check_timeout(p):
 				out = ''
-				err = 'Process timed out: '+hhPath+hhMakeModelScript, ' -i '+workPath+'/'+pdbhhrfile, ' -ts '+ modelFileWithPath, ' -m '+str(model)
+				err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + '-p' + modelFileWithPath
 			else: 
 				out, err = p.communicate()
 #			try: 
