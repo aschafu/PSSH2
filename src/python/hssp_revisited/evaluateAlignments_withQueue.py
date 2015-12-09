@@ -40,7 +40,7 @@ test = False
 
 cathSeparator = '.'
 
-def check_timeout(timeout, process):
+def check_timeout(process, time_out=60):
 	""" check whether a process has timed out, if yes kill it"""
 	killed = False
 	start = datetime.datetime.now()
@@ -142,11 +142,13 @@ def process_hhr(path, workPath, pdbhhrfile):
 			checksum = linelist[lineCount].strip().replace('>','')
 			modelStatistics[model]['match md5'] = checksum			
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			try: 
-				out, err = p.communicate(timeout=60)
-			except subprocess.TimeoutExpired:
- 				p.kill()
- 				out, err = p.communicate()
+			if not check_timeout(p):
+				
+#			try: 
+#				out, err = p.communicate(timeout=60)
+#			except subprocess.TimeoutExpired:
+#				p.kill()
+#				out, err = p.communicate()
 			if err:
 				print err
 			pdbChainCode = out.strip()
