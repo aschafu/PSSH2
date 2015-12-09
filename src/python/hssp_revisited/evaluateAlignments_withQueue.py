@@ -432,7 +432,7 @@ def evaluateSingle(checksum, cleanup):
 
 			if check_timeout(p):
 				out = ''
-				err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + '-p' + modelFileWithPath
+				err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
 			else: 
 				out, err = p.communicate()
 #			try: 
@@ -451,7 +451,7 @@ def evaluateSingle(checksum, cleanup):
 
 			if check_timeout(r_p):
 				r_out = ''
-				r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + '-p' + pdbstrucfile
+				r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
 			else: 
 				r_out, r_err = r_p.communicate()
 #			try: 
