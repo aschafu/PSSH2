@@ -202,6 +202,9 @@ def parse_maxclusterResult(result, prefix=''):
 	Percentage aligned at distance 4.000 = 88.38
 	Percentage aligned at distance 8.000 = 89.39
 	GDT= 87.121
+
+	Len = number of residues that could be mapped on sequence level
+
     	      1    M
 	MaxSub = ---  Sum [ 1 / { 1 + (di^2 / d^2) } ]
     	      N    i
