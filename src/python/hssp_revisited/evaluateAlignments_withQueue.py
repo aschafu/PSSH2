@@ -40,7 +40,7 @@ test = False
 
 cathSeparator = '.'
 
-def check_timeout(process, time_out=60):
+def check_timeout(process, timeout=60):
 	""" check whether a process has timed out, if yes kill it"""
 	killed = False
 	start = datetime.datetime.now()
