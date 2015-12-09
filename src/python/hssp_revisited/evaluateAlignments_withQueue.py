@@ -430,11 +430,16 @@ def evaluateSingle(checksum, cleanup):
 			# first check how the model maps onto the experimental structure
 			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-			try: 
-				out, err = p.communicate(timeout=60)
-			except subprocess.TimeoutExpired:
-			    p.kill()
-    			out, err = p.communicate()
+			if check_timeout(p):
+				out = ''
+				err = 'Process timed out: '+hhPath+hhMakeModelScript, ' -i '+workPath+'/'+pdbhhrfile, ' -ts '+ modelFileWithPath, ' -m '+str(model)
+			else: 
+				out, err = p.communicate()
+#			try: 
+#				out, err = p.communicate(timeout=60)
+#			except subprocess.TimeoutExpired:
+#			    p.kill()
+#   			out, err = p.communicate()
 			if err:
 				print err
 			structureStatistics = parse_maxclusterResult(out)
