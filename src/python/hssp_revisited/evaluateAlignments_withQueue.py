@@ -145,6 +145,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 			if check_timeout(p):
 				out = ''
 				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum
+			else: 
+				out, err = p.communicate(timeout=60)
 #			try: 
 #				out, err = p.communicate(timeout=60)
 #			except subprocess.TimeoutExpired:
@@ -364,11 +366,16 @@ def evaluateSingle(checksum, cleanup):
 		modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 		hhmm=subprocess.Popen([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+ modelFileWithPath, '-m '+str(model)],
 								stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		try: 
+		if check_timeout(hhmm):
+			out = ''
+			err = 'Process timed out: '+hhPath+hhMakeModelScript, ' -i '+workPath+'/'+pdbhhrfile, ' -ts '+ modelFileWithPath, ' -m '+str(model)
+		else: 
 			out, err = hhmm.communicate(timeout=60)
-		except subprocess.TimeoutExpired:
- 			hhmm.kill()
- 			out, err = hhmm.communicate()
+#		try: 
+#			out, err = hhmm.communicate(timeout=60)
+#		except subprocess.TimeoutExpired:
+#			hhmm.kill()
+#			out, err = hhmm.communicate()
 		if err:
 			print err
 
