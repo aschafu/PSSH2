@@ -142,8 +142,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 			checksum = linelist[lineCount].strip().replace('>','')
 			modelStatistics[model]['match md5'] = checksum			
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			if not check_timeout(p):
-				
+			if check_timeout(p):
+				out = ''
+				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum
 #			try: 
 #				out, err = p.communicate(timeout=60)
 #			except subprocess.TimeoutExpired:
