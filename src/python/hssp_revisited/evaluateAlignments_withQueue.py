@@ -463,6 +463,7 @@ def evaluateSingle(checksum, cleanup):
 				print r_err
 			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_')
 
+			# add the reverse values to the dictionary for the normal values
 			structureStatistics.update(r_structureStatistics)
 			
 			# compare cath codes
