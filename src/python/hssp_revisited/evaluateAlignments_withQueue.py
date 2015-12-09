@@ -131,7 +131,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			try: 
 				out, err = p.communicate(timeout=60)
-			except TimeoutExpired:
+			except subprocess.TimeoutExpired:
  				p.kill()
  				out, err = p.communicate()
 			if err:
@@ -350,7 +350,7 @@ def evaluateSingle(checksum, cleanup):
 								stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		try: 
 			out, err = hhmm.communicate(timeout=60)
-		except TimeoutExpired:
+		except subprocess.TimeoutExpired:
  			hhmm.kill()
  			out, err = hhmm.communicate()
 		if err:
