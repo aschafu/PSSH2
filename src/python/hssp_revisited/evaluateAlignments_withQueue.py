@@ -2,6 +2,7 @@
 
 # new version of pythonscript_refactored using hhlib tools to process the structure file
 import os, sys, io, argparse
+import signal
 import errno
 import gzip
 import csv
