@@ -249,13 +249,26 @@ def parse_maxclusterResult(result, prefix='', status=''):
 			prefix+'validResult': True,
 			prefix+'nReferences': 1,
 			prefix+'gdt': float(gdt),		# score based on MaxSub superposition distance threshold (-d option)
-			prefix+'pairs': int(pairs),	# Number of pairs in the MaxSub
-			prefix+'rmsd': float(rmsd),	# RMSD of the MaxSub atoms
-			prefix+'maxsub': float(maxsub),# MaxSub score
+			prefix+'pairs': int(pairs),		# Number of pairs in the MaxSub
+			prefix+'rmsd': float(rmsd),		# RMSD of the MaxSub atoms
+			prefix+'maxsub': float(maxsub),	# MaxSub score
 			prefix+'len': int(length),		# Number of matched pairs (all equivalent residues)
 			prefix+'grmsd': float(grmsd),	# Global RMSD using the MaxSub superposition
 			prefix+'tm': float(tm)			# TM-score
 		}
+	elif (not "timeOut" in status and not "failed" in status){
+		structureStatistics = {
+			prefix+'validResult': True,
+			prefix+'nReferences': 1,
+			prefix+'gdt': 0.0,		# score based on MaxSub superposition distance threshold (-d option)
+			prefix+'pairs': 0,		# Number of pairs in the MaxSub
+			prefix+'rmsd': 99.9,	# RMSD of the MaxSub atoms
+			prefix+'maxsub': 0.0,	# MaxSub score
+			prefix+'len': 0,		# Number of matched pairs (all equivalent residues)
+			prefix+'grmsd': 99.9,	# Global RMSD using the MaxSub superposition
+			prefix+'tm': 0.0		# TM-score			
+		}
+	}
 	else:
 		structureStatistics = {
 			prefix+'validResult': False
