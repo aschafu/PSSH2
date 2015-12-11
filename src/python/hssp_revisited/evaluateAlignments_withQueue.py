@@ -194,7 +194,7 @@ def getStrucReferenceFileName(workPath, pdbChainCode):
 	return workPath+'/'+pdbChainCode+'.pdb'
 
 
-def parse_maxclusterResult(result, prefix=''):
+def parse_maxclusterResult(result, prefix='', status=''):
 	"""parse out the result from maxcluster (see http://www.sbg.bio.ic.ac.uk/~maxcluster)
 	Example: > maxcluster -gdt 4 -e exeriment.pdb -p model.00003.pdb 
 	Iter 1: Pairs= 175, RMSD= 0.541, MAXSUB=0.874. Len= 177. gRMSD= 0.821, TM=0.879
@@ -462,8 +462,11 @@ def evaluateSingle(checksum, cleanup):
 			if check_timeout(r_p):
 				r_out = ''
 				r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
+				maxclStatus = 'timeOut'
 			else: 
 				r_out, r_err = r_p.communicate()
+				if p.returncode != 0:
+					maxclStatus = 'failed'
 #			try: 
 #				r_out, r_err = r_p.communicate(timeout=60)
 #			except subprocess.TimeoutExpired:
