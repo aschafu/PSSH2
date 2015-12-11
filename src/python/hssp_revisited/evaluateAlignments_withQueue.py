@@ -458,16 +458,16 @@ def evaluateSingle(checksum, cleanup):
 			# now check how the experimental structure maps onto the model 
 			# important for short models to find whether that at least agrees with the experimental structure
 			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			maxclStatus = ''
+			r_maxclStatus = ''
 
 			if check_timeout(r_p):
 				r_out = ''
 				r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
-				maxclStatus = 'timeOut'
+				r_maxclStatus = 'timeOut'
 			else: 
 				r_out, r_err = r_p.communicate()
 				if p.returncode != 0:
-					maxclStatus = 'failed'
+					r_maxclStatus = 'failed'
 #			try: 
 #				r_out, r_err = r_p.communicate(timeout=60)
 #			except subprocess.TimeoutExpired:
@@ -475,7 +475,7 @@ def evaluateSingle(checksum, cleanup):
  #   			r_out, r_err = r_p.communicate()
 			if r_err:
 				print r_err
-			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_', status=maxclStatus)
+			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_', status=r_maxclStatus)
 
 			# add the reverse values to the dictionary for the normal values
 			# and make sure that we only count this if the superpositioning worked in both directions
