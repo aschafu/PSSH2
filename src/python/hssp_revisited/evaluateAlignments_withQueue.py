@@ -452,12 +452,13 @@ def evaluateSingle(checksum, cleanup):
 #   			out, err = p.communicate()
 			if err:
 				print err
-			structureStatistics = parse_maxclusterResult(out, maxclStatus)
+			structureStatistics = parse_maxclusterResult(out, status=maxclStatus)
 			
 			
 			# now check how the experimental structure maps onto the model 
 			# important for short models to find whether that at least agrees with the experimental structure
 			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			maxclStatus = ''
 
 			if check_timeout(r_p):
 				r_out = ''
@@ -474,7 +475,7 @@ def evaluateSingle(checksum, cleanup):
  #   			r_out, r_err = r_p.communicate()
 			if r_err:
 				print r_err
-			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_')
+			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_', status=maxclStatus)
 
 			# add the reverse values to the dictionary for the normal values
 			# and make sure that we only count this if the superpositioning worked in both directions
