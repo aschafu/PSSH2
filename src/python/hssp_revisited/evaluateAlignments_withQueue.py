@@ -610,7 +610,7 @@ def storeSummary(resultStore, checksum, chains):
 		cursor = submitConnection.cursor()
 	except (AttributeError, MySQLdb.OperationalError) as e:
 		print e
-		
+		getConnection()
 
 	for model in range(1, modelcount): 
 #		print model, resultStore[model]
