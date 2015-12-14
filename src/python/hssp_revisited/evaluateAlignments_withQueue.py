@@ -699,12 +699,15 @@ def main(argv):
 	tableName = args.table
 
 	global submitConnection, dbConnection
-	while (not submitConnection and not dbConnection)
+	submitConnection = None
+	dbConnection = None
+	while (submitConnection is None or dbConnection is None)
 		try:
 			dbConnection = SequenceStructureDatabase.DB_Connection()
 			submitConnection = dbConnection.getConnection('pssh2','updating')
 		except Exception as e:
 			print e
+			print "--- Waiting for connection ---"
 			wait(10)
 	
 
