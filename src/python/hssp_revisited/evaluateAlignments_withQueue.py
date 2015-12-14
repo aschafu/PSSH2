@@ -606,7 +606,12 @@ def storeSummary(resultStore, checksum, chains):
 			print 'modelcount is big: ', modelcount, ' set it to 5'
 			modelcount = 5
 
-	cursor = submitConnection.cursor()
+	try:
+		cursor = submitConnection.cursor()
+	except (AttributeError, MySQLdb.OperationalError) as e:
+		print e
+		
+
 	for model in range(1, modelcount): 
 #		print model, resultStore[model]
 		for chain in chains:
@@ -661,6 +666,17 @@ def cleanupConfVal(confString):
 	confString = confString.replace("\'","")
 	return confString
 	
+def getConnection():
+	while (submitConnection is None or dbConnection is None)
+	try:
+		dbConnection = SequenceStructureDatabase.DB_Connection()
+		submitConnection = dbConnection.getConnection('pssh2','updating')
+	except Exception as e:
+		print e
+		print "--- Waiting for connection ---"
+		wait(10)
+	return submitConnection, dbConnection
+
 	
 def main(argv):
 	""" here we initiate the real work"""
@@ -701,16 +717,8 @@ def main(argv):
 	global submitConnection, dbConnection
 	submitConnection = None
 	dbConnection = None
-	while (submitConnection is None or dbConnection is None)
-		try:
-			dbConnection = SequenceStructureDatabase.DB_Connection()
-			submitConnection = dbConnection.getConnection('pssh2','updating')
-		except Exception as e:
-			print e
-			print "--- Waiting for connection ---"
-			wait(10)
+	submitConnection, dbConnection = getConnection()
 	
-
 	checksum = args.md5
 	list = args.list
 	cleanup = True 
