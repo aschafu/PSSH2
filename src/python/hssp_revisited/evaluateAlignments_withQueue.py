@@ -699,8 +699,14 @@ def main(argv):
 	tableName = args.table
 
 	global submitConnection, dbConnection
-	dbConnection = SequenceStructureDatabase.DB_Connection()
-	submitConnection = dbConnection.getConnection('pssh2','updating')
+	while (not submitConnection and not dbConnection)
+		try:
+			dbConnection = SequenceStructureDatabase.DB_Connection()
+			submitConnection = dbConnection.getConnection('pssh2','updating')
+		except Exception as e:
+			print e
+			wait(10)
+	
 
 	checksum = args.md5
 	list = args.list
