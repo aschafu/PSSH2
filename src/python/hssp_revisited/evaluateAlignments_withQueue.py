@@ -606,11 +606,13 @@ def storeSummary(resultStore, checksum, chains):
 			print 'modelcount is big: ', modelcount, ' set it to 5'
 			modelcount = 5
 
-	try:
-		cursor = submitConnection.cursor()
-	except (AttributeError, MySQLdb.OperationalError) as e:
-		print e
-		getConnection()
+	cursor = None
+	while (cursor is None):
+		try:
+			cursor = submitConnection.cursor()
+		except (AttributeError, MySQLdb.OperationalError) as e:
+			print e
+			getConnection()
 
 	for model in range(1, modelcount): 
 #		print model, resultStore[model]
