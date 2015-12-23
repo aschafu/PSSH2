@@ -11,7 +11,7 @@ use Getopt::Long;
 
 # Parameters! 
 my $nRetain = 5;  # how many alignments to keep, regardless of e-value
-my $evalCutoff = 1e-10;
+my $evalCutoff = 1e-8;      # be a bit more permissive than in the export for Sean
 my $identityCutoff = 0.9;   # storing values as decimal ratios, not percent! 
 my $md5script = "fasta_to_md5"; # ruby script (expect to find this on the path after installing the package)
 
