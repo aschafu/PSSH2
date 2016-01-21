@@ -214,7 +214,7 @@ sub getColVal {
 	# a high ratio should give a value close to 0, 
 	# a low ration should give a value close to FF
 	# This means for low ratios we will have almost white color,
-	# for high ratios it will be red/green dependign on where our value gets stuck
+	# for high ratios it will be red/blue depending on where our value gets stuck
 	my ($ratio) = @_; 
 	$ratio = 1-$ratio; # inverting the ratio to make it scale to white (see above)!
 	my $colInt = floor($ratio*256);
@@ -235,9 +235,9 @@ sub getHexColForScore {
 		$color = "#FF".$gbVal.$gbVal;
     }
     else {
-        # green color -> green on 255; rest according to ratio
-        my $rbVal = getColVal($scoreVal/-100); 
-		$color = "#".$rbVal."FF".$rbVal;
+        # blue color -> blue on 255; rest according to ratio
+        my $rgVal = getColVal($scoreVal/-100); 
+		$color = "#".$rgVal.$rgVal."FF";
     }
 	return $color;
 	
