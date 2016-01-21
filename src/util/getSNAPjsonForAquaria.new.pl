@@ -77,6 +77,8 @@ if ($cache->complete()){
     	my $nVal = 0;
 		my $nNeutral = 0;
 		my $nEffect = 0;
+
+		$effectMutations[$pos]="";
 		
     	foreach my $var (keys %{$score[$pos]}){
     		my $testVal = $score[$pos]{$var};
@@ -84,7 +86,10 @@ if ($cache->complete()){
 			$nVal++;
 			# significant score:  effect > 40
 			# significant neutral: <-40
-			if ($testVal > 40) {$nEffect++}
+			if ($testVal > 40) {
+				$nEffect++;
+				$effectMutations[$pos] .= " > $var : $testVal";
+			}
 			elsif ($testVal < -40) {$nNeutral++};
     	}
     	
