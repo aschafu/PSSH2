@@ -41,7 +41,7 @@ my @result = ();
 my @score;
 
 my $rgb = new Color::Rgb(rgb_txt=>'/mnt/project/pssh/pssh2_project/src/util/rgb.txt');
-my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicate residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
+my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Red values indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Blue values indicate residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
 my $avrgScoreAnnotationDescription = "Average SNAP2 score at sequence position: ";
 my $snapURL = "http://rostlab.org/services/snap2web/";
 
