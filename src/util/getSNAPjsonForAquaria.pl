@@ -6,6 +6,9 @@ use lib glob("/mnt/project/snap2web/");
 use Snap2Cache;
 use DBI;
 use POSIX;
+use Color::Rgb;
+
+# Author: Sean O'Donoghue, Kenny Sabir, Julian Heinrich, Nelson Perdigao, Andrea Schafferhans
 
 our($seq,$dbg,$details,$uniprotAcc,$md5);
 $details = 0;
@@ -36,6 +39,10 @@ my %predictions=$cache->predictions();
 
 my @result = ();
 my @score;
+
+my $rgb = new Color::Rgb(rgb_txt=>'/usr/share/emacs/22.1/etc/rgb.txt');
+my $description = "The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not. The SNAP2 scores for individual substitutions at this residue position are below: strongly positive scores indicate mutations predicted to distrupt function; strongly negative scores indicate mutations predicted not to affect function; scores close to zero indicate mutations where the effect on function is unclear. ";
+
 
 # cache complete: check whether all 19 non-native are defined
 if ($cache->complete()){
