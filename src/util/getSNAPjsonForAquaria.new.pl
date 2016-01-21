@@ -52,6 +52,7 @@ if ($cache->complete()){
 	my %varFeature;
 	my @avrgFeature = ();
 	my @sensitivityFeature = ();
+	my @effectMutations = ();
 	
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
@@ -93,22 +94,23 @@ if ($cache->complete()){
  	   		my $ratioNeutral = $nNeutral/$nVal;
     		my $ratioEffect = $nEffect/$nVal;
 
-    		my $description = "avrg. score: ";
-    		$description .= sprintf("%.1f", $avrgScore);
-			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,getHexColForScore($avrgScore)); 
+    		my $avrgDescription = "avrg. score: ";
+    		$avrgDescription .= sprintf("%.1f", $avrgScore);
+			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $avrgDescription,getHexColForScore($avrgScore)); 
 
+			my $sensDescription;
 			if ($ratioNeutral > 0.5){
-				$description = "$nNeutral\/$nVal amino acid substitutions do not change function";
+				$sensDescription = "$nNeutral\/$nVal amino acid substitutions do not change function";
 				# rescale to use a wider color range (0.5-1 --> 0.2-1)
 				my $rbVal = getColVal((1-(1-$ratioNeutral)/5*8));
 				# color in green for neutral
-				push @sensitivityFeature, getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
+				push @sensitivityFeature, getFeature("Insensitive", $pos, $sensDescription, "#".$rbVal."FF".$rbVal); 
 			}
 			elsif ($ratioEffect > 0.5){
-				$description = "$nEffect\/$nVal amino acid substitutions change function";
+				$sensDescription = "$nEffect\/$nVal amino acid substitutions change function";
 				my $gbVal = getColVal((1-(1-$ratioEffect)/5*8));
 				# color in red for effect
-				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
+				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $sensDescription,"#FF".$gbVal.$gbVal); 
 			}
     	}
     	
