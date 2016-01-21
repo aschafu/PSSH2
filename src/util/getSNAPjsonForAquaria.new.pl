@@ -43,6 +43,7 @@ my @score;
 my $rgb = new Color::Rgb(rgb_txt=>'/mnt/project/pssh/pssh2_project/src/util/rgb.txt');
 my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not. The SNAP2 scores for individual substitutions at this residue position are below: strongly positive scores indicate mutations predicted to distrupt function; strongly negative scores indicate mutations predicted not to affect function; scores close to zero indicate mutations where the effect on function is unclear.";
 my $avrgScoreAnnotationDescription = "Average SNAP2 score at sequence position: "
+my $snapURL = "http://rostlab.org/services/snap2web/";
 
 # cache complete: check whether all 19 non-native are defined
 if ($cache->complete()){
@@ -114,12 +115,12 @@ if ($cache->complete()){
     }
     
     # put together the annotations
-    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP ratio of effect mutations)", "SNAP", "https://rostlab.org/services/snap/", $sensitivityAnnotationDescription);
+    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP ratio of effect mutations)", "SNAP2", "https://rostlab.org/services/snap/", $sensitivityAnnotationDescription);
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
     
-    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP score)", "SNAP", "https://rostlab.org/services/snap/", $avrgScoreAnnotationDescription);
+    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP score)", "SNAP2", "https://rostlab.org/services/snap/", $avrgScoreAnnotationDescription);
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
@@ -127,7 +128,7 @@ if ($cache->complete()){
    if ($details){
 	#    my @individualScoreAnnotations = ();
    	 foreach my $var (sort keys %varFeature){
-			my $annotation = getAnnotationStart("Mutation to $var score (SNAP)", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
+			my $annotation = getAnnotationStart("Mutation to $var score (SNAP2)", "SNAP2", "http://rostlab.org/services/snap2web/", "SNAP score for ".$var." scan");
 			my $featuresRef = $varFeature{$var};
 			$annotation .= join ",\n", @$featuresRef[$minPos..$maxPos];
 			$annotation .= getAnnotationEnd();
