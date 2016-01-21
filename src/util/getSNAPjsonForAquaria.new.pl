@@ -128,7 +128,7 @@ if ($cache->complete()){
    if ($details){
 	#    my @individualScoreAnnotations = ();
    	 foreach my $var (sort keys %varFeature){
-			my $annotation = getAnnotationStart("Mutation to $var score (SNAP2)", "SNAP2", $snapURL, "SNAP score for ".$var." scan");
+			my $annotation = getAnnotationStart("Mutation to $var score (SNAP2)", "SNAP2", $snapURL, "SNAP2 score for ".$var." scan");
 			my $featuresRef = $varFeature{$var};
 			$annotation .= join ",\n", @$featuresRef[$minPos..$maxPos];
 			$annotation .= getAnnotationEnd();
