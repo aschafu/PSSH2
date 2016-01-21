@@ -115,12 +115,12 @@ if ($cache->complete()){
     }
     
     # put together the annotations
-    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP ratio of effect mutations)", "SNAP2", "https://rostlab.org/services/snap/", $sensitivityAnnotationDescription);
+    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP ratio of effect mutations)", "SNAP2", $snapURL, $sensitivityAnnotationDescription);
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
     
-    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP score)", "SNAP2", "https://rostlab.org/services/snap/", $avrgScoreAnnotationDescription);
+    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP score)", "SNAP2", $snapURL, $avrgScoreAnnotationDescription);
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
@@ -128,7 +128,7 @@ if ($cache->complete()){
    if ($details){
 	#    my @individualScoreAnnotations = ();
    	 foreach my $var (sort keys %varFeature){
-			my $annotation = getAnnotationStart("Mutation to $var score (SNAP2)", "SNAP2", "http://rostlab.org/services/snap2web/", "SNAP score for ".$var." scan");
+			my $annotation = getAnnotationStart("Mutation to $var score (SNAP2)", "SNAP2", $snapURL, "SNAP score for ".$var." scan");
 			my $featuresRef = $varFeature{$var};
 			$annotation .= join ",\n", @$featuresRef[$minPos..$maxPos];
 			$annotation .= getAnnotationEnd();
