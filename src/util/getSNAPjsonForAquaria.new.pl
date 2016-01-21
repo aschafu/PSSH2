@@ -88,7 +88,7 @@ if ($cache->complete()){
 			# significant neutral: <-40
 			if ($testVal > 40) {
 				$nEffect++;
-				$effectMutations[$pos] .= " > $var : $testVal";
+				$effectMutations[$pos] .= " $var : $testVal ,";
 			}
 			elsif ($testVal < -40) {$nNeutral++};
     	}
@@ -106,6 +106,7 @@ if ($cache->complete()){
 			my $sensDescription;
 			if ($ratioNeutral > 0.5){
 				$sensDescription = "$nNeutral\/$nVal amino acid substitutions do not change function";
+				$sensDescription .= ""
 				# rescale to use a wider color range (0.5-1 --> 0.2-1)
 				my $rbVal = getColVal((1-(1-$ratioNeutral)/5*8));
 				# color in green for neutral
