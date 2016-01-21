@@ -115,12 +115,12 @@ if ($cache->complete()){
     }
     
     # put together the annotations
-    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP ratio of effect mutations)", "SNAP2", $snapURL, $sensitivityAnnotationDescription);
+    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP2 ratio of effect mutations)", "SNAP2", $snapURL, $sensitivityAnnotationDescription);
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
     
-    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP score)", "SNAP2", $snapURL, $avrgScoreAnnotationDescription);
+    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP2 score)", "SNAP2", $snapURL, $avrgScoreAnnotationDescription);
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
