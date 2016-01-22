@@ -42,7 +42,7 @@ my @score;
 
 my $rgb = new Color::Rgb(rgb_txt=>'/mnt/project/pssh/pssh2_project/src/util/rgb.txt');
 my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Red values indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Blue values indicate residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
-my $avrgScoreAnnotationDescription = "Average SNAP2 score at sequence position: ";
+my $avrgScoreAnnotationDescription = "Average SNAP2 score at sequence position: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
 my $snapURL = "http://rostlab.org/services/snap2web/";
 
 # cache complete: check whether all 19 non-native are defined
@@ -98,15 +98,17 @@ if ($cache->complete()){
     		my $avrgScore = $sum/$nVal;
  	   		my $ratioNeutral = $nNeutral/$nVal;
     		my $ratioEffect = $nEffect/$nVal;
+			my $funcDescription = "; function changing are: ".$effectMutations[$pos];
 
     		my $avrgDescription = "avrg. score: ";
     		$avrgDescription .= sprintf("%.1f", $avrgScore);
+    		$avrgDescription .=$funcDescription;
 			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $avrgDescription,getHexColForScore($avrgScore)); 
 
 			my $sensDescription;
 			if ($ratioNeutral > 0.5){
 				$sensDescription = "$nNeutral\/$nVal amino acid substitutions do not change function";
-				$sensDescription .= "; function changing are: ".$effectMutations[$pos];
+				$sensDescription .= $funcDescription;
 				# rescale to use a wider color range (0.5-1 --> 0.2-1)
 				my $rbVal = getColVal((1-(1-$ratioNeutral)/5*8));
 				# color in green for neutral
@@ -114,7 +116,7 @@ if ($cache->complete()){
 			}
 			elsif ($ratioEffect > 0.5){
 				$sensDescription = "$nEffect\/$nVal amino acid substitutions change function";
-				$sensDescription .= "; function changing are: ".$effectMutations[$pos];
+				$sensDescription .= $funcDescription;
 				my $gbVal = getColVal((1-(1-$ratioEffect)/5*8));
 				# color in red for effect
 				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $sensDescription,"#FF".$gbVal.$gbVal); 
