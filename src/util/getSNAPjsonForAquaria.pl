@@ -6,7 +6,6 @@ use lib glob("/mnt/project/snap2web/");
 use Snap2Cache;
 use DBI;
 use POSIX;
-use Color::Rgb;
 
 # Author: Andrea Schafferhans, Sean O'Donoghue
 
@@ -40,7 +39,6 @@ my %predictions=$cache->predictions();
 my @result = ();
 my @score;
 
-my $rgb = new Color::Rgb(rgb_txt=>'/mnt/project/pssh/pssh2_project/src/util/rgb.txt');
 my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Red values indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Blue values indicate residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
 my $avrgScoreAnnotationDescription = "Average SNAP2 score at sequence position: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
 my $snapURL = "http://rostlab.org/services/snap2web/";
@@ -63,11 +61,11 @@ if ($cache->complete()){
         my $scoreVal =  $predictions{$mut};
         $score[$pos]{$var} = $scoreVal;
         # remember first and last postion in the sequences
-		unless (defined $minPos){$minPos = $pos};
+	unless (defined $minPos){$minPos = $pos};
         if ($pos>$maxPos){$maxPos = $pos};
         # assemble the individual mutation feature for this variation and this position  
-		$varFeature{$var}[$pos] = getFeature("$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal));
-	}
+	$varFeature{$var}[$pos] = getFeature("$wt > $var", $pos, "SNAP score: ".$predictions{$mut}, getHexColForScore($scoreVal));
+    }
 	
     # now loop over all positions and work out the average and the number of significant mutations
     for (my $pos=$minPos; $pos<=$maxPos; $pos++){
@@ -96,14 +94,18 @@ if ($cache->complete()){
     	# make sure we do not divide by 0
     	if ($nVal > 0){
     		my $avrgScore = $sum/$nVal;
- 	   		my $ratioNeutral = $nNeutral/$nVal;
+ 	   	my $ratioNeutral = $nNeutral/$nVal;
     		my $ratioEffect = $nEffect/$nVal;
-			my $funcDescription = "; function changing are: ".$effectMutations[$pos];
+		my $funcDescription = "";
+		if ($effectMutations[$pos]){
+		    $funcDescription = " ; function changing are: ".$effectMutations[$pos];
+		    chop $funcDescription;  # take off the trailing comma
+		}
 
     		my $avrgDescription = "avrg. score: ";
     		$avrgDescription .= sprintf("%.1f", $avrgScore);
     		$avrgDescription .=$funcDescription;
-			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $avrgDescription,getHexColForScore($avrgScore)); 
+			$avrgFeature[$pos] = getFeature("Mutation score", $pos, $avrgDescription,getHexColForScore($avrgScore)); 
 
 			my $sensDescription;
 			if ($ratioNeutral > 0.5){
