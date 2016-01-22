@@ -110,9 +110,9 @@ if ($cache->complete()){
 				$sensDescription = "$nNeutral\/$nVal amino acid substitutions do not change function";
 				$sensDescription .= $funcDescription;
 				# rescale to use a wider color range (0.5-1 --> 0.2-1)
-				my $rbVal = getColVal((1-(1-$ratioNeutral)/5*8));
-				# color in green for neutral
-				push @sensitivityFeature, getFeature("Insensitive", $pos, $sensDescription, "#".$rbVal."FF".$rbVal); 
+				my $rgVal = getColVal((1-(1-$ratioNeutral)/5*8));
+				# color in blue for neutral
+				push @sensitivityFeature, getFeature("Insensitive", $pos, $sensDescription, "#".$rgVal.$rgVal."FF"); 
 			}
 			elsif ($ratioEffect > 0.5){
 				$sensDescription = "$nEffect\/$nVal amino acid substitutions change function";
