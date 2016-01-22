@@ -8,7 +8,7 @@ use DBI;
 use POSIX;
 use Color::Rgb;
 
-# Author: Sean O'Donoghue, Kenny Sabir, Julian Heinrich, Nelson Perdigao, Andrea Schafferhans
+# Author: Andrea Schafferhans, Sean O'Donoghue
 
 our($seq,$dbg,$details,$uniprotAcc,$md5);
 $details = 0;
@@ -40,9 +40,10 @@ my %predictions=$cache->predictions();
 my @result = ();
 my @score;
 
-my $rgb = new Color::Rgb(rgb_txt=>'/usr/share/emacs/22.1/etc/rgb.txt');
-my $description = "The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not. The SNAP2 scores for individual substitutions at this residue position are below: strongly positive scores indicate mutations predicted to distrupt function; strongly negative scores indicate mutations predicted not to affect function; scores close to zero indicate mutations where the effect on function is unclear. ";
-
+my $rgb = new Color::Rgb(rgb_txt=>'/mnt/project/pssh/pssh2_project/src/util/rgb.txt');
+my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Red values indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Blue values indicate residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
+my $avrgScoreAnnotationDescription = "Average SNAP2 score at sequence position: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
+my $snapURL = "http://rostlab.org/services/snap2web/";
 
 # cache complete: check whether all 19 non-native are defined
 if ($cache->complete()){
@@ -51,6 +52,7 @@ if ($cache->complete()){
 	my %varFeature;
 	my @avrgFeature = ();
 	my @sensitivityFeature = ();
+	my @effectMutations = ();
 	
 	# loop over all mutations and assemble the matrix
     foreach my $mut (@mutants) {
@@ -75,6 +77,8 @@ if ($cache->complete()){
     	my $nVal = 0;
 		my $nNeutral = 0;
 		my $nEffect = 0;
+
+		$effectMutations[$pos]="";
 		
     	foreach my $var (keys %{$score[$pos]}){
     		my $testVal = $score[$pos]{$var};
@@ -82,7 +86,10 @@ if ($cache->complete()){
 			$nVal++;
 			# significant score:  effect > 40
 			# significant neutral: <-40
-			if ($testVal > 40) {$nEffect++}
+			if ($testVal > 40) {
+				$nEffect++;
+				$effectMutations[$pos] .= " $var : $testVal ,";
+			}
 			elsif ($testVal < -40) {$nNeutral++};
     	}
     	
@@ -91,35 +98,40 @@ if ($cache->complete()){
     		my $avrgScore = $sum/$nVal;
  	   		my $ratioNeutral = $nNeutral/$nVal;
     		my $ratioEffect = $nEffect/$nVal;
+			my $funcDescription = "; function changing are: ".$effectMutations[$pos];
 
-    		my $description = "avrg. score: ";
-    		$description .= sprintf("%.1f", $avrgScore);
-			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $description,getHexColForScore($avrgScore)); 
+    		my $avrgDescription = "avrg. score: ";
+    		$avrgDescription .= sprintf("%.1f", $avrgScore);
+    		$avrgDescription .=$funcDescription;
+			$avrgFeature[$pos] = getFeature("Average sensitivity", $pos, $avrgDescription,getHexColForScore($avrgScore)); 
 
+			my $sensDescription;
 			if ($ratioNeutral > 0.5){
-				$description = "$nNeutral\/$nVal amino acid substitutions do not change function";
+				$sensDescription = "$nNeutral\/$nVal amino acid substitutions do not change function";
+				$sensDescription .= $funcDescription;
 				# rescale to use a wider color range (0.5-1 --> 0.2-1)
-				my $rbVal = getColVal((1-(1-$ratioNeutral)/5*8));
-				# color in green for neutral
-				push @sensitivityFeature, getFeature("Insensitive", $pos, $description, "#".$rbVal."FF".$rbVal); 
+				my $rgVal = getColVal((1-(1-$ratioNeutral)/5*8));
+				# color in blue for neutral
+				push @sensitivityFeature, getFeature("Insensitive", $pos, $sensDescription, "#".$rgVal.$rgVal."FF"); 
 			}
 			elsif ($ratioEffect > 0.5){
-				$description = "$nEffect\/$nVal amino acid substitutions change function";
+				$sensDescription = "$nEffect\/$nVal amino acid substitutions change function";
+				$sensDescription .= $funcDescription;
 				my $gbVal = getColVal((1-(1-$ratioEffect)/5*8));
 				# color in red for effect
-				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $description,"#FF".$gbVal.$gbVal); 
+				push @sensitivityFeature, getFeature("Highly sensitive", $pos, $sensDescription,"#FF".$gbVal.$gbVal); 
 			}
     	}
     	
     }
     
     # put together the annotations
-    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP ratio of effect mutations)", "SNAP", "https://rostlab.org/services/snap/", "Prediction of sequence positions to be sensitive / insensitive to mutation");
+    my $sensitivityAnnotation = getAnnotationStart("Mutational sensitivity (SNAP2 ratio of effect mutations)", "SNAP2", $snapURL, $sensitivityAnnotationDescription);
     $sensitivityAnnotation .= join ",\n", @sensitivityFeature;
     $sensitivityAnnotation .= getAnnotationEnd();
     push @result, $sensitivityAnnotation;
     
-    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP score)", "SNAP", "https://rostlab.org/services/snap/", "Average SNAP score at sequence position");
+    my $avrgScoreAnnotation =  getAnnotationStart("Mutation score (average SNAP2 score)", "SNAP2", $snapURL, $avrgScoreAnnotationDescription);
     $avrgScoreAnnotation .= join ",\n", @avrgFeature[$minPos..$maxPos];
     $avrgScoreAnnotation .= getAnnotationEnd();
     push @result, $avrgScoreAnnotation;
@@ -127,7 +139,7 @@ if ($cache->complete()){
    if ($details){
 	#    my @individualScoreAnnotations = ();
    	 foreach my $var (sort keys %varFeature){
-			my $annotation = getAnnotationStart("Mutation to $var score (SNAP)", "SNAP", "https://rostlab.org/services/snap/", "SNAP score for ".$var." scan");
+			my $annotation = getAnnotationStart("Mutation to $var score (SNAP2)", "SNAP2", $snapURL, "SNAP2 score for ".$var." scan");
 			my $featuresRef = $varFeature{$var};
 			$annotation .= join ",\n", @$featuresRef[$minPos..$maxPos];
 			$annotation .= getAnnotationEnd();
@@ -213,7 +225,7 @@ sub getColVal {
 	# a high ratio should give a value close to 0, 
 	# a low ration should give a value close to FF
 	# This means for low ratios we will have almost white color,
-	# for high ratios it will be red/green dependign on where our value gets stuck
+	# for high ratios it will be red/blue depending on where our value gets stuck
 	my ($ratio) = @_; 
 	$ratio = 1-$ratio; # inverting the ratio to make it scale to white (see above)!
 	my $colInt = floor($ratio*256);
@@ -234,9 +246,9 @@ sub getHexColForScore {
 		$color = "#FF".$gbVal.$gbVal;
     }
     else {
-        # green color -> green on 255; rest according to ratio
-        my $rbVal = getColVal($scoreVal/-100); 
-		$color = "#".$rbVal."FF".$rbVal;
+        # blue color -> blue on 255; rest according to ratio
+        my $rgVal = getColVal($scoreVal/-100); 
+		$color = "#".$rgVal.$rgVal."FF";
     }
 	return $color;
 	
