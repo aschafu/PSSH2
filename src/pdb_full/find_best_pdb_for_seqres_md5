@@ -55,7 +55,7 @@ my %chain;
 my %method;
 my %resolution;
 my %published;
-my %alignRange;
+my %aliRange;
 my @alignLines = split /\n/, $alignInfo;
 # first line has column headings
 shift @alignLines;
@@ -76,7 +76,7 @@ foreach my $line(@alignLines){
 	    	my ($seqresStart, $seqresEnd) = split /\-/, $seqres;    
 	    	$length += ($seqresEnd-$seqresStart+1);
 			unless ($aliStart){
-				$start = $seqresStart;
+				$aliStart = $seqresStart;
 			}
 			$aliEnd = $seqresEnd;
 		}
@@ -159,7 +159,7 @@ else{
 my @slice = @selectedIds[0 .. $lastIndex];
 print join(";", @slice), "\n";
 my @ranges = ();
-foreach $id(@slice){
+foreach my $id(@slice){
 	push @ranges, $aliRange{$id};
 }
 print join(";", @ranges), "\n";
