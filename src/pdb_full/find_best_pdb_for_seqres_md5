@@ -69,6 +69,7 @@ foreach my $line(@alignLines){
 #    print join('||', @alignPieces), "\n";
     my $length = 0;
     my $aliStart = 0;
+    my $aliEnd = 0;
     foreach my $piece(@alignPieces){
 		my ($seqres, $atom) = split /\:/, $piece;
 		if ($seqres =~ /\-/){
@@ -77,6 +78,7 @@ foreach my $line(@alignLines){
 			unless ($aliStart){
 				$start = $seqresStart;
 			}
+			$aliEnd = $seqresEnd
 		}
 		else {$length++}
 #	print " at $seqres : aliLength: $aliLength \n"; 
