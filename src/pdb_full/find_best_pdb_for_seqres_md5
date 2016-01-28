@@ -78,9 +78,12 @@ foreach my $line(@alignLines){
 			unless ($aliStart){
 				$start = $seqresStart;
 			}
-			$aliEnd = $seqresEnd
+			$aliEnd = $seqresEnd;
 		}
-		else {$length++}
+		else {
+			$length++; 
+			$aliEnd = $seqres
+		}
 #	print " at $seqres : aliLength: $aliLength \n"; 
     }
 #    print "aliLength: $aliLength \n";
