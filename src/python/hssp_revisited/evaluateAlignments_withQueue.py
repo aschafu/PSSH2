@@ -407,7 +407,7 @@ def evaluateSingle(checksum, cleanup):
 	seqLines.pop(0)
 
 	# work out the pdb structures for this md5 sum
-	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-r'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = bp.communicate()
 	if err:
 		print err
