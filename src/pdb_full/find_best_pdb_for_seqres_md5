@@ -20,6 +20,7 @@ OPTIONS
   -d          Debug option: be verbose (not implemented yet!)
   -m		  md5 sum of SEQRES sequence to search
   -n N		  return up to N pdb ids with longest overlap with SEQRES
+  -r 		  add a line giving the matching ranges
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans\@rostlab.org>
 \n";
