@@ -411,7 +411,9 @@ def evaluateSingle(checksum, cleanup):
 	out, err = bp.communicate()
 	if err:
 		print err
-	pdbChainCodes = out.strip().split(';') # normalize the results from grepping
+	codes, ranges = out.split('\n')
+	pdbChainCodes = codes.strip().split(';') 
+	pdbChainRanges = ranges.strip.split(';')
 
 	# iterate over all chains we found and prepare files to compare against
 	# also get Cath information
