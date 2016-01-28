@@ -156,7 +156,8 @@ else{
 	$lastIndex = $#selectedIds;
 }
 
-print join(";", @selectedIds[0 .. $lastIndex]), "\n";
+@slice = @selectedIds[0 .. $lastIndex];
+print join(";", @slice), "\n";
 
 
 
