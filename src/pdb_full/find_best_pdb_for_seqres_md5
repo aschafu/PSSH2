@@ -88,7 +88,7 @@ foreach my $line(@alignLines){
     }
 #    print "aliLength: $aliLength \n";
     $aliLength{$id} = $length;
-    $aliRange{$id} = ;
+    $aliRange{$id} = $aliStart.'-'.$aliEnd;
     $pdbCode{$id} = $columns[0];
     $chain{$id} = $columns[1];
 }
