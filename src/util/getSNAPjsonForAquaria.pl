@@ -39,8 +39,8 @@ my %predictions=$cache->predictions();
 my @result = ();
 my @score;
 
-my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Red values indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Blue values indicate residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
-my $avrgScoreAnnotationDescription = "Average SNAP2 score at sequence position: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 19 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 19 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
+my $sensitivityAnnotationDescription = "Prediction of sequence positions to be sensitive / insensitive to mutation: The mutational sensitivity scores were calculated using the SNAP2 prediction method. Red values indicate residue positions that are highly sensitive, i.e., most of the 20 possible single amino acid polymorphisms will with high probablity cause loss of function. Blue values indicate residue positions that are highly insensitive, i.e., most of the 20 possible single amino acid polymorphisms will with high probability not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations will affect function, others will not.";
+my $avrgScoreAnnotationDescription = "Average mutational effect score at sequence position: The mutational effect scores were calculated using the SNAP2 prediction method. Positive scores (red) indicate residue positions that are highly sensitive, i.e., most of the 20 possible single amino acid polymorphisms will cause loss of function. Negative scores (blue) indicates residue positions that are highly insensitive, i.e., most of the 20 possible single amino acid polymorphisms will not effect function. Scores close to zero (white) indicate residue positions with normal sensitivity, i.e., some mutations might affect function, others will proably not.";
 my $snapURL = "http://rostlab.org/services/snap2web/";
 
 # cache complete: check whether all 19 non-native are defined
@@ -78,7 +78,7 @@ if ($cache->complete()){
 
 		$effectMutations[$pos]="";
 		
-    	foreach my $var (keys %{$score[$pos]}){
+    	foreach my $var (sort {$score[$pos]{$b} <=> $score[$pos]{$a}} keys %{$score[$pos]}){
     		my $testVal = $score[$pos]{$var};
 			$sum += $testVal;
 			$nVal++;
@@ -109,12 +109,12 @@ if ($cache->complete()){
 
 			my $sensDescription;
 			if ($ratioNeutral > 0.5){
-				$sensDescription = "$nNeutral\/$nVal amino acid substitutions do not change function";
+				$sensDescription = "$nNeutral\/$nVal amino acid substitutions do (with high probability) not change function";
 				$sensDescription .= $funcDescription;
 				# rescale to use a wider color range (0.5-1 --> 0.2-1)
 				my $rgVal = getColVal((1-(1-$ratioNeutral)/5*8));
 				# color in blue for neutral
-				push @sensitivityFeature, getFeature("Insensitive", $pos, $sensDescription, "#".$rgVal.$rgVal."FF"); 
+				push @sensitivityFeature, getFeature("Highly insensitive", $pos, $sensDescription, "#".$rgVal.$rgVal."FF"); 
 			}
 			elsif ($ratioEffect > 0.5){
 				$sensDescription = "$nEffect\/$nVal amino acid substitutions change function";
