@@ -156,9 +156,13 @@ else{
 	$lastIndex = $#selectedIds;
 }
 
-@slice = @selectedIds[0 .. $lastIndex];
+my @slice = @selectedIds[0 .. $lastIndex];
 print join(";", @slice), "\n";
-
+my @ranges = ();
+foreach $id(@slice){
+	push @ranges, $aliRange{$id};
+}
+print join(";", @ranges), "\n";
 
 
 sub sortByAliLength {
