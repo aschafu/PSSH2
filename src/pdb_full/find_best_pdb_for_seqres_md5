@@ -55,6 +55,7 @@ my %chain;
 my %method;
 my %resolution;
 my %published;
+my %alignRange;
 my @alignLines = split /\n/, $alignInfo;
 # first line has column headings
 shift @alignLines;
@@ -67,17 +68,22 @@ foreach my $line(@alignLines){
     my @alignPieces = split /\\n/, $columns[2];
 #    print join('||', @alignPieces), "\n";
     my $length = 0;
+    my $aliStart = 0;
     foreach my $piece(@alignPieces){
-	my ($seqres, $atom) = split /\:/, $piece;
-	if ($seqres =~ /\-/){
-	    my ($seqresStart, $seqresEnd) = split /\-/, $seqres;    
-	    $length += ($seqresEnd-$seqresStart+1);
-	}
-	else {$length++}
+		my ($seqres, $atom) = split /\:/, $piece;
+		if ($seqres =~ /\-/){
+	    	my ($seqresStart, $seqresEnd) = split /\-/, $seqres;    
+	    	$length += ($seqresEnd-$seqresStart+1);
+			unless ($aliStart){
+				$start = $seqresStart;
+			}
+		}
+		else {$length++}
 #	print " at $seqres : aliLength: $aliLength \n"; 
     }
 #    print "aliLength: $aliLength \n";
     $aliLength{$id} = $length;
+    $aliRange{$id} = ;
     $pdbCode{$id} = $columns[0];
     $chain{$id} = $columns[1];
 }
