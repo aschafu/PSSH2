@@ -435,6 +435,10 @@ def evaluateSingle(checksum, cleanup):
 		codes, ranges = out.split('\n')
 		newPdbChainCodes = codes.strip().split(';') 
 		newPdbChainRanges = ranges.strip.split(';')
+		# TODO: check whether this string comparison is correct syntax
+		if (newPdbChainCodes[0] != '0xxx'):
+			pdbChainCodes.update(newPdbChainCodes)
+			pdbChainRanges.update(newPdbChainRanges)
 		
 
 
