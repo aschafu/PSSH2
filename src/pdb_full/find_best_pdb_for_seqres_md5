@@ -63,6 +63,7 @@ my $alignInfo = `DB.aquaria_local "select c.pdb_id, c.chain, c.Align_to_SEQRES f
 #print $alignInfo;
 
 my %aliLength;
+my %aliMatchLength;
 my %pdbCode;
 my %chain;
 my %method;
@@ -81,6 +82,7 @@ foreach my $line(@alignLines){
     my @alignPieces = split /\\n/, $columns[2];
 #    print join('||', @alignPieces), "\n";
     my $length = 0;
+    my $matchLength = 0;
     my $aliStart = 0;
     my $aliEnd = 0;
 	# analyse alignment to find out what range it covers and how long it is
@@ -109,6 +111,10 @@ foreach my $line(@alignLines){
 	# if we have required range we want to match, we only count the overlap as alignment length
 	if ($range){
 		
+	}
+	else {
+		$aliMatchLength{$id} = $length;
+	}
 
 }
 
@@ -186,7 +192,7 @@ if ($rangeOutput){
 }
 
 sub sortByAliLength {
-    $aliLength{$b} <=> $aliLength{$a};
+    $aliMatchLength{$b} <=> $aliMatchLength{$a};
 }
 
 sub sortByLengthAndResolutionAndDate {
