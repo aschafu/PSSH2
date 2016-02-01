@@ -20,14 +20,15 @@ OPTIONS
   -d          Debug option: be verbose (not implemented yet!)
   -m		  md5 sum of SEQRES sequence to search
   -n N		  return up to N pdb ids with longest overlap with SEQRES
-  -r 		  add a line giving the matching ranges
+  -r n:m	  require the pdb structure to cover the given range of SEQRES residues
+  -p          print a line giving the matching ranges
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans\@rostlab.org>
 \n";
 
 # if there are no arguments or -h, then print man entry
 if (@ARGV<1) {die ($usage);}
-our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput,$range);
+our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput,$range,$rBegin,$rEnd);
 $help = 0;
 $multi = 1;  # how many structure we return 
 $rangeOutput = 0;
@@ -37,7 +38,8 @@ my $args_ok=GetOptions( 'debug'  => \$dbg,
                         'help' => \$help,
                         'md5=s' => \$md5,
                         'n=i' => \$multi,
-                        'range=s' => \$range
+                        'range=s' => \$range,
+                        'printRange' => \$rangeOutput
 );
 
 if ($help || !$args_ok){
@@ -45,7 +47,13 @@ if ($help || !$args_ok){
 	exit;
 }
 
-if ($range) $rangeOutput = 1;
+if ($range){
+	($rBegin, $rEnd) = split /\:/, $range;
+}
+else {
+	$rBegin = 0;
+	$rEnd = 0;
+}
 
 my @selectedIds;
 
