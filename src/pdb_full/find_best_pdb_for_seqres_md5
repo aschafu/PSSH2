@@ -83,6 +83,7 @@ foreach my $line(@alignLines){
     my $length = 0;
     my $aliStart = 0;
     my $aliEnd = 0;
+	# analyse alignment to find out what range it covers and how long it is
     foreach my $piece(@alignPieces){
 		my ($seqres, $atom) = split /\:/, $piece;
 		if ($seqres =~ /\-/){
@@ -104,6 +105,11 @@ foreach my $line(@alignLines){
     $aliRange{$id} = $aliStart.'-'.$aliEnd;
     $pdbCode{$id} = $columns[0];
     $chain{$id} = $columns[1];
+
+	# if we have required range we want to match, we only count the overlap as alignment length
+	if ($range){
+		
+
 }
 
 #print %aliLength, "\n";
