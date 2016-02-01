@@ -409,6 +409,10 @@ def evaluateSingle(checksum, cleanup):
 	# read the sequence file only once (we will produce fake sequence files with the pdb codes later)
 	seqLines = open(cachePath+seqfile, 'r').readlines()
 	seqLines.pop(0)
+	# work out length of the sequence
+	seqLength = 0
+	for line in seqLines:
+		seqLength += len(line)
 
 	# work out the pdb structures for this md5 sum	
 	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -419,6 +423,7 @@ def evaluateSingle(checksum, cleanup):
 	pdbChainCodes = codes.strip().split(';') 
 	pdbChainRanges = ranges.strip.split(';')
 	
+		
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
