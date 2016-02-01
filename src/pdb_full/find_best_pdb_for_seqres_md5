@@ -198,8 +198,11 @@ else {
 }
 
 # check whether we found anything at all
+# if not add a fake id that makes sure the receiving scripts don't break because of empty output
+my @ranges = ();
 unless (defined $selectedIds[0] &&  $selectedIds[0]=~/\w/){
 	push @selectedIds, '0xxx';
+	push @ranges, ' ';
 }
 
 # work out the slice we want to return
@@ -214,7 +217,6 @@ else{
 my @slice = @selectedIds[0 .. $lastIndex];
 print join(";", @slice), "\n";
 if ($rangeOutput){
-	my @ranges = ();
 	foreach my $id(@slice){
 		push @ranges, $aliRange{$id};
 	}
