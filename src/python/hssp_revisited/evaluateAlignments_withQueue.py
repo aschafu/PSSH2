@@ -423,10 +423,19 @@ def evaluateSingle(checksum, cleanup):
 	pdbChainCodes = codes.strip().split(';') 
 	pdbChainRanges = ranges.strip.split(';')
 	
-		
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
+	missingRanges = findMissingRanges(seqLength, pdbChainRanges)
+	while (len(missingRanges) >=1):
+		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		out, err = bp.communicate()
+		if err:
+			print err
+		codes, ranges = out.split('\n')
+		newPdbChainCodes = codes.strip().split(';') 
+		newPdbChainRanges = ranges.strip.split(';')
+		
 
 
 
