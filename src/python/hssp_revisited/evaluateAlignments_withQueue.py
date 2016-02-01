@@ -422,13 +422,15 @@ def evaluateSingle(checksum, cleanup):
 	codes, ranges = out.split('\n')
 	pdbChainCodes = codes.strip().split(';') 
 	pdbChainRanges = ranges.strip.split(';')
+	for i in range(len(pdbChainCodes)):
+		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
 	
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
 	missingRanges = findMissingRanges(seqLength, pdbChainRanges)
 	while (len(missingRanges) >=1):
-		searchRange = missingRanges[0]
+		searchRange = missingRanges[0].replace('-',':')
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out, err = bp.communicate()
 		if err:
@@ -437,13 +439,16 @@ def evaluateSingle(checksum, cleanup):
 		newPdbChainCodes = codes.strip().split(';') 
 		newPdbChainRanges = ranges.strip.split(';')
 		# if we didn't find anything we  have to remove this range from the search ranges
+		# otherwise just remove the piece we found
 		# TODO: check whether this string comparison is correct syntax
 		if (newPdbChainCodes[0] == '0xxx'):
 			pdbChainRanges.update(searchRange)
 		else :
+			for i in range(len(newPdbChainCodes)):
+				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
 			pdbChainCodes.update(newPdbChainCodes)
 			pdbChainRanges.update(newPdbChainRanges)
-		
+		missingRanges = findMissingRanges(seqLength, pdbChainRanges)
 
 
 
