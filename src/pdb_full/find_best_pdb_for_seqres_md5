@@ -98,9 +98,28 @@ foreach my $line(@alignLines){
 			$aliEnd = $seqresEnd;
 			# get length of overlap with required range
 			if ($range){
-				if ($seqresStart >= $rBegin){
-				
-			
+				my ($overlapStart, $overlapEnd);
+				$overlapStart = 0;
+				if ($seqresStart <= $rEnd){
+					if ($seqresStart >= $rBegin){
+						$overlapStart = $seqresStart;
+					}
+					else {
+						$overlapStart = $rBegin;
+					}
+				}
+				if ($seqresEnd >= $rBegin){
+					if ($seqresEnd <= $rEnd){
+						$overlapEnd = $seqresEnd;
+					}
+					else {
+						$overlapEnd = $rEnd;
+					}
+				}
+				if ($overlapStart && ($overlapStart >= $overlapEnd){
+					$matchLength += ($overlapStart-$overlapEnd+1);
+				}
+			}
 		}
 		else {
 			$length++; 
