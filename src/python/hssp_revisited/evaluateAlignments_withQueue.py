@@ -428,6 +428,7 @@ def evaluateSingle(checksum, cleanup):
 	# reiterate asking for the missing ranges
 	missingRanges = findMissingRanges(seqLength, pdbChainRanges)
 	while (len(missingRanges) >=1):
+		searchRange = missingRanges[0]
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out, err = bp.communicate()
 		if err:
@@ -435,8 +436,11 @@ def evaluateSingle(checksum, cleanup):
 		codes, ranges = out.split('\n')
 		newPdbChainCodes = codes.strip().split(';') 
 		newPdbChainRanges = ranges.strip.split(';')
+		# if we didn't find anything we  have to remove this range from the search ranges
 		# TODO: check whether this string comparison is correct syntax
-		if (newPdbChainCodes[0] != '0xxx'):
+		if (newPdbChainCodes[0] == '0xxx'):
+			pdbChainRanges.update(searchRange)
+		else :
 			pdbChainCodes.update(newPdbChainCodes)
 			pdbChainRanges.update(newPdbChainRanges)
 		
