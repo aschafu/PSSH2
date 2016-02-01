@@ -90,11 +90,17 @@ foreach my $line(@alignLines){
 		my ($seqres, $atom) = split /\:/, $piece;
 		if ($seqres =~ /\-/){
 	    	my ($seqresStart, $seqresEnd) = split /\-/, $seqres;    
+	    	# get total length of alignment
 	    	$length += ($seqresEnd-$seqresStart+1);
 			unless ($aliStart){
 				$aliStart = $seqresStart;
 			}
 			$aliEnd = $seqresEnd;
+			# get length of overlap with required range
+			if ($range){
+				if ($seqresStart >= $rBegin){
+				
+			
 		}
 		else {
 			$length++; 
