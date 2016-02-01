@@ -124,6 +124,11 @@ foreach my $line(@alignLines){
 		else {
 			$length++; 
 			$aliEnd = $seqres
+			if ($range){
+				if ($rBegin <= $seqRes && $seqRes <= $rEnd){
+					$matchLength++;
+				}
+			}
 		}
 #	print " at $seqres : aliLength: $aliLength \n"; 
     }
@@ -135,7 +140,7 @@ foreach my $line(@alignLines){
 
 	# if we have required range we want to match, we only count the overlap as alignment length
 	if ($range){
-		
+		$aliMatchLength{$id} = $matchLength;
 	}
 	else {
 		$aliMatchLength{$id} = $length;
@@ -149,7 +154,7 @@ foreach my $line(@alignLines){
 # accept everything that is at least x% of the longest alignment
 my @sortedIds = sort sortByAliLength (keys %aliLength);
 #print "sorted Ids: ", join (',', @sortedIds), "\n";
-my $maxAliLength = $aliLength{$sortedIds[0]};
+my $maxAliLength = $aliMatchLength{$sortedIds[0]};
 #print $maxAliLength, "\n";
 my @bestIds;
 BEST: foreach my $id(@sortedIds){
@@ -221,7 +226,7 @@ sub sortByAliLength {
 }
 
 sub sortByLengthAndResolutionAndDate {
-    $aliLength{$b} <=> $aliLength{$a} ||
+    $aliMatchLength{$b} <=> $aliMatchLength{$a} ||
     $resolution{$a} <=> $resolution{$b} ||
     $published{$b} <=> $published{$a};
 }
