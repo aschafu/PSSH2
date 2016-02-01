@@ -112,6 +112,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 		statisticsValues['pval'] = parseLinePieces[2] 
 		statisticsValues['hhscore'] = parseLinePieces[3] 
 		statisticsValues['aligned_cols'] = parseLinePieces[5]
+		statisticsValues['q_range'] = parseLinePieces[6]
+		statisticsValues['t_range'] = parseLinePieces[7]
 		modelStatistics.append(statisticsValues)
 
 	# write out the beginning into the unzipped hrr file
