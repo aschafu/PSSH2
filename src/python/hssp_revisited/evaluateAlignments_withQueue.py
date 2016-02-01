@@ -411,6 +411,7 @@ def evaluateSingle(checksum, cleanup):
 	seqLines.pop(0)
 
 	# work out the pdb structures for this md5 sum
+	
 	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = bp.communicate()
 	if err:
@@ -418,6 +419,12 @@ def evaluateSingle(checksum, cleanup):
 	codes, ranges = out.split('\n')
 	pdbChainCodes = codes.strip().split(';') 
 	pdbChainRanges = ranges.strip.split(';')
+	
+	# check which ranges are covered 
+	# in case a significant piece of sequence has not been covered
+	# reiterate asking for the missing ranges
+
+
 
 	# iterate over all chains we found and prepare files to compare against
 	# also get Cath information
