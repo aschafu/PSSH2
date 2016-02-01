@@ -146,8 +146,8 @@ def process_hhr(path, workPath, pdbhhrfile):
 			checksum = linelist[lineCount].strip().replace('>','')
 			modelStatistics[model]['match md5'] = checksum
 			# work out which piece the structure should cover
-			templateRange = modelStatistics[model]['t_range']
-			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			templateRange = modelStatistics[model]['t_range'].replace('-',':')
+			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
 				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum
@@ -411,7 +411,7 @@ def evaluateSingle(checksum, cleanup):
 	seqLines.pop(0)
 
 	# work out the pdb structures for this md5 sum
-	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-r'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = bp.communicate()
 	if err:
 		print err
