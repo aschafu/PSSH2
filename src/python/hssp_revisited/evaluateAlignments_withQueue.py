@@ -144,7 +144,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 			# work out the pdb structures for this md5 sum and edit the hhr result file accordingly
 			# only take one pdb file for each found md5!
 			checksum = linelist[lineCount].strip().replace('>','')
-			modelStatistics[model]['match md5'] = checksum			
+			modelStatistics[model]['match md5'] = checksum
+			# work out which piece the structure should cover
+			templateRange = modelStatistics[model]['t_range']
 			p = subprocess.Popen([bestPdbScript, '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''

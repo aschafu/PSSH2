@@ -27,16 +27,17 @@ AUTHOR
 
 # if there are no arguments or -h, then print man entry
 if (@ARGV<1) {die ($usage);}
-our($dbg,$help,$md5,$multi,$acceptRatio);
+our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput,$range);
 $help = 0;
 $multi = 1;  # how many structure we return 
 $rangeOutput = 0;
+$range = '';
 $acceptRatio=0.9; # how long the less long alignments can be compared to the longest
 my $args_ok=GetOptions( 'debug'  => \$dbg,
                         'help' => \$help,
                         'md5=s' => \$md5,
                         'n=i' => \$multi,
-                        'range' => \$rangeOutput
+                        'range=s' => \$range
 );
 
 if ($help || !$args_ok){
@@ -44,6 +45,7 @@ if ($help || !$args_ok){
 	exit;
 }
 
+if ($range) $rangeOutput = 1;
 
 my @selectedIds;
 
