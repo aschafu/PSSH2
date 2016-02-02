@@ -623,6 +623,8 @@ def evaluateSingle(checksum, cleanup):
 #					resultStore[model][chain] = structureStatistics
 			
 			else:
+				# the model structure and the pdb chain don't overlap enough,
+				# so we cannot use the statistics
 				resultStore[model][chain]['validResult'] = False
 				resultStore[model][chain]['r_validResult'] = False
 
