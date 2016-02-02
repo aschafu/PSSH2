@@ -451,7 +451,6 @@ def evaluateSingle(checksum, cleanup):
 		missingRanges = findMissingRanges(seqLength, pdbChainRanges)
 
 
-
 	# iterate over all chains we found and prepare files to compare against
 	# also get Cath information
 	cathCodes = []
