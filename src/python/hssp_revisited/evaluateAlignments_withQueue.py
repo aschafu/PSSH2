@@ -534,7 +534,7 @@ def evaluateSingle(checksum, cleanup):
 		
 		for chain in pdbChainCodes:
 			
-			if overlap(modelRange, pdbChainCoveredRange):
+			if isOverlapping(modelRange, pdbChainCoveredRange):
 			
 				print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
 			
