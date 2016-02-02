@@ -525,100 +525,105 @@ def evaluateSingle(checksum, cleanup):
 		
 		for chain in pdbChainCodes:
 			
-			print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
+			if overlap(modelRange, pdbChainCoveredRange):
 			
-			# create/find file names
-			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
-			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
+				print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
+			
+				# create/find file names
+				modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+				pdbstrucfile = getStrucReferenceFileName(workPath, chain)
 
-			# first check how the model maps onto the experimental structure
-			p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			maxclStatus = ''
+				# first check how the model maps onto the experimental structure
+				p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+				maxclStatus = ''
 
-			if check_timeout(p):
-				out = ''
-				err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
-				maxclStatus = 'timeOut'
-			else: 
-				out, err = p.communicate()
-				if p.returncode != 0:
+				if check_timeout(p):
+					out = ''
+					err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
+					maxclStatus = 'timeOut'
+				else: 
+					out, err = p.communicate()
+					if p.returncode != 0:
 					maxclStatus = 'failed'
-#			try: 
-#				out, err = p.communicate(timeout=60)
-#			except subprocess.TimeoutExpired:
-#			    p.kill()
-#   			out, err = p.communicate()
-			if err:
-				print err
-			structureStatistics = parse_maxclusterResult(out, status=maxclStatus)
+#				try: 
+#					out, err = p.communicate(timeout=60)
+#				except subprocess.TimeoutExpired:
+#			    	p.kill()
+#   				out, err = p.communicate()
+				if err:
+					print err
+				structureStatistics = parse_maxclusterResult(out, status=maxclStatus)
 			
 			
-			# now check how the experimental structure maps onto the model 
-			# important for short models to find whether that at least agrees with the experimental structure
-			r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			r_maxclStatus = ''
+				# now check how the experimental structure maps onto the model 
+				# important for short models to find whether that at least agrees with the experimental structure
+				r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+				r_maxclStatus = ''
 
-			if check_timeout(r_p):
-				r_out = ''
-				r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
-				r_maxclStatus = 'timeOut'
-			else: 
-				r_out, r_err = r_p.communicate()
-				if p.returncode != 0:
-					r_maxclStatus = 'failed'
-#			try: 
-#				r_out, r_err = r_p.communicate(timeout=60)
-#			except subprocess.TimeoutExpired:
-#			    r_p.kill()
- #   			r_out, r_err = r_p.communicate()
-			if r_err:
-				print r_err
-			r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_', status=r_maxclStatus)
+				if check_timeout(r_p):
+					r_out = ''
+					r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
+					r_maxclStatus = 'timeOut'
+				else: 
+					r_out, r_err = r_p.communicate()
+					if p.returncode != 0:
+						r_maxclStatus = 'failed'
+#				try: 
+#					r_out, r_err = r_p.communicate(timeout=60)
+#				except subprocess.TimeoutExpired:
+#				    r_p.kill()
+#   				r_out, r_err = r_p.communicate()
+				if r_err:
+					print r_err
+				r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_', status=r_maxclStatus)
 
-			# add the reverse values to the dictionary for the normal values
-			# and make sure that we only count this if the superpositioning worked in both directions
-			structureStatistics.update(r_structureStatistics)
+				# add the reverse values to the dictionary for the normal values
+				# and make sure that we only count this if the superpositioning worked in both directions
+				structureStatistics.update(r_structureStatistics)
 			
-			# compare cath codes
-			structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
-#			print structureStatistics
-			resultStore[model][chain] = structureStatistics
+				# compare cath codes
+				structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
+#				print structureStatistics
+				resultStore[model][chain] = structureStatistics
 			
-			if (structureStatistics['validResult'] and structureStatistics['r_validResult']):
-#				print('--- GDT: ', structureStatistics['gdt'])
-				validChainCounter += 1
-#				resultStore[model][chain] = structureStatistics
-				for valType in structureStatistics.keys():
-					if valType == 'validResult':
-						resultStore[model]['avrg'][valType] = True
-						resultStore[model]['range'][valType] = True
-						resultStore[model]['min'][valType] = True
-						resultStore[model]['max'][valType] = True
-					else:
-#						print ('----', resultStore[model]['avrg'])
-						if valType in resultStore[model]['avrg']:
-							resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
-#							print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+				if (structureStatistics['validResult'] and structureStatistics['r_validResult']):
+#					print('--- GDT: ', structureStatistics['gdt'])
+					validChainCounter += 1
+#					resultStore[model][chain] = structureStatistics
+					for valType in structureStatistics.keys():
+						if valType == 'validResult':
+							resultStore[model]['avrg'][valType] = True
+							resultStore[model]['range'][valType] = True
+							resultStore[model]['min'][valType] = True
+							resultStore[model]['max'][valType] = True
 						else:
-							resultStore[model]['avrg'][valType] = structureStatistics[valType]
-#							print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+#							print ('----', resultStore[model]['avrg'])
+							if valType in resultStore[model]['avrg']:
+								resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
+#								print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
+							else:
+								resultStore[model]['avrg'][valType] = structureStatistics[valType]
+#								print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 
-						if valType in resultStore[model]['max']:
-							if structureStatistics[valType] > resultStore[model]['max'][valType]:
+							if valType in resultStore[model]['max']:
+								if structureStatistics[valType] > resultStore[model]['max'][valType]:
+									resultStore[model]['max'][valType] = structureStatistics[valType]
+							else:
 								resultStore[model]['max'][valType] = structureStatistics[valType]
-						else:
-							resultStore[model]['max'][valType] = structureStatistics[valType]
 
-						if valType in resultStore[model]['min']:
-							if structureStatistics[valType] < resultStore[model]['min'][valType]:
+							if valType in resultStore[model]['min']:
+								if structureStatistics[valType] < resultStore[model]['min'][valType]:
+									resultStore[model]['min'][valType] = structureStatistics[valType]
+							else:
 								resultStore[model]['min'][valType] = structureStatistics[valType]
-						else:
-							resultStore[model]['min'][valType] = structureStatistics[valType]
+				else:
+					print('--- no valid result!')
+					structureStatistics['validResult']  = False
+					structureStatistics['r_validResult']  = False
+#					resultStore[model][chain] = structureStatistics
+			
 			else:
-				print('--- no valid result!')
-				structureStatistics['validResult']  = False
-				structureStatistics['r_validResult']  = False
-#				resultStore[model][chain] = structureStatistics
+				resultStore[model][chain]['validResult'] = False
 
 		# calculate the average over the different pdb structures
 		print('-- maxCluster summary: ', validChainCounter, ' valid comparisons found')
