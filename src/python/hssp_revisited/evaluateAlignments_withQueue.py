@@ -520,7 +520,7 @@ def evaluateSingle(checksum, cleanup):
 		resultStore[model]['max'] = {}
 		resultStore[model]['min'] = {}
 		resultStore[model]['range'] = {}
-		modelRange = 
+		modelRange = resultStore[model]['q_range']
 		
 		for chain in pdbChainCodes:
 			
