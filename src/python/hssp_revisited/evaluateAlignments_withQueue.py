@@ -370,7 +370,7 @@ def getRangeLength(range):
 	begin, end = range.split("-")
 	return int(end) - int(begin) + 1
 
-def overlap(rangeA, rangeB):
+def isOverlapping(rangeA, rangeB):
 	beginA, endA = rangeA.split("-")
 	beginB, endB = rangeB.split("-")
 	return ( ( ( int(beginA)+minimalOverlapLength < int(endB) ) &&
@@ -378,7 +378,6 @@ def overlap(rangeA, rangeB):
 			 ( ( int(beginB)+minimalOverlapLength < int(endA) ) &&
 	           ( int(endB)-minimalOverlapLength >  int(beginA) ) ) )
 	
-
 def findLongestMissingRange(seqLength, coveredRanges):
 	"""find which pieces of the (seqres) sequence are not covered yet"""
 	
