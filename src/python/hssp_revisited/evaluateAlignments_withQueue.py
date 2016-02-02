@@ -356,7 +356,14 @@ def getCathSimilarity(listA, listB):
 	print listA, listB, '-> overall cath similarity: ', overallSimilarity
 	return overallSimilarity
 
-def findMissingRanges():
+def getRangeBegin(range):
+	begin, end = range.split("-")
+	return begin
+
+def findLongestMissingRange(seqLength, coveredRanges):
+	"""find which pieces of the (seqres) sequence are not covered yet"""
+	
+	sortedCoveredRanges = sorted(coveredRanges, key=getRangeBegin)
 	
 	
 def evaluateSingle(checksum, cleanup):
