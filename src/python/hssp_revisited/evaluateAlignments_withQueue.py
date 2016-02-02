@@ -375,6 +375,8 @@ def findLongestMissingRange(seqLength, coveredRanges):
 	sortedCoveredRanges = sorted(coveredRanges, key=getRangeBegin)
 	uncoveredRanges = []
 	uncoveredBegin = 1
+	lastCoveredRangeBegin = 0
+	lastCoveredRangeEnd = 0
 	for range in sortedCoveredRanges:
 		uncoveredEnd = int(getRangeBegin(range)) - 1
 		uncoveredRange = str(uncoveredBegin)+'-'+str(uncoveredEnd)
@@ -473,7 +475,6 @@ def evaluateSingle(checksum, cleanup):
 		newPdbChainRanges = ranges.strip.split(';')
 		# if we didn't find anything we  have to remove this range from the search ranges
 		# otherwise just remove the piece we found
-		# TODO: check whether this string comparison is correct syntax
 		if (newPdbChainCodes[0] == '0xxx'):
 			pdbChainRanges.update(searchRange)
 		else :
@@ -481,7 +482,7 @@ def evaluateSingle(checksum, cleanup):
 				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
 			pdbChainCodes.update(newPdbChainCodes)
 			pdbChainRanges.update(newPdbChainRanges)
-		missingRanges = findLongestMissingRange(seqLength, pdbChainRanges)
+		longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
 
 
 	# iterate over all chains we found and prepare files to compare against
