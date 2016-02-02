@@ -355,6 +355,8 @@ def getCathSimilarity(listA, listB):
 
 	print listA, listB, '-> overall cath similarity: ', overallSimilarity
 	return overallSimilarity
+
+def findMissingRanges():
 	
 	
 def evaluateSingle(checksum, cleanup):
