@@ -624,6 +624,8 @@ def evaluateSingle(checksum, cleanup):
 			
 			else:
 				resultStore[model][chain]['validResult'] = False
+				resultStore[model][chain]['r_validResult'] = False
+
 
 		# calculate the average over the different pdb structures
 		print('-- maxCluster summary: ', validChainCounter, ' valid comparisons found')
