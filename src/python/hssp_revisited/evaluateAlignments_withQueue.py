@@ -38,7 +38,8 @@ maxclScript = '/mnt/project/aliqeval/maxcluster'
 modeldir = '/mnt/project/psshcache/models'
 
 maxTemplate = 8
-toleratedMissingRangeLength = 5 
+toleratedMissingRangeLength = 5
+minimalOverlapLength = 10
 test = False
 
 cathSeparator = '.'
@@ -372,6 +373,7 @@ def getRangeLength(range):
 def overlap(rangeA, rangeB):
 	beginA, endA = rangeA.split("-")
 	beginB, endB = rangeB.split("-")
+	
 	
 
 def findLongestMissingRange(seqLength, coveredRanges):
