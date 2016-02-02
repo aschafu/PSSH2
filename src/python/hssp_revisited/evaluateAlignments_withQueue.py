@@ -521,7 +521,7 @@ def evaluateSingle(checksum, cleanup):
 		resultStore[model]['min'] = {}
 		resultStore[model]['range'] = {}
 		modelRange = resultStore[model]['q_range']
-		templateRange = resultStore[model]['t_range']
+#		templateRange = resultStore[model]['t_range']
 		
 		for chain in pdbChainCodes:
 			
