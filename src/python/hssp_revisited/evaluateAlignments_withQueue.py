@@ -151,7 +151,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
-				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum
+				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum + ' -r ' + templateRange
 			else: 
 				out, err = p.communicate()
 #			try: 
