@@ -378,10 +378,17 @@ def findLongestMissingRange(seqLength, coveredRanges):
 	lastCoveredRangeBegin = 0
 	lastCoveredRangeEnd = 0
 	for range in sortedCoveredRanges:
+		coveredBegin = int(getRangeBegin(range))
+		coveredEnd = int(getRangeEnd(range))
+		if (coveredBegin > lastCoveredRangeEnd):
+			
+		
 		uncoveredEnd = int(getRangeBegin(range)) - 1
 		uncoveredRange = str(uncoveredBegin)+'-'+str(uncoveredEnd)
 		uncoveredRanges.append(uncoveredRange)
 		uncoveredBegin = int(getRangeEnd(range)) + 1
+		
+		
 	if (uncoveredBegin < seqLength):
 		uncoveredRange = str(uncoveredBegin)+'-'+str(seqLength)
 		uncoveredRanges.append(uncoveredRange)
