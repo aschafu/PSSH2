@@ -457,7 +457,7 @@ def evaluateSingle(checksum, cleanup):
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
-	missingRanges = findMissingRanges(seqLength, pdbChainRanges)
+	missingRanges = findLongestMissingRange(seqLength, pdbChainRanges)
 	while (len(missingRanges) >=1):
 		searchRange = missingRanges[0].replace('-',':')
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
