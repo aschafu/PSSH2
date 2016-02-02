@@ -387,6 +387,7 @@ def findLongestMissingRange(seqLength, coveredRanges):
 			uncoveredEnd = coveredBegin - 1
 			uncoveredRange = str(uncoveredBegin)+'-'+str(uncoveredEnd)
 			uncoveredRanges.append(uncoveredRange)
+			lastCoveredRangeBegin = coveredBegin
 		elif (coveredEnd > lastCoveredRangeEnd):
 			# there cannot be a gap (otherwise we wouldn't be here)
 			# but we can update the end of the covered range
