@@ -360,10 +360,26 @@ def getRangeBegin(range):
 	begin, end = range.split("-")
 	return begin
 
+def getRangeEnd(range):
+	begin, end = range.split("-")
+	return end
+
+def getRangeLength(range):
+	begin, end = range.split("-")
+	return int(end) - int(begin) + 1
+
 def findLongestMissingRange(seqLength, coveredRanges):
 	"""find which pieces of the (seqres) sequence are not covered yet"""
 	
 	sortedCoveredRanges = sorted(coveredRanges, key=getRangeBegin)
+	uncoveredRanges = []
+	uncoveredBegin = 1
+	for range in sortedCoveredRanges:
+		uncoveredEnd = int(getRangeBegin(range)) - 1
+		uncoveredRange = str(uncoveredBegin)+'-'+str(uncoveredEnd)
+		uncoveredRanges.append(uncoveredRange)
+		uncoveredBegin = int(getRangeEnd(range)) + 1
+	
 	
 	
 def evaluateSingle(checksum, cleanup):
