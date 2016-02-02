@@ -38,6 +38,7 @@ maxclScript = '/mnt/project/aliqeval/maxcluster'
 modeldir = '/mnt/project/psshcache/models'
 
 maxTemplate = 8
+toleratedMissingRangeLength = 5 
 test = False
 
 cathSeparator = '.'
