@@ -484,11 +484,13 @@ def evaluateSingle(checksum, cleanup):
 	pdbChainRanges = rangesLine.strip().split(';')
 	for i in range(len(pdbChainCodes)):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
+	print 'found best pdb Codes for exprimental structure: ' + codesLine + ' covering ' + 'pdbChainRanges'
 	
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
 	longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
+	print 'longest missing range is ' + longestMissingRange
 	while (getRangeLength(longestMissingRange) > toleratedMissingRangeLength):
 		searchRange = longestMissingRange.replace('-',':')
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
