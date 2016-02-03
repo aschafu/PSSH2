@@ -223,7 +223,7 @@ if ($rangeOutput){
 	print join(";", @ranges), "\n";
 }
 
-sub sortByAliLength {
+sub sortByAliMatchLength {
     $aliMatchLength{$b} <=> $aliMatchLength{$a};
 }
 
