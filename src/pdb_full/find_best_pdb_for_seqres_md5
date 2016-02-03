@@ -123,7 +123,7 @@ foreach my $line(@alignLines){
 		}
 		else {
 			$length++; 
-			$aliEnd = $seqres
+			$aliEnd = $seqres;
 			if ($range){
 				if ($rBegin <= $seqres && $seqres <= $rEnd){
 					$matchLength++;
@@ -152,7 +152,7 @@ foreach my $line(@alignLines){
 
 # find longest alignment(s)
 # accept everything that is at least x% of the longest alignment
-my @sortedIds = sort sortByAliLength (keys %aliMatchLength);
+my @sortedIds = sort sortByAliMatchLength (keys %aliMatchLength);
 #print "sorted Ids: ", join (',', @sortedIds), "\n";
 my $maxAliLength = $aliMatchLength{$sortedIds[0]};
 #print $maxAliLength, "\n";
