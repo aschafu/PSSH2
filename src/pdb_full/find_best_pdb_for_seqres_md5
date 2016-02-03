@@ -152,7 +152,7 @@ foreach my $line(@alignLines){
 
 # find longest alignment(s)
 # accept everything that is at least x% of the longest alignment
-my @sortedIds = sort sortByAliLength (keys %aliLength);
+my @sortedIds = sort sortByAliLength (keys %aliMatchLength);
 #print "sorted Ids: ", join (',', @sortedIds), "\n";
 my $maxAliLength = $aliMatchLength{$sortedIds[0]};
 #print $maxAliLength, "\n";
