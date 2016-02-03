@@ -262,7 +262,7 @@ def parse_maxclusterResult(result, prefix='', status=''):
 			prefix+'grmsd': float(grmsd),	# Global RMSD using the MaxSub superposition
 			prefix+'tm': float(tm)			# TM-score
 		}
-	elif (not "timeOut" in status and not "failed" in status){
+	elif (not "timeOut" in status and not "failed" in status):
 		structureStatistics = {
 			prefix+'validResult': True,
 			prefix+'nReferences': 1,
@@ -273,8 +273,7 @@ def parse_maxclusterResult(result, prefix='', status=''):
 			prefix+'len': 0,		# Number of matched pairs (all equivalent residues)
 			prefix+'grmsd': 99.9,	# Global RMSD using the MaxSub superposition
 			prefix+'tm': 0.0		# TM-score			
-		}
-	}
+		}	
 	else:
 		structureStatistics = {
 			prefix+'validResult': False
