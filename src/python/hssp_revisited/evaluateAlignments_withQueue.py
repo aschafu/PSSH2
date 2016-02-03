@@ -478,9 +478,9 @@ def evaluateSingle(checksum, cleanup):
 		print err
 	print out
 	lines = out.split('\n')
-	codes, ranges, rest = out.split('\n', 2)
-	pdbChainCodes = codes.strip().split(';') 
-	pdbChainRanges = ranges.strip.split(';')
+	codesLine, rangesLine, rest = out.split('\n', 2)
+	pdbChainCodes = codesLine.strip().split(';') 
+	pdbChainRanges = rangesLine.strip.split(';')
 	for i in range(len(pdbChainCodes)):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
 	
