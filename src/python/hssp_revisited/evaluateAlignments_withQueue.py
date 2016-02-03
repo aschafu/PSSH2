@@ -774,6 +774,7 @@ def cleanupConfVal(confString):
 	return confString
 	
 def getConnection():
+	global dbConnection, submitConnection
 	while (submitConnection is None or dbConnection is None):
 		try:
 			dbConnection = SequenceStructureDatabase.DB_Connection()
