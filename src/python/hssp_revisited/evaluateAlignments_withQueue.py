@@ -779,7 +779,7 @@ def getConnection():
 			print e
 			print "--- Waiting for connection ---"
 			wait(10)
-		return submitConnection, dbConnection
+	return submitConnection, dbConnection
 
 	
 def main(argv):
