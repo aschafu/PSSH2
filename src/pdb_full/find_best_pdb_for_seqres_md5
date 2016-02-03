@@ -116,7 +116,7 @@ foreach my $line(@alignLines){
 						$overlapEnd = $rEnd;
 					}
 				}
-				if ($overlapStart && ($overlapStart >= $overlapEnd){
+				if ($overlapStart && ($overlapStart >= $overlapEnd)){
 					$matchLength += ($overlapStart-$overlapEnd+1);
 				}
 			}
