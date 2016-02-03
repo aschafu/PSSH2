@@ -28,11 +28,7 @@ AUTHOR
 
 # if there are no arguments or -h, then print man entry
 if (@ARGV<1) {die ($usage);}
-<<<<<<< .merge_file_Oj1eTM
 our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput,$range,$rBegin,$rEnd);
-=======
-our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput);
->>>>>>> .merge_file_zoApjb
 $help = 0;
 $multi = 1;  # how many structure we return 
 $rangeOutput = 0;
