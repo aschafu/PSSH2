@@ -825,7 +825,7 @@ def main(argv):
 	global submitConnection, dbConnection
 	submitConnection = None
 	dbConnection = None
-	submitConnection, dbConnection = getConnection()
+	getConnection()
 	
 	checksum = args.md5
 	list = args.list
