@@ -477,7 +477,7 @@ def evaluateSingle(checksum, cleanup):
 	out, err = bp.communicate()
 	if err:
 		print err
-	print out
+#	print out
 	lines = out.split('\n')
 	codesLine, rangesLine, rest = out.split('\n', 2)
 	pdbChainCodes = codesLine.strip().split(';') 
