@@ -552,7 +552,7 @@ def evaluateSingle(checksum, cleanup):
 				else: 
 					out, err = p.communicate()
 					if p.returncode != 0:
-					maxclStatus = 'failed'
+						maxclStatus = 'failed'
 #				try: 
 #					out, err = p.communicate(timeout=60)
 #				except subprocess.TimeoutExpired:
