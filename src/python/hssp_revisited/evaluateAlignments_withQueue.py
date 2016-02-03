@@ -44,6 +44,7 @@ test = False
 
 submitConnection = None
 dbConnection = None
+pdbChainCoveredRange = {}
 
 cathSeparator = '.'
 
@@ -410,7 +411,7 @@ def findLongestMissingRange(seqLength, coveredRanges):
 	if (len(uncoveredRanges) < 1):
 		sortedUncoveredRanges = [ '0-0' ]
 	else:
-		sortedUncoveredRanges = sort(uncoveredRanges, key=getRangeLength)
+		sortedUncoveredRanges = sorted(uncoveredRanges, key=getRangeLength)
 	return sortedUncoveredRanges[0] 
 	
 	
@@ -480,7 +481,7 @@ def evaluateSingle(checksum, cleanup):
 	lines = out.split('\n')
 	codesLine, rangesLine, rest = out.split('\n', 2)
 	pdbChainCodes = codesLine.strip().split(';') 
-	pdbChainRanges = rangesLine.strip.split(';')
+	pdbChainRanges = rangesLine.strip().split(';')
 	for i in range(len(pdbChainCodes)):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
 	
@@ -494,9 +495,9 @@ def evaluateSingle(checksum, cleanup):
 		out, err = bp.communicate()
 		if err:
 			print err
-		codes, ranges = out.split('\n')
-		newPdbChainCodes = codes.strip().split(';') 
-		newPdbChainRanges = ranges.strip.split(';')
+		codesLine, rangesLine, rest = out.split('\n', 2)
+		newPdbChainCodes = codesLine.strip().split(';') 
+		newPdbChainRanges = rangesLine.strip().split(';')
 		# if we didn't find anything we  have to remove this range from the search ranges
 		# otherwise just remove the piece we found
 		if (newPdbChainCodes[0] == '0xxx'):
@@ -538,7 +539,7 @@ def evaluateSingle(checksum, cleanup):
 		
 		for chain in pdbChainCodes:
 			
-			if isOverlapping(modelRange, pdbChainCoveredRange):
+			if isOverlapping(modelRange, pdbChainCoveredRange[chain]):
 			
 				print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
 			
