@@ -42,6 +42,9 @@ toleratedMissingRangeLength = 5
 minimalOverlapLength = 10
 test = False
 
+submitConnection = None
+dbConnection = None
+
 cathSeparator = '.'
 
 def check_timeout(process, timeout=60):
