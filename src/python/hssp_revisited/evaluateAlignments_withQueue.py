@@ -478,10 +478,7 @@ def evaluateSingle(checksum, cleanup):
 		print err
 	print out
 	lines = out.split('\n')
-	if (len(lines) != 2):
-		print "too many lines"
-	else:
-		codes, ranges = out.split('\n')
+	codes, ranges, rest = out.split('\n', 2)
 	pdbChainCodes = codes.strip().split(';') 
 	pdbChainRanges = ranges.strip.split(';')
 	for i in range(len(pdbChainCodes)):
