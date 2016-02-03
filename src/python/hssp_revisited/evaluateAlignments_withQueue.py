@@ -771,15 +771,15 @@ def cleanupConfVal(confString):
 	return confString
 	
 def getConnection():
-	while (submitConnection is None or dbConnection is None)
-	try:
-		dbConnection = SequenceStructureDatabase.DB_Connection()
-		submitConnection = dbConnection.getConnection('pssh2','updating')
-	except Exception as e:
-		print e
-		print "--- Waiting for connection ---"
-		wait(10)
-	return submitConnection, dbConnection
+	while (submitConnection is None or dbConnection is None):
+		try:
+			dbConnection = SequenceStructureDatabase.DB_Connection()
+			submitConnection = dbConnection.getConnection('pssh2','updating')
+		except Exception as e:
+			print e
+			print "--- Waiting for connection ---"
+			wait(10)
+		return submitConnection, dbConnection
 
 	
 def main(argv):
