@@ -60,7 +60,6 @@ def check_timeout(process, timeout=60):
 				os.kill(process.pid, signal.SIGKILL)
 				os.waitpid(-1, os.WNOHANG)
 				killed = True
-				
 	return killed
 
 
