@@ -56,9 +56,11 @@ def check_timeout(process, timeout=60):
 		time.sleep(1)
 		now = datetime.datetime.now()
 		if (now - start).seconds> timeout:
-			os.kill(process.pid, signal.SIGKILL)
-			os.waitpid(-1, os.WNOHANG)
-			killed = True
+			try: 
+				os.kill(process.pid, signal.SIGKILL)
+				os.waitpid(-1, os.WNOHANG)
+				killed = True
+				
 	return killed
 
 
