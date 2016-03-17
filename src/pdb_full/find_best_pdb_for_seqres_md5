@@ -153,9 +153,9 @@ foreach my $line(@alignLines){
 # find longest alignment(s)
 # accept everything that is at least x% of the longest alignment
 my @sortedIds = sort sortByAliMatchLength (keys %aliMatchLength);
-#print "sorted Ids: ", join (',', @sortedIds), "\n";
+print "sorted Ids: ", join (',', @sortedIds), "\n";
 my $maxAliLength = $aliMatchLength{$sortedIds[0]};
-#print $maxAliLength, "\n";
+print $maxAliLength, "\n";
 my @bestIds;
 BEST: foreach my $id(@sortedIds){
     if ( $maxAliLength > 0 and $aliLength{$id} >= $maxAliLength*$acceptRatio){
@@ -163,7 +163,7 @@ BEST: foreach my $id(@sortedIds){
     }
     else {last BEST};
 }
-#print "best Ids: ", join (',', @bestIds), "\n";
+print "best Ids: ", join (',', @bestIds), "\n";
 
 # if there is more than we need with the longest alignment length
 # take the next steps:
