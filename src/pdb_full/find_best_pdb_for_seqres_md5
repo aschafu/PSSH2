@@ -158,7 +158,7 @@ my $maxAliLength = $aliMatchLength{$sortedIds[0]};
 #print $maxAliLength, "\n";
 my @bestIds;
 BEST: foreach my $id(@sortedIds){
-    if ($aliLength{$id} >= $maxAliLength*$acceptRatio){
+    if ( $maxAliLength > 0 and $aliLength{$id} >= $maxAliLength*$acceptRatio){
 		push @bestIds, $id;
     }
     else {last BEST};
