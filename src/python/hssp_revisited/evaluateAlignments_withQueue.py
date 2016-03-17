@@ -508,6 +508,7 @@ def evaluateSingle(checksum, cleanup):
 		# otherwise just remove the piece we found
 		if (newPdbChainCodes[0] == '0xxx'):
 			pdbChainRanges.append(searchRange)
+			print '--- no structures found for' + searchRange
 		else :
 			for i in range(len(newPdbChainCodes)):
 				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
