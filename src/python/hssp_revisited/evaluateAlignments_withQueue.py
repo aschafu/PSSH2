@@ -390,7 +390,7 @@ def isOverlapping(rangeA, rangeB):
 def findLongestMissingRange(seqLength, coveredRanges):
 	"""find which pieces of the (seqres) sequence are not covered yet"""
 	
-	print '---- will sort covered Ranges:' + ', '.join(coveredRanges)
+#	print '---- will sort covered Ranges:' + ', '.join(coveredRanges)
 	sortedCoveredRanges = sorted(coveredRanges, key=getRangeBegin)
 	uncoveredRanges = []
 	uncoveredBegin = 1
