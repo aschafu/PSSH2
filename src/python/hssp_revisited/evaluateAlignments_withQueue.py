@@ -335,7 +335,7 @@ def getCathInfo(chain):
 				if not cathCode in cathCodes:
 					cathCodes.append(cathCode)
 	
-	print "cath code(s) for " + chain + ":  " + ', '.join(cathCodes)
+	print "---- cath code(s) for " + chain + ":  " + ', '.join(cathCodes)
 	return cathCodes
 
 	
