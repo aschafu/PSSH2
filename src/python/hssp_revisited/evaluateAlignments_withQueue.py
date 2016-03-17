@@ -367,7 +367,7 @@ def getCathSimilarity(listA, listB):
 	return overallSimilarity
 
 def getRangeBegin(range):
-	print '------ getRangeBegin: got input ' + range
+#	print '------ getRangeBegin: got input ' + range
 	begin, end = range.split("-")
 	return begin
 
