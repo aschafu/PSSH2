@@ -507,7 +507,7 @@ def evaluateSingle(checksum, cleanup):
 		codesLine, rangesLine, rest = out.split('\n', 2)
 		newPdbChainCodes = codesLine.strip().split(';') 
 		newPdbChainRanges = rangesLine.strip().split(';')
-		print '--- queried for ' + searchRange + ' got raw output: ' + out 
+#		print '--- queried for ' + searchRange + ' got raw output: ' + out 
 		# if we didn't find anything we  have to remove this range from the search ranges
 		# otherwise just remove the piece we found
 		if (newPdbChainCodes[0] == '0xxx'):
