@@ -101,6 +101,10 @@ def process_hhr(path, workPath, pdbhhrfile):
 	
 	modelcount = int(float(takenline.split(' ')[1]))
 	print('-- '+str(modelcount)+' matching proteins found!')
+	if test:
+		if modelcount > 5:
+			print 'modelcount is big: ', modelcount, ' set it to 5'
+			modelcount = 5
 	
 	modelStatistics = []
 	# make an empty entry at 0 (so the index is the same as the model number)
