@@ -488,7 +488,7 @@ def evaluateSingle(checksum, cleanup):
 	pdbChainRanges = rangesLine.strip().split(';')
 	for i in range(len(pdbChainCodes)):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
-	print '-- found best pdb Codes for exprimental structure: ' + codesLine + ' covering ' + ' , '.join(pdbChainRanges)
+	print '-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)
 	
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
@@ -513,7 +513,7 @@ def evaluateSingle(checksum, cleanup):
 				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
 			pdbChainCodes.append(newPdbChainCodes)
 			pdbChainRanges.append(newPdbChainRanges)
-			print '--- adding pdb structures ' + newPdbChainCodes + ' covering ' +  ' , '.join(newPdbChainRanges)
+			print '--- adding pdb structures ' + ' , '.join(newPdbChainCodes) + ' covering ' +  ' , '.join(newPdbChainRanges)
 
 		longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
 		print '    longest missing range now is ' + longestMissingRange
