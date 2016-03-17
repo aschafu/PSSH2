@@ -507,7 +507,7 @@ def evaluateSingle(checksum, cleanup):
 		# if we didn't find anything we  have to remove this range from the search ranges
 		# otherwise just remove the piece we found
 		if (newPdbChainCodes[0] == '0xxx'):
-			pdbChainRanges.update(searchRange)
+			pdbChainRanges.append(searchRange)
 		else :
 			for i in range(len(newPdbChainCodes)):
 				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
