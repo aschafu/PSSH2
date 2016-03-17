@@ -157,6 +157,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			modelStatistics[model]['match md5'] = checksum
 			# work out which piece the structure should cover
 			templateRange = modelStatistics[model]['t_range'].replace('-',':')
+			print '--- find templates for ' + checksum + ' range ' + templateRange
 			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
