@@ -513,7 +513,7 @@ def evaluateSingle(checksum, cleanup):
 				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
 			pdbChainCodes.append(newPdbChainCodes)
 			pdbChainRanges.append(newPdbChainRanges)
-			print '--- adding pdb structures ' + newPdbChainCodes + ' covering ' +  newPdbChainRanges
+			print '--- adding pdb structures ' + newPdbChainCodes + ' covering ' +  ' , '.join(newPdbChainRanges)
 
 		longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
 		print '    longest missing range now is ' + longestMissingRange
