@@ -82,4 +82,4 @@ do
 	then
 		DB.pssh2_local "INSERT INTO $table(MD5_Hash,Length)  SELECT MD5_Hash,Length FROM aquaria.PDB_chain where MD5_Hash=$md5"
 	fi
-done
+done < $md5ListFile
