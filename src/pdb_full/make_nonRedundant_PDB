@@ -1,0 +1,71 @@
+#!/bin/bash
+
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+percentage=90 
+debug=0
+
+# by default we want to use the system installation
+# but if local_paths is set we have the option to change the path and instead use the local variants
+if [ $local_paths ]
+then
+	PATH=$local_paths:$PATH
+	export PATH
+	echo "Using path: $PATH"
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  make_nonRedundant_PDB - generate a table that contains only PDB chains up to p % sequence identity
+SYNOPSIS
+  make_nonRedundant_PDB <-t tableName> <-m file_of_md5s> [-p percentage] [-h] 
+DESCRIPTION
+  iterate over the length-sorted sequences:
+  a. check whether the new sequence (with md5hash myHash) is similar to any other sequence selected so far, 
+  b. if the sequence is new, add it to tableName
+OPTIONS
+  -h          The option -h displays help and exits.
+  -t 		  table to store output in (must exist!)
+  -m          list of md5 sums to process
+  -p          max percentage seq.identity to allow, default $percentage
+  -D		  debug (be verbose)
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
+
+
+while getopts :t:l:p:Dh opt
+do
+	case $opt in
+	t) table=$OPTARG;;
+	m) md5ListFile=$OPTARG;;
+	p) percentage=$OPTARG;;
+	D) debug=1;; 
+	h) usage; exit;;
+	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
+	esac
+done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+if [ ! -s $md5ListFile ]
+then
+	echo The file of md5 numbers to iterate over does not exist or is empty
+	exit 1
+fi
+
