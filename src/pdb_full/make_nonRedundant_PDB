@@ -77,4 +77,4 @@ do
 	then
 		break
 	fi
-	similar=`DB.pssh2_local "select pdb_chain_hash from pssh2_current where protein_sequence_hash=$md5 and Identity_Score > $percentage and  pdb_chain_hash not in (select md5 from $table)"`
+	similar=`DB.pssh2_local "select pdb_chain_hash from pssh2_current where protein_sequence_hash=$md5 and Identity_Score > $percentage and pdb_chain_hash not in (select md5 from $table)"`
