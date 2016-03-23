@@ -77,8 +77,9 @@ do
 	then
 		break
 	fi
-	similar=`DB.pssh2_local "select pdb_chain_hash from pssh2_current where protein_sequence_hash=$md5 and Identity_Score > $percentage and pdb_chain_hash  and pdb_chain_hash in (select md5 from $table)"`
+	similar=`DB.pssh2_local "select pdb_chain_hash from pssh2_current where protein_sequence_hash=$md5 and Identity_Score > $percentage and pdb_chain_hash  and pdb_chain_hash in (select MD5_Hash from $table)"`
 	if [ -z $similar ]
 	then
-		
+		DB.pssh2_local "INSERT INTO $table(MD5_Hash,Length)  SELECT MD5_Hash,Length FROM aquaria.PDB_chain"
 	fi
+done
