@@ -69,3 +69,11 @@ then
 	exit 1
 fi
 
+## loop over all md5s 
+# submit further processing to the queue  
+while read md5
+do
+	if [ -z "${md5// }" ]
+	then
+		break
+	fi
