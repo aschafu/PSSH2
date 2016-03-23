@@ -45,7 +45,7 @@ EOT
 exit 1
 }
 
-
+md5ListFile=''
 while getopts :t:l:p:Dh opt
 do
 	case $opt in
@@ -82,4 +82,5 @@ do
 	then
 		DB.pssh2_local "INSERT INTO $table(MD5_Hash,Length)  SELECT MD5_Hash,Length FROM aquaria.PDB_chain where MD5_Hash=$md5"
 	fi
+
 done < $md5ListFile
