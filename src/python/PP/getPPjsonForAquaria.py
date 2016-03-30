@@ -106,7 +106,7 @@ def queryPP(sequences):
 	id= str(time.time()).split('.')[0] #catch time
 	Seq_Rercord = SeqRecord(Seq(sequences, generic_protein),
 					 id=id,
-					 description=" ")
+					 description=id+" submission")
 	file_name = id+".fasta"
 	print Seq_Rercord
 	full_file_name = file_store_path_rost+'/'+ file_name
