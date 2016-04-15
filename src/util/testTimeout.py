@@ -19,10 +19,10 @@ import warnings
 
 
 def main(argv):
-	p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	if check_timeout(p):
+	p = subprocess.Popen(['tail', '-f', 'test.dat'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	if check_timeout(p, 2):
 		out = ''
-		err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum + ' -r ' + templateRange
+		err = 'Process timed out! '
 	else: 
 		out, err = p.communicate()
 #		try: 
@@ -46,8 +46,10 @@ def check_timeout(process, timeout=60):
 				os.kill(process.pid, signal.SIGKILL)
 				os.waitpid(-1, os.WNOHANG)
 				killed = True
+				print 'killed timed out process'
 			except:
 				e = sys.exc_info()[0]
+				print 'killing timed out process went wrong: '
 				print e
 	return killed
 
