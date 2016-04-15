@@ -1,0 +1,57 @@
+#!/usr/bin/python
+
+# new version of pythonscript_refactored using hhlib tools to process the structure file
+import os, sys, io, argparse
+import signal
+import errno
+import gzip
+import csv
+import subprocess
+import logging
+import time
+import datetime
+import ConfigParser
+from StringIO import StringIO
+from DatabaseTools import *
+import mysql.connector
+from mysql.connector import errorcode
+import warnings
+
+
+def main(argv):
+	p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	if check_timeout(p):
+		out = ''
+		err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum + ' -r ' + templateRange
+	else: 
+		out, err = p.communicate()
+#		try: 
+#			out, err = p.communicate(timeout=60)
+#				except subprocess.TimeoutExpired:
+#				p.kill()
+#				out, err = p.communicate()
+	if err:
+		print err
+
+
+def check_timeout(process, timeout=60):
+	""" check whether a process has timed out, if yes kill it"""
+	killed = False
+	start = datetime.datetime.now()
+	while process.poll() is None:
+		time.sleep(1)
+		now = datetime.datetime.now()
+		if (now - start).seconds> timeout:
+			try: 
+				os.kill(process.pid, signal.SIGKILL)
+				os.waitpid(-1, os.WNOHANG)
+				killed = True
+			except:
+				e = sys.exc_info()[0]
+				print e
+	return killed
+
+
+if __name__ == "__main__":
+#	print "Hello World"	
+	main(sys.argv[1:])
