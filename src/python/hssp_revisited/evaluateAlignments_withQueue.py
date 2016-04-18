@@ -148,6 +148,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 	for lineCount in range (9+modelcount, len(linelist)-1):
 		if ('No ' in linelist[lineCount]):
 			model = int(linelist[lineCount][3:].strip())
+			if model > modelcount:
+			# in test mode we want to end this prematurely!
+				break 
 			pdbChainCode = ''
 		elif ('Probab' in linelist[lineCount]):
 			# Probab=99.96  E-value=5.5e-35  Score=178.47  Aligned_cols=64  Identities=100%  Similarity=1.384  Sum_probs=63.4
