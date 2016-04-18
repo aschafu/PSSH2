@@ -42,11 +42,15 @@ def check_timeout(process, timeout=60):
 		time.sleep(1)
 		now = datetime.datetime.now()
 		if (now - start).seconds> timeout:
+			print 'timed out -> trying to kill!'
 			try: 
 				os.kill(process.pid, signal.SIGKILL)
-				os.waitpid(-1, os.WNOHANG)
-				killed = True
-				print 'killed timed out process'
+				killedpid, stat = os.waitpid(pid, os.WNOHANG)
+				if killedpid == 0:
+					print 'not killed yet!'
+				else:
+					killed = True
+					print 'killed timed out process'
 			except:
 				e = sys.exc_info()[0]
 				print 'killing timed out process went wrong: '
