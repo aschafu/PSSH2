@@ -148,6 +148,9 @@ def process_hhr(path, workPath, pdbhhrfile):
 	for lineCount in range (9+modelcount, len(linelist)-1):
 		if ('No ' in linelist[lineCount]):
 			model = int(linelist[lineCount][3:].strip())
+			if model > modelcount:
+			# in test mode we want to end this prematurely!
+				break 
 			pdbChainCode = ''
 		elif ('Probab' in linelist[lineCount]):
 			# Probab=99.96  E-value=5.5e-35  Score=178.47  Aligned_cols=64  Identities=100%  Similarity=1.384  Sum_probs=63.4
@@ -162,6 +165,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 		elif ('>'  in linelist[lineCount]):
 			# work out the pdb structures for this md5 sum and edit the hhr result file accordingly
 			# only take one pdb file for each found md5!
+#			print str(model) + ' ' + linelist[lineCount]
 			checksum = linelist[lineCount].strip().replace('>','')
 			modelStatistics[model]['match md5'] = checksum
 			# work out which piece the structure should cover
