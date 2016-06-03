@@ -1,0 +1,27 @@
+Source: pssh2
+Section: unknown
+Priority: extra
+Maintainer: Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.3
+Homepage: www.rostlab.org
+#Vcs-Git: git://git.debian.org/collab-maint/pssh2.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/pssh2.git;a=summary
+
+Package: pssh2
+Architecture: any
+Depends: bash, perl, ruby, hhsuite
+Description: set of scripts for mapping protein sequence to structure
+ pssh2 creates sequence-to-structure alignments based on
+ hhblits profiles built for the query sequence.
+ pssh2 consists of scripts to run the hhblits queries 
+ and parse the output. 
+ You also need the pdb_full database downloaded from rostlab.org:
+ ftp://rostlab.org/pssh2/pdb_full/
+ .
+ This package provides the script files needed to run within
+ PredictProtein.
+ They are all called in the correct order in pp_pssh2.
+ It also contains scripts to run independent of PredictProtein.
+ It assumes you have a mysql database to store information.
+ The configuration information is kept in pssh2.conf

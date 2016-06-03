@@ -1,0 +1,14 @@
+pssh2 (0.1+nmu1) UNRELEASED; urgency=low
+
+   * Initial release after overhaul  (Closes: #000)
+   * Debugged conf_file, option passing
+   * Added multiple table query to get_fasta_for_md5, updated conf_file
+   * Reworked config file searching mechanism
+   * Added big sequence capabilities
+  * Added pssh2_aws for running on AWS
+  * Added code for creating pdb_full files
+  * Debugged conf_file further: better usage of local conf files
+  * Reworked pdb_full generation: script now generically makes hhblits databases
+  * Added option to specify a conf_file as an environment variable 
+
+ -- Andrea Schafferhans <andrea@rostlab.org>  Fri, 3 Jun 2016 10:22:16 +0200

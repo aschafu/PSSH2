@@ -1,0 +1,15 @@
+build_hhblits_profile usr/bin/
+scan_structures_hhblits usr/bin/
+fasta_to_md5 usr/bin/
+parse_hhr_for_pssh2 usr/bin/
+pssh2_seq usr/bin/
+pssh2_pp usr/bin/
+pssh2_multi_md5 usr/bin/
+pssh2_aws usr/bin
+get_fasta_for_md5 usr/bin/
+DB.pssh2_local usr/bin/
+DB.aquaria_local usr/bin/
+make_new_pdb_full usr/bin/
+build_hhblits_structure_profile usr/bin/
+find_best_pdb_for_seqres_md5 usr/bin/
+pssh2.conf etc/
