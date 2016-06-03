@@ -1,27 +1,36 @@
 #!/bin/bash
 
-echo "copying ..."
+d=$(dirname $0)/..  
 
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/build_hhblits_profile pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/scan_structures_hhblits pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/fasta_to_md5 pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/parse_hhr_for_pssh2 pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_seq pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_pp pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_multi_md5 pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2_aws pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pssh2/pssh2.conf pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.pssh2_local pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/util/DB.aquaria_local pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/util/get_fasta_for_md5 pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/util/find_cache_path pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pdb_full/make_new_hhblits_db pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pdb_full/build_hhblits_structure_profile pssh2-package/
-cp -vp /mnt/project/pssh/pssh2_project/src/pdb_full/find_best_pdb_for_seqres_md5 pssh2-package/
+set -e
+
+echo "copying ..."
+pssh2dest=$1
+if [ -z "$pssh2dest" -o ! -d "$pssh2dest" ]; then
+	echo "E: This script expects the destination directory to exist"
+	exit
+fi
+
+cp -vp $d/pssh2/build_hhblits_profile $pssh2dest
+cp -vp $d/pssh2/scan_structures_hhblits $pssh2dest
+cp -vp $d/pssh2/fasta_to_md5 $pssh2dest
+cp -vp $d/pssh2/parse_hhr_for_pssh2 $pssh2dest
+cp -vp $d/pssh2/pssh2_seq $pssh2dest
+cp -vp $d/pssh2/pssh2_pp $pssh2dest
+cp -vp $d/pssh2/pssh2_multi_md5 $pssh2dest
+cp -vp $d/pssh2/pssh2_aws $pssh2dest
+cp -vp $d/pssh2/pssh2.conf $pssh2dest
+cp -vp $d/util/DB.pssh2_local $pssh2dest
+cp -vp $d/util/DB.aquaria_local $pssh2dest
+cp -vp $d/util/get_fasta_for_md5 $pssh2dest
+cp -vp $d/util/find_cache_path $pssh2dest
+cp -vp $d/pdb_full/make_new_hhblits_db $pssh2dest
+cp -vp $d/pdb_full/build_hhblits_structure_profile $pssh2dest
+cp -vp $d/pdb_full/find_best_pdb_for_seqres_md5 $pssh2dest
 
 echo "now: "
-#echo "consider redoing 'pssh2-package/pp_pssh2 -h | ~/software/txt2man > pssh2-package/debian/manpage.1' if that info has changed"
-echo "consider redoing 'pssh2-package/pssh2_multi_md5 -h | ~/software/txt2man > pssh2-package/debian/manpage.1' if that info has changed"
-echo "then 'cd pssh2-package/'"
+#echo "consider redoing '$pssh2dest/pp_pssh2 -h | ~/software/txt2man > $pssh2dest/debian/manpage.1' if that info has changed"
+echo "consider redoing '$pssh2dest/pssh2_multi_md5 -h | ~/software/txt2man > $pssh2dest/debian/manpage.1' if that info has changed"
+echo "then 'cd $pssh2dest/'"
 echo "consider 'dch' to update the changelog before building the package "
 echo "finally 'dpkg-buildpackage' to make the package ! "
