@@ -1,4 +1,54 @@
 #!/bin/bash
 ##db interface (stores the access parameters for the pssh2_local database)
 
-echo "$* ;"|mysql -u update_d --password=Aquaria4ever! -haquaria-mysql -Daquaria --local-infile=1 
+if [ -z "$conf_file" ]; then
+        conf_file='/etc/pssh2.conf'
+fi
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+        source $conf_file
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  DB.aquaria_local - submit MySQL query to the local copy of the pssh2 database
+SYNOPSIS
+  DB.aquaria_local "your query in SQL syntax"
+DESCRIPTION
+  gets the login options from the configuration 
+  (/etc/pssh2.conf or the one currently defined in the environment variable conf_file), 
+  assembles a mysql query and executes it.
+OPTIONS
+  -h          The option -h displays help and exits.
+  -D 		  sets -x so the commands are echoed to STDOUT
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
+
+while getopts "hD" option;
+do
+	case $option in
+		h)
+		  usage
+	  	  exit
+	      ;;
+	    D)
+	      set -x
+	      ;;
+	esac
+done
+shift $((OPTIND-1))
+
+if [ -z "${aquaria_user}" ]  || [ -z "${aquaria_password}" ] || [ -z "${aquaria_host}" ] || [ -z "${aquaria_name}" ] 
+then
+	echo "parameters undefined -- check $conf_file!"
+else
+#echo "$* ;"|mysql -u update_d --password=Aquaria4ever! -haquaria-mysql -Daquaria --local-infile=1 
+	echo "$* ;"|mysql -u $aquaria_user --password=$aquaria_password -h$aquaria_host -D$aquaria_name --local-infile=1 
+fi
