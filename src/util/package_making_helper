@@ -1,6 +1,6 @@
 #!/bin/bash
 
-d=$(dirname $0)/..  
+d=$(dirname $0)/..
 
 set -e
 
@@ -11,7 +11,7 @@ if [ -z "$pssh2dest" -o ! -d "$pssh2dest" ]; then
 	exit
 fi
 
-cp -vp $d/README $pssh2dest
+cp -vp $d/../README $pssh2dest
 cp -vp $d/pssh2/build_hhblits_profile $pssh2dest
 cp -vp $d/pssh2/scan_structures_hhblits $pssh2dest
 cp -vp $d/pssh2/fasta_to_md5 $pssh2dest
