@@ -28,13 +28,14 @@ cp -vp $d/util/find_cache_path $pssh2dest
 cp -vp $d/pdb_full/make_new_hhblits_db $pssh2dest
 cp -vp $d/pdb_full/build_hhblits_structure_profile $pssh2dest
 cp -vp $d/pdb_full/find_best_pdb_for_seqres_md5 $pssh2dest
+cp -vpr $d/debian-packaging/debian $pssh2dest
 
-mkdir -p $d/debian/man; 
+mkdir -p $pssh2dest/debian/man; 
 for f in $(find $d/ -executable -maxdepth 1 -a -type f | grep -v fasta_to_md5); do 
 	echo $f; 
-	dest=debian/man/$(basename $f).1; 
+	dest=$pssh2dest/debian/man/$(basename $f).1; 
 	$f -h | txt2man -t $f > $dest; 
-	echo $dest >> debian/manpages;
+	echo $dest >> $pssh2dest/debian/manpages;
 done
 
 echo "now: "
