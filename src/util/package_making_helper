@@ -31,7 +31,7 @@ cp -vp $d/pdb_full/find_best_pdb_for_seqres_md5 $pssh2dest
 cp -vpr $d/debian-packaging/debian $pssh2dest
 
 mkdir -p $pssh2dest/debian/man; 
-source $pssh2dest/pssh2/pssh2.conf 
+source $pssh2dest/pssh2.conf 
 for f in $(find $pssh2dest/ -maxdepth 1 -executable -a -type f | grep -v fasta_to_md5); do 
 	echo $f; 
 	dest=$pssh2dest/debian/man/$(basename $f).1; 
