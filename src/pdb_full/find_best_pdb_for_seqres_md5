@@ -232,6 +232,6 @@ sub sortByAliMatchLength {
 sub sortByLengthAndResolutionAndDate {
     $aliMatchLength{$b} <=> $aliMatchLength{$a} ||
     $resolution{$a} <=> $resolution{$b} ||
-    $published{$b} <=> $published{$a};
+    $published{$b} cmp $published{$a};
 }
 
