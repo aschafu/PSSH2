@@ -258,7 +258,7 @@ then
 		# remove the pdb id from the $pa3mfile_pdb 
 		sed 's/$pdb_id/$md5/g' < $pa3mfile_pdb > $pa3mfile
 		# clean up
-		rm $pa3mfile_pdb $a3mfile_pdb
+		rm -f $pa3mfile_pdb $a3mfile_pdb
 		gzip $a3mfile
 	else
 		fail=-1
@@ -293,7 +293,7 @@ then
 	fi	
 	if [ -s $logfile ]
 	then
-		rm $logfile
+		rm -f $logfile
 	fi
 	if [ -s $hhrfile ]
 	then
