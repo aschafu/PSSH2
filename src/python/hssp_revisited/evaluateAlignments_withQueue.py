@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # new version of pythonscript_refactored using hhlib tools to process the structure file
-import os, sys, io, argparse
+import os, sys, io, argparse, re
 import signal
 import errno
 import gzip
@@ -20,7 +20,7 @@ import warnings
 
 defaultConfig = """
 [pssh2Config]
-pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+pssh2_cache="/mnt/project/psshcache/result_cache/"
 HHLIB="/usr/share/hhsuite/"
 pdbhhrfile='query.uniprot20.pdb.full.hhr'
 seqfile='query.fasta'
@@ -125,14 +125,14 @@ def process_hhr(path, workPath, pdbhhrfile):
 #			parseLine = parseLine.replace('  ', ' ')
 		parseLinePieces = parseLine.split()
 #		print parseLine, parseLinePieces
-#		 Prob E-value P-value  Score    SS Cols
+#		 Prob E-value P-value  Score    SS Cols   Query HMM   Template HMM (Template Length)
 		statisticsValues['prob'] = parseLinePieces[0]
 		statisticsValues['eval'] = parseLinePieces[1]
 		statisticsValues['pval'] = parseLinePieces[2] 
 		statisticsValues['hhscore'] = parseLinePieces[3] 
 		statisticsValues['aligned_cols'] = parseLinePieces[5]
 		statisticsValues['q_range'] = parseLinePieces[6]
-		statisticsValues['t_range'] = parseLinePieces[7]
+		statisticsValues['t_range'] = re.sub('\(\d+\)', '', parseLinePieces[7])
 		modelStatistics.append(statisticsValues)
 
 	# write out the beginning into the unzipped hrr file
@@ -319,7 +319,7 @@ def getCathInfo(chain):
 	# if the return value doesn't contain the pdb code, we didn't get a result
 	if not pdbCode in out:
 		out = ''
-		# therefore check whether the mapping file has more info (mapping to a catch domain)
+		# therefore check whether the mapping file has more info (mapping to a cath domain)
 		grepp_mapping_p = subprocess.Popen(['grep', pdbCode+','+pdbChain, 'pdb_chain_cath_uniprot.csv'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		mapOut, mapErr = grepp_mapping_p.communicate()
 		# if we found the pdb code in the mapping file, we can now look for the cath code
