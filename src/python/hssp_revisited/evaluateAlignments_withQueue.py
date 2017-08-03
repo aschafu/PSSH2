@@ -171,26 +171,33 @@ def process_hhr(path, workPath, pdbhhrfile):
 			# work out which piece the structure should cover
 			templateRange = modelStatistics[model]['t_range'].replace('-',':')
 			print '--- find templates for ' + checksum + ' range ' + templateRange
-			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange, '-p -l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
-				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum + ' -r ' + templateRange
+				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum + ' -r ' + templateRange + ' -p -l'
 			else: 
 				out, err = p.communicate()
-#			try: 
-#				out, err = p.communicate(timeout=60)
-#			except subprocess.TimeoutExpired:
-#				p.kill()
-#				out, err = p.communicate()
 			if err:
 				print err
-			pdbChainCode = out.strip()
+#			if err:
+#				print err
+#			pdbChainCode = out.strip()
+			codesLine, lengthsLine, rangesLine, rest = out.split('\n', 3)
+			pdbChainCode = codesLine.strip()
+			pdbChainRange = rangesLine.strip()
+			pdbChainMatchLength = lengthsLine.strip()
+			modelStatistics[model]['pdbCode'] = pdbChainCode
+			modelStatistics[model]['pdbRange'] = pdbChainRange
+			modelStatistics[model]['pdbMatchLength'] = pdbChainMatchLength
+				
 			idLineOrig = 'T ' + checksum[:14]
 			nCodeLetters = len(pdbChainCode)
 			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
 			# also remember the cathCode(s) for this template
-			cathCodes = getCathInfo(pdbChainCode)
+#			cathCodes = getCathInfoTsv(pdbChainCode)
+			# TODO: get cath codes from REST with ranges
+			cathCodes = getCathInfoRest(pdbChainCode, pdbChainRange)
 			modelStatistics[model]['cathCodes'] = cathCodes
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount] = linelist[lineCount].replace(idLineOrig, idLineFake)
@@ -303,8 +310,8 @@ def parse_maxclusterResult(result, prefix='', status=''):
 	return structureStatistics
 				
 
-def getCathInfo(chain):
-	""" do a query to Aquaria to work out the Cath hierarchy code for this chain"""
+def getCathInfoTsv(chain):
+	""" do a query to the cath tsv file to work out the Cath hierarchy code for this chain"""
 
 	cathCodes = []
 	if '_' in chain:
@@ -351,6 +358,44 @@ def getCathInfo(chain):
 	print "---- cath code(s) for " + chain + ":  " + ', '.join(cathCodes)
 	return cathCodes
 
+
+def getCathInfoRest(chain, range):
+	""" do a query to EBI Rest interface to work out the Cath hierarchy code for this chain"""
+	
+	import requests
+	import json
+	baseURL = "https://www.ebi.ac.uk/pdbe/api/mappings/structural_domains/"
+	
+	cathCodes = []
+	if '_' in chain:
+		(pdbCode, pdbChain) = chain.split('_')
+	else:
+		pdbCode = chain
+		pdbChain = ''
+	
+	response=requests.get(baseURL+pdbCode)
+	try:	
+		jData = response.json()
+	except Exception as e:
+		# if the resonse didn't have json data, we give up
+		print e
+		return cathCodes
+
+	# loop over the cath IDs to find one that covers our region	
+	for cathId in jData[pdbCode]['CATH']:
+		for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
+			dChain=domain['chain_id']
+			if dChain == pdbChain:
+				dName=domain['domain']
+				dStart=domain['start']['residue_number']
+				dEnd=domain['end']['residue_number']
+				dRange=dStart+'-'+dEnd
+				if isOverlapping(range, dRange):
+					cathCodes.append(cathId)
+					break # (breaks inner loop, not outer)
+
+	return cathCodes
+					
 	
 def getCathSimilarity(listA, listB):
 	""" compare two lists of cath codes and return maxmium of agreements between the code pairs"""
@@ -359,12 +404,12 @@ def getCathSimilarity(listA, listB):
 	for codeA in listA:
 		piecesA = codeA.split(cathSeparator)
 		if len(piecesA) <9:
-			print 'something weird here: cath code looks unhealty: '+ codeA
+			print 'something weird here: cath code looks unhealthy: '+ codeA
 			continue
 		for codeB in listB:
 			piecesB = codeB.split(cathSeparator)
 			if len(piecesA) <9:
-				print 'something weird here: cath code looks unhealty: '+ codeB
+				print 'something weird here: cath code looks unhealthy: '+ codeB
 				continue
 			currentSimilarity = 0
 
@@ -493,6 +538,8 @@ def evaluateSingle(checksum, cleanup):
 		seqLength += len(line)
 
 	# work out the pdb structures for this md5 sum	
+	# also get cath info for each
+	cathCodes = []
 	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = bp.communicate()
 	if err:
@@ -504,13 +551,15 @@ def evaluateSingle(checksum, cleanup):
 	pdbChainRanges = rangesLine.strip().split(';')
 	for i in range(len(pdbChainCodes)):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
-	print '-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)
+		cathCodes[pdbChainCodes[i]] = []
+		cathCodes[pdbChainCodes[i]].extend(getCathInfoRest(pdbChainCodes[i], pdbChainRanges[i]))
+	print '-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)+' (out of '+str(seqLength)+' residues)'
 	
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
 	longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
-	print '---  longest missing range is ' + longestMissingRange
+	print '---  longest missing range is ' + longestMissingRange + '(tolerated is ' + str(toleratedMissingRangeLength) +')'
 	while (getRangeLength(longestMissingRange) > toleratedMissingRangeLength):
 		searchRange = longestMissingRange.replace('-',':')
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -526,11 +575,14 @@ def evaluateSingle(checksum, cleanup):
 		if (newPdbChainCodes[0] == '0xxx'):
 			pdbChainRanges.append(longestMissingRange)
 			print '--- no structures found for ' + searchRange
+			cathCodes['0xxx'] = [ '' ]
 		else :
 			for i in range(len(newPdbChainCodes)):
 				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
-			pdbChainCodes.append(newPdbChainCodes)
-			pdbChainRanges.append(newPdbChainRanges)
+				cathCodes[newPdbChainCodes[i]] = []
+				cathCodes[newPdbChainCodes[i]].extend(getCathInfoRest(newPdbChainCodes[i], newPdbChainRanges[i]))
+			pdbChainCodes.extend(newPdbChainCodes)
+			pdbChainRanges.extend(newPdbChainRanges)
 			print '--- adding pdb structures ' + ' , '.join(newPdbChainCodes) + ' covering ' +  ' , '.join(newPdbChainRanges)
 
 		print '--- calling findLongestMissingRange with ' + ', '.join(pdbChainRanges)
@@ -539,8 +591,6 @@ def evaluateSingle(checksum, cleanup):
 		
 
 	# iterate over all chains we found and prepare files to compare against
-	# also get Cath information
-	cathCodes = []
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
@@ -549,7 +599,6 @@ def evaluateSingle(checksum, cleanup):
 		out, err = rn.communicate()
 		if err:
 			print err
-		cathCodes.extend(getCathInfo(chain))
 		
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
@@ -562,12 +611,35 @@ def evaluateSingle(checksum, cleanup):
 		resultStore[model]['max'] = {}
 		resultStore[model]['min'] = {}
 		resultStore[model]['range'] = {}
+# 		t_range is the matched range in the template sequence, 
+#           BUT we need the covered model region
+#           AND we need to know that the template has coordinates in that region
+#		pdbRange is the sequence range in the template sequence 
+#           that is actually covered in template coordinates
+#		q_range is the matched range in the query sequence
+#           BUT without taking into account which part of the sequence is actually covered in template coordinates
+		templateRange = resultStore[model]['t_range]'
 		modelRange = resultStore[model]['q_range']
-#		templateRange = resultStore[model]['t_range']
+		strucRange = resultStore[model]['pdbRange']
+#       so to check wether a model can cover a certain piece of the query sequence
+#       we first have to check whether the template can have coordinates there at all:
+#       we compare templateRange and strucRange and shorten modelRange accordingly
+#       hoping that the alignment is not completely strange
+		missingBegin = int(getRangeBegin(strucRange)) - int(getRangeBegin(templateRange))
+		missingEnd = int(getRangeEnd(strucRange)) - int(getRangeEnd(templateRange))
+		if (missingBegin > 0):
+			newModelRangeBegin = int(getRangeBegin(modelRange)) + missingBegin
+		else:
+			newModelRangeBegin = int(getRangeBegin(modelRange))
+		if (missingEnd < 0):
+			newModelRangeEnd = int(getRangeEnd(modelRange)) + missingEnd
+		else:
+			newModelRangeEnd = int(getRangeEnd(modelRange))
+		newModelRange = str(newModelRangeBegin)+'-'+str(newModelRangeEnd)
 		
 		for chain in pdbChainCodes:
 			
-			if isOverlapping(modelRange, pdbChainCoveredRange[chain]):
+			if isOverlapping(newModelRange, pdbChainCoveredRange[chain]):
 			
 				print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
 			
@@ -624,7 +696,7 @@ def evaluateSingle(checksum, cleanup):
 				structureStatistics.update(r_structureStatistics)
 			
 				# compare cath codes
-				structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes, resultStore[model]['cathCodes'])
+				structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes[chain], resultStore[model]['cathCodes'])
 #				print structureStatistics
 				resultStore[model][chain] = structureStatistics
 			
@@ -762,6 +834,8 @@ def storeSummary(resultStore, checksum, chains):
 					'query_struc': chain, 
 					'nReferences': str(resultStore[model][chain]['nReferences']),
 					'match_md5': resultStore[model]['match md5'], 
+					'match_struc': resultStore[model]['pdbCode'], 
+					'match_strucAlignLength': resultStore[model]['pdbMatchLength'], 
 					'model_id': str(model), 
 					'HH_Prob': resultStore[model]['prob'], 
 					'HH_E-value': resultStore[model]['eval'], 

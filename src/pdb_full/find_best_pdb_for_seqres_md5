@@ -22,6 +22,7 @@ OPTIONS
   -n N		  return up to N pdb ids with longest overlap with SEQRES
   -r n:m	  require the pdb structure to cover the given range of SEQRES residues
   -p          print a line giving the matching ranges
+  -l 		  print a line giving the match lengths
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans\@rostlab.org>
 \n";
@@ -32,6 +33,7 @@ our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput,$range,$rBegin,$rEnd);
 $help = 0;
 $multi = 1;  # how many structure we return 
 $rangeOutput = 0;
+$lengthOutput = 0;
 $range = '';
 $acceptRatio=0.9; # how long the less long alignments can be compared to the longest
 my $args_ok=GetOptions( 'debug'  => \$dbg,
@@ -39,7 +41,8 @@ my $args_ok=GetOptions( 'debug'  => \$dbg,
                         'md5=s' => \$md5,
                         'n=i' => \$multi,
                         'range=s' => \$range,
-                        'printRange' => \$rangeOutput
+                        'printRange' => \$rangeOutput,
+                        'length' => \$lengthOutput
 );
 
 if ($help || !$args_ok){
@@ -202,9 +205,11 @@ else {
 # check whether we found anything at all
 # if not add a fake id that makes sure the receiving scripts don't break because of empty output
 my @ranges = ();
+my @lengths = ();
 unless (defined $selectedIds[0] &&  $selectedIds[0]=~/\w/){
 	push @selectedIds, '0xxx';
 	push @ranges, ' ';
+	push @lengths, '1';
 }
 
 # work out the slice we want to return
@@ -224,6 +229,14 @@ if ($rangeOutput){
 	}
 	print join(";", @ranges), "\n";
 }
+
+if ($lengthOutput){
+	foreach my $id(@slice){
+		push @lengths, $aliMatchLength{$id};
+	}
+	print join(";", @lengths), "\n";
+}
+
 
 sub sortByAliMatchLength {
     $aliMatchLength{$b} <=> $aliMatchLength{$a};
