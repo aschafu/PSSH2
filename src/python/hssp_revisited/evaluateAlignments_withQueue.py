@@ -427,11 +427,11 @@ def getCathSimilarity(listA, listB):
 def getRangeBegin(range):
 #	print '------ getRangeBegin: got input ' + range
 	begin, end = range.split("-")
-	return begin
+	return int(begin)
 
 def getRangeEnd(range):
 	begin, end = range.split("-")
-	return end
+	return int(end)
 
 def getRangeLength(range):
 	begin, end = range.split("-")
