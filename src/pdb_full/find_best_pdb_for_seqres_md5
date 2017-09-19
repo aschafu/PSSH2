@@ -29,7 +29,7 @@ AUTHOR
 
 # if there are no arguments or -h, then print man entry
 if (@ARGV<1) {die ($usage);}
-our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput,$range,$rBegin,$rEnd);
+our($dbg,$help,$md5,$multi,$acceptRatio,$rangeOutput,$lengthOutput,$range,$rBegin,$rEnd);
 $help = 0;
 $multi = 1;  # how many structure we return 
 $rangeOutput = 0;
@@ -103,6 +103,7 @@ foreach my $line(@alignLines){
 			if ($range){
 				my ($overlapStart, $overlapEnd);
 				$overlapStart = 0;
+				$overlapEnd=0;
 				if ($seqresStart <= $rEnd){
 					if ($seqresStart >= $rBegin){
 						$overlapStart = $seqresStart;
@@ -227,14 +228,24 @@ if ($rangeOutput){
 	foreach my $id(@slice){
 		push @ranges, $aliRange{$id};
 	}
-	print join(";", @ranges), "\n";
+	if ($#ranges > 0){
+	    print join(";", @ranges), "\n";
+	}
+	else {
+	    print $ranges[0], "\n";
+	}
 }
 
 if ($lengthOutput){
 	foreach my $id(@slice){
 		push @lengths, $aliMatchLength{$id};
 	}
-	print join(";", @lengths), "\n";
+	if ($#lengths > 0){
+	    print join(";", @lengths), "\n";
+	}
+	else {
+	    print $lengths[0], "\n";
+	}
 }
 
 

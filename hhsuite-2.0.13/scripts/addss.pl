@@ -535,11 +535,12 @@ sub AppendDsspSequences() {
     close(QFILE);
     if ($v>=2) {printf("Searching DSSP state assignments...\nname=%s  range=%s\n",$name,$qrange);}
 
-    # Try to open dssp file 
-    $dsspfile="$dsspdir/$pdbcode.dssp";
+    # Try to open dssp file
+    my $subdir=substr($pdbcode, 1, 2);
+    $dsspfile="$dsspdir/$subdir/pdb$pdbcode.dssp";
     if (! open (DSSPFILE, "<$dsspfile")) {
 	printf(STDOUT "WARNING: Cannot open $dsspfile!\n"); 
-	$pdbfile="$pdbdir/pdb$pdbcode.ent";
+	$pdbfile="$pdbdir/$subdir/pdb$pdbcode.ent";
 	if (! -e $pdbfile) {
 	    printf(STDOUT "WARNING Cannot open $pdbfile!\n"); 
 	    return 1;

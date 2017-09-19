@@ -1199,8 +1199,8 @@ sub ExtractPdbcodeAndChain()
 
     foreach $pdbdir (@pdbdirs) {
 	#print "PDB-dir: $pdbdir\n";
-#	if (-e "$pdbdivdir/$div/pdb$pdbcode.ent")   {$pdbfile="$pdbdivdir/$div/pdb$pdbcode.ent"; last;}
-#	if (-e "$pdbdivdir/$div/pdb$pdbcode.ent.Z") {$pdbfile="gunzip -c $pdbdivdir/$div/pdb$pdbcode.ent.Z |"; last;}
+	if (-e "$pdbdir/$div/pdb$pdbcode.ent")   {$pdbfile="$pdbdivdir/$div/pdb$pdbcode.ent"; last;}
+	if (-e "$pdbdir/$div/pdb$pdbcode.ent.Z") {$pdbfile="gunzip -c $pdbdivdir/$div/pdb$pdbcode.ent.Z |"; last;}
 	if (-e "$pdbdir/pdb$pdbcode.ent") {$pdbfile="$pdbdir/pdb$pdbcode.ent"; last;}
 	if (-e "$pdbdir/$pdbcode.pdb")    {$pdbfile="$pdbdir/$pdbcode.pdb"; last;}
 	if (-e "$pdbdir/$name.pdb")       {$pdbfile="$pdbdir/$name.pdb"; last;}
