@@ -1,5 +1,5 @@
 import mysql.connector
-from mysql.connector import errorcode
+#from mysql.connector import errorcode
 import ConfigParser
 import warnings
 import io
@@ -80,16 +80,16 @@ class DB_Connection:
 			except mysql.connector.Error as err:
 				warnings.warn('Cannot make connection for \''+ permission_type + \
 		    	              '\' to db \''+ db +'\'!')
-				if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+				if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
 					warnings.warn("Something is wrong with your user name or password")
-			  	elif err.errno == errorcode.ER_BAD_DB_ERROR:
+			  	elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
 			  		warnings.warn("Database does not exists")
 				else:
 					print(err)
-    				
+
 		return connection
 		
-			
+
 class SequenceHandler:
 
 	sequenceDB = 'aquaria'

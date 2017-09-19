@@ -43,7 +43,7 @@ minimalOverlapLength = 10
 test = False
 
 submitConnection = None
-dbConnection = None
+sdbConnection = None
 pdbChainCoveredRange = {}
 
 cathSeparator = '.'
@@ -171,7 +171,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			# work out which piece the structure should cover
 			templateRange = modelStatistics[model]['t_range'].replace('-',':')
 			print '--- find templates for ' + checksum + ' range ' + templateRange
-			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange, '-p -l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange, '-p', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
 				err = 'Process timed out: '+bestPdbScript+ ' -m ' + checksum + ' -r ' + templateRange + ' -p -l'
@@ -182,7 +182,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 #			if err:
 #				print err
 #			pdbChainCode = out.strip()
-			codesLine, lengthsLine, rangesLine, rest = out.split('\n', 3)
+			codesLine, rangesLine, lengthsLine, rest = out.split('\n', 3)
 			pdbChainCode = codesLine.strip()
 			pdbChainRange = rangesLine.strip()
 			pdbChainMatchLength = lengthsLine.strip()
@@ -195,8 +195,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
 			# also remember the cathCode(s) for this template
-#			cathCodes = getCathInfoTsv(pdbChainCode)
-			# TODO: get cath codes from REST with ranges
+			# cathCodes = getCathInfoTsv(pdbChainCode)
 			cathCodes = getCathInfoRest(pdbChainCode, pdbChainRange)
 			modelStatistics[model]['cathCodes'] = cathCodes
 		elif (idLineOrig in linelist[lineCount]):
@@ -359,11 +358,12 @@ def getCathInfoTsv(chain):
 	return cathCodes
 
 
-def getCathInfoRest(chain, range):
+def getCathInfoRest(chain, pRange):
 	""" do a query to EBI Rest interface to work out the Cath hierarchy code for this chain"""
 	
 	import requests
 	import json
+        
 	baseURL = "https://www.ebi.ac.uk/pdbe/api/mappings/structural_domains/"
 	
 	cathCodes = []
@@ -374,6 +374,7 @@ def getCathInfoRest(chain, range):
 		pdbChain = ''
 	
 	response=requests.get(baseURL+pdbCode)
+        
 	try:	
 		jData = response.json()
 	except Exception as e:
@@ -381,18 +382,25 @@ def getCathInfoRest(chain, range):
 		print e
 		return cathCodes
 
-	# loop over the cath IDs to find one that covers our region	
-	for cathId in jData[pdbCode]['CATH']:
-		for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
-			dChain=domain['chain_id']
-			if dChain == pdbChain:
-				dName=domain['domain']
-				dStart=domain['start']['residue_number']
-				dEnd=domain['end']['residue_number']
-				dRange=dStart+'-'+dEnd
-				if isOverlapping(range, dRange):
-					cathCodes.append(cathId)
-					break # (breaks inner loop, not outer)
+        # print json.dumps(jData)
+        if pdbCode in jData:
+        
+                # loop over the cath IDs to find one that covers our region	
+                for cathId in jData[pdbCode]['CATH']:
+                        # print cathId
+                        for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
+                                dChain=domain['chain_id']
+                                # print dChain + ' (searching: ' + pdbChain + ')'
+                                if dChain == pdbChain:
+                                        dName=domain['domain']
+                                        dStart=domain['start']['residue_number']
+                                        dEnd=domain['end']['residue_number']
+                                        dRange=str(dStart)+'-'+str(dEnd)
+                                        # print str(dName) + ' ' + str(dStart) +' ' + str(dEnd) + ' ' + dRange
+                                        print 'cath range ' + dRange +  ' (pdb Range: ' + pRange + ')'
+                                        if isOverlapping(pRange, dRange):
+                                                cathCodes.append(cathId)
+                                                break # (breaks inner loop, not outer)
 
 	return cathCodes
 					
@@ -400,20 +408,34 @@ def getCathInfoRest(chain, range):
 def getCathSimilarity(listA, listB):
 	""" compare two lists of cath codes and return maxmium of agreements between the code pairs"""
 
+        # if we get CATHSOLID, we have 9 levels, where the last one is just a different number for each sequence
+        # if we get only CATH, we have 4 levels -- since the code has been switched to use the REST interface,
+        #  we now only get 4 levels
+        cathLevels = 4
+        
 	overallSimilarity = -1
+        #print 'listA: '
+        #print listA
+        #print 'listB: '
+        #print listB
 	for codeA in listA:
+                codeA = str(codeA)
 		piecesA = codeA.split(cathSeparator)
-		if len(piecesA) <9:
+                #print piecesA
+                #print len(piecesA)
+                #print cathLevels
+		if (len(piecesA) < cathLevels):
 			print 'something weird here: cath code looks unhealthy: '+ codeA
 			continue
 		for codeB in listB:
+                        codeB = str(codeB)
 			piecesB = codeB.split(cathSeparator)
-			if len(piecesA) <9:
+			if (len(piecesA) < cathLevels):
 				print 'something weird here: cath code looks unhealthy: '+ codeB
 				continue
-			currentSimilarity = 0
 
-			for i in range(9):
+			currentSimilarity = 0
+			for i in range(cathLevels):
 				if piecesA[i] == piecesB[i]:
 					currentSimilarity += 1
 				else:
@@ -427,11 +449,11 @@ def getCathSimilarity(listA, listB):
 def getRangeBegin(range):
 #	print '------ getRangeBegin: got input ' + range
 	begin, end = range.split("-")
-	return begin
+	return int(begin)
 
 def getRangeEnd(range):
 	begin, end = range.split("-")
-	return end
+	return int(end)
 
 def getRangeLength(range):
 	begin, end = range.split("-")
@@ -448,16 +470,21 @@ def isOverlapping(rangeA, rangeB):
 def findLongestMissingRange(seqLength, coveredRanges):
 	"""find which pieces of the (seqres) sequence are not covered yet"""
 	
-#	print '---- will sort covered Ranges:' + ', '.join(coveredRanges)
+	print '---- will sort covered Ranges:' + ', '.join(coveredRanges)
 	sortedCoveredRanges = sorted(coveredRanges, key=getRangeBegin)
+        print ', '.join(sortedCoveredRanges)
 	uncoveredRanges = []
 	uncoveredBegin = 1
 	lastCoveredRangeBegin = 0
 	lastCoveredRangeEnd = 0
-	for range in sortedCoveredRanges:
-		coveredBegin = int(getRangeBegin(range))
-		coveredEnd = int(getRangeEnd(range))
-		if (coveredBegin > lastCoveredRangeEnd):
+	for myRange in sortedCoveredRanges:
+                print myRange
+		coveredBegin = getRangeBegin(myRange)
+		coveredEnd = getRangeEnd(myRange)
+                if (coveredBegin == lastCoveredRangeEnd+1):
+                        # covered pieces can be joined, do nothing else
+                        lastCoveredRangeEnd = coveredEnd
+		elif (coveredBegin > lastCoveredRangeEnd):
 			# there must be a gap in the covered range
 			# so we can store the uncovered range
 			uncoveredBegin = lastCoveredRangeEnd + 1
@@ -465,19 +492,30 @@ def findLongestMissingRange(seqLength, coveredRanges):
 			uncoveredRange = str(uncoveredBegin)+'-'+str(uncoveredEnd)
 			uncoveredRanges.append(uncoveredRange)
 			lastCoveredRangeBegin = coveredBegin
+                        lastCoveredRangeEnd = coveredEnd
 		elif (coveredEnd > lastCoveredRangeEnd):
 			# there cannot be a gap (otherwise we wouldn't be here)
 			# but we can update the end of the covered range
 			lastCoveredRangeEnd = coveredEnd		
-		
+                #print ' ,'.join([str(coveredBegin), str(coveredEnd)])
+                #print ' ,'.join([str(lastCoveredRangeBegin), str(lastCoveredRangeEnd)])
+                #print 'uncovered: '
+                #print uncoveredRanges
+                
 	if (lastCoveredRangeEnd < seqLength):
 		uncoveredRange = str(lastCoveredRangeEnd+1)+'-'+str(seqLength)
 		uncoveredRanges.append(uncoveredRange)
+        #print 'uncovered: '
+        #print uncoveredRanges
+                
 	if (len(uncoveredRanges) < 1):
 		sortedUncoveredRanges = [ '0-0' ]
 	else:
-		sortedUncoveredRanges = sorted(uncoveredRanges, key=getRangeLength)
-	return sortedUncoveredRanges[0] 
+		sortedUncoveredRanges = sorted(uncoveredRanges, key=getRangeLength, reverse=True)
+
+        #print 'sorted uncovered (returning first one): '
+        #print sortedUncoveredRanges
+        return sortedUncoveredRanges[0] 
 	
 	
 def evaluateSingle(checksum, cleanup):
@@ -539,7 +577,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# work out the pdb structures for this md5 sum	
 	# also get cath info for each
-	cathCodes = []
+	cathCodesDict = {}
 	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = bp.communicate()
 	if err:
@@ -551,15 +589,15 @@ def evaluateSingle(checksum, cleanup):
 	pdbChainRanges = rangesLine.strip().split(';')
 	for i in range(len(pdbChainCodes)):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
-		cathCodes[pdbChainCodes[i]] = []
-		cathCodes[pdbChainCodes[i]].extend(getCathInfoRest(pdbChainCodes[i], pdbChainRanges[i]))
+		cathCodesDict[pdbChainCodes[i]] = []
+		cathCodesDict[pdbChainCodes[i]].extend(getCathInfoRest(pdbChainCodes[i], pdbChainRanges[i]))
 	print '-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)+' (out of '+str(seqLength)+' residues)'
 	
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
 	longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
-	print '---  longest missing range is ' + longestMissingRange + '(tolerated is ' + str(toleratedMissingRangeLength) +')'
+	print '---  longest missing range is ' + longestMissingRange + ' (tolerated is ' + str(toleratedMissingRangeLength) +')'
 	while (getRangeLength(longestMissingRange) > toleratedMissingRangeLength):
 		searchRange = longestMissingRange.replace('-',':')
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -575,12 +613,12 @@ def evaluateSingle(checksum, cleanup):
 		if (newPdbChainCodes[0] == '0xxx'):
 			pdbChainRanges.append(longestMissingRange)
 			print '--- no structures found for ' + searchRange
-			cathCodes['0xxx'] = [ '' ]
+			cathCodesDict['0xxx'] = [ '' ]
 		else :
 			for i in range(len(newPdbChainCodes)):
 				pdbChainCoveredRange[newPdbChainCodes[i]] = newPdbChainRanges[i]
-				cathCodes[newPdbChainCodes[i]] = []
-				cathCodes[newPdbChainCodes[i]].extend(getCathInfoRest(newPdbChainCodes[i], newPdbChainRanges[i]))
+				cathCodesDict[newPdbChainCodes[i]] = []
+				cathCodesDict[newPdbChainCodes[i]].extend(getCathInfoRest(newPdbChainCodes[i], newPdbChainRanges[i]))
 			pdbChainCodes.extend(newPdbChainCodes)
 			pdbChainRanges.extend(newPdbChainRanges)
 			print '--- adding pdb structures ' + ' , '.join(newPdbChainCodes) + ' covering ' +  ' , '.join(newPdbChainRanges)
@@ -618,23 +656,23 @@ def evaluateSingle(checksum, cleanup):
 #           that is actually covered in template coordinates
 #		q_range is the matched range in the query sequence
 #           BUT without taking into account which part of the sequence is actually covered in template coordinates
-		templateRange = resultStore[model]['t_range]'
+		templateRange = resultStore[model]['t_range']
 		modelRange = resultStore[model]['q_range']
 		strucRange = resultStore[model]['pdbRange']
 #       so to check wether a model can cover a certain piece of the query sequence
 #       we first have to check whether the template can have coordinates there at all:
 #       we compare templateRange and strucRange and shorten modelRange accordingly
 #       hoping that the alignment is not completely strange
-		missingBegin = int(getRangeBegin(strucRange)) - int(getRangeBegin(templateRange))
-		missingEnd = int(getRangeEnd(strucRange)) - int(getRangeEnd(templateRange))
+		missingBegin = getRangeBegin(strucRange) - getRangeBegin(templateRange)
+		missingEnd = getRangeEnd(strucRange) - getRangeEnd(templateRange)
 		if (missingBegin > 0):
-			newModelRangeBegin = int(getRangeBegin(modelRange)) + missingBegin
+			newModelRangeBegin = getRangeBegin(modelRange) + missingBegin
 		else:
-			newModelRangeBegin = int(getRangeBegin(modelRange))
+			newModelRangeBegin = getRangeBegin(modelRange)
 		if (missingEnd < 0):
-			newModelRangeEnd = int(getRangeEnd(modelRange)) + missingEnd
+			newModelRangeEnd = getRangeEnd(modelRange) + missingEnd
 		else:
-			newModelRangeEnd = int(getRangeEnd(modelRange))
+			newModelRangeEnd = getRangeEnd(modelRange)
 		newModelRange = str(newModelRangeBegin)+'-'+str(newModelRangeEnd)
 		
 		for chain in pdbChainCodes:
@@ -696,7 +734,7 @@ def evaluateSingle(checksum, cleanup):
 				structureStatistics.update(r_structureStatistics)
 			
 				# compare cath codes
-				structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodes[chain], resultStore[model]['cathCodes'])
+				structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodesDict[chain], resultStore[model]['cathCodes'])
 #				print structureStatistics
 				resultStore[model][chain] = structureStatistics
 			
@@ -786,13 +824,13 @@ def evaluateSingle(checksum, cleanup):
 def storeSummary(resultStore, checksum, chains):
 
 	mysqlInsert = "INSERT INTO %s " % tableName
-	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, model_id, "
+	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, match_struc, match_strucAlignLength, model_id, "
 	mysqlInsert += "HH_Prob, HH_E_value, HH_P_value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, CathSimilarity, "
 	mysqlInsert += "GDT, pairs, RMSD, gRMSD, maxsub, len, TM, "
 	mysqlInsert += "r_GDT, r_pairs, r_RMSD, r_gRMSD, r_maxsub, r_len, r_TM) "
 #	mysqlInsert += "VALUES (%(query_md5)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 #	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
-	mysqlInsert += "VALUES (%(query_md5)s, %(query_struc)s, %(nReferences)s, %(match_md5)s, %(model_id)s, "
+	mysqlInsert += "VALUES (%(query_md5)s, %(query_struc)s, %(nReferences)s, %(match_md5)s, %(match_struc)s, %(match_strucAlignLength)s, %(model_id)s, "
 	mysqlInsert += "%(HH_Prob)s, %(HH_E-value)s, %(HH_P-value)s, %(HH_Score)s, %(HH_Aligned_cols)s, %(HH_Identities)s, %(HH_Similarity)s, %(CathSimilarity)s, "
 	mysqlInsert += "%(GDT)s, %(pairs)s, %(RMSD)s, %(gRMSD)s, %(maxsub)s, %(len)s, %(TM)s,"
 	mysqlInsert += "%(r_GDT)s, %(r_pairs)s, %(r_RMSD)s, %(r_gRMSD)s, %(r_maxsub)s, %(r_len)s, %(r_TM)s)"
@@ -822,7 +860,7 @@ def storeSummary(resultStore, checksum, chains):
 			print e
 			getConnection()
 
-	for model in range(1, modelcount): 
+	for model in range(1, modelcount+1): 
 #		print model, resultStore[model]
 		for chain in chains:
 #			print model, chain, resultStore[model][chain]
