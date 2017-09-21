@@ -17,7 +17,7 @@ pdb_derived_dir=$rootDir"data/pdb_derived/"
 pa3mdir=$pdb_derived_dir"psipred_a3m/current/"
 pdb_dir="/mnt/project/rost_db/data/pdb/entries/"
 #pa3mfile_gz=$pa3mfile.gz
-hhlib=$rootDir'hhsuite-2.0.13'
+hhlib=$rootDir'../hhsuite3/'
 local_paths=''
 
 # get configurable options, e.g. local file paths
@@ -161,7 +161,7 @@ then
 # 	       echo "Temporarily always remake psipred part!"
 #                 if [ -s $pa3mfile.fake ]
 # temporary!!!! ----
-	        if [ -s $pa3mfile ]
+		if [ -s $pa3mfile ]
 		then
 			pa3m_stamp=`stat -c%Y $pa3mfile`
 	   		if [ $force -eq 1 ] 
@@ -184,9 +184,9 @@ then
 			    if [ $skip_add -eq 1 ] 
 			    then
 					echo "file will be used again"
-			     else
+			    else
 					echo "file will be remade"
-			      fi
+				fi
 			fi
 		elif [ -s $a3mfile_gz ]
 		then
@@ -247,6 +247,7 @@ fi
 # Note that the hhsuite installed on the cluster is not customised to our local Rostlab setup
 # /usr/share/hhsuite/scripts/HHPaths.pm needs to be adjusted!
 
+redo_hhm=0
 if [ $skip_add -eq 0 ]
 then
 	if [ -s $a3mfile ] 
@@ -266,6 +267,7 @@ then
 		if [ -s pdb_file ]
 		then
 		    sed "s/$md5/$pdb_id/g" < $a3mfile > $a3mfile_pdb
+		    redo_hhm=1
 		else
 		    # if the pdb file is not on the disk, make a copy of the a3mfile to have a fake a3mfile_pdb 
 		    cp $a3mfile $a3mfile_pdb
@@ -275,8 +277,13 @@ then
 		$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
 		# remove the pdb id from the $pa3mfile_pdb 
 		sed "s/$pdb_id/$md5/g" < $pa3mfile_pdb > $pa3mfile
-		# clean up
 		rm -f $pa3mfile_pdb $a3mfile_pdb
+		# if we were successful in adding secondary structure, we also want to add that to the hhm file
+		# -> run hhmake to redo that
+		if [ $redo_hhm -eq 1 ]
+			$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
+		fi 		
+		# clean up
 		gzip $a3mfile
 	else
 		fail=-1
