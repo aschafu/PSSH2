@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-qhost -q | grep ^n.*rostclust -A 1 | xargs  -n 2 -d "\n" | egrep -v "a$|A$|C$|S$|D$|d$|s$|E$|u$" | cut -d " " -f 1 | xargs -I {} qsub -b y -q generic@{}  $*
+qhost -q | grep ^n.*rostclust -A 1 | xargs  -n 2 -d "\n" | egrep -v "a$|A$|C$|S$|D$|d$|s$|E$|u$" | cut -d " " -f 1 | xargs -I {} qsub -b y -q default@{}  $*
