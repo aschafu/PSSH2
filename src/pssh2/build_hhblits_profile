@@ -25,6 +25,16 @@ then
 	source $conf_file
 fi
 
+# by default we want to use the system installation
+# but if local_paths is set we have the option to change the path and instead use the local variants
+if [ $local_paths ]
+then
+    PATH=$local_paths:$PATH
+    export PATH
+    echo "Using path: $PATH"
+fi
+
+
 usage()
 {
 cat << EOT
@@ -45,6 +55,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -s          Operate silently 
+  -D          Debug option: do not remove or zip output files
   -f          input sequence file (fasta format)
   -m          output file name for HMM (hhm format)
   -a          output file name for multiple sequence alignment (a3m format)
@@ -58,8 +69,9 @@ EOT
 exit 1
 }
 
+debug=0
 
-while getopts "f:m:a:r:c:bu:p:hs" option;
+while getopts "f:Dm:a:r:c:bu:p:hs" option;
 do
  case $option in
   f)
@@ -95,6 +107,9 @@ do
    echo "option -$OPTARG needs an argument"
    usage
    ;;
+  D)
+   debug=1
+   ;;
   h)
    usage  	
    ;;
@@ -108,13 +123,19 @@ do
  esac
 done
 
+if [ $debug -eq 1 ]
+then
+    set -x
+fi
+
+
 if  [ -z "$fasta" -o -z "$hhm" -o -z "$a3m" -o -z "$hhr" ]; 
 then
 	usage
 fi
 
 #echo "running hhblits -cpu 1 -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits"
-hhblits -cpu $n_cpu -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits >> $hhblitsLog
+$hhlib/bin/hhblits -cpu $n_cpu -i $fasta -d $u20 -ohhm $hhm -oa3m $a3m -o $hhr $b $reportedHits >> $hhblitsLog
 
 
 
