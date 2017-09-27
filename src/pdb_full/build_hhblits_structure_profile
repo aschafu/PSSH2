@@ -16,6 +16,8 @@ rootDir="/mnt/project/pssh/pssh2_project/"
 pdb_derived_dir=$rootDir"data/pdb_derived/"
 pa3mdir=$pdb_derived_dir"psipred_a3m/current/"
 pdb_dir="/mnt/project/rost_db/data/pdb/entries/"
+pdb_pre="pdb"
+pdb_suf=".ent"
 #pa3mfile_gz=$pa3mfile.gz
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
@@ -247,7 +249,6 @@ fi
 # Note that the hhsuite installed on the cluster is not customised to our local Rostlab setup
 # /usr/share/hhsuite/scripts/HHPaths.pm needs to be adjusted!
 
-redo_hhm=0
 if [ $skip_add -eq 0 ]
 then
 	if [ -s $a3mfile ] 
@@ -257,17 +258,17 @@ then
 		pa3mfile_pdb=$pa3mfile.pdbid.a3m
 #		md5=`cat query.fasta|fasta_to_md5`
 		pdb_id=`find_best_pdb_for_seqres_md5 -m $md5|cut -b1-4`
-
+		pdb_id_norm=`echo $pdb_id | tr '[:upper:]' '[:lower:]'`
+		
 		# due to some mess-up between pdb formats we might not have the pdb file on the disk,
-		pdb_sub_dir=`echo $pdb_id|cut -b2,3`
-		pdb_file="$pdb_dir/$pdb_sub_dir/pdb$pdb_id.ent"
+		pdb_sub_dir=`echo $pdb_id_norm|cut -b2,3`
+		pdb_file="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf"
 
 		# so if it is actually there, then try to add experimental secondary structure,
 		# otherwise only use predicted secondary structure
-		if [ -s pdb_file ]
+		if [ -s $pdb_file ]
 		then
-		    sed "s/$md5/$pdb_id/g" < $a3mfile > $a3mfile_pdb
-		    redo_hhm=1
+		    sed "s/$md5/$pdb_id_norm/g" < $a3mfile > $a3mfile_pdb
 		else
 		    # if the pdb file is not on the disk, make a copy of the a3mfile to have a fake a3mfile_pdb 
 		    cp $a3mfile $a3mfile_pdb
@@ -276,13 +277,8 @@ then
 		export HHLIB=$hhlib
 		$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
 		# remove the pdb id from the $pa3mfile_pdb 
-		sed "s/$pdb_id/$md5/g" < $pa3mfile_pdb > $pa3mfile
+		sed "s/$pdb_id_norm/$md5/g" < $pa3mfile_pdb > $pa3mfile
 		rm -f $pa3mfile_pdb $a3mfile_pdb
-		# if we were successful in adding secondary structure, we also want to add that to the hhm file
-		# -> run hhmake to redo that
-		if [ $redo_hhm -eq 1 ]
-			$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
-		fi 		
 		# clean up
 		gzip $a3mfile
 	else
@@ -295,6 +291,9 @@ if [ -s $pa3mfile ]
 then
 	count=`grep -c "^>" $pa3mfile`
 	ln -s $CC/$pa3mfile $pa3mdir/$md5.a3m
+	# after adding secondary structure to the a3m, we also want to add that to the hhm file
+	# -> run hhmake to redo that
+	$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
 else
 	if [ $fail -eq 0 ]
 	then
