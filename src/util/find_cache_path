@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
 usage()
 {
 cat <<EOT
@@ -17,6 +21,13 @@ AUTHOR
 EOT
 }
 
+pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
 
 
 while getopts :hm: opt
@@ -28,7 +39,6 @@ do
         esac
 done
 
-pssh2_cache="/mnt/project/psshcache/result_cache_2014/"
 
 for md5 in $md5list
 do

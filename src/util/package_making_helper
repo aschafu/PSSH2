@@ -23,11 +23,15 @@ cp -vp $d/pssh2/pssh2_aws $pssh2dest
 cp -vp $d/pssh2/pssh2.conf $pssh2dest
 cp -vp $d/util/DB.pssh2_local $pssh2dest
 cp -vp $d/util/DB.aquaria_local $pssh2dest
+cp -vp $d/util/aws_local_cache_handler $pssh2dest
+cp -vp $d/util/copy_to_S3 $pssh2dest
+cp -vp $d/util/link_to_cache $pssh2dest
 cp -vp $d/util/get_fasta_for_md5 $pssh2dest
 cp -vp $d/util/find_cache_path $pssh2dest
 cp -vp $d/pdb_full/make_new_hhblits_db $pssh2dest
 cp -vp $d/pdb_full/build_hhblits_structure_profile $pssh2dest
 cp -vp $d/pdb_full/find_best_pdb_for_seqres_md5 $pssh2dest
+cp -vp $d/pdb_full/prepare_new_hhblits_db_AWS $pssh2dest
 cp -vpr $d/debian-packaging/debian $pssh2dest
 
 mkdir -p $pssh2dest/debian/man; 

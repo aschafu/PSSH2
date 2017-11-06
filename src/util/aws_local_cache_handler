@@ -1,0 +1,86 @@
+#!/bin/bash
+
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
+usage()
+{
+cat << EOT
+NAME
+  aws_local_cache_handler - retrieve and store hhblits result files locally and on AWS
+SYNOPSIS
+  aws_local_cache_handler [-h] [-D] <-r|-s> <-m md5thisBelongsTo> 
+DESCRIPTION
+  aws_local_cache_handler copies any previous output from hhblits found on S3 to the 
+  local cache (and unpacks) or puts the data produced locally to the S3 (and packs) 
+OPTIONS
+  -h          The option -h displays help and exits.
+  -D          Debug option: do not remove or zip output files
+  -m 		  md5 number of sequence the files belong to
+  -r 		  retrieve data to local cache
+  -s 		  store data in AWS cache
+AUTHOR
+  Andrea Schafferhans <andrea.schafferhans@rostlab.org>
+EOT
+exit 1
+}
+
+#### parameters (will be overwritten by anything read from conf file)
+s3Bucket="s3://pssh3cache/" 
+s3Folder="hhblits_result_caches/"
+temp_work=`pwd`
+
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`
+
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
+while getopts :sDhd:m:a:p:n: opt
+do
+	case $opt in
+	D) debug=1;; 
+	m) md5=$OPTARG;;
+	r) retrieve=1;;
+	s) store=1;; 
+	h) usage; echo " "; exit;;
+	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
+	esac
+done
+
+if [ $debug -eq 1 ]
+then
+	set -x
+fi
+
+# find the local cache path
+CC=`find_cache_path -m $md5`
+mkdir -p $CC
+if [ ! -d $CC ] 
+	echo "ERROR: was not able to work on cache for $CC please go fix"
+	exit 1
+fi
+
+if [ $retrieve -eq 1 ]
+then
+	if aws --region=$REGION s3 ls $s3Bucket/$s3Folder/$md5 > /dev/null
+	then
+		cd $CC
+		# gets the data under the tar directly into current directory
+		aws --region=$REGION s3 cp $s3Bucket/$s3Folder/$md5 - | tar -xz
+		cd $temp_work
+	fi
+	echo $CC
+fi
+if [ $store -eq 1 ]
+then
+	cd $CC
+	tar -cz | aws --region=$REGION s3 cp - $s3Bucket/$s3Folder/$md5
+	aws --region=$REGION s3 ls $s3Bucket/$s3Folder/$md5
+fi
+

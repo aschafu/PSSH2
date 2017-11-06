@@ -13,8 +13,9 @@ hmmfile='query.uniprot20.hhm'
 hhrfile='query.uniprot20.hhr'
 pa3mfile='query.uniprot20.psipred.a3m' 
 rootDir="/mnt/project/pssh/pssh2_project/" 
-pdb_derived_dir=$rootDir"data/pdb_derived/"
-pa3mdir=$pdb_derived_dir"psipred_a3m/current/"
+#pdb_derived_dir=$rootDir"data/pdb_derived/"
+#pa3mdir=$pdb_derived_dir"psipred_a3m/current/"
+#hhmdir=$pdb_derived_dir"psipred_a3m/current/"
 pdb_dir="/mnt/project/rost_db/data/pdb/entries/"
 pdb_pre="pdb"
 pdb_suf=".ent"
@@ -22,10 +23,16 @@ pdb_suf=".ent"
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
 
+
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
 	source $conf_file
+fi
+
+if [ -z $cloudMode ]
+then	
+	cloudMode='rostlab'
 fi
 
 # in case some of these parameters were changed in the conf_file
@@ -47,9 +54,9 @@ usage()
 {
 cat << EOT
 NAME
-  build_hhblits_structure_profile - generate a hhblits aligment file (called a3m) for a pdb sequence
+  build_hhblits_structure_profile - generate a hhblits alignment file (called a3m) for a pdb sequence
 SYNOPSIS
-  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D] [-p directoryCollectingA3ms] <-m md5ToWorkOn> 
+  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D] [-d databaseDate]  [-c cloudMode] <-m md5ToWorkOn> 
 DESCRIPTION
   build_hhblits_profile takes an input sequence,
   calls build_hhblits_profile to scan agains uniprot20 and generate an a3m alignment, 
@@ -65,7 +72,8 @@ OPTIONS
      1           run only if the profile is older than the last update of uniprot20 (default)
      2           always run, even if the profile exists 
   -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
-  -p          path to link the a3m files to
+  -c          cloudMode ('rostlab' or 'aws')
+  -d          date string that identifies the database generation time
   -s          Operate silently 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
@@ -79,7 +87,8 @@ debug=0
 passOpt=" " 
 add=1
 silent=0
-while getopts :sDm:F:Rp:h opt
+dbDate='current'
+while getopts :sDm:F:Rp:c:d:h opt
 do
 	case $opt in
 	s) silent=1; debug=0; passOpt="$passOpt -$opt";;
@@ -87,7 +96,8 @@ do
 	m) md5=$OPTARG;;
 	F) force=$OPTARG;;
 	R) force=0;;
-	p) pa3mdir=$OPTARG;;
+	c) cloudMode=$OPTARG;;
+	d) dbDate=$OPTARG;;
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
@@ -98,16 +108,25 @@ then
 	set -x
 fi
 
-if [ -w $pa3mdir ]
+case $cloudMode in
+  "rostlab" )
+	caching_routine=$rootDir'src/util/link_to_cache'
+	CC=`find_cache_path -m $md5`
+	;;
+ "aws" )
+	caching_routine=$rootDir'src/util/copy_to_S3'
+	CC=`$rootDir/src/util/aws_local_cache_handler -m $md5 -r`
+	;;
+esac
+
+if [ -x $cachingRoutine ]
 then
-	if [ $silent -eq 0 ]
-	then
-		echo "will link output to $pa3mdir"
-	fi
+	echo "will use $storeRoutine to store output files"
 else
-	echo "ERROR: cannot write to output directory $pa3mdir. Please fix!"
+	echo "ERROR: cannot execute '$storeRoutine'. Please fix!"
 	exit 1
 fi
+
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
@@ -290,10 +309,13 @@ count=0
 if [ -s $pa3mfile ]
 then
 	count=`grep -c "^>" $pa3mfile`
-	ln -s $CC/$pa3mfile $pa3mdir/$md5.a3m
+#	ln -s $CC/$pa3mfile $pa3mdir/$md5.a3m
 	# after adding secondary structure to the a3m, we also want to add that to the hhm file
 	# -> run hhmake to redo that
 	$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
+#	ln -s $CC/$hhmfile $hhmdir/$md5.a3m
+	$cachingRoutine -m $md5 -p $CC/$hhmfile -a $CC/$pa3mfile -d $dbDate 
+#
 else
 	if [ $fail -eq 0 ]
 	then
@@ -307,20 +329,31 @@ s=`date +%s`
 runtime=$SECONDS
 DB.pssh2_local "insert into pssh2_local.$profile_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0 ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime " 
 
-
-### compress things / delete
-if [ $debug -eq 0 ]
-then
-	if [ -s $a3mfile ] 
-	then
-		gzip $a3mfile  
-	fi	
-	if [ -s $logfile ]
-	then
-		rm -f $logfile
-	fi
-	if [ -s $hhrfile ]
-	then
-	 	gzip -f $hhrfile
-	fi
-fi
+case $cloudMode in
+	'rostlab' )
+		### compress things / delete
+		if [ $debug -eq 0 ]
+		then
+			if [ -s $a3mfile ] 
+			then
+				gzip $a3mfile  
+			fi	
+			if [ -s $logfile ]
+			then
+				rm -f $logfile
+			fi
+			if [ -s $hhrfile ]
+			then
+	 			gzip -f $hhrfile
+			fi
+		fi
+		;;
+	'aws' )
+		`$rootDir/src/util/aws_local_cache_handler -m $md5 -s`
+		if [ $debug -eq 0 ]
+		then
+			rm -r $CC
+		fi
+		# TODO: notify the AWS queue that we are finished?
+		;;
+esac
