@@ -7,9 +7,14 @@ pssh2_pp usr/bin/
 pssh2_multi_md5 usr/bin/
 pssh2_aws usr/bin
 get_fasta_for_md5 usr/bin/
+link_to_cache usr/bin/
+copy_to_S3 usr/bin/
+find_cache_path usr/bin/
+aws_local_cache_handler usr/bin/
 DB.pssh2_local usr/bin/
 DB.aquaria_local usr/bin/
-make_new_pdb_full usr/bin/
+make_new_hhblits_db usr/bin/
+prepare_new_hhblits_db_AWS usr/bin/
 build_hhblits_structure_profile usr/bin/
 find_best_pdb_for_seqres_md5 usr/bin/
 pssh2.conf etc/
