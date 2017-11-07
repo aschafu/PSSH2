@@ -4,6 +4,12 @@ if [ -z "$conf_file" ]; then
 	conf_file='/etc/pssh2.conf'
 fi
 
+#### parameters (will be overwritten by anything read from conf file)
+s3Bucket="s3://pssh3cache/" 
+s3Folder="hhblits_db_creation/"
+dbName="pdb_full"
+dbDate='current'
+
 usage()
 {
 cat << EOT
@@ -18,8 +24,8 @@ OPTIONS
   -h          The option -h displays help and exits.
   -D          be verbose
   -m 		  md5 number of sequence the files belong to
-  -d          date string that identifies the database generation time (default: current)
-  -n 	      name of the hhblits database we are creating (default: pdb_full)
+  -d          date string that identifies the database generation time (default: $dbDate)
+  -n 	      name of the hhblits database we are creating (default: $dbName)
   -a 		  a3mFile to copy (full path)
   -p 		  hhmFile to copy (full path)
   -c 		  seq219File to copy (full path)
@@ -29,11 +35,6 @@ EOT
 exit 1
 }
 
-#### parameters (will be overwritten by anything read from conf file)
-s3Bucket="s3://pssh3cache/" 
-s3Folder="hhblits_db_creation/"
-dbName="pdb_full"
-dbDate='current'
 
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`

@@ -4,6 +4,11 @@ if [ -z "$conf_file" ]; then
 	conf_file='/etc/pssh2.conf'
 fi
 
+#### parameters (will be overwritten by anything read from conf file)
+rootDir="/mnt/project/pssh/pssh2_project/" 
+dbName="pdb_full"
+dbDate='current'
+
 usage()
 {
 cat << EOT
@@ -18,7 +23,8 @@ OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
   -m 		  md5 number of sequence the files belong to
-  -d          date string that identifies the database generation time
+  -d          date string that identifies the database generation time (default $dbDate)
+  -n          name of database to be generated (default $dbName)
   -a 		  a3mFile to link (full path)
   -p 		  hhmFile to link (full path)
   -c 		  seq219File to link (full path)
@@ -28,10 +34,6 @@ EOT
 exit 1
 }
 
-#### parameters (will be overwritten by anything read from conf file)
-rootDir="/mnt/project/pssh/pssh2_project/" 
-dbName="pdb_full"
-dbDate='current'
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]

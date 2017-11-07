@@ -30,14 +30,14 @@ cat << EOT
 NAME
   prepare_new_hhblits_db - generate a new hhblits database (for any set of sequences) 
 SYNOPSIS
-  prepare_new_hhblits_db <-m md5List> [-d dbName] [-s storeRoutine]
+  prepare_new_hhblits_db <-m md5List> [-n dbName] [-d dbDate] 
 DESCRIPTION
   prepare_new_hhblits_db iterates over sequences given in the md5List,
   runs build_hhblits_profile for each sequence (to get a3m files),
-  runs addss.pl on each a3m file (based on the best pdb structure for the sequence),
-  generates hhm files from the output
-  and
-  calls the store routine to collect the output a3m and hhm files.
+  which in turn 
+  - runs addss.pl on each a3m file (based on the best pdb structure for the sequence),
+  - generates hhm and seq219 files from the output
+  - calls the store routine to collect the output a3m, hhm and seq219 files.
   The actual generation of the database happens separately.
   This script assumes that the sequences given in the md5List are valid sequences,
   any sorting out of DNA sequences, short sequences or some with too many non-amino acid residues
@@ -47,7 +47,6 @@ OPTIONS
   -n          name for hhblits database (default: hhblitsdb)
   -d          output name for subdirectory of hhblits database, i.e. dated version (default: current)
   -m          file containing md5s to run over 
-  -s 	      store routine that takes care of collecting a3m and hhm files (full path)
   -h          print this help and exit
   -D          give debug output (passed on to child scripts)
 AUTHOR
@@ -62,7 +61,6 @@ dbName='hhblitsdb'   # for pdbFull this is pdb_full
 dbDate='current'     # for pdbFull this has been db_yyyymmdd
 rootDir="/mnt/project/pssh/pssh2_project/" 
 util_dir=$rootDir"src/util/"
-storeRoutine = $util_dir"/link_to_cache"
 n_queue=10
 queue_max_wait=1000
 build_hhblits_structure_profile='build_hhblits_structure_profile'
@@ -121,23 +119,7 @@ then
 	exit 1
 fi
 
-# Continue here: find out how to write to S3
-
-if [ -z $pa3mdir ]
-then
-	# if the output directory hadn't been set before, we set it now
-	pa3mdir=$hhblitsdb_data_dir"/psipred_a3m/"$dbDate"/"
-	mkdir -p $pa3mdir 2>/dev/null
-fi
-
-if [ -w $pa3mdir ]
-then
-	echo "will link psipred a3ms to $pa3mdir"
-else
-	echo "ERROR: cannot write to output directory $pa3mdir. Please fix!"
-	exit 1
-fi
-
+# Output caching is now completely delegated to build_hhblits_structure_profile
 
 ## loop over all md5s 
 # submit further processing to the queue  
@@ -169,19 +151,19 @@ done < $md5ListFile
 #done < $md5ListFile
 
 # wait until all jobs are finished
-n_in_queue=1
-sleep_time=0
-while [ $n_in_queue -gt 0 ]
-do
-	sleep $sleep_time
-	n_in_queue=`qstat -u $USER | wc -l` 		
-	sleep_time=$((n_in_queue/n_queue)) 
-	if [ $sleep_time -lt 10 ]
-	then
-		sleep_time=10
-	fi
-done 
-echo 'DONE!'
+#n_in_queue=1
+#sleep_time=0
+#while [ $n_in_queue -gt 0 ]
+#do
+#	sleep $sleep_time
+#	n_in_queue=`qstat -u $USER | wc -l` 		
+#	sleep_time=$((n_in_queue/n_queue)) 
+#	if [ $sleep_time -lt 10 ]
+#	then
+#		sleep_time=10
+#	fi
+#done 
+echo 'All sequences submitted!'
 
 
 ## Generating pdb_full database files with HH-suite script hhblitsdb.pl and the MSAs with PSIPRED prediction received in last step 

@@ -31,10 +31,6 @@ s3Bucket="s3://pssh3cache/"
 s3Folder="hhblits_result_caches/"
 temp_work=`pwd`
 
-REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
-ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`
-
-
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
 then
@@ -57,6 +53,9 @@ if [ $debug -eq 1 ]
 then
 	set -x
 fi
+
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`
 
 # find the local cache path
 CC=`find_cache_path -m $md5`

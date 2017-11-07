@@ -23,6 +23,9 @@ pdb_suf=".ent"
 #pa3mfile_gz=$pa3mfile.gz
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
+dbDate='current'
+dbName='pdb_full'
+
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -56,7 +59,7 @@ cat << EOT
 NAME
   build_hhblits_structure_profile - generate a hhblits alignment file (called a3m) for a pdb sequence
 SYNOPSIS
-  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D] [-d databaseDate]  [-c cloudMode] <-m md5ToWorkOn> 
+  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D] [-d dbDate] [-n dbName] [-c cloudMode] <-m md5ToWorkOn> 
 DESCRIPTION
   build_hhblits_profile takes an input sequence,
   calls build_hhblits_profile to scan agains uniprot20 and generate an a3m alignment, 
@@ -73,7 +76,8 @@ OPTIONS
      2           always run, even if the profile exists 
   -R          Retain (DO NOT remake) the HMM profile (same as -F 0)
   -c          cloudMode ('rostlab' or 'aws')
-  -d          date string that identifies the database generation time
+  -d          date string that identifies the database generation time (default: $dbDate)
+  -n          name of the hhblits database we are creating (default: $dbName)
   -s          Operate silently 
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
@@ -85,9 +89,8 @@ exit 1
 force=1
 debug=0
 passOpt=" " 
-add=1
 silent=0
-dbDate='current'
+
 while getopts :sDm:F:Rp:c:d:h opt
 do
 	case $opt in
@@ -98,6 +101,7 @@ do
 	R) force=0;;
 	c) cloudMode=$OPTARG;;
 	d) dbDate=$OPTARG;;
+	n) dbName=$OPTARG;;
 	h) usage; echo " "; build_hhblits_profile -h; exit;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
@@ -110,11 +114,12 @@ fi
 
 case $cloudMode in
   "rostlab" )
-	caching_routine=$rootDir'src/util/link_to_cache'
+	cachingRoutine=$rootDir'src/util/link_to_cache'
 	CC=`find_cache_path -m $md5`
 	;;
  "aws" )
-	caching_routine=$rootDir'src/util/copy_to_S3'
+	cachingRoutine=$rootDir'src/util/copy_to_S3'
+	# here, we don't only set the path location, but also fetch the data from the cache
 	CC=`$rootDir/src/util/aws_local_cache_handler -m $md5 -r`
 	;;
 esac
@@ -321,7 +326,7 @@ then
 	$hhlib/bin/cstranslate $cstranslateOptions -i $CC/$pa3mfile -o $CC/$seq219file 
 #	ln -s $CC/$hhmfile $hhmdir/$md5.a3m
 	# store everything in the respective caches
-	$cachingRoutine -m $md5 -p $CC/$hhmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate 
+	$cachingRoutine -m $md5 -p $CC/$hhmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate -n $dbName
 #
 else
 	if [ $fail -eq 0 ]
