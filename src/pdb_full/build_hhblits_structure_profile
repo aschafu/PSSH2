@@ -12,6 +12,7 @@ a3mfile='query.uniprot20.a3m'
 hmmfile='query.uniprot20.hhm'
 hhrfile='query.uniprot20.hhr'
 pa3mfile='query.uniprot20.psipred.a3m' 
+seq219file='query.uniprot20.seq219' 
 rootDir="/mnt/project/pssh/pssh2_project/" 
 #pdb_derived_dir=$rootDir"data/pdb_derived/"
 #pa3mdir=$pdb_derived_dir"psipred_a3m/current/"
@@ -22,7 +23,6 @@ pdb_suf=".ent"
 #pa3mfile_gz=$pa3mfile.gz
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
-
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -127,6 +127,10 @@ else
 	exit 1
 fi
 
+if [ -z $cstranslateOptions ]
+then
+	cstranslateOptions = "-A $hhlib/data/cs219.lib -D $hhlib/data/context_data.lib -x 0.3 -c 4 "  
+fi
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
@@ -313,8 +317,11 @@ then
 	# after adding secondary structure to the a3m, we also want to add that to the hhm file
 	# -> run hhmake to redo that
 	$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
+	# finally, we also make the seq219 file 
+	$hhlib/bin/cstranslate $cstranslateOptions -i $CC/$pa3mfile -o $CC/$seq219file 
 #	ln -s $CC/$hhmfile $hhmdir/$md5.a3m
-	$cachingRoutine -m $md5 -p $CC/$hhmfile -a $CC/$pa3mfile -d $dbDate 
+	# store everything in the respective caches
+	$cachingRoutine -m $md5 -p $CC/$hhmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate 
 #
 else
 	if [ $fail -eq 0 ]

@@ -20,8 +20,9 @@ OPTIONS
   -m 		  md5 number of sequence the files belong to
   -d          date string that identifies the database generation time (default: current)
   -n 	      name of the hhblits database we are creating (default: pdb_full)
-  -a 		  a3mFile to link (full path)
-  -p 		  hhmFile to link (full path)
+  -a 		  a3mFile to copy (full path)
+  -p 		  hhmFile to copy (full path)
+  -c 		  seq219File to copy (full path)
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -51,6 +52,7 @@ do
 	m) md5=$OPTARG;;
 	a) a3mfile=$OPTARG;;
 	p) hhmfile=$OPTARG;;
+	c) seq219file=$OPTARG;;  
 	d) dbDate=$OPTARG;;
 	n) dbName=$OPTARG;;
 	h) usage; echo " "; exit;;
@@ -76,7 +78,12 @@ if [ -z $hhmdir ]
 then
 	hhmdir=$hhblitsdb_data_dir"/hhm/"$dbDate
 fi
+if [ -z $seq219dir ]
+then
+	seq219dir=$hhblitsdb_data_dir"/seq219/"$dbDate
+fi
 
 gzip -c $a3mfile | aws --region=$REGION s3 cp - $a3mdir/$md5
-aws --region=$REGION s3 cp $a3mfile $hhmdir/$md5
+aws --region=$REGION s3 cp $hhmfile $hhmdir/$md5
+aws --region=$REGION s3 cp $seq219file $seq219dir/$md5
 

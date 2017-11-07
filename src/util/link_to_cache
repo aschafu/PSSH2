@@ -21,6 +21,7 @@ OPTIONS
   -d          date string that identifies the database generation time
   -a 		  a3mFile to link (full path)
   -p 		  hhmFile to link (full path)
+  -c 		  seq219File to link (full path)
 AUTHOR
   Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 EOT
@@ -38,7 +39,7 @@ then
 	source $conf_file
 fi
 
-while getopts :sDhd:m:a:p:n: opt
+while getopts :sDhd:m:a:p:c:n: opt
 do
 	case $opt in
 	s) silent=1; debug=0; 
@@ -46,6 +47,7 @@ do
 	m) md5=$OPTARG;;
 	a) a3mfile=$OPTARG;;
 	p) hhmfile=$OPTARG;;
+	c) seq219file=$OPTARG;;  
 	d) dbDate=$OPTARG;;
 	n) dbName=$OPTARG;;
 	h) usage; echo " "; exit;;
@@ -71,6 +73,10 @@ if [ -z $hhmdir ]
 then
 	hhmdir=$hhblitsdb_data_dir"hhm/"$dbDate"/"
 fi
+if [ -z $seq219dir ]
+then
+	seq219dir=$hhblitsdb_data_dir"seq219/"$dbDate"/"
+fi
 
 mkdir -p $a3mdir
 if [ -w $a3mdir ]
@@ -87,6 +93,15 @@ then
 	ln -s $hhmfile $hhmdir/$md5
 else
 	echo "ERROR: cannot write to output directory $hhmdir. Please fix!"
+	exit 1
+fi
+
+mkdir -p $seq219dir
+if [ -w $seq219dir ]
+then
+	ln -s $seq219file $seq219dir/$md5
+else
+	echo "ERROR: cannot write to output directory $seq219dir. Please fix!"
 	exit 1
 fi
 
