@@ -7,7 +7,7 @@
 set -x
 exec > >(tee /var/log/user-data-pssh2intall.log|logger -t user-data ) 2>&1
 
-wget ftp://rostlab.org/pssh2/package/pssh2_0.1+nmu1_amd64.deb
+wget ftp://rostlab.org/pssh2/package/pssh2.deb
 dpkg -i pssh2_0.1+nmu1_amd64.deb
 apt-get install -yf
 apt-get install -y mysql-client

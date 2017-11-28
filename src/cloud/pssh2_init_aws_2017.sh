@@ -2,26 +2,51 @@
 set -x
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
-apt-get update
-apt-get upgrade -y
-apt-get install -y python-pip lvm2
-pip install awscli
+yum update -y
+yum upgrade -y
+yum groupinstall -y "Development Tools"
+yum install -y python-pip lvm2 git 
+#yum install -y cmake openmpi
 
-head -1 /etc/fstab > /tmp/fstab
+mkdir /mnt/resultData
+mkfs -t ext4 /dev/xvdb
+mount /dev/xvdb /mnt/resultData/
+
 mkdir /mnt/data
-if test -b /dev/xvdc
-then
-	pvcreate /dev/xvdb /dev/xvdc
-	vgcreate volgrp /dev/xvdb /dev/xvdc
-	lvcreate -l 100%FREE  -n data volgrp
-	mkfs -t ext4 /dev/volgrp/data
-	echo "/dev/volgrp/data /mnt/data ext4 defaults 0 2" >> /tmp/fstab
-else
-	mkfs -t ext4 /dev/xvdb
-	echo "/dev/xvdb /mnt/data ext4 defaults 0 2" >> /tmp/fstab
-fi
+mkfs -t ext4 /dev/xvdc
+mount /dev/xvdc /mnt/data/
+
 chmod a+tw /mnt/data/
-mv /tmp/fstab /etc/fstab
+chmod a+tw /mnt/resultData/
+
+mkdir /mnt/data/hhblits/
+chmod a+tw /mnt/data/hhblits/
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+aws --recursive --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/ /mnt/data/hhblits/
+
+mkdir /home/ec2-user/git
+cd  /home/ec2-user/git
+git clone https://github.com/soedinglab/hh-suite.git
+cd hh-suite/
+git submodule init
+git submodule update
+
+sed -i 's/FFINDEX_MAX_ENTRY_NAME_LENTH 32/FFINDEX_MAX_ENTRY_NAME_LENTH 33/g' lib/ffindex/src/ffindex.h
+
+mkdir build
+cd build
+mkdir /usr/share/hhsuite/
+set INSTALL_BASE_DIR /usr/share/hhsuite/
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${INSTALL_BASE_DIR} ..
+make
+make install
+
+
+
+
+
+
+
 
 reboot
 
