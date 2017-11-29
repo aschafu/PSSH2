@@ -200,7 +200,7 @@ sub read_hhr{
       		}
     	}
 
-		if ($line =~ /^No 1 /) { #first alignment begins
+		if ($line =~ /^No 1\s/) { #first alignment begins
       		$align_lines = 1;  
     	}   
 
