@@ -105,7 +105,7 @@ then
 fi
 
 #echo "running hhblits -cpu 1 -i $hhm -d $pdb_full  -n 1 -o $hhr $b $reportedHits"
-hhblits -cpu $n_cpu -i $hhm -d $pdb_full  -n 1 -o $hhr $b $reportedHits >> $hhblitsLog
+$hhlib/bin/hhblits -cpu $n_cpu -i $hhm -d $pdb_full  -n 1 -o $hhr $b $reportedHits >> $hhblitsLog
 
 
 
