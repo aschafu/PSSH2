@@ -20,12 +20,12 @@ rootDir="/mnt/project/pssh/pssh2_project/"
 pdb_dir="/mnt/project/rost_db/data/pdb/entries/"
 pdb_pre="pdb"
 pdb_suf=".ent"
+pdbDownloadUrl="https://files.rcsb.org/download/"
 #pa3mfile_gz=$pa3mfile.gz
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
 dbDate='current'
 dbName='pdb_full'
-
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -287,10 +287,19 @@ then
 #		md5=`cat query.fasta|fasta_to_md5`
 		pdb_id=`find_best_pdb_for_seqres_md5 -m $md5|cut -b1-4`
 		pdb_id_norm=`echo $pdb_id | tr '[:upper:]' '[:lower:]'`
-		
+	
 		# due to some mess-up between pdb formats we might not have the pdb file on the disk,
 		pdb_sub_dir=`echo $pdb_id_norm|cut -b2,3`
 		pdb_file="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf"
+
+		# if it is not here, then try to get it online
+		if [ ! -s $pdb_file ]
+		then
+#			wget https://files.rcsb.org/download/4hhb.cif.gz
+			wget $pdbDownloadUrl/$pdb_id$pdb_suf
+			mv $pdb_id$pdb_suf $pdb_file
+#			gunzip $pdb_suf.gz 
+		fi	
 
 		# so if it is actually there, then try to add experimental secondary structure,
 		# otherwise only use predicted secondary structure
