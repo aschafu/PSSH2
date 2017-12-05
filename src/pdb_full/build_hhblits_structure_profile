@@ -126,15 +126,15 @@ esac
 
 if [ -x $cachingRoutine ]
 then
-	echo "will use $storeRoutine to store output files"
+	echo "will use $cachingRoutine to store output files"
 else
-	echo "ERROR: cannot execute '$storeRoutine'. Please fix!"
+	echo "ERROR: cannot execute '$cachingRoutine'. Please fix!"
 	exit 1
 fi
 
 if [ -z $cstranslateOptions ]
 then
-	cstranslateOptions = "-A $hhlib/data/cs219.lib -D $hhlib/data/context_data.lib -x 0.3 -c 4 "  
+	cstranslateOptions="-A $hhlib/data/cs219.lib -D $hhlib/data/context_data.lib -x 0.3 -c 4 "  
 fi
 
 shift $(expr $OPTIND - 1 )
