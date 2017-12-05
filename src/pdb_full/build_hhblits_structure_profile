@@ -297,11 +297,12 @@ then
 		then
 #			wget https://files.rcsb.org/download/4hhb.cif.gz
 			wget $pdbDownloadUrl/$pdb_id$pdb_suf
+			mkdir -p $pdb_dir/$pdb_sub_dir/
 			mv $pdb_id$pdb_suf $pdb_file
 #			gunzip $pdb_suf.gz 
 		fi	
 
-		# so if it is actually there, then try to add experimental secondary structure,
+		# now, if it is actually there, then try to add experimental secondary structure,
 		# otherwise only use predicted secondary structure
 		if [ -s $pdb_file ]
 		then
