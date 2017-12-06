@@ -296,10 +296,14 @@ then
 		if [ ! -s $pdb_file ]
 		then
 #			wget https://files.rcsb.org/download/4hhb.cif.gz
-			wget $pdbDownloadUrl/$pdb_id$pdb_suf
+			wget $pdbDownloadUrl/$pdb_id$pdb_suf			
 			mkdir -p $pdb_dir/$pdb_sub_dir/
 			mv $pdb_id$pdb_suf $pdb_file
-#			gunzip $pdb_suf.gz 
+			# addss.pl cannot handle zipped cif files
+			if [[ $pdb_suf == *cif.gz ]]
+			then	
+				gunzip $pdb_file
+			fi
 		fi	
 
 		# now, if it is actually there, then try to add experimental secondary structure,
@@ -316,7 +320,10 @@ then
 		$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
 		# remove the pdb id from the $pa3mfile_pdb 
 		sed "s/$pdb_id_norm/$md5/g" < $pa3mfile_pdb > $pa3mfile
-		rm -f $pa3mfile_pdb $a3mfile_pdb
+		if [ $debug -eq 0 ]
+		then
+			rm -f $pa3mfile_pdb $a3mfile_pdb
+		fi
 		# clean up
 		gzip $a3mfile
 	else
