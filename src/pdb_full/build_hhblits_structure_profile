@@ -327,9 +327,9 @@ then
 			if [ ! -s $pdb_file ]
 			then
 #				wget https://files.rcsb.org/download/4hhb.cif.gz
-				wget $pdbDownloadUrl/$pdb_id$pdb_suf			
+				wget $pdbDownloadUrl/$pdb_id_norm$pdb_suf			
 				mkdir -p $pdb_dir/$pdb_sub_dir/
-				mv $pdb_id$pdb_suf $pdb_file
+				mv $pdb_id_norm$pdb_suf $pdb_file
 				# addss.pl cannot handle zipped cif files
 				if [[ $pdb_suf == *cif.gz ]]
 				then	
