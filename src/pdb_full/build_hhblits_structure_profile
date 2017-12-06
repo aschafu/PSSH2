@@ -291,6 +291,13 @@ then
 		# due to some mess-up between pdb formats we might not have the pdb file on the disk,
 		pdb_sub_dir=`echo $pdb_id_norm|cut -b2,3`
 		pdb_file="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf"
+		# addss.pl cannot handle zipped cif files
+		if [[ $pdb_suf == *cif.gz ]]
+		then	
+			pdb_suf2=`echo $pdb_suf | sed -e "s/.gz//"`
+			pdb_file_orig="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf"			
+			pdb_file="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf2"			
+		fi
 
 		# if it is not here, then try to get it online
 		if [ ! -s $pdb_file ]
@@ -302,7 +309,7 @@ then
 			# addss.pl cannot handle zipped cif files
 			if [[ $pdb_suf == *cif.gz ]]
 			then	
-				gunzip $pdb_file
+				gunzip $pdb_file_orig
 			fi
 		fi	
 
