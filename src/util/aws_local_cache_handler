@@ -37,6 +37,8 @@ then
 	source $conf_file
 fi
 
+retrieve=0
+store=0
 while getopts :sDhd:m:a:p:n: opt
 do
 	case $opt in
