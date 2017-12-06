@@ -61,6 +61,7 @@ ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- |
 CC=`find_cache_path -m $md5`
 mkdir -p $CC
 if [ ! -d $CC ] 
+then
 	echo "ERROR: was not able to work on cache for $CC please go fix"
 	exit 1
 fi
