@@ -290,7 +290,7 @@ then
         pdb_id_norm=`echo $pdb_id | cut -b1-4 | tr '[:upper:]' '[:lower:]'`
         pdb_id_end=`echo $pdb_id | cut -b5-`
         # for addss.pl we need the chain of the pdb structure to be there
-        pdb_id_hh=$pdb_id_begin$pdb_id_end
+        pdb_id_hh=$pdb_id_norm$pdb_id_end
 #		pdb_id=`find_best_pdb_for_seqres_md5 -m $md5|cut -b1-4`
 #		pdb_id_norm=`echo $pdb_id | tr '[:upper:]' '[:lower:]'`
 
