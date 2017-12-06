@@ -357,7 +357,7 @@ then
 		export HHLIB=$hhlib
 		$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
 		# remove the pdb id from the $pa3mfile_pdb 
-		sed "s/$pdb_id_norm/$md5/g" < $pa3mfile_pdb > $pa3mfile
+		sed "s/$pdb_id_hh/$md5/g" < $pa3mfile_pdb > $pa3mfile
 		if [ $debug -eq 0 ]
 		then
 			rm -f $pa3mfile_pdb $a3mfile_pdb
