@@ -379,9 +379,9 @@ then
 	$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
 	# finally, we also make the seq219 file 
 	$hhlib/bin/cstranslate $cstranslateOptions -i $CC/$pa3mfile -o $CC/$seq219file 
-#	ln -s $CC/$hhmfile $hhmdir/$md5.a3m
+#	ln -s $CC/$hmmfile $hhmdir/$md5.a3m
 	# store everything in the respective caches
-	$cachingRoutine -m $md5 -p $CC/$hhmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate -n $dbName
+	$cachingRoutine -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate -n $dbName
 #
 else
 	if [ $fail -eq 0 ]

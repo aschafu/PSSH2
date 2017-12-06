@@ -41,6 +41,7 @@ then
 	source $conf_file
 fi
 
+debug=0
 while getopts :sDhd:m:a:p:c:n: opt
 do
 	case $opt in
@@ -65,7 +66,7 @@ fi
 # set needed parameters, but only if the config file hasn't set them
 if [ -z $hhblitsdb_data_dir ]
 then
-	hhblitsdb_data_dir=$rootDir"data/"$dbName"_workData"
+	hhblitsdb_data_dir=$rootDir"data/"$dbName"_workData/"
 fi
 if [ -z $a3mdir ]
 then
