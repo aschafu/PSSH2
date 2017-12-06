@@ -311,7 +311,6 @@ then
 		then
 			refer2pdb=1
 		else
-		then
 			# due to some mess-up between pdb formats we might not have the pdb file on the disk
 			# CAVEAT: cif files won't work!
 			# addss.pl cannot handle zipped cif files
