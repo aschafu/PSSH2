@@ -82,7 +82,7 @@ fi
 if [ $store -eq 1 ]
 then
 	cd $CC
-	tar -cz | aws --region=$REGION s3 cp - $s3Bucket/$s3Folder/$md5
+	tar -cz * | aws --region=$REGION s3 cp - $s3Bucket/$s3Folder/$md5
 	aws --region=$REGION s3 ls $s3Bucket/$s3Folder/$md5
 fi
 
