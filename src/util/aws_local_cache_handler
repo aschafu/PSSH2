@@ -49,7 +49,7 @@ fi
 debug=0
 retrieve=0
 store=0
-while getopts :sDhd:m:a:p:n: opt
+while getopts :sDhm:r opt
 do
 	case $opt in
 	D) debug=1;; 
