@@ -28,7 +28,7 @@ exit 1
 
 #### parameters (will be overwritten by anything read from conf file)
 s3Bucket="s3://pssh3cache/" 
-s3FolderCache="hhblits_result_caches/"
+s3FolderCache="hhblits_result_cache/"
 temp_work=`pwd`
 
 # get configurable options, e.g. local file paths
