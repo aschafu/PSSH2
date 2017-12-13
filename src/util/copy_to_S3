@@ -6,7 +6,7 @@ fi
 
 #### parameters (will be overwritten by anything read from conf file)
 s3Bucket="s3://pssh3cache/" 
-s3Folder="hhblits_db_creation/"
+s3FolderDbCreation="hhblits_db_creation/"
 dbName="pdb_full"
 dbDate='current'
 
@@ -57,18 +57,18 @@ fi
 
 debug=0
 silent=0
-while getopts :sDhd:m:a:p:n: opt
+while getopts :sDhm:a:p:c:d:n: opt
 do
 	case $opt in
 	s) silent=1; debug=0;; 
 	D) debug=1;; 
+	h) usage; echo " "; exit;;
 	m) md5=$OPTARG;;
 	a) a3mfile=$OPTARG;;
 	p) hhmfile=$OPTARG;;
 	c) seq219file=$OPTARG;;  
 	d) dbDate=$OPTARG;;
 	n) dbName=$OPTARG;;
-	h) usage; echo " "; exit;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
 done
@@ -79,21 +79,21 @@ then
 fi
 
 # set needed parameters, but only if the config file hasn't set them
-if [ -z $hhblitsdb_data_dir ]
+if [ -z $hhblitsdb_data_dir_aws ]
 then
-	hhblitsdb_data_dir=$s3Bucket$s3Folder$dbName
+	hhblitsdb_data_dir_aws=$s3Bucket$s3FolderDbCreation$dbName
 fi
 if [ -z $a3mdir ]
 then
-	a3mdir=$hhblitsdb_data_dir"/a3m/"$dbDate
+	a3mdir=$hhblitsdb_data_dir_aws"/a3m/"$dbDate
 fi
 if [ -z $hhmdir ]
 then
-	hhmdir=$hhblitsdb_data_dir"/hhm/"$dbDate
+	hhmdir=$hhblitsdb_data_dir_aws"/hhm/"$dbDate
 fi
 if [ -z $seq219dir ]
 then
-	seq219dir=$hhblitsdb_data_dir"/seq219/"$dbDate
+	seq219dir=$hhblitsdb_data_dir_aws"/seq219/"$dbDate
 fi
 
 gzip -c $a3mfile | aws --region=$REGION s3 cp - $a3mdir/$md5

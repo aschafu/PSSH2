@@ -28,7 +28,7 @@ exit 1
 
 #### parameters (will be overwritten by anything read from conf file)
 s3Bucket="s3://pssh3cache/" 
-s3Folder="hhblits_result_caches/"
+s3FolderCache="hhblits_result_caches/"
 temp_work=`pwd`
 
 # get configurable options, e.g. local file paths
@@ -49,14 +49,14 @@ fi
 debug=0
 retrieve=0
 store=0
-while getopts :sDhm:r opt
+while getopts :Dhm:rs opt
 do
 	case $opt in
 	D) debug=1;; 
+	h) usage; echo " "; exit;;
 	m) md5=$OPTARG;;
 	r) retrieve=1;;
 	s) store=1;; 
-	h) usage; echo " "; exit;;
 	:)  echo "Error: -$OPTARG requires an argument"; usage; exit 1;;
 	esac
 done
@@ -80,12 +80,12 @@ fi
 
 if [ $retrieve -eq 1 ]
 then
-	if aws --region=$REGION s3 ls $s3Bucket/$s3Folder/$md5 > /dev/null
+	if aws --region=$REGION s3 ls $s3Bucket/$s3FolderCache/$md5 > /dev/null
 	then
 		current=`pwd`
 		cd $CC
 		# gets the data under the tar directly into current directory
-		aws --region=$REGION s3 cp $s3Bucket/$s3Folder/$md5 - | tar -xz
+		aws --region=$REGION s3 cp $s3Bucket/$s3FolderCache/$md5 - | tar -xz
 		cd $current
 	fi
 	echo $CC
@@ -93,7 +93,7 @@ fi
 if [ $store -eq 1 ]
 then
 	cd $CC
-	tar -cz * | aws --region=$REGION s3 cp - $s3Bucket/$s3Folder/$md5
-	aws --region=$REGION s3 ls $s3Bucket/$s3Folder/$md5
+	tar -cz * | aws --region=$REGION s3 cp - $s3Bucket/$s3FolderCache/$md5
+	aws --region=$REGION s3 ls $s3Bucket/$s3FolderCache/$md5
 fi
 
