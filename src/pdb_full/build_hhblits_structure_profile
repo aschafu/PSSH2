@@ -302,7 +302,7 @@ then
 		dssp_file=$pdb_id_norm".dssp"
 		if [ ! -s $dssp_dir'/'$dssp_file ]
 		then
-        	rsync "rsync://rsync.cmbi.ru.nl/dssp/"$dssp_file
+        	rsync "rsync://rsync.cmbi.ru.nl/dssp/"$dssp_file .
 	        mv $dssp_file $dssp_dir
 	    fi
 	
