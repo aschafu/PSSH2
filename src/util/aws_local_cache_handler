@@ -78,14 +78,17 @@ then
 	exit 1
 fi
 
+# CAVE: We assume that the s3 bucket etc contain slashes. 
+# Adding extra slashes creates nameless subbuckets.
+hhblitscache_aws=$s3Bucket$s3FolderCache$md5
 if [ $retrieve -eq 1 ]
 then
-	if aws --region=$REGION s3 ls $s3Bucket/$s3FolderCache/$md5 > /dev/null
+	if aws --region=$REGION s3 ls $hhblitscache_aws > /dev/null
 	then
 		current=`pwd`
 		cd $CC
 		# gets the data under the tar directly into current directory
-		aws --region=$REGION s3 cp $s3Bucket/$s3FolderCache/$md5 - | tar -xz
+		aws --region=$REGION s3 cp $hhblitscache_aws - | tar -xz
 		cd $current
 	fi
 	echo $CC
@@ -93,7 +96,7 @@ fi
 if [ $store -eq 1 ]
 then
 	cd $CC
-	tar -cz * | aws --region=$REGION s3 cp - $s3Bucket/$s3FolderCache/$md5
-	aws --region=$REGION s3 ls $s3Bucket/$s3FolderCache/$md5
+	tar -cz * | aws --region=$REGION s3 cp - $hhblitscache_aws
+	aws --region=$REGION s3 ls $hhblitscache_aws
 fi
 
