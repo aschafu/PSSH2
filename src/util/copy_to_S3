@@ -45,6 +45,8 @@ then
 	source $conf_file
 fi
 
+debug=0
+silent=0
 while getopts :sDhd:m:a:p:n: opt
 do
 	case $opt in

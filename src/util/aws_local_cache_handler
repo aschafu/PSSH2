@@ -37,6 +37,16 @@ then
 	source $conf_file
 fi
 
+# by default we want to use the system installation
+# but if local_paths is set we have the option to change the path and instead use the local variants
+if [ $local_paths ]
+then
+	PATH=$local_paths:$PATH
+	export PATH
+	echo "Using path: $PATH"
+fi
+
+debug=0
 retrieve=0
 store=0
 while getopts :sDhd:m:a:p:n: opt
