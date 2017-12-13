@@ -82,10 +82,11 @@ if [ $retrieve -eq 1 ]
 then
 	if aws --region=$REGION s3 ls $s3Bucket/$s3Folder/$md5 > /dev/null
 	then
+		current=`pwd`
 		cd $CC
 		# gets the data under the tar directly into current directory
 		aws --region=$REGION s3 cp $s3Bucket/$s3Folder/$md5 - | tar -xz
-		cd $temp_work
+		cd $current
 	fi
 	echo $CC
 fi
