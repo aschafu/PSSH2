@@ -330,8 +330,8 @@ then
 				wget $pdbDownloadUrl/$pdb_id_norm$pdb_suf			
 				mkdir -p $pdb_dir/$pdb_sub_dir/
 				mv $pdb_id_norm$pdb_suf $pdb_file
-				# addss.pl cannot handle zipped cif files
-				if [[ $pdb_suf == *cif.gz ]]
+				# addss.pl cannot handle zipped pdb files
+				if [[ $pdb_suf == *pdb.gz ]]
 				then	
 					gunzip $pdb_file_orig
 				fi
@@ -416,7 +416,7 @@ case $cloudMode in
 		fi
 		;;
 	'aws' )
-		`$rootDir/src/util/aws_local_cache_handler -m $md5 -s`
+		$rootDir/src/util/aws_local_cache_handler -m $md5 -s
 		if [ $debug -eq 0 ]
 		then
 			rm -r $CC
