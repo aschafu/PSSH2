@@ -176,15 +176,16 @@ do
 			skip_all=1	
 			skip_add=1
 			skip_build=1
+			CC='fake'
 		else
 			skip_all=0	
 			# here, we don't only set the path location, but also fetch the data from the cache
-			CC=`$rootDir/src/util/aws_local_cache_handler -m $md5 -r`
+			CC=`$rootDir/src/util/aws_local_cache_handler -m $md5 -r | tail -1`
 		fi
 		keepWorking=1
 		;;
 	"rostlab" )
-		CC=`find_cache_path -m $md5`
+		CC=`find_cache_path -m $md5 | tail -1`
 		keepWorking=0
 		skip_all=0
 		;;
@@ -265,12 +266,13 @@ do
 						if [ $silent -eq 0 ]
     					then
 	    				    echo "psipred_a3m already made: $pa3m_stamp in "
-				    	pwd
-			   		 	if [ $skip_add -eq 1 ] 
-			    		then
-							echo "file will be used again"
-					    else
-							echo "file will be remade"
+				    		pwd
+			   		 		if [ $skip_add -eq 1 ] 
+			    			then
+								echo "file will be used again"
+						    else
+								echo "file will be remade"
+							fi
 						fi
 					fi
 				elif [ -s $a3mfile_gz ]
