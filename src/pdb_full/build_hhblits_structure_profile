@@ -294,30 +294,32 @@ do
 						if [ $a3m_stamp -gt $db_stamp ]
 						then
 			    			skip_build=1
-				    fi
-					else
-					    skip_build=1
-					fi
- 		   			if [ $silent -eq 0 ]
-	    			then
-		    			echo "a3m already made: $a3m_stamp in "
-						pwd
-						if [ $skip_build -eq 1 ] 
-						then
-							echo "file will be used again"
+				    	fi
 						else
-							echo "file will be remade"
+					    	skip_build=1
 						fi
-					fi
-				fi
-			fi
+ 			   			if [ $silent -eq 0 ]
+	    				then
+		    				echo "a3m already made: $a3m_stamp in "
+							pwd
+							if [ $skip_build -eq 1 ] 
+							then
+								echo "file will be used again"
+							else
+								echo "file will be remade"
+							fi
+						fi
+					fi # end of checking whether the a3m file is new enough
+				fi # end of potentially comparing a3m_stamp
+			fi # end of checking whether we can skip anything at all
 		else
-		# if there is no input, we exit now with an error
-		s=`date +%s`
-		DB.pssh2_local "insert into $profile_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
-		echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
-		skip_all=1
-	fi
+			# if there is no input, we exit now with an error
+			s=`date +%s`
+			DB.pssh2_local "insert into $profile_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
+			echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+			skip_all=1
+		fi # end of checking for required input
+	fi # end of dealing with empty input (no md5 in cloud mode)
 
 
 	maxmem=0
@@ -562,7 +564,8 @@ EOF
 				if [ $count -eq -1 ]
 				then
 					redo_large=1
-				elif [ $count -lt -1 ]	
+				elif [ $count -lt -1 ]
+				then				
 					failed=1
 					aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_failed_queue --message-body $md5
 					# TODO: submit to failed queue
@@ -573,7 +576,7 @@ EOF
 					# TODO: submit to longer queue 
 					aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_long_queue --message-body $md5
 				fi 
-				;;
+				;;				
 		esac
 
 	fi	
