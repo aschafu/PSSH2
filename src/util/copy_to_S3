@@ -81,6 +81,8 @@ fi
 # set needed parameters, but only if the config file hasn't set them
 if [ -z $hhblitsdb_data_dir_aws ]
 then
+	# CAVE: We assume that the s3 bucket etc contain slashes. 
+	# Adding extra slashes creates nameless subbuckets.
 	hhblitsdb_data_dir_aws=$s3Bucket$s3FolderDbCreation$dbName
 fi
 if [ -z $a3mdir ]
@@ -96,7 +98,7 @@ then
 	seq219dir=$hhblitsdb_data_dir_aws"/seq219/"$dbDate
 fi
 
-gzip -c $a3mfile | aws --region=$REGION s3 cp - $a3mdir/$md5
+gzip -c $a3mfile | aws --region=$REGION s3 cp - $a3mdir/$md5.gz
 aws --region=$REGION s3 cp $hhmfile $hhmdir/$md5
 aws --region=$REGION s3 cp $seq219file $seq219dir/$md5
 
