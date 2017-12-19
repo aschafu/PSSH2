@@ -498,7 +498,7 @@ do
 	### add output to the status db
 		s=`date +%s`
 		runtime=$SECONDS
-		DB.pssh2_local "insert into $profile_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime " 
+		DB.pssh2_local "insert into $profile_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$runtime, maxmem=$maxmem ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime, maxmem=$maxmem  " 
 
 		case $cloudMode in
 			'rostlab' )
@@ -544,8 +544,6 @@ do
 }
 EOF
 				aws dynamodb put-item --region=$REGION --table-name "runTimes" --item file://$jsonFile
-
-
 
 				# send the queue a message that this sequence has been processed
 
