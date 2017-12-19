@@ -261,10 +261,6 @@ do
 		    		    	skip_add=1
 			    		    skip_build=1
 						fi
-						else
-						    skip_add=1
-		    			    skip_build=1
-						fi
 
 						if [ $silent -eq 0 ]
     					then
@@ -294,9 +290,6 @@ do
 						if [ $a3m_stamp -gt $db_stamp ]
 						then
 			    			skip_build=1
-				    	fi
-						else
-					    	skip_build=1
 						fi
  			   			if [ $silent -eq 0 ]
 	    				then
