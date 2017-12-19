@@ -154,7 +154,7 @@ shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
 keepWorking=1
-while $keepWorking
+while [ $keepWorking -gt 0 ]
 do
 
 	case $cloudMode in
