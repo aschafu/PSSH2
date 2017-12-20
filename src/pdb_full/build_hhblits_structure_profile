@@ -14,6 +14,7 @@ hhrfile='query.uniprot20.hhr'
 pa3mfile='query.uniprot20.psipred.a3m' 
 seq219file='query.uniprot20.seq219' 
 rootDir="/mnt/project/pssh/pssh2_project/" 
+temp_work="/tmp/pssh2"
 #pdb_derived_dir=$rootDir"data/pdb_derived/"
 #pa3mdir=$pdb_derived_dir"psipred_a3m/current/"
 #hhmdir=$pdb_derived_dir"psipred_a3m/current/"
@@ -157,6 +158,7 @@ keepWorking=1
 while [ $keepWorking -gt 0 ]
 do
 
+	startTime=$SECONDS
 	case $cloudMode in
  	"aws" )
 		# get the next md5 to process
@@ -494,7 +496,8 @@ do
 
 	### add output to the status db
 		s=`date +%s`
-		runtime=$SECONDS
+		finishTime=$SECONDS
+		runtime=$(($finishTime-$startTime))
 		DB.pssh2_local "insert into $profile_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$runtime, maxmem=$maxmem ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime, maxmem=$maxmem  " 
 
 		case $cloudMode in
@@ -518,25 +521,26 @@ do
 				;;
 			'aws' )
 				$rootDir/src/util/aws_local_cache_handler -m $md5 -s
+				cd $temp_work
 				if [ $debug -eq 0 ]
 				then
 					rm -r $CC
 				fi
 
 				# write out statistics
-				jsonFile=$md5.json
+				jsonFile=$temp_work$md5.json
 				cat << EOF > $jsonFile
 {
 	"sequence_md5": {"S": "$md5"},
-	"conditionString": {"S": "$instance_type-$storage-$nCpu"},
+	"conditionString": {"S": "$instance_type-$storage-$n_cpu"},
 	"architecture": {"S": "$instance_type"},
 	"storage": {"S": "$storage"},
-	"nCpu": {"N": "$nCpu"},
+	"nCpu": {"N": "$n_cpu"},
 	"maxmem": {"N": "$maxmem"},
 	"sysTime": {"N": "$sysTime"},
 	"usrTime": {"N": "$usrTime"},
 	"wallTime": {"N": "$wallTime"},
-	"scriptTime": {"N":  "$SECONDS"},
+	"scriptTime": {"N":  "$runtime"},
 	"command": {"S": "build_hhblits_structure_profile"}
 }
 EOF
@@ -578,5 +582,10 @@ EOF
 	# reset the variables so we don't accidentally use them again
 	md5=""
 	HANDLE=""
+	maxmem=0
+	sysTime=0
+	usrTime=0
+	wallTime=0
+	
 	
 done

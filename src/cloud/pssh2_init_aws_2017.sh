@@ -9,14 +9,14 @@ yum install -y python-pip lvm2 git
 yum install -y cmake mysql
 #yum install -y openmpi
 
-#mkdir /mnt/resultData
-#mkfs -t ext4 /dev/xvdb
-#mount /dev/xvdb /mnt/resultData/
+mkdir /mnt/resultData
+mkfs -t ext4 /dev/xvdb
+mount /dev/xvdb /mnt/resultData/
 
 mkdir /mnt/data
-#mkfs -t ext4 /dev/xvdc
-#mount /dev/xvdc /mnt/data/
-mount /dev/xvdf /mnt/data/
+mkfs -t ext4 /dev/xvdc
+mount /dev/xvdc /mnt/data/
+#mount /dev/xvdf /mnt/data/
 
 chmod a+tw /mnt/data/
 chmod a+tw /mnt/resultData/
@@ -25,6 +25,13 @@ mkdir /mnt/data/hhblits/
 chmod a+tw /mnt/data/hhblits/
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 aws --recursive --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/ /mnt/data/hhblits/
+cd /mnt/data/hhblits/
+tar -xvzf uniprot20.tgz
+rm uniprot20.tgz
+# if we want to run pssh, we need pdb_full
+#tar -xvzf pdb_full.tgz
+rm pdb_full.tgz
+cd -
 
 mkdir /home/ec2-user/git
 chmod a+tw /home/ec2-user/git
@@ -47,6 +54,9 @@ make install
 cd  /home/ec2-user/git
 git clone https://github.com/aschafu/PSSH2.git
 
+mkdir -p /mnt/resultData/pssh2_cache/
+chmod a+tw /mnt/resultData/pssh2_cache/
+
 # from here on only need for making pdb_full 
 cd /home/ec2-user
 wget http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/psipred.4.01.tar.gz
@@ -60,8 +70,14 @@ tar -xvzf blast-2.2.26-x64-linux.tar.gz
 cp blast-2.2.26/bin/* /usr/local/bin
 cp -r blast-2.2.26/data /usr/local/blast-data
 
+BLASTMAT="/usr/local/blast-data/"
+export BLASTMAT
+# write this into ec2-user bashrc
+echo 'export BLASTMAT="/usr/local/blast-data/"'>> /home/ec2-user/.bashrc 
+
 mkdir -p /mnt/data/pdb/divided
 chmod a+tw /mnt/data/pdb
+# I just prepare the directory, but then fetch only sequences I need on the node
 
 mkdir -p /mnt/data/dssp/bin
 mkdir -p /mnt/data/dssp/data
@@ -71,18 +87,14 @@ wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 chmod a+rx dssp-2.0.4-linux-i386
 ln -s dssp-2.0.4-linux-i386 dsspcmbi
 
-cp /mnt/data/hhblits/HHPaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
-
-# current problem: pdb files not used by addss -> debug!
-
-#-----------------------------------------------------------------------
-
-# The following should be run as user to pull the 20GB input data:
-#aws --region=eu-west-1 s3 cp s3://aquaria-020528756185-eu-west-1/data - | tar -xI pbzip2 -C /
-
-
-#-----------------------------------------------------------------------
+# get config data
+aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
+aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/ec2-user/pssh2.aws.conf
+conf_file=/home/ec2-user/pssh2.aws.conf
+export conf_file
+echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc 
 
 
 # finally, start the processes that actually do the work
-# for i in `seq 1 $(nproc)`; do pssh2_aws & done
+# for i in `seq 1 $(nproc)`; do /home/ec2-user/git/PSSH/pssh2_aws & done
+# sudo -u ec2-user -H sh -c "for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done"  
