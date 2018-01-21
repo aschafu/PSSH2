@@ -119,6 +119,7 @@ done
 if [ $debug -eq 1 ]
 then
 	set -x
+	echo "conf_file: $conf_file"
 fi
 
 case $cloudMode in
@@ -336,14 +337,17 @@ do
 		wallTime=`echo $statistics| awk '{print $4}'`
 
 	else
-		if [ $do_gunzip -gt 0 ]
+		if [ $skip_all -eq 0 ]
 		then
-			gunzip $a3mfile_gz
+			if [ $do_gunzip -gt 0 ]
+			then
+				gunzip $a3mfile_gz
+			fi
+			if [ $silent -eq 0 ]
+	 		then
+				echo "skip making A3M."
+			fi	
 		fi
-		if [ $silent -eq 0 ]
-	 	then
-			echo "skip making A3M."
-		fi	
 	fi
 
 	# Note that the hhsuite installed on the cluster is not customised to our local Rostlab setup
