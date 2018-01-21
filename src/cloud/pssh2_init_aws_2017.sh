@@ -28,6 +28,8 @@ aws --recursive --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/ /mnt/data/hh
 cd /mnt/data/hhblits/
 tar -xvzf uniprot20.tgz
 rm uniprot20.tgz
+#chmod a+x /mnt/data//hhblits/uniprot20_2016_02/
+chmod -R a+rX /mnt/data//hhblits/uniprot20_2016_02/
 # if we want to run pssh, we need pdb_full
 #tar -xvzf pdb_full.tgz
 rm pdb_full.tgz
@@ -55,7 +57,8 @@ cd  /home/ec2-user/git
 git clone https://github.com/aschafu/PSSH2.git
 
 mkdir -p /mnt/resultData/pssh2_cache/
-chmod a+tw /mnt/resultData/pssh2_cache/
+chmod -R a+tw /mnt/resultData/pssh2_cache/
+chmod -R a+X /mnt/resultData/pssh2_cache/
 
 # from here on only need for making pdb_full 
 cd /home/ec2-user
@@ -76,12 +79,14 @@ export BLASTMAT
 echo 'export BLASTMAT="/usr/local/blast-data/"'>> /home/ec2-user/.bashrc 
 
 mkdir -p /mnt/data/pdb/divided
-chmod a+tw /mnt/data/pdb
+chmod -R a+tw /mnt/data/pdb
+chmod -R a+rX /mnt/data/pdb
 # I just prepare the directory, but then fetch only sequences I need on the node
 
 mkdir -p /mnt/data/dssp/bin
 mkdir -p /mnt/data/dssp/data
-chmod a+tw /mnt/data/dssp
+chmod -R a+tw /mnt/data/dssp
+chmod -R a+rX /mnt/data/dssp
 cd /mnt/data/dssp/bin
 wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 chmod a+rx dssp-2.0.4-linux-i386
@@ -98,3 +103,7 @@ echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc
 # finally, start the processes that actually do the work
 # for i in `seq 1 $(nproc)`; do /home/ec2-user/git/PSSH/pssh2_aws & done
 # sudo -u ec2-user -H sh -c "for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done"  
+echo "#!/bin/bash" > /home/ec2-user/startProcesses.sh
+chmod a+x /home/ec2-user/startProcesses.sh
+echo 'for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done' >> /home/ec2-user/startProcesses.sh
+sudo -u ec2-user -H sh -c /home/ec2-user/startProcesses.sh

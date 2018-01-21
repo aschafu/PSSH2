@@ -148,7 +148,7 @@ fi
 
 if [ -z $cstranslateOptions ]
 then
-	cstranslateOptions="-A $hhlib/data/cs219.lib -D $hhlib/data/context_data.lib -x 0.3 -c 4 "  
+	cstranslateOptions="-A $hhlib/data/cs219.lib -D $hhlib/data/context_data.lib -x 0.3 -c 4 -b "  
 fi
 
 shift $(expr $OPTIND - 1 )
@@ -471,7 +471,7 @@ do
 			# -> run hhmake to redo that
 			$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
 			# finally, we also make the seq219 file 
-			$hhlib/bin/cstranslate $cstranslateOptions -i $CC/$pa3mfile -o $CC/$seq219file 
+			$hhlib/bin/cstranslate $cstranslateOptions -I a3m -i $CC/$pa3mfile -o $CC/$seq219file 
 			if [ ! -s $hmmfile ]
 			then
 				count=-3
