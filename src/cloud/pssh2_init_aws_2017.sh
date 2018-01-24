@@ -24,7 +24,10 @@ chmod a+tw /mnt/resultData/
 mkdir /mnt/data/hhblits/
 chmod a+tw /mnt/data/hhblits/
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
-aws --recursive --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/ /mnt/data/hhblits/
+# write this into ec2-user bashrc to make it easier to work as ec2-user
+echo "export REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`" >> /home/ec2-user/.bashrc
+
+aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz /mnt/data/hhblits/
 cd /mnt/data/hhblits/
 tar -xvzf uniprot20.tgz
 rm uniprot20.tgz
@@ -32,7 +35,7 @@ rm uniprot20.tgz
 chmod -R a+rX /mnt/data//hhblits/uniprot20_2016_02/
 # if we want to run pssh, we need pdb_full
 #tar -xvzf pdb_full.tgz
-rm pdb_full.tgz
+#rm pdb_full.tgz
 cd -
 
 mkdir /home/ec2-user/git
@@ -68,7 +71,8 @@ cd psipred/src
 make
 make install
 cd /home/ec2-user
-wget ftp://ftp.ncbi.nih.gov/blast/executables/legacy/2.2.26/blast-2.2.26-x64-linux.tar.gz
+#wget ftp://ftp.ncbi.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz
 tar -xvzf blast-2.2.26-x64-linux.tar.gz
 cp blast-2.2.26/bin/* /usr/local/bin
 cp -r blast-2.2.26/data /usr/local/blast-data
@@ -104,6 +108,7 @@ echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc
 # for i in `seq 1 $(nproc)`; do /home/ec2-user/git/PSSH/pssh2_aws & done
 # sudo -u ec2-user -H sh -c "for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done"  
 echo "#!/bin/bash" > /home/ec2-user/startProcesses.sh
-chmod a+x /home/ec2-user/startProcesses.sh
+echo 'export conf_file=/home/ec2-user/pssh2.aws.conf' >> /home/ec2-user/startProcesses.sh
 echo 'for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done' >> /home/ec2-user/startProcesses.sh
+chmod a+x /home/ec2-user/startProcesses.sh
 sudo -u ec2-user -H sh -c /home/ec2-user/startProcesses.sh
