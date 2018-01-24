@@ -475,7 +475,8 @@ do
 			# -> run hhmake to redo that
 			$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
 			# finally, we also make the seq219 file 
-			$hhlib/bin/cstranslate $cstranslateOptions -I a3m -i $CC/$pa3mfile -o $CC/$seq219file 
+			# generating seq219 files on the nodes doesn't work due to a bug/feature in cstranslate
+#			$hhlib/bin/cstranslate $cstranslateOptions -I a3m -i $CC/$pa3mfile -o $CC/$seq219file 
 			if [ ! -s $hmmfile ]
 			then
 				count=-3
@@ -486,8 +487,9 @@ do
 			fi
 
 #			ln -s $CC/$hmmfile $hhmdir/$md5.a3m
-			# store everything in the respective caches
-			$cachingRoutine -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate -n $dbName
+			# store everything in the respective caches (forget about seq219: doesn't work...)
+#			$cachingRoutine -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate -n $dbName
+			$cachingRoutine -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -d $dbDate -n $dbName
 #
 		else
 			if [ $fail -eq 0 ]
