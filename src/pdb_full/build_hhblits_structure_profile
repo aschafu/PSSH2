@@ -484,10 +484,10 @@ do
 			then
 				count=-3
 			fi
-			if [ ! -s $CC/$seq219file ]
-			then
-				count=-4
-			fi
+#			if [ ! -s $CC/$seq219file ]
+#			then
+#				count=-4
+#			fi
 
 #			ln -s $CC/$hmmfile $hhmdir/$md5.a3m
 			# store everything in the respective caches (forget about seq219: doesn't work...)
