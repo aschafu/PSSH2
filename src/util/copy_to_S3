@@ -87,18 +87,19 @@ then
 fi
 if [ -z $a3mdir ]
 then
-	a3mdir=$hhblitsdb_data_dir_aws"/a3m/"$dbDate
+	a3mdir=$hhblitsdb_data_dir_aws"/"$dbDate"/a3m"
 fi
 if [ -z $hhmdir ]
 then
-	hhmdir=$hhblitsdb_data_dir_aws"/hhm/"$dbDate
+	hhmdir=$hhblitsdb_data_dir_aws"/"$dbDate"/hhm"
 fi
 if [ -z $seq219dir ]
 then
-	seq219dir=$hhblitsdb_data_dir_aws"/seq219/"$dbDate
+	seq219dir=$hhblitsdb_data_dir_aws"/"$dbDate"/seq219"
 fi
 
 gzip -c $a3mfile | aws --region=$REGION s3 cp - $a3mdir/$md5.gz
 aws --region=$REGION s3 cp $hhmfile $hhmdir/$md5
-aws --region=$REGION s3 cp $seq219file $seq219dir/$md5
+# generation seq219 files on the nodes doesn't work due to a bug/feature in cstranslate
+#aws --region=$REGION s3 cp $seq219file $seq219dir/$md5
 
