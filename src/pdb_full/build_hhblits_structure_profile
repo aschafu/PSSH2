@@ -189,6 +189,7 @@ do
 		;;
 	"rostlab" )
 		CC=`find_cache_path -m $md5 | tail -1`
+		mkdir -p $CC
 		keepWorking=0
 		skip_all=0
 		;;
@@ -198,6 +199,8 @@ do
 	then
 		echo "ERROR: was not able to work on cache for $CC please go fix"
 		skip_all=1
+		skip_add=1
+		skip_build=1
 		count=-999
 	fi
 
