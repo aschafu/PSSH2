@@ -1,0 +1,21 @@
+yum update
+yum upgrade
+yum install -y python-pip lvm2
+
+mkdir /mnt/data
+mount /dev/sdf /mnt/data/
+
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`
+aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz /mnt/data/ 
+
+wget https://github.com/soedinglab/hh-suite/releases/download/v3.0-beta.3/hhsuite-3.0-beta.3-Linux.rpm
+yum install hhsuite-3.0-beta.3-Linux.rpm
+# PROBLEM: /usr/share/hhsuite is missing after install!
+
+wget ftp://rostlab.org/pssh2/package/pssh2.tgz
+
+
+
+sudo sudo yum install openmpi-devel
+fix name of "ffindex_apply_mpi" in "hhsuitedb.py"

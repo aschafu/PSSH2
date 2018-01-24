@@ -5,6 +5,7 @@ exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 apt-get update
 apt-get upgrade -y
 apt-get install -y python-pip lvm2
+pip install awscli
 
 head -1 /etc/fstab > /tmp/fstab
 mkdir /mnt/data
