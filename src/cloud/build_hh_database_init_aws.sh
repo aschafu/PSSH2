@@ -64,12 +64,15 @@ echo 'export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib' >> /home/ec2-user/.bashrc
 # get the data from S3 
 mkdir -p /mnt/resultData/pdb_full/
 chmod a+tw /mnt/resultData/pdb_full/
-# CAVE: Change current to different name if one has been given!
-aws  --region=$REGION  s3 sync s3://pssh3cache/hhblits_db_creation/pdb_full/current/ /mnt/resultData/pdb_full/ 
-chmod -R a+tw /mnt/resultData/pdb_full/
-chmod -R a+X /mnt/resultData/pdb_full/
+# CAVE: Change dbDate to different name if you don't want 'current'!
+dbDate='current'
+aws  --region=$REGION  s3 sync s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/ /mnt/resultData/pdb_full_$dbDate/ 
+chmod -R a+tw /mnt/resultData/pdb_full_$dbDate/
+chmod -R a+X /mnt/resultData/pdb_full_$dbDate/
 
-cd /mnt/resultData/pdb_full/
-/home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run.sh
-aws  --region=$REGION  s3 cp pdb_full.tgz s3://pssh3cache/hhblits_db_creation/pdb_full/current/ 
+cd /mnt/resultData/pdb_full_$dbDate/a3m/
+find . -type f  -name '*.[gG][zZ]' -exec gunzip {} +
+cd /mnt/resultData/pdb_full_$dbDate/
+/home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run.sh $dbDate
+aws  --region=$REGION  s3 cp pdb_full_$dbDate.tgz s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/ 
 

@@ -5,8 +5,10 @@ exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 yum update -y
 yum upgrade -y
 yum groupinstall -y "Development Tools"
-yum install -y python-pip lvm2 git 
+yum install -y python-pip lvm2 git ruby
 yum install -y cmake mysql
+# in case we want to run cstranslate on this node in parallel
+yum install -y openmpi-devel
 #yum install -y openmpi
 
 mkdir /mnt/resultData
@@ -27,15 +29,16 @@ REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O-
 # write this into ec2-user bashrc to make it easier to work as ec2-user
 echo "export REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`" >> /home/ec2-user/.bashrc
 
-aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz /mnt/data/hhblits/
 cd /mnt/data/hhblits/
-tar -xvzf uniprot20.tgz
-rm uniprot20.tgz
-#chmod a+x /mnt/data//hhblits/uniprot20_2016_02/
+aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz - | tar -xvz
+##tar -xvzf uniprot20.tgz
+##rm uniprot20.tgz
+##chmod a+x /mnt/data//hhblits/uniprot20_2016_02/
 chmod -R a+rX /mnt/data//hhblits/uniprot20_2016_02/
 # if we want to run pssh, we need pdb_full
-#tar -xvzf pdb_full.tgz
-#rm pdb_full.tgz
+#aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/pdb_full.tgz - | tar -xvz
+##tar -xvzf pdb_full.tgz
+##rm pdb_full.tgz
 cd -
 
 mkdir /home/ec2-user/git
@@ -63,7 +66,7 @@ mkdir -p /mnt/resultData/pssh2_cache/
 chmod -R a+tw /mnt/resultData/pssh2_cache/
 chmod -R a+X /mnt/resultData/pssh2_cache/
 
-# from here on only need for making pdb_full 
+# from here on to "finally" only needed for making pdb_full 
 cd /home/ec2-user
 wget http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/psipred.4.01.tar.gz
 tar -xvzf psipred.4.01.tar.gz
@@ -105,6 +108,7 @@ echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc
 
 
 # finally, start the processes that actually do the work
+
 # for i in `seq 1 $(nproc)`; do /home/ec2-user/git/PSSH/pssh2_aws & done
 # sudo -u ec2-user -H sh -c "for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done"  
 echo "#!/bin/bash" > /home/ec2-user/startProcesses.sh

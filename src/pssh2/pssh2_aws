@@ -273,7 +273,8 @@ do
 	"usrTime": {"N": "$usrTime"},
 	"wallTime": {"N": "$wallTime"},
 	"scriptTime": {"N":  "$runtime"},
-	"command": {"S": "pssh2_aws"}
+	"command": {"S": "pssh2_aws"},
+	"instanceId":{"S":"$instance_id"}
 }
 EOF
 
@@ -293,10 +294,10 @@ EOF
 		echo "ERROR: could not work on sequence: $md5 (error code: $count)"
 	fi
 
-	finishTime=$SECONDS
-	runtime=$(($finishTime-$startTime))
-	s=`date +%s`
-	DB.pssh2_local "insert into $aws_table set md5=\"$md5\", stamp=$s, pid=$pid, maxmem=$maxmem, sysTime=$sysTime, usrTime=$usrTime, wallTime=$wallTime, runTime=$runTime, instance_id=\"$instance_id\", instance_type=\"$instance_type\", availability_zone=\"$availability_zone\"" 
+#	finishTime=$SECONDS
+#	runtime=$(($finishTime-$startTime))
+#	s=`date +%s`
+#	DB.pssh2_local "insert into $aws_table set md5=\"$md5\", stamp=$s, pid=$pid, maxmem=$maxmem, sysTime=$sysTime, usrTime=$usrTime, wallTime=$wallTime, runTime=$runTime, instance_id=\"$instance_id\", instance_type=\"$instance_type\", availability_zone=\"$availability_zone\"" 
 	
 	# send the queue a message that this sequence has been processed
 	# if the count is -999 the compute node had a problem with the cache
