@@ -24,4 +24,4 @@ ln -s pdb_full_a3m.ffindex.simpleSort pdb_full_a3m.ffindex
 ln -s pdb_full_hhm.ffindex.simpleSort pdb_full_hhm.ffindex
 export OMP_NUM_THREADS=$(nproc)
 /usr/share/hhsuite/bin/cstranslate  -A /usr/share/hhsuite/data/cs219.lib -D /usr/share/hhsuite/data/context_data.lib -x 0.3 -c 4 -f -i pdb_full_a3m -o pdb_full_cs219 -I a3m -b
-tar --transform 's,^,pdb_full_$dbDate/,' --show-transformed-names - -cvzf pdb_full.tgz pdb_full_a3m.ffdata  pdb_full_a3m.ffindex pdb_full_hhm.ffdata  pdb_full_hhm.ffindex pdb_full_cs219.ffdata  pdb_full_cs219.ffindex
+tar -h --transform 's,^,pdb_full_$dbDate/,' --show-transformed-names - -cvzf pdb_full.tgz pdb_full_a3m.ffdata  pdb_full_a3m.ffindex pdb_full_hhm.ffdata  pdb_full_hhm.ffindex pdb_full_cs219.ffdata  pdb_full_cs219.ffindex
