@@ -27,7 +27,7 @@ then
 	aws  --region=$REGION  s3 cp s3://pssh3cache/hhblits_db_creation/pssh/$dbDate/$submitted .
 	if [ -s $submitted ]
 	then
-		lastLine=`tail -1 $submitted
+		lastLine=`tail -1 $submitted`
 		offset=`grep -n $lastLine | cut -d : -f 1`
 		echo 'restarting with info from $allFile and $submitted on line $offset'
 	else
@@ -35,7 +35,7 @@ then
 	fi
 else
 	# get swissprot sequences
-	~/git/PSSH2/src/util/DB.pssh2_local "select distinct md5_hash from protein_sequence where Source_Database='swissprot'" > $swissFile
+	~/git/PSSH2/src/util/DB.aquaria_local "select distinct md5_hash from protein_sequence where Source_Database='swissprot'" > $swissFile
 	# resuse pdb list
 	aws  --region=$REGION  s3 cp s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/$pdbFile .
 	# get any other list that might have been put there
@@ -55,6 +55,7 @@ do
 	if [ $count -eq 1000 ]
 	then
 		echo $md5 >> $submitted 
-		aws --region=$REGION  s3 cp $submitted s3://pssh3cache/hhblits_db_creation/pssh/$dbDate/
+		aws --region=$REGION  s3 cp $submitted s3://pssh3cache/hhblits_db_creation/pssh2/$dbDate/
+		count=0
 	fi
 done

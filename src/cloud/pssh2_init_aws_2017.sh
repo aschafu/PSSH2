@@ -37,6 +37,8 @@ aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz - | tar -xv
 chmod -R a+rX /mnt/data//hhblits/uniprot20_2016_02/
 # if we want to run pssh, we need pdb_full
 #aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/pdb_full.tgz - | tar -xvz
+aws --region=$REGION s3 cp s3://pssh3cache/hhblits_db_creation/pdb_full/201709/pdb_full_201709.tgz - | tar -xvz
+chmod -R a+rX /mnt/data//hhblits/pdb_full_201709/
 ##tar -xvzf pdb_full.tgz
 ##rm pdb_full.tgz
 cd -
@@ -114,5 +116,6 @@ echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc
 echo "#!/bin/bash" > /home/ec2-user/startProcesses.sh
 echo 'export conf_file=/home/ec2-user/pssh2.aws.conf' >> /home/ec2-user/startProcesses.sh
 echo 'for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done' >> /home/ec2-user/startProcesses.sh
+#echo 'for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pssh2/pssh2_aws -D  > /home/ec2-user/pssh2_aws.$i.log  2>&1 & done' >> /home/ec2-user/startProcesses.sh
 chmod a+x /home/ec2-user/startProcesses.sh
 sudo -u ec2-user -H sh -c /home/ec2-user/startProcesses.sh

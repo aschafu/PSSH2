@@ -128,7 +128,7 @@ do
     # for messages in case none is readily available at the query endpoint). 
     # Unused messages (= md5 sums) will be discarded automatically after two weeks 
   	# (when no worker has taken care of them).
-	MSG=`aws --region=$REGION sqs receive-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/aquaria-small --query 'Messages[*].[ReceiptHandle,Body]' --output text`
+	MSG=`aws --region=$REGION sqs receive-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$pssh_normal_queue --query 'Messages[*].[ReceiptHandle,Body]' --output text`
 	HANDLE=`awk '{print $1}' <<< $MSG`
 	md5=`awk '{print $2}' <<< $MSG`
 	keepWorking=0	
