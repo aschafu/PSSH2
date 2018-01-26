@@ -121,6 +121,7 @@ sub read_hhr{
 	my $seqres_md5sum;
 	my $evalue;
 	my $identity;
+	my $alignedCols;
 
 	my $query_ali_start;
 	my $target_ali_start;
@@ -153,11 +154,14 @@ sub read_hhr{
 		        my @p = split(/\s+/, $line);
 		        $evalue = $p[1]; 
 		        $identity = $p[4];
+			$alignedCols = $p[3];
 
 		        $evalue =~ /=(.+)/; 
 		        $evalue = $1; 
 		        $identity =~ /=(.+)\%/;
 		        $identity = $1; 
+			$alignedCols =~ /=(.+)/;
+			$alignedCols = $1;
       		}
       
       		#alignment blocks
@@ -194,8 +198,8 @@ sub read_hhr{
         		if ($v) {print "Target ".$target_id." SEQRES md5sum: ".$seqres_md5sum."\n";}
 		    	$gapless_blocks = parse_gapless_blocks($query_ali_start, $query_ali, $target_ali_start, $target_ali, $v);
 
-        		my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks);
-        		if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, gapless_blocks):", join ", ", @ali_values, "\n";} 
+        		my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $alignedCols, $gapless_blocks);
+        		if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, alignedCols, gapless_blocks):", join ", ", @ali_values, "\n";} 
         		push (@alis, \@ali_values);      
       		}
     	}
@@ -295,13 +299,14 @@ sub write_output{
  	my $seqres_md5sum;
   	my $probability;
   	my $evalue;
+	my $alignedCols;
   	my $identity;
   	my $gapless_blocks;
   	my $ali_num = 0; #counter of the alignments
 
 	my %repeat = ();
 
-  	foreach my $ali_values_ref (@alis){ #@alis: ($seqres_md5sum, $evalue, $identity/100.0, $gapless_blocks)
+  	foreach my $ali_values_ref (@alis){ #@alis: ($seqres_md5sum, $evalue, $identity/100.0, $alignedCols, $gapless_blocks)
     	my @ali_values = @{$ali_values_ref};
     	$seqres_md5sum = $ali_values[0];
     	if (defined $repeat{$seqres_md5sum}){
@@ -313,11 +318,12 @@ sub write_output{
     	my $repeatVal = $repeat{$seqres_md5sum}; 
     	$evalue = $ali_values[1];
     	$identity = $ali_values[2];
-    	$gapless_blocks = $ali_values[3];
+	$alignedCols = $ali_values[3];
+    	$gapless_blocks = $ali_values[4];
     	# changed 21.2.2013: retain first $nRetain, regardless of eValue
     	# changed 24.6.2014: retain if the sequence identity is >= identityCutoff (95%) 
     	if ($ali_num <= $nRetain || $evalue <= $evalCutoff || $identity >= $identityCutoff){ #leave only alignments with E-value below 10e-10 or at least the first one(s) or if it is almost identical in sequence
-      		print WRITE "$m,$seqres_md5sum,$repeatVal,$evalue,$identity,$gapless_blocks\n";
+      		print WRITE "$m,$seqres_md5sum,$repeatVal,$evalue,$identity,$alignedCols,$gapless_blocks\n";
 		    $ali_num++;
     	}
     }
