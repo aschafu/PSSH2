@@ -20,7 +20,7 @@ else
 	echo 'dbDate is $dbDate'
 fi
 
-$REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 
 swissFile=swissprot.uniq.$dbDate.md5
 pdbFile=pdbChain.uniq.xlt50.clgt10.$dbDate.md5
