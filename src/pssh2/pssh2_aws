@@ -12,7 +12,7 @@ a3mfile='query.uniprot20.a3m'
 hmmfile='query.uniprot20.hhm'
 hhrfile='query.uniprot20.hhr'
 rootDir="/mnt/project/pssh/pssh2_project/" 
-temp_work="/tmp/pssh2"
+temp_work="/tmp/pssh2/"
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
 dbDate='current'
@@ -20,6 +20,7 @@ dbName='pdb_full'
 pssh_normal_queue='pssh'
 pssh_long_queue='pssh_bigJobs'
 pssh_fail_queue='pssh_failed'
+storage='EBS'
 # change in config file if we desire to use more
 n_cpu=1
 ### base path to cache
@@ -114,6 +115,10 @@ pid=$BASHPID
 
 cachingRoutine=$rootDir'src/util/copy_to_S3'
 
+if [ !-d $temp_work ]
+then
+	mkdir -p $temp_work
+fi
 cd $temp_work
 
 while true 
