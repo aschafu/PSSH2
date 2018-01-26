@@ -1,6 +1,17 @@
 #!/bin/bash
 echo 'start this with nohup to make sure that it continues if the ssh dies!'
 # get the md5 sums to submit
+
+if [ -z "$conf_file" ]; then
+	conf_file='/etc/pssh2.conf'
+fi
+
+# get configurable options, e.g. local file paths
+if [ -s $conf_file ]
+then
+	source $conf_file
+fi
+
 if [ -z $dbDate ]
 then
 	dbDate='active'
