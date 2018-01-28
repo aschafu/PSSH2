@@ -115,7 +115,7 @@ pid=$BASHPID
 
 cachingRoutine=$rootDir'src/util/copy_to_S3'
 
-if [ !-d $temp_work ]
+if [ ! -d $temp_work ]
 then
 	mkdir -p $temp_work
 fi

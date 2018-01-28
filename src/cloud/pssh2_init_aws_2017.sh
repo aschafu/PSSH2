@@ -64,9 +64,9 @@ make install
 cd  /home/ec2-user/git
 git clone https://github.com/aschafu/PSSH2.git
 
-mkdir -p /mnt/resultData/pssh2_cache/
-chmod -R a+tw /mnt/resultData/pssh2_cache/
-chmod -R a+X /mnt/resultData/pssh2_cache/
+mkdir -p /mnt/resultData/pssh_cache/
+chmod -R a+tw /mnt/resultData/pssh_cache/
+chmod -R a+X /mnt/resultData/pssh_cache/
 
 # from here on to "finally" only needed for making pdb_full 
 cd /home/ec2-user
