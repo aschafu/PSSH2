@@ -328,7 +328,7 @@ EOF
 		redo_large=1
 	else
 		finished=1
-		aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$pssh_failed_queue --message-body $md5
+		aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$pssh_fail_queue --message-body $md5
 		# LATER: possibly write some log messages about failures?
 	fi
 		
