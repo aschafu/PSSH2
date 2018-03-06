@@ -123,8 +123,8 @@ sub read_hhr{
 	my $identity;
 	my $alignedCols;
 
-	my $query_ali_start;
-	my $target_ali_start;
+	my $query_ali_start = 0;
+	my $target_ali_start = 0;
 	my $query_ali = ""; 
 	my $target_ali = "";
 	my $gapless_blocks;
@@ -183,7 +183,7 @@ sub read_hhr{
           		$target_ali .= $1;
           	}
 
-      		if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment
+      		if ($line =~ /^No/ || $line =~ /Done!/) { #when next alignment begins or end - save the last alignment AND reset!
 
 				# changed 09/2015 from pdb_id type to md5
         		if ($full_target_id =~ /(\w{32})/){
@@ -201,7 +201,15 @@ sub read_hhr{
         		my @ali_values = ($seqres_md5sum, $evalue, $identity/100.0, $alignedCols, $gapless_blocks);
         		if ($v){print "saved values (seqres_md5sum, evalue, identity/100.0, alignedCols, gapless_blocks):", join ", ", @ali_values, "\n";} 
         		push (@alis, \@ali_values);      
-      		}
+        		$evalue=0;
+        		$identity=0;
+        		$alignedCols=0;
+        		$gapless_blocks="";
+        		$query_ali="";
+        		$target_ali="";
+        		$query_ali_start=0;
+        		$target_ali_start=0;
+        	}
     	}
 
 		if ($line =~ /^No 1\s/) { #first alignment begins
@@ -229,6 +237,11 @@ sub parse_gapless_blocks{
 		print "Query alignment: ".$query_ali."\n";
         print "Target alignment start: ".$target_ali_start."\n";
 		print "Target alignment: ".$target_ali."\n";
+    }
+    # if the alignment is empty, then stop parsing!
+    if (!$query_ali){
+		print "Empty alignment!"
+		return "";
     }
 	#initialize:
 	my $query_ali_cur_pos = $query_ali_start - 1;
