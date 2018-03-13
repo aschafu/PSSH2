@@ -12,25 +12,27 @@ import time
 import datetime
 import ConfigParser
 from StringIO import StringIO
-from DatabaseTools import *
 import mysql.connector
 from mysql.connector import errorcode
 import warnings
-
+import boto3
 
 defaultConfig = """
 [pssh2Config]
-pssh2_cache="/mnt/project/psshcache/result_cache/"
+pssh2_cache="/mnt/resultData/pssh_cache/"
 HHLIB="/usr/share/hhsuite/"
 pdbhhrfile='query.uniprot20.pdb.full.hhr'
 seqfile='query.fasta'
 """
 
 #default paths
-hhMakeModelScript = '/scripts/hhmakemodel.pl'
-renumberScript = '/mnt/project/pssh/pssh2_project//src/util/renumberpdb.pl'
+hhMakeModelScript = 'scripts/hhmakemodel.pl'
+renumberScript = 'scripts/renumberpdb.pl'
 bestPdbScript = 'find_best_pdb_for_seqres_md5'
-maxclScript = '/mnt/project/aliqeval/maxcluster'
+evalScript={}
+evalScript['maxcluster'] = 'maxcluster'
+evalScript['tmScore'] = 'TMscore'
+
 
 #dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 #md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
@@ -308,6 +310,93 @@ def parse_maxclusterResult(result, prefix='', status=''):
 		}
 	return structureStatistics
 				
+def parse_tmscoreResult(result, prefix='', status=''):
+	"""parse out the result from TMscore (see https://zhanglab.ccmb.med.umich.edu/TM-score/)
+	Example: > maxcluster exeriment.pdb model.00002.pdb 
+	
+	*****************************************************************************
+ 	*                                 TM-SCORE                                  *
+	* A scoring function to assess the similarity of protein structures         *
+ 	* Based on statistics:                                                      *
+	*       0.0 < TM-score < 0.17, random structural similarity                 *
+	*       0.5 < TM-score < 1.00, in about the same fold                       *
+	* Reference: Yang Zhang and Jeffrey Skolnick, Proteins 2004 57: 702-710     *
+	* For comments, please email to: zhng@umich.edu                             *
+	*****************************************************************************
+	
+	Structure1: 001dde7e5e  Length=  230
+	Structure2: 001dde7e5e  Length=  225 (by which all scores are normalized)
+	Number of residues in common=  222
+	RMSD of  the common residues=    2.725
+	
+	TM-score    = 0.8986  (d0= 5.57)
+	MaxSub-score= 0.8166  (d0= 3.50)
+	GDT-TS-score= 0.8178 %(d<1)=0.5378 %(d<2)=0.8178 %(d<4)=0.9422 %(d<8)=0.9733
+	GDT-HA-score= 0.6433 %(d<0.5)=0.2756 %(d<1)=0.5378 %(d<2)=0.8178 %(d<4)=0.9422
+
+	 -------- rotation matrix to rotate Chain-1 to Chain-2 ------
+ 	i          t(i)         u(i,1)         u(i,2)         u(i,3)
+ 	1    -64.9536975588  -0.0734346191   0.9966122658   0.0370317221
+ 	2    -15.7934079780   0.9754708470   0.0795041654  -0.2052698573
+ 	3     35.7133867702  -0.2075186337   0.0210494516  -0.9780045691
+
+	Superposition in the TM-score: Length(d<5.0)=213  RMSD=  1.51
+	(":" denotes the residue pairs of distance < 5.0 Angstrom)
+	AISLITALVRSHVDTTPDPSCLDYSHYEEQSMSEADKVQQFYQLLTSSVDVIKQFAEKIPGYFDLLPEDQELLFQSASLELFVLRLAYRARIDDTKLIFCNGTVLHRTQCLRSFGEWLNDIMEFSRSLHNLEIDISAFACLCALTLITERHGLREPKKVEQLQMKIIGSLRDHVTYNAEAQKKQHYFSRLLGKLPELRSLSVQGLQRIFYLKLEDLVPAPALIENMFVTT---
+	    ::::::::::::::::::::::::     :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::        ::::::::::::::::::::::::::::::::::::::::::::
+	----ITALVRSHVDTTPDPSCLDYSHYEEQSMSEADKVQQFYQLLTSSVDVIKQFAEKIPGYFDLLPEDQELLFQSASLELFVLRLAYRARIDDTKLIFCNGTVLHRTQCLRSFGEWLNDIMEFSRSLHNLEIDISAFACLCALTLITERHGLREPKKVEQLQMKIIGSLRDHVTYNAEAQK----FSRLLGKLPELRSLSVQGLQRIFYLKLEDLVPAPALIENMFVTTLPF
+	12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123
+	"""
+#	print result
+	tmResultLines = result.splitlines()
+#	print tmResultLines
+	# We sometimes get a core dump. And sometimes the structures just don't align. 
+	# So we only want to evaluate this 
+	if len(tmResultLines) > 2 and 'TM-Score' in tmResultLines[17] :
+		# we want the overall GDT-TS
+		gdt = tmResultLines[19][13:20].strip()
+		# in analogy to Maxcluster we call the "Number of residues in common" "pairs"
+		pairs = tmResultLines[14][29:34].strip()
+		maxsub = tmResultLines[18][13:20].strip()
+		# here we take the model (Structure 2) length (to which the scores are normalised)
+		length = tmResultLines[13][31:36].strip()
+		# we take the overall RMSD of the common residues for grmsd,
+		# the better one of only those that fit in TM-Score for rmsd
+		grmsd = tmResultLines[15][29:38].strip()
+		rmsd = tmResultLines[28][55:61].strip()
+		tm = tmResultLines[17][13:20].strip()
+
+#		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
+		structureStatistics = {
+			prefix+'validResult': True,
+			prefix+'nReferences': 1,
+			prefix+'gdt': float(gdt),		# score based on MaxSub superposition distance threshold (-d option)
+			prefix+'pairs': int(pairs),		# Number of pairs in the MaxSub
+			prefix+'rmsd': float(rmsd),		# RMSD of the atom within the TM-score (d<5.0)
+			prefix+'maxsub': float(maxsub),	# MaxSub score
+			prefix+'len': int(length),		# Number of matched pairs (all equivalent residues)
+			prefix+'grmsd': float(grmsd),	# Global RMSD using the MaxSub superposition
+			prefix+'tm': float(tm)			# TM-score
+		}
+	elif (not "timeOut" in status and not "failed" in status):
+		structureStatistics = {
+			prefix+'validResult': True,
+			prefix+'nReferences': 1,
+			prefix+'gdt': 0.0,		# score based on MaxSub superposition distance threshold (-d option)
+			prefix+'pairs': 0,		# Number of pairs in the MaxSub
+			prefix+'rmsd': 99.9,	# RMSD of the MaxSub atoms
+			prefix+'maxsub': 0.0,	# MaxSub score
+			prefix+'len': 0,		# Number of matched pairs (all equivalent residues)
+			prefix+'grmsd': 99.9,	# Global RMSD using the MaxSub superposition
+			prefix+'tm': 0.0		# TM-score			
+		}	
+	else:
+		structureStatistics = {
+			prefix+'validResult': False
+		}
+	return structureStatistics
+
+
 
 def getCathInfoTsv(chain):
 	""" do a query to the cath tsv file to work out the Cath hierarchy code for this chain"""
@@ -641,14 +730,15 @@ def evaluateSingle(checksum, cleanup):
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
 	# resultStore[m][n], m = name of chain  n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
-	print('-- performing maxcluster comparison')
+	print('-- performing maxcluster/TMscore comparison')
 	for model in range(1, modelcount+1): 
 
-		validChainCounter = 0
-		resultStore[model]['avrg'] = {}
-		resultStore[model]['max'] = {}
-		resultStore[model]['min'] = {}
-		resultStore[model]['range'] = {}
+		for method in evalMethods:
+			validChainCounter[method] = 0
+			resultStore[model][method]['avrg'] = {}
+			resultStore[model][method]['max'] = {}
+			resultStore[model][method]['min'] = {}
+			resultStore[model][method]['range'] = {}
 # 		t_range is the matched range in the template sequence, 
 #           BUT we need the covered model region
 #           AND we need to know that the template has coordinates in that region
@@ -678,124 +768,129 @@ def evaluateSingle(checksum, cleanup):
 		for chain in pdbChainCodes:
 			
 			if isOverlapping(newModelRange, pdbChainCoveredRange[chain]):
-			
-				print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
-			
-				# create/find file names
-				modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
-				pdbstrucfile = getStrucReferenceFileName(workPath, chain)
 
-				# first check how the model maps onto the experimental structure
-				p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-				maxclStatus = ''
-
-				if check_timeout(p):
-					out = ''
-					err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
-					maxclStatus = 'timeOut'
-				else: 
-					out, err = p.communicate()
-					if p.returncode != 0:
-						maxclStatus = 'failed'
-#				try: 
-#					out, err = p.communicate(timeout=60)
-#				except subprocess.TimeoutExpired:
-#			    	p.kill()
-#   				out, err = p.communicate()
-				if err:
-					print err
-				structureStatistics = parse_maxclusterResult(out, status=maxclStatus)
-			
-			
-				# now check how the experimental structure maps onto the model 
-				# important for short models to find whether that at least agrees with the experimental structure
-				r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-				r_maxclStatus = ''
-
-				if check_timeout(r_p):
-					r_out = ''
-					r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
-					r_maxclStatus = 'timeOut'
-				else: 
-					r_out, r_err = r_p.communicate()
-					if p.returncode != 0:
-						r_maxclStatus = 'failed'
-#				try: 
-#					r_out, r_err = r_p.communicate(timeout=60)
-#				except subprocess.TimeoutExpired:
-#				    r_p.kill()
-#   				r_out, r_err = r_p.communicate()
-				if r_err:
-					print r_err
-				r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_', status=r_maxclStatus)
-
-				# add the reverse values to the dictionary for the normal values
-				# and make sure that we only count this if the superpositioning worked in both directions
-				structureStatistics.update(r_structureStatistics)
-			
 				# compare cath codes
 				structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodesDict[chain], resultStore[model]['cathCodes'])
 #				print structureStatistics
 				resultStore[model][chain] = structureStatistics
 			
-				if (structureStatistics['validResult'] and structureStatistics['r_validResult']):
-#					print('--- GDT: ', structureStatistics['gdt'])
-					validChainCounter += 1
-#					resultStore[model][chain] = structureStatistics
-					for valType in structureStatistics.keys():
-						if valType == 'validResult':
-							resultStore[model]['avrg'][valType] = True
-							resultStore[model]['range'][valType] = True
-							resultStore[model]['min'][valType] = True
-							resultStore[model]['max'][valType] = True
-						else:
-#							print ('----', resultStore[model]['avrg'])
-							if valType in resultStore[model]['avrg']:
-								resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
+											
+				for method in evalMethods:
+				
+					print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
+			
+					# create/find file names
+					modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+					pdbstrucfile = getStrucReferenceFileName(workPath, chain)
+	
+					# first check how the model maps onto the experimental structure
+					p = subprocess.Popen([binPath+evalScript[method], '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					evalStatus = ''
+	
+					if check_timeout(p):
+						out = ''
+						err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
+						evalStatus = 'timeOut'
+					else: 
+						out, err = p.communicate()
+						if p.returncode != 0:
+							evalStatus = 'failed'
+#					try: 
+#						out, err = p.communicate(timeout=60)
+#					except subprocess.TimeoutExpired:
+#				    	p.kill()
+#   					out, err = p.communicate()
+					if err:
+						print err
+					structureStatistics[method] = parseMethod[method](out, status=evalStatus)
+			
+			
+					# now check how the experimental structure maps onto the model 
+					# important for short models to find whether that at least agrees with the experimental structure
+					r_p = subprocess.Popen([binPath+evalScript[method], '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					r_evalStatus = ''
+
+					if check_timeout(r_p):
+						r_out = ''
+						r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
+						r_evalStatus = 'timeOut'
+					else: 
+						r_out, r_err = r_p.communicate()
+						if p.returncode != 0:
+							r_evalStatus = 'failed'
+#					try: 
+#						r_out, r_err = r_p.communicate(timeout=60)
+#					except subprocess.TimeoutExpired:
+#					    r_p.kill()
+#   					r_out, r_err = r_p.communicate()
+					if r_err:
+						print r_err
+					r_structureStatistics = parseMethod[method](r_out, prefix='r_', status=r_evalStatus)
+
+					# add the reverse values to the dictionary for the normal values
+					# and make sure that we only count this if the superpositioning worked in both directions
+					structureStatistics[method].update(r_structureStatistics)
+						
+					if (structureStatistics[method]['validResult'] and structureStatistics[method]['r_validResult']):
+#						print('--- GDT: ', structureStatistics['gdt'])
+						validChainCounter[method] += 1
+#						resultStore[model][chain] = structureStatistics
+						for valType in structureStatistics[method].keys():
+							if valType == 'validResult':
+								resultStore[model][method]['avrg'][valType] = True
+								resultStore[model][method]['range'][valType] = True
+								resultStore[model][method]['min'][valType] = True
+								resultStore[model][method]['max'][valType] = True
+#							else:
+#								print ('----', resultStore[model]['avrg'])
+							if valType in resultStore[model][method]['avrg']:
+								resultStore[model][method]['avrg'][valType] += structureStatistics[valType] 	
 #								print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 							else:
-								resultStore[model]['avrg'][valType] = structureStatistics[valType]
+								resultStore[model][method]['avrg'][valType] = structureStatistics[valType]
 #								print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 
-							if valType in resultStore[model]['max']:
-								if structureStatistics[valType] > resultStore[model]['max'][valType]:
-									resultStore[model]['max'][valType] = structureStatistics[valType]
+							if valType in resultStore[model][method]['max']:
+								if structureStatistics[valType] > resultStore[model][method]['max'][valType]:
+									resultStore[model][method]['max'][valType] = structureStatistics[method][valType]
 							else:
-								resultStore[model]['max'][valType] = structureStatistics[valType]
+								resultStore[model][method]['max'][valType] = structureStatistics[method][valType]
 
-							if valType in resultStore[model]['min']:
-								if structureStatistics[valType] < resultStore[model]['min'][valType]:
-									resultStore[model]['min'][valType] = structureStatistics[valType]
+							if valType in resultStore[model][method]['min']:
+								if structureStatistics[valType] < resultStore[model][method]['min'][valType]:
+									resultStore[model][method]['min'][valType] = structureStatistics[method][valType]
 							else:
-								resultStore[model]['min'][valType] = structureStatistics[valType]
-				else:
-					print('--- no valid result!')
-					structureStatistics['validResult']  = False
-					structureStatistics['r_validResult']  = False
-#					resultStore[model][chain] = structureStatistics
+								resultStore[model][method]['min'][valType] = structureStatistics[method][valType]
+					else:
+						print('--- no valid result!')
+						structureStatistics[method]['validResult']  = False
+						structureStatistics[method]['r_validResult']  = False
+#						resultStore[model][chain] = structureStatistics
 			
 			else:
 				# the model structure and the pdb chain don't overlap enough,
 				# so we cannot use the statistics
-				resultStore[model][chain]['validResult'] = False
-				resultStore[model][chain]['r_validResult'] = False
+				for method in evalMethods:
+					resultStore[model][method][chain]['validResult'] = False
+					resultStore[model][method][chain]['r_validResult'] = False
 
-
-		# calculate the average over the different pdb structures
-		print('-- maxCluster summary: ', validChainCounter, ' valid comparisons found')
-		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
-			for valType in resultStore[model]['avrg'].keys():
-				if valType != 'validResult':
-					resultStore[model]['avrg'][valType] /= validChainCounter 	
-					resultStore[model]['range'][valType] = resultStore[model]['max'][valType] - resultStore[model]['min'][valType]
+		for method in evalMethods:
+			# calculate the average over the different pdb structures
+			print('-- ',  method, ' summary: ', validChainCounter[method], ' valid comparisons found')
+			if (validChainCounter[method] > 0) and resultStore[model][method]['avrg']['validResult']:
+				for valType in resultStore[model][method]['avrg'].keys():
+					if valType != 'validResult':
+						resultStore[model][method]['avrg'][valType] /= validChainCounter[method] 	
+						resultStore[model][method]['range'][valType] = resultStore[model][method]['max'][valType] - resultStore[model][method]['min'][valType]
 #					print('-- ', valType, ':', resultStore[model]['avrg'][valType])
-		else:
-			resultStore[model]['avrg'] = {}
-			resultStore[model]['avrg']['validResult'] = False
-			resultStore[model]['range'] = {}
-			resultStore[model]['range']['validResult'] = False
-		resultStore[model]['avrg']['nReferences'] = validChainCounter
-		resultStore[model]['range']['nReferences'] = validChainCounter
+				else:
+					resultStore[model][method]['avrg'] = {}
+					resultStore[model][method]['avrg']['validResult'] = False
+					resultStore[model][method]['range'] = {}
+					resultStore[model][method]['range']['validResult'] = False
+		
+				resultStore[model][method]['avrg']['nReferences'] = validChainCounter[method]
+				resultStore[model][method]['range']['nReferences'] = validChainCounter[method]
 		
 	chains = []
 	chains.extend(pdbChainCodes)
@@ -826,16 +921,17 @@ def storeSummary(resultStore, checksum, chains):
 	mysqlInsert = "INSERT INTO %s " % tableName
 	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, match_struc, match_strucAlignLength, model_id, "
 	mysqlInsert += "HH_Prob, HH_E_value, HH_P_value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, CathSimilarity, "
-	mysqlInsert += "GDT, pairs, RMSD, gRMSD, maxsub, len, TM, "
-	mysqlInsert += "r_GDT, r_pairs, r_RMSD, r_gRMSD, r_maxsub, r_len, r_TM) "
+	for method in evalMethods:
+		mysqlInsert += method +"_GDT, " + method + "_pairs, " + method + "_RMSD, " + method + "_gRMSD, " + method + "_maxsub, " + method + "_len, " + method + "_TM, "
+		mysqlInsert += method + "_r_GDT, " + method + "_r_pairs, " + method + "_r_RMSD," + method + "_ r_gRMSD, " + method + "_r_maxsub, " + method + "_r_len, " + method + "_r_TM) "
 #	mysqlInsert += "VALUES (%(query_md5)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 #	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
 	mysqlInsert += "VALUES (%(query_md5)s, %(query_struc)s, %(nReferences)s, %(match_md5)s, %(match_struc)s, %(match_strucAlignLength)s, %(model_id)s, "
 	mysqlInsert += "%(HH_Prob)s, %(HH_E-value)s, %(HH_P-value)s, %(HH_Score)s, %(HH_Aligned_cols)s, %(HH_Identities)s, %(HH_Similarity)s, %(CathSimilarity)s, "
-	mysqlInsert += "%(GDT)s, %(pairs)s, %(RMSD)s, %(gRMSD)s, %(maxsub)s, %(len)s, %(TM)s,"
-	mysqlInsert += "%(r_GDT)s, %(r_pairs)s, %(r_RMSD)s, %(r_gRMSD)s, %(r_maxsub)s, %(r_len)s, %(r_TM)s)"
+	for method in evalMethods:
+		mysqlInsert += "%(" + method + "_GDT)s, %(" + method + "_pairs)s, %(" + method + "_RMSD)s, %(" + method + "_gRMSD)s, %(" + method + "_maxsub)s, %(" + method + "_len)s, %(" + method + "_TM)s,"
+		mysqlInsert += "%(" + method + "_r_GDT)s, %(" + method + "_r_pairs)s, %(" + method + "_r_RMSD)s, %(" + method + "_r_gRMSD)s, %(" + method + "_r_maxsub)s, %(" + method + "_r_len)s, %(" + method + "_r_TM)s)"
 
-	
 # 	csvWriter = csv.writer(fileHandle, delimiter=',')
 # 	if not skipHeader:
 # 		csvWriter.writerow(['query_md5', 'query_struc', 'nReferences', 'match_md5', 'model_id', 
@@ -855,7 +951,7 @@ def storeSummary(resultStore, checksum, chains):
 	cursor = None
 	while (cursor is None):
 		try:
-			cursor = submitConnection.cursor()
+			cursor = dbConnection.cursor()
 		except (AttributeError, MySQLdb.OperationalError) as e:
 			print e
 			getConnection()
@@ -882,22 +978,26 @@ def storeSummary(resultStore, checksum, chains):
 					'HH_Aligned_cols': resultStore[model]['aligned_cols'], 
 					'HH_Identities': resultStore[model]['identities'], 
 					'HH_Similarity': resultStore[model]['similarity'],
-					'CathSimilarity': str(resultStore[model][chain]['cathSimilarity']),
-					'GDT': str(resultStore[model][chain]['gdt']), 
-					'pairs': str(resultStore[model][chain]['pairs']), 
-					'RMSD': str(resultStore[model][chain]['rmsd']),
-					'gRMSD': str(resultStore[model][chain]['grmsd']), 
-					'maxsub': str(resultStore[model][chain]['maxsub']), 
-					'len': str(resultStore[model][chain]['len']),
-					'TM': str(resultStore[model][chain]['tm']), 
-					'r_GDT': str(resultStore[model][chain]['r_gdt']), 
-					'r_pairs': str(resultStore[model][chain]['r_pairs']), 
-					'r_RMSD': str(resultStore[model][chain]['r_rmsd']),
-					'r_gRMSD': str(resultStore[model][chain]['r_grmsd']), 
-					'r_maxsub': str(resultStore[model][chain]['r_maxsub']), 
-					'r_len': str(resultStore[model][chain]['r_len']),
-					'r_TM': str(resultStore[model][chain]['r_tm']) 
+					'CathSimilarity': str(resultStore[model][chain]['cathSimilarity'])
 				}
+				for method in evalMethods:
+					method_model_data = {
+						method+'_GDT': str(resultStore[model][method][chain]['gdt']), 
+						method+'_pairs': str(resultStore[model][method][chain]['pairs']), 
+						method+'_RMSD': str(resultStore[model][method][chain]['rmsd']),
+						method+'_gRMSD': str(resultStore[model][method][chain]['grmsd']), 
+						method+'_maxsub': str(resultStore[model][method][chain]['maxsub']), 
+						method+'_len': str(resultStore[model][method][chain]['len']),
+						method+'_TM': str(resultStore[model][method][chain]['tm']), 
+						method+'_r_GDT': str(resultStore[model][method][chain]['r_gdt']), 
+						method+'_r_pairs': str(resultStore[model][method][chain]['r_pairs']), 
+						method+'_r_RMSD': str(resultStore[model][method][chain]['r_rmsd']),
+						method+'_r_gRMSD': str(resultStore[model][method][chain]['r_grmsd']), 
+						method+'_r_maxsub': str(resultStore[model][method][chain]['r_maxsub']), 
+						method+'_r_len': str(resultStore[model][method][chain]['r_len']),
+						method+'_r_TM': str(resultStore[model][method][chain]['r_tm']) 
+					}
+					model_data.update(method_model_data)
 		
 #				print mysqlInsert, '\n', model_data
 				try:
@@ -917,17 +1017,31 @@ def cleanupConfVal(confString):
 	return confString
 	
 def getConnection():
-	global dbConnection, submitConnection
-	while (submitConnection is None or dbConnection is None):
+	global dbConnection
+	while (dbConnection is None):
 		try:
-			dbConnection = SequenceStructureDatabase.DB_Connection()
-			submitConnection = dbConnection.getConnection('pssh2','updating')
+#				print 'host: "', self.conf[db]['host'], '", port: "', self.conf[db]['port'], '"' 
+			dbConnection = mysql.connector.connect( \
+			                 user=pssh2_user, 
+		                     password=pssh2_user,
+		                     host=pssh2_host,
+		                     database=pssh2_name,
+		                     port='3306'
+		                     )
+		except mysql.connector.Error as err:
+			warnings.warn('Cannot make connection for \''+ permission_type + \
+		    	              '\' to db \''+ db +'\'!')
+			if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
+				warnings.warn("Something is wrong with your user name or password")
+		  	elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
+			  	warnings.warn("Database does not exists")
+			else:
+				print(err)
 		except Exception as e:
 			print e
 			print "--- Waiting for connection ---"
 			wait(10)
 	return 
-
 	
 def main(argv):
 	""" here we initiate the real work"""
@@ -936,16 +1050,34 @@ def main(argv):
 	config.readfp(io.BytesIO(defaultConfig))
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
 	confFileHandle = open(confPath)	
-#  add a fake section
-	fakeConfFileHandle = StringIO("[pssh2Config]\n" + confFileHandle.read())
+#  get rid of "export" statements and add a fake section
+	fakeFileString = "[pssh2Config]\n" 
+	for line in confFileHandle:
+		if (not line.startswith( 'export' ) ):
+			fakeFileString += line
+#	fakeConfFileHandle = StringIO("[pssh2Config]\n" + confFileHandle.read())
+	fakeConfFileHandle = StringIO(fakeFileString)
 	config.readfp(fakeConfFileHandle)
 #	print config.sections()
-	global pssh2_cache_path, hhPath, pdbhhrfile, seqfile
+	global pssh2_cache_path, hhPath, binPath, pdbhhrfile, seqfile
 	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
 	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
+	if (not hhPath.endswith('/')):
+		hhPath += '/'
+	binPath = cleanupConfVal(config.get('pssh2Config', 'binPath'))
+	if (not binPath.endswith('/')):
+		binPath += '/'
 	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
 	seqfile = cleanupConfVal(config.get('pssh2Config', 'seqfile'))
-	print "Got config (from default and "+confPath+"): "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile + " " + seqfile
+	print "Got config (from default and "+confPath+"): "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile + " " + seqfile+ " " + binPath
+
+	global pssh2_user, pssh2_password, pssh2_host, pssh2_name
+	pssh2_user = cleanupConfVal(config.get('pssh2Config', 'pssh2_user'))
+	pssh2_password = cleanupConfVal(config.get('pssh2Config', 'pssh2_password'))
+	pssh2_host = cleanupConfVal(config.get('pssh2Config', 'pssh2_host'))
+	pssh2_name = cleanupConfVal(config.get('pssh2Config', 'pssh2_name'))
+
+
 	if (len(pssh2_cache_path)<1):
 		raise Exception('Insufficient conf info!')
 		
@@ -954,6 +1086,10 @@ def main(argv):
 	inputGroup = parser.add_mutually_exclusive_group(required=True)
 	inputGroup.add_argument("-m", "--md5", help="md5 sum of sequence to process")
 	inputGroup.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
+	inputGroup.add_argument("-s", "--sqs", help="name of SQS queue where we retrieve md5 sums to process")
+	evalGroup = parser.add_mutually_exclusive_group(required=True)
+	evalGroup.add_argument("--maxcluster", action='store_true', help="evaluate the models with maxcluster")
+	evalGroup.add_argument("--tmscore", action='store_true', help="evaluate the models with TMscore")
 	parser.add_argument("-t", "--table", required=True, help="name of table in mysql to write to (must exist!)")
 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
 	parser.add_argument("--test", action='store_true', help="run in test mode (only 5 models per query)")
@@ -965,13 +1101,13 @@ def main(argv):
 	global tableName
 	tableName = args.table
 
-	global submitConnection, dbConnection
-	submitConnection = None
+	global dbConnection
 	dbConnection = None
 	getConnection()
 	
 	checksum = args.md5
 	list = args.list
+	sqsName = args.sqs
 	cleanup = True 
 	if args.keep:
 		cleanup = False
@@ -979,6 +1115,17 @@ def main(argv):
 	if args.test:
 		global test
 		test = True
+
+	global evalMethods
+	evalMethods = []
+	global parseMethod
+	parseMethod={}
+	if args.maxcluster:
+		evalMethods.append('maxcluster')
+		parseMethod['maxcluster'] = parse_maxclusterResult
+	if args.tmscore:	
+		evalMethods.append('tmScore')
+		parseMethod['tmScore'] = parse_tmscoreResult
 
 	os.putenv('HHLIB', hhPath)
 
@@ -990,7 +1137,21 @@ def main(argv):
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) 
-
+	elif sqs:
+		sqs = boto3.client('sqs')
+		sqsUrlResponse = sqs.get_queue_url(QueueName=sqsName)
+		sqsUrl = sqsUrlResponse['QueueUrl']
+		while True:
+			messages = queue.receive_message(QueueUrl=sqsUrl, MaxNumberOfMessages=10)
+			if 'Messages' in messages:
+				 for message in messages['Messages']: 
+				 	checksum = message['Body']
+#				 	checksum = chksm.replace("\n","")
+				 	resultStore = evaluateSingle(checksum, cleanup)
+				 	queue.delete_message(ReceiptHandle=message['ReceiptHandle'])
+			else:
+				print "queue empty, waiting "
+				time.sleep(60)
 
 # def main(argv):
 # 
