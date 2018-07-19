@@ -155,6 +155,8 @@ fi
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
+mkdir -p $temp_work
+
 keepWorking=1
 while [ $keepWorking -gt 0 ]
 do
@@ -461,7 +463,7 @@ do
 				rm -f $pa3mfile_pdb $a3mfile_pdb
 			fi
 			# clean up
-			gzip $a3mfile
+			gzip -f $a3mfile
 		else
 			fail=-1
 		fi
@@ -516,7 +518,7 @@ do
 				then
 					if [ -s $a3mfile ] 
 					then
-						gzip $a3mfile  
+						gzip -f $a3mfile  
 					fi	
 					if [ -s $logfile ]
 					then
