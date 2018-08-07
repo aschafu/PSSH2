@@ -184,7 +184,7 @@ fi
 if [ -s $pdbhhrfile ]
 then
 # 	time nice parse_hhr_for_pssh2 -i $pdbhhrfile -s query.fasta -o query.pssh2
- 	time parse_hhr_for_pssh2 -i $pdbhhrfile -s $seqfile -o $pssh2file
+ 	$getTime parse_hhr_for_pssh2 -i $pdbhhrfile -s $seqfile -o $pssh2file
 elif [ $fail -eq 0 ]
 then
  	fail=-2	

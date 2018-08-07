@@ -7,4 +7,10 @@ What to run to regenerate PSSH2
 2.3 `source /home/ec2-user/pssh2.aws.conf` OR set dbDate to the new date (`dbDate=...)
 2.4 `export dbDate`
 2.4	Start submitting: `./startProcesses.sh`
-3.	Use the Autoscaling group "build_structure_profiles_group" to start instances
+3.	Old: Use the Autoscaling group "build_structure_profiles_group" to start instances
+	New: Use the LaunchTemplate "build_structure_profiles_noDebug" to start spot instances
+		Autoscaling doesn't work at the moment, 
+		so just use "Create Spot Fleet" not with the "maintain" option, monitor yourself,
+		remember to cap the price
+4. Use the LaunchTemplate "build_pdb_full_40ct_200G" to start an instance for assembling the pdb_full database
+		

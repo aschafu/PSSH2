@@ -52,6 +52,7 @@ aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuit
 aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/ec2-user/pssh2.aws.conf
 conf_file=/home/ec2-user/pssh2.aws.conf
 export conf_file
+source $conf_file
 echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc 
 export PATH=$PATH:/usr/share/hhsuite/scripts/:/usr/share/hhsuite/bin/
 echo 'export PATH=$PATH:/usr/share/hhsuite/scripts/:/usr/share/hhsuite/bin/' >> /home/ec2-user/.bashrc
@@ -62,17 +63,18 @@ echo 'export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib' >> /home/ec2-user/.bashrc
 
 
 # get the data from S3 
-mkdir -p /mnt/resultData/pdb_full/
-chmod a+tw /mnt/resultData/pdb_full/
-# CAVE: Change dbDate to different name if you don't want 'current'!
-dbDate='current'
+mkdir -p /mnt/resultData/pdb_full_$dbDate/
+chmod a+tw /mnt/resultData/pdb_full_$dbDate/
+# dbDate should be set in conf_file
 aws  --region=$REGION  s3 sync s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/ /mnt/resultData/pdb_full_$dbDate/ 
 chmod -R a+tw /mnt/resultData/pdb_full_$dbDate/
 chmod -R a+X /mnt/resultData/pdb_full_$dbDate/
 
 cd /mnt/resultData/pdb_full_$dbDate/a3m/
-find . -type f  -name '*.[gG][zZ]' -exec gunzip {} +
+#find . -type f  -name '*.[gG][zZ]' -exec gunzip {} +
+export NUM_THREADS=$(nproc)
+find . -type f  -name '*.[gG][zZ]' | xargs -0 -n 1 -P $NUM_THREADS gunzip
 cd /mnt/resultData/pdb_full_$dbDate/
-/home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run.sh $dbDate
+/home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run_aws.sh $dbDate
 aws  --region=$REGION  s3 cp pdb_full_$dbDate.tgz s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/ 
 

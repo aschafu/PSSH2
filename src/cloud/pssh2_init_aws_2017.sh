@@ -97,7 +97,8 @@ mkdir -p /mnt/data/dssp/data
 chmod -R a+tw /mnt/data/dssp
 chmod -R a+rX /mnt/data/dssp
 cd /mnt/data/dssp/bin
-wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
+# wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
+wget ftp://ftp.cmbi.umcn.nl/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 chmod a+rx dssp-2.0.4-linux-i386
 ln -s dssp-2.0.4-linux-i386 dsspcmbi
 
