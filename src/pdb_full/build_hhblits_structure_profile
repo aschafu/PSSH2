@@ -462,8 +462,8 @@ do
 			then
 				rm -f $pa3mfile_pdb $a3mfile_pdb
 			fi
-			# clean up
-			gzip -f $a3mfile
+			# do not clean up -- in the cloud that all goes into a targz anyway...
+#			gzip -f $a3mfile
 		else
 			fail=-1
 		fi

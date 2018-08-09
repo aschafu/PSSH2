@@ -225,17 +225,18 @@ then
 	then
 		rm $logfilepdb
 	fi
-	if [ -s $a3mfile ] 
-	then
-		gzip $a3mfile  
-	fi	
-	if [ -s $hhrfile ]
-	then
-	 	gzip -f $hhrfile
-	fi
-	if [ -s $pdbhhrfile ]
-	then
- 		gzip -f $pdbhhrfile
-	fi
+# not really needed since we targz to S3 anyway
+#	if [ -s $a3mfile ] 
+#	then
+#		gzip -f $a3mfile  
+#	fi	
+#	if [ -s $hhrfile ]
+#	then
+#	 	gzip -f $hhrfile
+#	fi
+#	if [ -s $pdbhhrfile ]
+#	then
+# 		gzip -f $pdbhhrfile
+#	fi
 # 	gzip query.pssh2
 fi
