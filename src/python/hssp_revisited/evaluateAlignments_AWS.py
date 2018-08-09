@@ -85,12 +85,14 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 #	hhrgzfile = gzip.open(path, 'rb')
 #	s = hhrgzfile.read()	
 	
+	logging.debug('starting to parse in process_hhr')
 	# check whether we can write to our desired output directory
 	try:
 		os.makedirs(workPath)
 	except OSError as exception:
 		if exception.errno != errno.EEXIST:
 			raise
+	logging.debug('made directory '+workPath)
 			
 #	# no need to write an unzipped version to our work directory
 	# BUT tune this file to have pdb identifiers as ids, not md5  
@@ -625,13 +627,13 @@ def evaluateSingle(checksum, cleanup):
 
 	logging.info('starting evaluateSingle with md5: '+checksum)
 	# find the data for this md5: use the shell scripts to do this (get data from S3)
-	logging.debug('command: '+' '.join([findCachePath,'r','-m', checksum]))
+	logging.debug('command: '+' '.join([findCachePath,'-r','-m', checksum]))
 	fp = subprocess.Popen([findCachePath, '-r', '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = fp.communicate()
 	if err:
 		print err
-	resultLine, rest = out.split('\n', 1)
-	cachePath = resultLine.strip() 
+	preamble, resultLine, rest = out.split('\n', 2)
+	cachePath = resultLine.strip()+'/' 
 	logging.debug('got cache path: '+cachePath)
 
 # OLD:
@@ -643,14 +645,17 @@ def evaluateSingle(checksum, cleanup):
 
 	# check that we have the necessary input
 	if not (os.path.isfile(hhrPath)):
-		print('-- hhr '+hhrPath+' does not exist, check md5 checksum!\n-- stopping execution...')
+		logging.error('-- hhr '+hhrPath+' does not exist, check md5 checksum!\n-- stopping execution...')
 		return
-	print('-- hhr file found. Parsing data ...') 
+	logging.info('-- hhr file found. Parsing data ...') 
 
 	# work out how many models we want to create, get unzipped data
-	workPath = hhrPath+'/models'
+	workPath = cachePath+'/models'
+	logging.debug('models will be written to '+workPath) 
 	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
 	resultStore, modelcount = hhrdata
+	logging.info('finished retrieving hhr data, number of models found: '+modelcount) 
+
 
 	if test:
 		if modelcount > 5:
