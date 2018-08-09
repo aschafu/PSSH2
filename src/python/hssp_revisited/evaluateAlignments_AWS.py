@@ -51,7 +51,7 @@ cathSeparator = '.'
 
 #logging.basicConfig(filename='evaluateAlignments.log',level=logging.DEBUG)
 fmt="%(funcName)s():%(levelname)s: %(message)s "
-logging.basicConfig(level=logging.DEBUG,format=fmt())
+logging.basicConfig(level=logging.DEBUG,format=fmt)
 
 
 def check_timeout(process, timeout=60):
