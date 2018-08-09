@@ -625,7 +625,7 @@ def evaluateSingle(checksum, cleanup):
 
 	logging.info('starting evaluateSingle with md5: '+checksum)
 	# find the data for this md5: use the shell scripts to do this (get data from S3)
-	logging.debug('command: '+[findCachePath,'r','-m', checksum].join(' '))
+	logging.debug('command: '+' '.join([findCachePath,'r','-m', checksum]))
 	fp = subprocess.Popen([findCachePath, '-r', '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = fp.communicate()
 	if err:
