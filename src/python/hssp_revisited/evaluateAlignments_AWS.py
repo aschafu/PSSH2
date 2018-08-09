@@ -119,7 +119,7 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 	logging.info('-- '+str(modelcount)+' matching proteins found!')
 	if test:
 		if modelcount > 5:
-			logging.info('modelcount is big: ', modelcount, ' set it to 5')
+			logging.info('modelcount is big: '+str(modelcount)+' set it to 5')
 			modelcount = 5
 
 	logging.info('Starting to read statistics...')	
@@ -129,7 +129,7 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 	modelStatistics.append(statisticsValues)
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
-		logging.debug('...at model '+model)	
+		logging.debug('...at model '+str(model))	
 		statisticsValues = {}
 		parseLine = linelist[8+model][35:]
 #		parseLine = parseLine.replace('(',' ')
