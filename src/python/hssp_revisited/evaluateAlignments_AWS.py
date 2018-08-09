@@ -149,11 +149,11 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 		modelStatistics.append(statisticsValues)
 
 	# write out the beginning into the unzipped hrr file
-	logging.debug('Writing statistics to fake file '+workPath+'/'+pdbhhrfile)	
+	logging.info('Writing statistics to fake file '+workPath+'/'+pdbhhrfile)	
 	for lineCount in range (0, 8+modelcount):
 		hhrfilehandle.write(linelist[lineCount])
 
-	logging.debug('Parsing alignment part...')	
+	logging.info('Parsing alignment part...')	
 	# finally look in the alignment details to find the % identity
 	# -- also edit the alignment details to contain the pdb code (needed for making the models)!
 	model = ''
@@ -185,7 +185,7 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 			modelStatistics[model]['match md5'] = checksum
 			# work out which piece the structure should cover
 			templateRange = modelStatistics[model]['t_range'].replace('-',':')
-			logging.debug('--- find template structures for model '+ model +' with md5 ' + checksum + ' range ' + templateRange)
+			logging.debug('--- find template structures for model '+ str(model) +' with md5 ' + checksum + ' range ' + templateRange)
 			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange, '-p', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
