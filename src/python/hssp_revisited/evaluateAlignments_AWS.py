@@ -50,7 +50,8 @@ pdbChainCoveredRange = {}
 cathSeparator = '.'
 
 #logging.basicConfig(filename='evaluateAlignments.log',level=logging.DEBUG)
-logging.basicConfig(level=logging.DEBUG)
+fmt="%(funcName)s():%(levelname)s: %(message)s "
+logging.basicConfig(level=logging.DEBUG,format=fmt())
 
 
 def check_timeout(process, timeout=60):
@@ -115,18 +116,20 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 		takenline = linelist[i]
 	
 	modelcount = int(float(takenline.split(' ')[1]))
-	print('-- '+str(modelcount)+' matching proteins found!')
+	logging.info('-- '+str(modelcount)+' matching proteins found!')
 	if test:
 		if modelcount > 5:
-			print 'modelcount is big: ', modelcount, ' set it to 5'
+			logging.info('modelcount is big: ', modelcount, ' set it to 5')
 			modelcount = 5
-	
+
+	logging.info('Starting to read statistics...')	
 	modelStatistics = []
 	# make an empty entry at 0 (so the index is the same as the model number)
 	statisticsValues = {}
 	modelStatistics.append(statisticsValues)
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
+		logging.debug('...at model '+model)	
 		statisticsValues = {}
 		parseLine = linelist[8+model][35:]
 #		parseLine = parseLine.replace('(',' ')
@@ -146,9 +149,11 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 		modelStatistics.append(statisticsValues)
 
 	# write out the beginning into the unzipped hrr file
+	logging.debug('Writing statistics to fake file '+workPath+'/'+pdbhhrfile)	
 	for lineCount in range (0, 8+modelcount):
 		hhrfilehandle.write(linelist[lineCount])
 
+	logging.debug('Parsing alignment part...')	
 	# finally look in the alignment details to find the % identity
 	# -- also edit the alignment details to contain the pdb code (needed for making the models)!
 	model = ''
@@ -180,7 +185,7 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 			modelStatistics[model]['match md5'] = checksum
 			# work out which piece the structure should cover
 			templateRange = modelStatistics[model]['t_range'].replace('-',':')
-			print '--- find templates for ' + checksum + ' range ' + templateRange
+			logging.debug('--- find template structures for model '+ model +' with md5 ' + checksum + ' range ' + templateRange)
 			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange, '-p', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
@@ -188,7 +193,7 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 			else: 
 				out, err = p.communicate()
 			if err:
-				print err
+				logging.error(err)
 #			if err:
 #				print err
 #			pdbChainCode = out.strip()
@@ -199,13 +204,16 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 			modelStatistics[model]['pdbCode'] = pdbChainCode
 			modelStatistics[model]['pdbRange'] = pdbChainRange
 			modelStatistics[model]['pdbMatchLength'] = pdbChainMatchLength
+			logging.debug('... found '+pdbChainCode+' range '+pdbChainRange+' matching '+pdbChainMatchLength+' residues')
 				
 			idLineOrig = 'T ' + checksum[:14]
 			nCodeLetters = len(pdbChainCode)
 			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
+			logging.debug('... write fake alignemnt line: '+linelist[lineCount] )
 			# also remember the cathCode(s) for this template
 			# cathCodes = getCathInfoTsv(pdbChainCode)
+			logging.debug('--- get cath codes for found template '+pdbChainCode+' range '+pdbChainRange)
 			cathCodes = getCathInfoRest(pdbChainCode, pdbChainRange)
 			modelStatistics[model]['cathCodes'] = cathCodes
 		elif (idLineOrig in linelist[lineCount]):
@@ -477,35 +485,39 @@ def getCathInfoRest(chain, pRange):
 		pdbCode = chain
 		pdbChain = ''
 	
+	logging.debug('---- query CATH for '+baseURL+pdbCode)
 	response=requests.get(baseURL+pdbCode)
         
 	try:	
 		jData = response.json()
 	except Exception as e:
 		# if the resonse didn't have json data, we give up
-		print e
+		logging.error(e)
 		return cathCodes
 
-        # print json.dumps(jData)
-        if pdbCode in jData:
-        
-                # loop over the cath IDs to find one that covers our region	
-                for cathId in jData[pdbCode]['CATH']:
-                        # print cathId
-                        for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
-                                dChain=domain['chain_id']
-                                # print dChain + ' (searching: ' + pdbChain + ')'
-                                if dChain == pdbChain:
-                                        dName=domain['domain']
-                                        dStart=domain['start']['residue_number']
-                                        dEnd=domain['end']['residue_number']
-                                        dRange=str(dStart)+'-'+str(dEnd)
-                                        # print str(dName) + ' ' + str(dStart) +' ' + str(dEnd) + ' ' + dRange
-                                        print 'cath range ' + dRange +  ' (pdb Range: ' + pRange + ')'
-                                        if isOverlapping(pRange, dRange):
-                                                cathCodes.append(cathId)
-                                                break # (breaks inner loop, not outer)
+    # print json.dumps(jData)
+	if pdbCode in jData:
+		logging.debug('.... got back data')        
+    	# loop over the cath IDs to find one that covers our region	
+        for cathId in jData[pdbCode]['CATH']:
+        	# print cathId
+            for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
+            	dChain=domain['chain_id']
+                # print dChain + ' (searching: ' + pdbChain + ')'
+                if dChain == pdbChain:
+                	dName=domain['domain']
+                    dStart=domain['start']['residue_number']
+                    dEnd=domain['end']['residue_number']
+                    dRange=str(dStart)+'-'+str(dEnd)
+                    # print str(dName) + ' ' + str(dStart) +' ' + str(dEnd) + ' ' + dRange
+                    print 'cath range ' + dRange +  ' (pdb Range: ' + pRange + ')'
+                    if isOverlapping(pRange, dRange):
+                    	cathCodes.append(cathId)
+                        break # (breaks inner loop, not outer)
+	else:
+		logging.debug('.... no '+pdbCode+' found in '+jData)        
 
+	logging.inf('found cathCodes'+' '.join(cathCodes))
 	return cathCodes
 					
 	
