@@ -72,12 +72,14 @@ def check_timeout(process, timeout=60):
 	return killed
 
 
-def process_hhr(path, workPath, pdbhhrfile):
+def process_hhr(originPath, workPath, pdbhhrfile):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
-	
-	# read the hhr file in its orignial location
-	hhrgzfile = gzip.open(path, 'rb')
-	s = hhrgzfile.read()	
+
+#   We don't really need to worry about compressing, since it all goes to a targz afterwards	
+# 
+#	# read the hhr file in its orignial location
+#	hhrgzfile = gzip.open(path, 'rb')
+#	s = hhrgzfile.read()	
 	
 	# check whether we can write to our desired output directory
 	try:
@@ -86,15 +88,16 @@ def process_hhr(path, workPath, pdbhhrfile):
 		if exception.errno != errno.EEXIST:
 			raise
 			
-	# write an unzipped version to our work directory
-	# -- but also tune this file to 
-	pdbhhrfiletmp = pdbhhrfile+'.tmp'
-	open(workPath+'/'+pdbhhrfiletmp, 'w').write(s)
+#	# no need to write an unzipped version to our work directory
+	# BUT tune this file to have pdb identifiers as ids, not md5  
+#	pdbhhrfiletmp = pdbhhrfile+'.tmp'
+#	open(workPath+'/'+pdbhhrfiletmp, 'w').write(s)
 	hhrfilehandle = open(workPath+'/'+pdbhhrfile, 'w')
-	parsefile = open(workPath+'/'+pdbhhrfiletmp, 'rb')
+#	parsefile = open(pdbhhrfiletmp, 'rb')
+	parsefile = open(originPath, 'r')
 	linelist = parsefile.readlines()
-	hhrgzfile.close()
 	parsefile.close()
+#	hhrgzfile.close()
 	
 	# search from the end of the file until we reach the Number of the last alignment (in the alignment details)
 	breaker = False
@@ -617,7 +620,7 @@ def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
 	# find the data for this md5: use the shell scripts to do this (get data from S3)
-	fp = subprocess.Popen(findCachePath, '-r', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	fp = subprocess.Popen([findCachePath, '-r', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = fp.communicate()
 	if err:
 		print err
@@ -627,7 +630,9 @@ def evaluateSingle(checksum, cleanup):
 # OLD:
 #	# use find_cache_path to avoid having to get the config
 #	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/'
-	hhrPath = (cachePath+pdbhhrfile+'.gz')
+#	hhrPath = (cachePath+pdbhhrfile+'.gz')
+#   We don't zip any more
+	hhrPath = (cachePath+pdbhhrfile)
 
 	# check that we have the necessary input
 	if not (os.path.isfile(hhrPath)):
@@ -928,7 +933,7 @@ def evaluateSingle(checksum, cleanup):
 		subprocess.call(['rm', '-r', workPath])
 	else:
 		# if we don't want to clean up, we store the resultStore
-		fp = subprocess.Popen(findCachePath, '-s', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		fp = subprocess.Popen([findCachePath, '-s', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out, err = fp.communicate()
 		if err:
 			print err
@@ -1053,8 +1058,8 @@ def getConnection():
 		                     port='3306'
 		                     )
 		except mysql.connector.Error as err:
-			warnings.warn('Cannot make connection for \''+ permission_type + \
-		    	              '\' to db \''+ db +'\'!')
+			warnings.warn('Cannot make connection for \''+ pssh2_user + \
+		    	              '\' to db \''+ pssh2_name +'\'!')
 			if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
 				warnings.warn("Something is wrong with your user name or password")
 		  	elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
@@ -1104,7 +1109,8 @@ def main(argv):
 		binPath += '/'
 	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
 	seqfile = cleanupConfVal(config.get('pssh2Config', 'seqfile'))
-	print "Got config (from default and "+confPath+"): "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile + " " + seqfile+ " " + binPath
+#	print "Got config (from default and "+confPath+"): "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile + " " + seqfile+ " " + binPath
+	print "Got config (from default and "+confPath+"): "+ hhPath + " " + pdbhhrfile + " " + seqfile+ " " + binPath
 
 	global pssh2_user, pssh2_password, pssh2_host, pssh2_name
 	pssh2_user = cleanupConfVal(config.get('pssh2Config', 'pssh2_user'))
@@ -1136,6 +1142,8 @@ def main(argv):
 	evalMethods = []
 	global parseMethod
 	parseMethod={}
+	global getParams
+	getParams={}
 	if args.maxcluster:
 		evalMethods.append('maxcluster')
 		parseMethod['maxcluster'] = parse_maxclusterResult
