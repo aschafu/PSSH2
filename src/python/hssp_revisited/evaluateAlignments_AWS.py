@@ -497,27 +497,28 @@ def getCathInfoRest(chain, pRange):
 
     # print json.dumps(jData)
 	if pdbCode in jData:
-		logging.debug('.... got back data')        
+		logging.debug('.... got back data: ')        
 		# loop over the cath IDs to find one that covers our region	
 		for cathId in jData[pdbCode]['CATH']:
 			# print cathId
 			for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
 				dChain=domain['chain_id']
-				# print dChain + ' (searching: ' + pdbChain + ')'
+				logging.debug('.... cath domain: '+dChain + ' (searching for: ' + pdbChain + ')'
 				if dChain == pdbChain:
 					dName=domain['domain']
 					dStart=domain['start']['residue_number']
 					dEnd=domain['end']['residue_number']
 					dRange=str(dStart)+'-'+str(dEnd)
 					# print str(dName) + ' ' + str(dStart) +' ' + str(dEnd) + ' ' + dRange
-					print 'cath range ' + dRange +  ' (pdb Range: ' + pRange + ')'
+					logging.debug('.....cath range ' + dRange +  ' (searching for pdb Range: ' + pRange + ')')
 					if isOverlapping(pRange, dRange):
+						logging.debug('.....cath range overlaps -> accept cath code '+cathId)
 						cathCodes.append(cathId)
 						break # (breaks inner loop, not outer)
 	else:
 		logging.debug('.... no '+pdbCode+' found in '+jData)        
 
-	logging.inf('found cathCodes'+' '.join(cathCodes))
+	logging.info('found cathCodes'+' '.join(cathCodes))
 	return cathCodes
 					
 	
