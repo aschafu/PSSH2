@@ -503,7 +503,7 @@ def getCathInfoRest(chain, pRange):
 			# print cathId
 			for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
 				dChain=domain['chain_id']
-				logging.debug('.... cath domain: '+dChain + ' (searching for: ' + pdbChain + ')'
+				logging.debug('.... cath domain: '+dChain + ' (searching for: ' + pdbChain + ')')
 				if dChain == pdbChain:
 					dName=domain['domain']
 					dStart=domain['start']['residue_number']
