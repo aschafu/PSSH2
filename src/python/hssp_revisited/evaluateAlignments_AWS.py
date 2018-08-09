@@ -49,6 +49,9 @@ pdbChainCoveredRange = {}
 
 cathSeparator = '.'
 
+logging.basicConfig(filename='evaluateAlignments.log',level=logging.DEBUG)
+
+
 def check_timeout(process, timeout=60):
 	""" check whether a process has timed out, if yes kill it"""
 	killed = False
@@ -94,7 +97,7 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 #	open(workPath+'/'+pdbhhrfiletmp, 'w').write(s)
 	hhrfilehandle = open(workPath+'/'+pdbhhrfile, 'w')
 #	parsefile = open(pdbhhrfiletmp, 'rb')
-	parsefile = open(originPath, 'r')
+	parsefile = open(originPath, 'rb')
 	linelist = parsefile.readlines()
 	parsefile.close()
 #	hhrgzfile.close()
@@ -1052,7 +1055,7 @@ def getConnection():
 #				print 'host: "', self.conf[db]['host'], '", port: "', self.conf[db]['port'], '"' 
 			dbConnection = mysql.connector.connect( \
 			                 user=pssh2_user, 
-		                     password=pssh2_user,
+		                     password=pssh2_password,
 		                     host=pssh2_host,
 		                     database=pssh2_name,
 		                     port='3306'
@@ -1178,22 +1181,29 @@ def main(argv):
 
 	# get the actual input
 	if checksum:
+		logging.info('Started with single md5: '+checksum)
 		resultStore = evaluateSingle(checksum, cleanup)  
 	elif list:
+		logging.info('Started with list file of md5: '+md5listfile)
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
+		logging.debug('List file has'+len(md5list)+' entries')
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
+			logging.info('\n-----------------\n Starting with md5: '+checksum)
 			resultStore = evaluateSingle(checksum, cleanup) 
 	elif sqs:
 		# CAVE: make sure region is set as an environment variable, 
 		# us-east-2 is just a fallback value
+		logging.info('Started with sqs queue to query: '+sqsName)
 		regionName=os.getenv('REGION', 'us-east-2')
 		sqs = boto3.client('sqs', region_name=regionName)
 		sqsUrlResponse = sqs.get_queue_url(QueueName=sqsName)
 		sqsUrl = sqsUrlResponse['QueueUrl']
+		logging.debug('Will call at: '+sqsUrl)
 		while True:
 			messages = sqs.receive_message(QueueUrl=sqsUrl, MaxNumberOfMessages=10)
+			logging.debug('Received messages '+messages)
 			if 'Messages' in messages:
 				 for message in messages['Messages']: 
 				 	checksum = message['Body']
@@ -1201,7 +1211,7 @@ def main(argv):
 				 	resultStore = evaluateSingle(checksum, cleanup)
 				 	queue.delete_message(ReceiptHandle=message['ReceiptHandle'])
 			else:
-				print "queue empty, waiting "
+				logging.warning("queue empty, waiting ")
 				time.sleep(60)
 
 # def main(argv):
