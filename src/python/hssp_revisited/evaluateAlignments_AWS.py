@@ -19,7 +19,6 @@ import boto3
 
 defaultConfig = """
 [pssh2Config]
-pssh2_cache="/mnt/resultData/pssh_cache/"
 HHLIB="/usr/share/hhsuite/"
 pdbhhrfile='query.uniprot20.pdb.full.hhr'
 seqfile='query.fasta'
@@ -30,9 +29,9 @@ hhMakeModelScript = 'scripts/hhmakemodel.pl'
 renumberScript = 'scripts/renumberpdb.pl'
 bestPdbScript = 'find_best_pdb_for_seqres_md5'
 evalScript={}
-evalScript['maxcluster'] = 'maxcluster'
+evalScript['maxcluster'] = 'maxcluster64bit'
 evalScript['tmScore'] = 'TMscore'
-
+findCachePath='aws_local_cache_handler'
 
 #dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 #md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
@@ -229,6 +228,13 @@ def getStrucReferenceFileName(workPath, pdbChainCode):
 	"""utility to make sure the naming is consistent"""
 	return workPath+'/'+pdbChainCode+'.pdb'
 
+def getParams4maxcluster(referenceFile, comparisonFile):
+	"""assemble the parameters needed to call maxcluster"""
+	return [binPath+evalScript['maxcluster'], '-gdt', '4', '-e', referenceFile, '-p', comparisonFile]
+
+def getParams4tmScore(referenceFile, comparisonFile):
+	"""assemble the parameters needed to call TMscore"""
+	return [binPath+evalScript['tmScore'], comparisonFile, referenceFile]
 
 def parse_maxclusterResult(result, prefix='', status=''):
 	"""parse out the result from maxcluster (see http://www.sbg.bio.ic.ac.uk/~maxcluster)
@@ -312,7 +318,7 @@ def parse_maxclusterResult(result, prefix='', status=''):
 				
 def parse_tmscoreResult(result, prefix='', status=''):
 	"""parse out the result from TMscore (see https://zhanglab.ccmb.med.umich.edu/TM-score/)
-	Example: > maxcluster exeriment.pdb model.00002.pdb 
+	Example: > TM-score model.00002.pdb exeriment.pdb 
 	
 	*****************************************************************************
  	*                                 TM-SCORE                                  *
@@ -610,9 +616,17 @@ def findLongestMissingRange(seqLength, coveredRanges):
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
-	# find the data for this md5 
-	# use find_cache_path to avoid having to get the config
-	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/'
+	# find the data for this md5: use the shell scripts to do this (get data from S3)
+	fp = subprocess.Popen(findCachePath, '-r', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = fp.communicate()
+	if err:
+		print err
+	resultLine, rest = out.split('\n', 1)
+	cachePath = resultLine.strip() 
+
+# OLD:
+#	# use find_cache_path to avoid having to get the config
+#	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/'
 	hhrPath = (cachePath+pdbhhrfile+'.gz')
 
 	# check that we have the necessary input
@@ -622,7 +636,7 @@ def evaluateSingle(checksum, cleanup):
 	print('-- hhr file found. Parsing data ...') 
 
 	# work out how many models we want to create, get unzipped data
-	workPath = modeldir+'/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
+	workPath = hhrPath+'/models'
 	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
 	resultStore, modelcount = hhrdata
 
@@ -777,19 +791,20 @@ def evaluateSingle(checksum, cleanup):
 											
 				for method in evalMethods:
 				
-					print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
+					print('-- ' + method +' chain '+chain+ ' with model no. '+str(model))
 			
 					# create/find file names
 					modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
 					pdbstrucfile = getStrucReferenceFileName(workPath, chain)
+					evalParams = getParams[method](pdbstrucfile, modelFileWithPath)
 	
 					# first check how the model maps onto the experimental structure
-					p = subprocess.Popen([binPath+evalScript[method], '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					p = subprocess.Popen(evalParams, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					evalStatus = ''
 	
 					if check_timeout(p):
 						out = ''
-						err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
+						err = 'Process timed out: '+evalScript[method] + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
 						evalStatus = 'timeOut'
 					else: 
 						out, err = p.communicate()
@@ -807,7 +822,8 @@ def evaluateSingle(checksum, cleanup):
 			
 					# now check how the experimental structure maps onto the model 
 					# important for short models to find whether that at least agrees with the experimental structure
-					r_p = subprocess.Popen([binPath+evalScript[method], '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					r_evalParams = getParams[method](modelFileWithPath, pdbstrucfile)
+					r_p = subprocess.Popen(r_evalParams, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					r_evalStatus = ''
 
 					if check_timeout(r_p):
@@ -905,10 +921,18 @@ def evaluateSingle(checksum, cleanup):
 #	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
 	if cleanup == True: 
-		for model in range(1, modelcount+1): 
-			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
-			print('-- deleting '+modelFileWithPath)
-			subprocess.call(['rm', modelFileWithPath])
+#		for model in range(1, modelcount+1): 
+#			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+#			print('-- deleting '+modelFileWithPath)
+#			subprocess.call(['rm', modelFileWithPath])
+		subprocess.call(['rm', '-r', workPath])
+	else:
+		# if we don't want to clean up, we store the resultStore
+		fp = subprocess.Popen(findCachePath, '-s', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		out, err = fp.communicate()
+		if err:
+			print err
+
 			
 #		for chain in pdbChainCodes:
 #			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
@@ -1043,14 +1067,19 @@ def getConnection():
 			wait(10)
 	return 
 	
+
 def main(argv):
 	""" here we initiate the real work"""
+
 	# get config info
+	# 1. get it from the default config defined in this script
 	config = ConfigParser.RawConfigParser()
 	config.readfp(io.BytesIO(defaultConfig))
+	# 2. get it from outside 
+	#    and do some magic so we can work with the overall config file used for the shell scripts
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
-	confFileHandle = open(confPath)	
-#  get rid of "export" statements and add a fake section
+	confFileHandle = open(confPath)		
+	#  get rid of "export" statements and add a fake section
 	fakeFileString = "[pssh2Config]\n" 
 	for line in confFileHandle:
 		if (not line.startswith( 'export' ) ):
@@ -1059,12 +1088,18 @@ def main(argv):
 	fakeConfFileHandle = StringIO(fakeFileString)
 	config.readfp(fakeConfFileHandle)
 #	print config.sections()
-	global pssh2_cache_path, hhPath, binPath, pdbhhrfile, seqfile
-	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
+#	global pssh2_cache_path, hhPath, binPath, pdbhhrfile, seqfile
+
+	global hhPath, binPath, pdbhhrfile, seqfile
+	# Don't get cache_path any more, work with appropriate shell scripts instead
+#	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
+#	if (len(pssh2_cache_path)<1):
+#		raise Exception('Insufficient conf info!')
+
 	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
 	if (not hhPath.endswith('/')):
 		hhPath += '/'
-	binPath = cleanupConfVal(config.get('pssh2Config', 'binPath'))
+	binPath = cleanupConfVal(config.get('pssh2Config', 'bin_path'))
 	if (not binPath.endswith('/')):
 		binPath += '/'
 	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
@@ -1076,10 +1111,6 @@ def main(argv):
 	pssh2_password = cleanupConfVal(config.get('pssh2Config', 'pssh2_password'))
 	pssh2_host = cleanupConfVal(config.get('pssh2Config', 'pssh2_host'))
 	pssh2_name = cleanupConfVal(config.get('pssh2Config', 'pssh2_name'))
-
-
-	if (len(pssh2_cache_path)<1):
-		raise Exception('Insufficient conf info!')
 		
 	# parse command line arguments	
 	parser = argparse.ArgumentParser()
@@ -1087,24 +1118,43 @@ def main(argv):
 	inputGroup.add_argument("-m", "--md5", help="md5 sum of sequence to process")
 	inputGroup.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
 	inputGroup.add_argument("-s", "--sqs", help="name of SQS queue where we retrieve md5 sums to process")
-	evalGroup = parser.add_mutually_exclusive_group(required=True)
-	evalGroup.add_argument("--maxcluster", action='store_true', help="evaluate the models with maxcluster")
-	evalGroup.add_argument("--tmscore", action='store_true', help="evaluate the models with TMscore")
 	parser.add_argument("-t", "--table", required=True, help="name of table in mysql to write to (must exist!)")
 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
 	parser.add_argument("--test", action='store_true', help="run in test mode (only 5 models per query)")
-
-
+#	evalGroup = parser.add_mutually_exclusive_group(required=True)
+#   Don't put that in an exclusive group, we might want to use both methods, 
+# 	rather check by hand that we got at least one
+	evalGroup = parser.add_argument_group('evaluation method', 'choose at least one method to evaluate models')
+	evalGroup.add_argument("--maxcluster", action='store_true', help="evaluate the models with maxcluster")
+	evalGroup.add_argument("--tmscore", action='store_true', help="evaluate the models with TMscore")
 # later add option for different formats
 	parser.set_defaults(format=csv)
 	args = parser.parse_args()
+
+	# Find out what we are supposed to do 
+	global evalMethods
+	evalMethods = []
+	global parseMethod
+	parseMethod={}
+	if args.maxcluster:
+		evalMethods.append('maxcluster')
+		parseMethod['maxcluster'] = parse_maxclusterResult
+		getParams['maxcluster'] = getParams4maxcluster
+	if args.tmscore:	
+		evalMethods.append('tmScore')
+		parseMethod['tmScore'] = parse_tmscoreResult
+		getParams['tmScore'] = getParams4tmScore
+	if not evalMethods:
+		sys.exit("ERROR: cannot run without an evaluation method, try -h for help")
+
+	# Make sure we can reach the database
 	global tableName
 	tableName = args.table
-
 	global dbConnection
 	dbConnection = None
 	getConnection()
-	
+
+	# Find the mode we are running in 	
 	checksum = args.md5
 	list = args.list
 	sqsName = args.sqs
@@ -1116,19 +1166,9 @@ def main(argv):
 		global test
 		test = True
 
-	global evalMethods
-	evalMethods = []
-	global parseMethod
-	parseMethod={}
-	if args.maxcluster:
-		evalMethods.append('maxcluster')
-		parseMethod['maxcluster'] = parse_maxclusterResult
-	if args.tmscore:	
-		evalMethods.append('tmScore')
-		parseMethod['tmScore'] = parse_tmscoreResult
-
 	os.putenv('HHLIB', hhPath)
 
+	# get the actual input
 	if checksum:
 		resultStore = evaluateSingle(checksum, cleanup)  
 	elif list:
@@ -1138,11 +1178,14 @@ def main(argv):
 			checksum = chksm.replace("\n","")
 			resultStore = evaluateSingle(checksum, cleanup) 
 	elif sqs:
-		sqs = boto3.client('sqs')
+		# CAVE: make sure region is set as an environment variable, 
+		# us-east-2 is just a fallback value
+		regionName=os.getenv('REGION', 'us-east-2')
+		sqs = boto3.client('sqs', region_name=regionName)
 		sqsUrlResponse = sqs.get_queue_url(QueueName=sqsName)
 		sqsUrl = sqsUrlResponse['QueueUrl']
 		while True:
-			messages = queue.receive_message(QueueUrl=sqsUrl, MaxNumberOfMessages=10)
+			messages = sqs.receive_message(QueueUrl=sqsUrl, MaxNumberOfMessages=10)
 			if 'Messages' in messages:
 				 for message in messages['Messages']: 
 				 	checksum = message['Body']

@@ -85,7 +85,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 		if exception.errno != errno.EEXIST:
 			raise
 			
-	# write an unzipped verion to our work directory
+	# write an unzipped version to our work directory
 	# -- but also tune this file to 
 	pdbhhrfiletmp = pdbhhrfile+'.tmp'
 	open(workPath+'/'+pdbhhrfiletmp, 'w').write(s)
