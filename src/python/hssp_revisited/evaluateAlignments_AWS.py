@@ -49,7 +49,8 @@ pdbChainCoveredRange = {}
 
 cathSeparator = '.'
 
-logging.basicConfig(filename='evaluateAlignments.log',level=logging.DEBUG)
+#logging.basicConfig(filename='evaluateAlignments.log',level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 
 def check_timeout(process, timeout=60):
@@ -622,13 +623,16 @@ def findLongestMissingRange(seqLength, coveredRanges):
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
+	logging.info('starting evaluateSingle with md5: '+checksum)
 	# find the data for this md5: use the shell scripts to do this (get data from S3)
-	fp = subprocess.Popen([findCachePath, '-r', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	logging.debug('command: '+[findCachePath,'r','-m', checksum].join(' '))
+	fp = subprocess.Popen([findCachePath, '-r', '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = fp.communicate()
 	if err:
 		print err
 	resultLine, rest = out.split('\n', 1)
 	cachePath = resultLine.strip() 
+	logging.debug('got cache path: '+cachePath)
 
 # OLD:
 #	# use find_cache_path to avoid having to get the config
