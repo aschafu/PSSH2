@@ -845,7 +845,9 @@ def evaluateSingle(checksum, cleanup):
 		else:
 			newModelRangeEnd = getRangeEnd(modelRange)
 		newModelRange = str(newModelRangeBegin)+'-'+str(newModelRangeEnd)
-		
+	
+		validChainCounter = {}
+	
 		for chain in pdbChainCodes:
 			
 			if isOverlapping(newModelRange, pdbChainCoveredRange[chain]):
