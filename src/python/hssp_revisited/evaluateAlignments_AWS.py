@@ -228,8 +228,8 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 
 			# also download the found template to the disk
 			logging.info('--- download structure for found template '+pdbChainCode)
-			if '_' in chain:
-				(pdbCode, pdbChain) = chain.split('_')
+			if '_' in pdbChainCode:
+				(pdbCode, pdbChain) = pdbChainCode.split('_')
 			else:
 				pdbCode = chain
 			pdbFilePath = pdbdir+'/'+pdbChainCode[2:3]+'/'+pdbpre+pdbCode+pdbsuf
