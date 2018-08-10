@@ -847,6 +847,8 @@ def evaluateSingle(checksum, cleanup):
 		newModelRange = str(newModelRangeBegin)+'-'+str(newModelRangeEnd)
 	
 		validChainCounter = {}
+		for method in evalMethods:
+			validChainCounter[method]=0 
 	
 		for chain in pdbChainCodes:
 			
