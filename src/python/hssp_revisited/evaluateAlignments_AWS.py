@@ -814,6 +814,7 @@ def evaluateSingle(checksum, cleanup):
 	for model in range(1, modelcount+1): 
 		logging.debug('.. at model'+str(model))
 
+		validChainCounter = {}
 		for method in evalMethods:
 			validChainCounter[method] = 0
 			resultStore[model][method]['avrg'] = {}
@@ -846,9 +847,6 @@ def evaluateSingle(checksum, cleanup):
 			newModelRangeEnd = getRangeEnd(modelRange)
 		newModelRange = str(newModelRangeBegin)+'-'+str(newModelRangeEnd)
 	
-		validChainCounter = {}
-		for method in evalMethods:
-			validChainCounter[method]=0 
 	
 		for chain in pdbChainCodes:
 			
