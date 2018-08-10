@@ -667,7 +667,7 @@ def evaluateSingle(checksum, cleanup):
 	logging.debug('models will be written to '+workPath) 
 	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
 	resultStore, modelcount = hhrdata
-	logging.info('finished retrieving hhr data, number of models found: '+modelcount) 
+	logging.info('finished retrieving hhr data, number of models found: '+str(modelcount)) 
 
 
 	if test:
@@ -677,7 +677,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
-		print('-- building model for protein: model nr '+str(model))
+		logging.info('-- building model for protein: model nr '+str(model))
 		#  we don't need -d any more since now hhsuite is properly set up at rostlab
 		# subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
 		modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
@@ -694,7 +694,7 @@ def evaluateSingle(checksum, cleanup):
 #			hhmm.kill()
 #			out, err = hhmm.communicate()
 		if err:
-			print err
+			logging.error(err)
 
 	# now create the things to compare against (pdb file(s) the sequence comes from)
 	# make a fake pdb structure using the hhsuite tool
@@ -711,10 +711,11 @@ def evaluateSingle(checksum, cleanup):
 	# work out the pdb structures for this md5 sum	
 	# also get cath info for each
 	cathCodesDict = {}
+	logging.info('work out the pdb structures for this md5 sum')
 	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = bp.communicate()
 	if err:
-		print err
+		logging.error(err)
 #	print out
 	lines = out.split('\n')
 	codesLine, rangesLine, rest = out.split('\n', 2)
@@ -724,19 +725,19 @@ def evaluateSingle(checksum, cleanup):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
 		cathCodesDict[pdbChainCodes[i]] = []
 		cathCodesDict[pdbChainCodes[i]].extend(getCathInfoRest(pdbChainCodes[i], pdbChainRanges[i]))
-	print '-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)+' (out of '+str(seqLength)+' residues)'
+	logging.info('-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)+' (out of '+str(seqLength)+' residues)')
 	
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
 	longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
-	print '---  longest missing range is ' + longestMissingRange + ' (tolerated is ' + str(toleratedMissingRangeLength) +')'
+	logging.debug('---  longest missing range is ' + longestMissingRange + ' (tolerated is ' + str(toleratedMissingRangeLength) +')')
 	while (getRangeLength(longestMissingRange) > toleratedMissingRangeLength):
 		searchRange = longestMissingRange.replace('-',':')
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out, err = bp.communicate()
 		if err:
-			print err
+			logging.error(err)
 		codesLine, rangesLine, rest = out.split('\n', 2)
 		newPdbChainCodes = codesLine.strip().split(';') 
 		newPdbChainRanges = rangesLine.strip().split(';')
@@ -745,7 +746,7 @@ def evaluateSingle(checksum, cleanup):
 		# otherwise just remove the piece we found
 		if (newPdbChainCodes[0] == '0xxx'):
 			pdbChainRanges.append(longestMissingRange)
-			print '--- no structures found for ' + searchRange
+			logging.info('--- no structures found for ' + searchRange)
 			cathCodesDict['0xxx'] = [ '' ]
 		else :
 			for i in range(len(newPdbChainCodes)):
@@ -754,28 +755,29 @@ def evaluateSingle(checksum, cleanup):
 				cathCodesDict[newPdbChainCodes[i]].extend(getCathInfoRest(newPdbChainCodes[i], newPdbChainRanges[i]))
 			pdbChainCodes.extend(newPdbChainCodes)
 			pdbChainRanges.extend(newPdbChainRanges)
-			print '--- adding pdb structures ' + ' , '.join(newPdbChainCodes) + ' covering ' +  ' , '.join(newPdbChainRanges)
+			logging.info('--- adding pdb structures ' + ' , '.join(newPdbChainCodes) + ' covering ' +  ' , '.join(newPdbChainRanges))
 
-		print '--- calling findLongestMissingRange with ' + ', '.join(pdbChainRanges)
+		logging.debug('--- calling findLongestMissingRange with ' + ', '.join(pdbChainRanges))
 		longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
-		print '--- longest missing range now is ' + longestMissingRange
+		logging.debug('--- longest missing range now is ' + longestMissingRange)
 		
 
 	# iterate over all chains we found and prepare files to compare against
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
-		print '-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile
+		logging.info('-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile)
 		rn = subprocess.Popen([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 		out, err = rn.communicate()
 		if err:
-			print err
+			logging.error(err)
 		
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
 	# resultStore[m][n], m = name of chain  n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
-	print('-- performing maxcluster/TMscore comparison')
+	logging.info('-- going to perform maxcluster/TMscore comparison')
 	for model in range(1, modelcount+1): 
+		logging.debug('.. at model'+str(model))
 
 		for method in evalMethods:
 			validChainCounter[method] = 0
@@ -821,7 +823,7 @@ def evaluateSingle(checksum, cleanup):
 											
 				for method in evalMethods:
 				
-					print('-- ' + method +' chain '+chain+ ' with model no. '+str(model))
+					logging.info('-- ' + method +' chain '+chain+ ' with model no. '+str(model))
 			
 					# create/find file names
 					modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
