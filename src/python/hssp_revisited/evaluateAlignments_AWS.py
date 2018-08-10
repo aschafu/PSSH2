@@ -8,6 +8,7 @@ import gzip
 import csv
 import subprocess
 import logging
+import wget
 import time
 import datetime
 import ConfigParser
@@ -33,10 +34,18 @@ evalScript['maxcluster'] = 'maxcluster64bit'
 evalScript['tmScore'] = 'TMscore'
 findCachePath='aws_local_cache_handler'
 
+pdbdir=os.getenv('pdb_dir', '/mnt/data/pdb/divided/')
+pdbpre=os.getenv('pdb_pre','')
+pdbsuf=os.getenv('pdb_suf','.pdb.gz')
+pdbDownloadUrl='https://files.rcsb.org/download/'
+fakesuf=''
+if pdbsuf.endswith('.gz'):
+	fakesuf=('.ent.gz')
+
 #dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 #md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
 #mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
-modeldir = '/mnt/project/psshcache/models'
+#modeldir = '/mnt/project/psshcache/models'
 
 maxTemplate = 8
 toleratedMissingRangeLength = 5
@@ -216,6 +225,29 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 			logging.debug('--- get cath codes for found template '+pdbChainCode+' range '+pdbChainRange)
 			cathCodes = getCathInfoRest(pdbChainCode, pdbChainRange)
 			modelStatistics[model]['cathCodes'] = cathCodes
+
+			# also download the found template to the disk
+			logging.info('--- download structure for found template '+pdbChainCode)
+			if '_' in chain:
+				(pdbCode, pdbChain) = chain.split('_')
+			else:
+				pdbCode = chain
+			pdbFilePath = pdbdir+'/'+pdbChainCode[2:3]+'/'+pdbpre+pdbCode+pdbsuf
+			# in some cases we need to fool hhmakemodel 
+			# (call a 'pdb.gz', which we get from pdb, 'ent.gz', which hhmakemodel can handle)
+			if fakesuf: 	
+				pdbFakeFilePath = pdbFilePath+fakesuf
+			pdbFilePath = pdbFilePath+pdbsuf
+			logging.debug('... goint go download to '+pdbFilePath)
+			# check whether the files already exist on the disk
+			if not os.path.isfile(pdbFilePath):
+				downloadPath = pdbDownloadUrl+'/'+pdbCode+pdbsuf 
+				wget(downloadPath,pdbFilePath)
+				logging.debug('... downloaded from '+downloadPath)
+			if (fakesuf and not os.path.isfile(pdbFakeFilePath)):
+				os.symlink(pdbFilePath,pdbFakeFilePath)			
+				logging.debug('... symlinked to '+pdbFakeFilePath)
+
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount] = linelist[lineCount].replace(idLineOrig, idLineFake)
 		hhrfilehandle.write(linelist[lineCount])
