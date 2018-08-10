@@ -242,7 +242,7 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 			# check whether the files already exist on the disk
 			if not os.path.isfile(pdbFilePath):
 				downloadPath = pdbDownloadUrl+'/'+pdbCode+pdbsuf 
-				wget(downloadPath,pdbFilePath)
+				wget.download(downloadPath,pdbFilePath)
 				logging.debug('... downloaded from '+downloadPath)
 			if (fakesuf and not os.path.isfile(pdbFakeFilePath)):
 				os.symlink(pdbFilePath,pdbFakeFilePath)			
