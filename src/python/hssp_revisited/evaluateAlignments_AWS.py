@@ -232,7 +232,10 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 				(pdbCode, pdbChain) = pdbChainCode.split('_')
 			else:
 				pdbCode = chain
-			pdbFilePath = pdbdir+'/'+pdbChainCode[2:3]+'/'+pdbpre+pdbCode+pdbsuf
+			pdbFilePath = pdbdir+'/'+pdbCode[1:3]+'/'
+			if not os.path.exists(pdbFilePath):
+				os.makedirs(pdbFilePath)
+			pdbFilePath = pdbFilePath+pdbpre+pdbCode
 			# in some cases we need to fool hhmakemodel 
 			# (call a 'pdb.gz', which we get from pdb, 'ent.gz', which hhmakemodel can handle)
 			if fakesuf: 	
