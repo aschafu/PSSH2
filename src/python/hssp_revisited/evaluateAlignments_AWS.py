@@ -39,6 +39,7 @@ pdbpre=os.getenv('pdb_pre','')
 pdbsuf=os.getenv('pdb_suf','.pdb.gz')
 pdbDownloadUrl='https://files.rcsb.org/download/'
 fakesuf=''
+fakepre='pdb'
 if pdbsuf.endswith('.gz'):
 	fakesuf=('.ent.gz')
 
@@ -235,12 +236,11 @@ def process_hhr(originPath, workPath, pdbhhrfile):
 			pdbFilePath = pdbdir+'/'+pdbCode[1:3]+'/'
 			if not os.path.exists(pdbFilePath):
 				os.makedirs(pdbFilePath)
-			pdbFilePath = pdbFilePath+pdbpre+pdbCode
 			# in some cases we need to fool hhmakemodel 
 			# (call a 'pdb.gz', which we get from pdb, 'ent.gz', which hhmakemodel can handle)
 			if fakesuf: 	
-				pdbFakeFilePath = pdbFilePath+fakesuf
-			pdbFilePath = pdbFilePath+pdbsuf
+				pdbFakeFilePath = pdbFilePath+fakepre+pdbCode+fakesuf
+			pdbFilePath = pdbFilePath+pdbpre+pdbCode+pdbsuf
 			logging.debug('... goint go download to '+pdbFilePath)
 			# check whether the files already exist on the disk
 			if not os.path.isfile(pdbFilePath):
@@ -801,7 +801,7 @@ def evaluateSingle(checksum, cleanup):
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
-		logging.info('-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile)
+		logging.info('-- calling '+' '.join([renumberScript,pdbseqfile, '-o ', pdbstrucfile])
 		rn = subprocess.Popen([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
 		out, err = rn.communicate()
 		if err:
