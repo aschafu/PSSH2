@@ -817,6 +817,7 @@ def evaluateSingle(checksum, cleanup):
 		validChainCounter = {}
 		for method in evalMethods:
 			validChainCounter[method] = 0
+			resultStore[model]={}
 			resultStore[model][method]['avrg'] = {}
 			resultStore[model][method]['max'] = {}
 			resultStore[model][method]['min'] = {}
