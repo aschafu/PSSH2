@@ -801,8 +801,8 @@ def evaluateSingle(checksum, cleanup):
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
-		logging.info('-- calling '+' '.join([renumberScript,pdbseqfile, '-o ', pdbstrucfile]))
-		rn = subprocess.Popen([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
+		logging.info('-- calling '+' '.join([hhPath+renumberScript,pdbseqfile, '-o ', pdbstrucfile]))
+		rn = subprocess.Popen([ hhPath+renumberScript, pdbseqfile, '-o', pdbstrucfile])
 		out, err = rn.communicate()
 		if err:
 			logging.error(err)
