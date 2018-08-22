@@ -240,7 +240,7 @@ sub parse_gapless_blocks{
     }
     # if the alignment is empty, then stop parsing!
     if (!$query_ali){
-		print "Empty alignment!"
+		print "Empty alignment!";
 		return "";
     }
 	#initialize:
