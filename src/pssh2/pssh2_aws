@@ -286,7 +286,7 @@ EOF
 		aws dynamodb put-item --region=$REGION --table-name "runTimes" --item file://$jsonFile
 		# We didn't have the maxmem info in pssh2_seq, so add that now
 		DB.pssh2_local "update $status_table set maxmem=\"$maxmem\" where  md5=\"$md5\"" 
-		echo "ERROR: could not work on sequence: $md5 (error code: $count)"
+		echo "Finished sequence: $md5 (count: $count)"
 		
 		
 	elif [ ! -z $md5 ] 

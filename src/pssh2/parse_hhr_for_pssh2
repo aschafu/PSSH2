@@ -257,7 +257,7 @@ sub parse_gapless_blocks{
 
 	if (scalar @query_ali_arr != scalar @target_ali_arr) {
     	print "Error: Query and target alignments not of same length!\n";
-	    exit;
+	    return "";
 	}
 
 	my $ali_length = scalar @query_ali_arr;
