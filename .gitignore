@@ -5,3 +5,5 @@ data/*
 work
 make_new_hhblits_db_3
 prepare_new_hhblits_db
+ubuntuHistory.txt
+make_new_hhblits_db_3.tests.txt

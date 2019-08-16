@@ -184,7 +184,7 @@ fi
 if [ -s $pdbhhrfile ]
 then
 # 	time nice parse_hhr_for_pssh2 -i $pdbhhrfile -s query.fasta -o query.pssh2
- 	time parse_hhr_for_pssh2 -i $pdbhhrfile -s $seqfile -o $pssh2file
+ 	$getTime parse_hhr_for_pssh2 -i $pdbhhrfile -s $seqfile -o $pssh2file
 elif [ $fail -eq 0 ]
 then
  	fail=-2	
@@ -197,7 +197,7 @@ s=`date +%s`
 md5=`cat query.fasta | fasta_to_md5`
 if [ -s query.pssh2 ] 
 then
-	DB.pssh2_local $dflag "load data local infile 'query.pssh2' IGNORE INTO TABLE $table_name columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,Alignment) set Identity_Score=@var_id_score*100 "
+	DB.pssh2_local $dflag "load data local infile 'query.pssh2' IGNORE INTO TABLE $table_name columns terminated by ',' (protein_sequence_hash,PDB_chain_hash,Repeat_domains,E_value,@var_id_score,alignedCols,Alignment) set Identity_Score=@var_id_score*100 "
  	n=`cat query.pssh2 |wc -l`
  	DB.pssh2_local $dflag "insert into $status_table set md5=\"$md5\" , count=$n , stamp=$s , runtime=$runtime ON DUPLICATE KEY UPDATE count=$n , stamp=$s , runtime=$runtime "
 else
@@ -225,17 +225,18 @@ then
 	then
 		rm $logfilepdb
 	fi
-	if [ -s $a3mfile ] 
-	then
-		gzip $a3mfile  
-	fi	
-	if [ -s $hhrfile ]
-	then
-	 	gzip -f $hhrfile
-	fi
-	if [ -s $pdbhhrfile ]
-	then
- 		gzip -f $pdbhhrfile
-	fi
+# not really needed since we targz to S3 anyway
+#	if [ -s $a3mfile ] 
+#	then
+#		gzip -f $a3mfile  
+#	fi	
+#	if [ -s $hhrfile ]
+#	then
+#	 	gzip -f $hhrfile
+#	fi
+#	if [ -s $pdbhhrfile ]
+#	then
+# 		gzip -f $pdbhhrfile
+#	fi
 # 	gzip query.pssh2
 fi

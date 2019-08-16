@@ -1,14 +1,13 @@
 #!/bin/bash
+# script to run as user-data on the node that builds the hhblits database
 set -x
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
 yum update -y
 yum upgrade -y
 yum groupinstall -y "Development Tools"
-yum install -y python-pip lvm2 git ruby
+yum install -y python-pip lvm2 git ruby 
 yum install -y cmake mysql
-# in case we want to run cstranslate on this node in parallel
-yum install -y openmpi-devel
 #yum install -y openmpi
 
 mkdir /mnt/resultData
@@ -34,14 +33,19 @@ aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz - | tar -xv
 ##tar -xvzf uniprot20.tgz
 ##rm uniprot20.tgz
 ##chmod a+x /mnt/data//hhblits/uniprot20_2016_02/
-chmod -R a+rX /mnt/data//hhblits/uniprot20_2016_02/
-# if we want to run pssh, we need pdb_full
-#aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/pdb_full.tgz - | tar -xvz
-aws --region=$REGION s3 cp s3://pssh3cache/hhblits_db_creation/pdb_full/201709/pdb_full_201709.tgz - | tar -xvz
-chmod -R a+rX /mnt/data//hhblits/pdb_full_201709/
+chmod -R a+rX /mnt/data//hhblits/
+cd -
+
+#aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz #/mnt/data/hhblits/
+#cd /mnt/data/hhblits/
+#tar -xvzf uniprot20.tgz
+#rm uniprot20.tgz
+##chmod a+x /mnt/data//hhblits/uniprot20_2016_02/
+#chmod -R a+rX /mnt/data//hhblits/uniprot20_2016_02/
+## if we want to run pssh, we need pdb_full
 ##tar -xvzf pdb_full.tgz
 ##rm pdb_full.tgz
-cd -
+#cd -
 
 mkdir /home/ec2-user/git
 chmod a+tw /home/ec2-user/git
@@ -68,7 +72,7 @@ mkdir -p /mnt/resultData/pssh_cache/
 chmod -R a+tw /mnt/resultData/pssh_cache/
 chmod -R a+X /mnt/resultData/pssh_cache/
 
-# from here on to "finally" only needed for making pdb_full 
+# from here on only need for making pdb_full 
 cd /home/ec2-user
 wget http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/psipred.4.01.tar.gz
 tar -xvzf psipred.4.01.tar.gz
@@ -97,7 +101,7 @@ mkdir -p /mnt/data/dssp/data
 chmod -R a+tw /mnt/data/dssp
 chmod -R a+rX /mnt/data/dssp
 cd /mnt/data/dssp/bin
-# wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
+#wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 wget ftp://ftp.cmbi.umcn.nl/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 chmod a+rx dssp-2.0.4-linux-i386
 ln -s dssp-2.0.4-linux-i386 dsspcmbi
@@ -111,12 +115,10 @@ echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc
 
 
 # finally, start the processes that actually do the work
-
 # for i in `seq 1 $(nproc)`; do /home/ec2-user/git/PSSH/pssh2_aws & done
 # sudo -u ec2-user -H sh -c "for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done"  
 echo "#!/bin/bash" > /home/ec2-user/startProcesses.sh
 echo 'export conf_file=/home/ec2-user/pssh2.aws.conf' >> /home/ec2-user/startProcesses.sh
-echo 'for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -D -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done' >> /home/ec2-user/startProcesses.sh
-#echo 'for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pssh2/pssh2_aws -D  > /home/ec2-user/pssh2_aws.$i.log  2>&1 & done' >> /home/ec2-user/startProcesses.sh
+echo 'for i in `seq 1 $(nproc)`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -c aws > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done' >> /home/ec2-user/startProcesses.sh
 chmod a+x /home/ec2-user/startProcesses.sh
 sudo -u ec2-user -H sh -c /home/ec2-user/startProcesses.sh

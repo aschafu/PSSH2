@@ -8,34 +8,45 @@ import gzip
 import csv
 import subprocess
 import logging
+import wget
 import time
 import datetime
 import ConfigParser
 from StringIO import StringIO
-from DatabaseTools import *
 import mysql.connector
 from mysql.connector import errorcode
 import warnings
-
+import boto3
 
 defaultConfig = """
 [pssh2Config]
-pssh2_cache="/mnt/project/psshcache/result_cache/"
 HHLIB="/usr/share/hhsuite/"
 pdbhhrfile='query.uniprot20.pdb.full.hhr'
 seqfile='query.fasta'
 """
 
 #default paths
-hhMakeModelScript = '/scripts/hhmakemodel.pl'
-renumberScript = '/mnt/project/pssh/pssh2_project//src/util/renumberpdb.pl'
+hhMakeModelScript = 'scripts/hhmakemodel.pl'
+renumberScript = 'scripts/renumberpdb.pl'
 bestPdbScript = 'find_best_pdb_for_seqres_md5'
-maxclScript = '/mnt/project/aliqeval/maxcluster'
+evalScript={}
+evalScript['maxcluster'] = 'maxcluster64bit'
+evalScript['tmScore'] = 'TMscore'
+findCachePath='aws_local_cache_handler'
+
+pdbdir=os.getenv('pdb_dir', '/mnt/data/pdb/divided/')
+pdbpre=os.getenv('pdb_pre','')
+pdbsuf=os.getenv('pdb_suf','.pdb.gz')
+pdbDownloadUrl='https://files.rcsb.org/download/'
+fakesuf=''
+fakepre='pdb'
+if pdbsuf.endswith('.gz'):
+	fakesuf=('.ent.gz')
 
 #dparam = '/mnt/project/aliqeval/HSSP_revisited/fake_pdb_dir/'
 #md5mapdir = '/mnt/project/pssh/pssh2_project/data/pdb_derived/pdb_redundant_chains-md5-seq-mapping'
 #mayadir = '/mnt/home/andrea/software/mayachemtools/bin/ExtractFromPDBFiles.pl'
-modeldir = '/mnt/project/psshcache/models'
+#modeldir = '/mnt/project/psshcache/models'
 
 maxTemplate = 8
 toleratedMissingRangeLength = 5
@@ -47,6 +58,11 @@ sdbConnection = None
 pdbChainCoveredRange = {}
 
 cathSeparator = '.'
+
+#logging.basicConfig(filename='evaluateAlignments.log',level=logging.DEBUG)
+fmt="%(funcName)s():%(levelname)s: %(message)s "
+logging.basicConfig(level=logging.DEBUG,format=fmt)
+
 
 def check_timeout(process, timeout=60):
 	""" check whether a process has timed out, if yes kill it"""
@@ -71,29 +87,34 @@ def check_timeout(process, timeout=60):
 	return killed
 
 
-def process_hhr(path, workPath, pdbhhrfile):
+def process_hhr(originPath, workPath, pdbhhrfile):
 	""" work out how many models we want to create, so we have to unzip the hhr file and count"""
+
+#   We don't really need to worry about compressing, since it all goes to a targz afterwards	
+# 
+#	# read the hhr file in its orignial location
+#	hhrgzfile = gzip.open(path, 'rb')
+#	s = hhrgzfile.read()	
 	
-	# read the hhr file in its orignial location
-	hhrgzfile = gzip.open(path, 'rb')
-	s = hhrgzfile.read()	
-	
+	logging.debug('starting to parse in process_hhr')
 	# check whether we can write to our desired output directory
 	try:
 		os.makedirs(workPath)
 	except OSError as exception:
 		if exception.errno != errno.EEXIST:
 			raise
+	logging.debug('made directory '+workPath)
 			
-	# write an unzipped version to our work directory
-	# -- but also tune this file to 
-	pdbhhrfiletmp = pdbhhrfile+'.tmp'
-	open(workPath+'/'+pdbhhrfiletmp, 'w').write(s)
+#	# no need to write an unzipped version to our work directory
+	# BUT tune this file to have pdb identifiers as ids, not md5  
+#	pdbhhrfiletmp = pdbhhrfile+'.tmp'
+#	open(workPath+'/'+pdbhhrfiletmp, 'w').write(s)
 	hhrfilehandle = open(workPath+'/'+pdbhhrfile, 'w')
-	parsefile = open(workPath+'/'+pdbhhrfiletmp, 'rb')
+#	parsefile = open(pdbhhrfiletmp, 'rb')
+	parsefile = open(originPath, 'rb')
 	linelist = parsefile.readlines()
-	hhrgzfile.close()
 	parsefile.close()
+#	hhrgzfile.close()
 	
 	# search from the end of the file until we reach the Number of the last alignment (in the alignment details)
 	breaker = False
@@ -105,18 +126,20 @@ def process_hhr(path, workPath, pdbhhrfile):
 		takenline = linelist[i]
 	
 	modelcount = int(float(takenline.split(' ')[1]))
-	print('-- '+str(modelcount)+' matching proteins found!')
+	logging.info('-- '+str(modelcount)+' matching proteins found!')
 	if test:
 		if modelcount > 5:
-			print 'modelcount is big: ', modelcount, ' set it to 5'
+			logging.info('modelcount is big: '+str(modelcount)+' set it to 5')
 			modelcount = 5
-	
+
+	logging.info('Starting to read statistics...')	
 	modelStatistics = []
 	# make an empty entry at 0 (so the index is the same as the model number)
 	statisticsValues = {}
 	modelStatistics.append(statisticsValues)
 	# now work out the statistics data from the summary
 	for model in range (1, modelcount+1):
+		logging.debug('...at model '+str(model))	
 		statisticsValues = {}
 		parseLine = linelist[8+model][35:]
 #		parseLine = parseLine.replace('(',' ')
@@ -136,9 +159,11 @@ def process_hhr(path, workPath, pdbhhrfile):
 		modelStatistics.append(statisticsValues)
 
 	# write out the beginning into the unzipped hrr file
+	logging.info('Writing statistics to fake file '+workPath+'/'+pdbhhrfile)	
 	for lineCount in range (0, 8+modelcount):
 		hhrfilehandle.write(linelist[lineCount])
 
+	logging.info('Parsing alignment part...')	
 	# finally look in the alignment details to find the % identity
 	# -- also edit the alignment details to contain the pdb code (needed for making the models)!
 	model = ''
@@ -170,7 +195,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			modelStatistics[model]['match md5'] = checksum
 			# work out which piece the structure should cover
 			templateRange = modelStatistics[model]['t_range'].replace('-',':')
-			print '--- find templates for ' + checksum + ' range ' + templateRange
+			logging.debug('--- find template structures for model '+ str(model) +' with md5 ' + checksum + ' range ' + templateRange)
 			p = subprocess.Popen([bestPdbScript, '-m', checksum, '-r', templateRange, '-p', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			if check_timeout(p):
 				out = ''
@@ -178,7 +203,7 @@ def process_hhr(path, workPath, pdbhhrfile):
 			else: 
 				out, err = p.communicate()
 			if err:
-				print err
+				logging.error(err)
 #			if err:
 #				print err
 #			pdbChainCode = out.strip()
@@ -189,15 +214,43 @@ def process_hhr(path, workPath, pdbhhrfile):
 			modelStatistics[model]['pdbCode'] = pdbChainCode
 			modelStatistics[model]['pdbRange'] = pdbChainRange
 			modelStatistics[model]['pdbMatchLength'] = pdbChainMatchLength
+			logging.debug('... found '+pdbChainCode+' range '+pdbChainRange+' matching '+pdbChainMatchLength+' residues')
 				
 			idLineOrig = 'T ' + checksum[:14]
 			nCodeLetters = len(pdbChainCode)
 			idLineFake = 'T ' + pdbChainCode + spaces[:-nCodeLetters]    
 			linelist[lineCount] = '>'+pdbChainCode+' '+checksum+'\n'
+			logging.debug('... write fake alignemnt line: '+linelist[lineCount] )
 			# also remember the cathCode(s) for this template
 			# cathCodes = getCathInfoTsv(pdbChainCode)
+			logging.debug('--- get cath codes for found template '+pdbChainCode+' range '+pdbChainRange)
 			cathCodes = getCathInfoRest(pdbChainCode, pdbChainRange)
 			modelStatistics[model]['cathCodes'] = cathCodes
+
+			# also download the found template to the disk
+			logging.info('--- download structure for found template '+pdbChainCode)
+			if '_' in pdbChainCode:
+				(pdbCode, pdbChain) = pdbChainCode.split('_')
+			else:
+				pdbCode = chain
+			pdbFilePath = pdbdir+'/'+pdbCode[1:3]+'/'
+			if not os.path.exists(pdbFilePath):
+				os.makedirs(pdbFilePath)
+			# in some cases we need to fool hhmakemodel 
+			# (call a 'pdb.gz', which we get from pdb, 'ent.gz', which hhmakemodel can handle)
+			if fakesuf: 	
+				pdbFakeFilePath = pdbFilePath+fakepre+pdbCode+fakesuf
+			pdbFilePath = pdbFilePath+pdbpre+pdbCode+pdbsuf
+			logging.debug('... goint go download to '+pdbFilePath)
+			# check whether the files already exist on the disk
+			if not os.path.isfile(pdbFilePath):
+				downloadPath = pdbDownloadUrl+'/'+pdbCode+pdbsuf 
+				wget.download(downloadPath,pdbFilePath)
+				logging.debug('... downloaded from '+downloadPath)
+			if (fakesuf and not os.path.isfile(pdbFakeFilePath)):
+				os.symlink(pdbFilePath,pdbFakeFilePath)			
+				logging.debug('... symlinked to '+pdbFakeFilePath)
+
 		elif (idLineOrig in linelist[lineCount]):
 			linelist[lineCount] = linelist[lineCount].replace(idLineOrig, idLineFake)
 		hhrfilehandle.write(linelist[lineCount])
@@ -227,6 +280,13 @@ def getStrucReferenceFileName(workPath, pdbChainCode):
 	"""utility to make sure the naming is consistent"""
 	return workPath+'/'+pdbChainCode+'.pdb'
 
+def getParams4maxcluster(referenceFile, comparisonFile):
+	"""assemble the parameters needed to call maxcluster"""
+	return [binPath+evalScript['maxcluster'], '-gdt', '4', '-e', referenceFile, '-p', comparisonFile]
+
+def getParams4tmScore(referenceFile, comparisonFile):
+	"""assemble the parameters needed to call TMscore"""
+	return [binPath+evalScript['tmScore'], comparisonFile, referenceFile]
 
 def parse_maxclusterResult(result, prefix='', status=''):
 	"""parse out the result from maxcluster (see http://www.sbg.bio.ic.ac.uk/~maxcluster)
@@ -308,6 +368,93 @@ def parse_maxclusterResult(result, prefix='', status=''):
 		}
 	return structureStatistics
 				
+def parse_tmscoreResult(result, prefix='', status=''):
+	"""parse out the result from TMscore (see https://zhanglab.ccmb.med.umich.edu/TM-score/)
+	Example: > TM-score model.00002.pdb exeriment.pdb 
+	
+	*****************************************************************************
+ 	*                                 TM-SCORE                                  *
+	* A scoring function to assess the similarity of protein structures         *
+ 	* Based on statistics:                                                      *
+	*       0.0 < TM-score < 0.17, random structural similarity                 *
+	*       0.5 < TM-score < 1.00, in about the same fold                       *
+	* Reference: Yang Zhang and Jeffrey Skolnick, Proteins 2004 57: 702-710     *
+	* For comments, please email to: zhng@umich.edu                             *
+	*****************************************************************************
+	
+	Structure1: 001dde7e5e  Length=  230
+	Structure2: 001dde7e5e  Length=  225 (by which all scores are normalized)
+	Number of residues in common=  222
+	RMSD of  the common residues=    2.725
+	
+	TM-score    = 0.8986  (d0= 5.57)
+	MaxSub-score= 0.8166  (d0= 3.50)
+	GDT-TS-score= 0.8178 %(d<1)=0.5378 %(d<2)=0.8178 %(d<4)=0.9422 %(d<8)=0.9733
+	GDT-HA-score= 0.6433 %(d<0.5)=0.2756 %(d<1)=0.5378 %(d<2)=0.8178 %(d<4)=0.9422
+
+	 -------- rotation matrix to rotate Chain-1 to Chain-2 ------
+ 	i          t(i)         u(i,1)         u(i,2)         u(i,3)
+ 	1    -64.9536975588  -0.0734346191   0.9966122658   0.0370317221
+ 	2    -15.7934079780   0.9754708470   0.0795041654  -0.2052698573
+ 	3     35.7133867702  -0.2075186337   0.0210494516  -0.9780045691
+
+	Superposition in the TM-score: Length(d<5.0)=213  RMSD=  1.51
+	(":" denotes the residue pairs of distance < 5.0 Angstrom)
+	AISLITALVRSHVDTTPDPSCLDYSHYEEQSMSEADKVQQFYQLLTSSVDVIKQFAEKIPGYFDLLPEDQELLFQSASLELFVLRLAYRARIDDTKLIFCNGTVLHRTQCLRSFGEWLNDIMEFSRSLHNLEIDISAFACLCALTLITERHGLREPKKVEQLQMKIIGSLRDHVTYNAEAQKKQHYFSRLLGKLPELRSLSVQGLQRIFYLKLEDLVPAPALIENMFVTT---
+	    ::::::::::::::::::::::::     :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::        ::::::::::::::::::::::::::::::::::::::::::::
+	----ITALVRSHVDTTPDPSCLDYSHYEEQSMSEADKVQQFYQLLTSSVDVIKQFAEKIPGYFDLLPEDQELLFQSASLELFVLRLAYRARIDDTKLIFCNGTVLHRTQCLRSFGEWLNDIMEFSRSLHNLEIDISAFACLCALTLITERHGLREPKKVEQLQMKIIGSLRDHVTYNAEAQK----FSRLLGKLPELRSLSVQGLQRIFYLKLEDLVPAPALIENMFVTTLPF
+	12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123
+	"""
+#	print result
+	tmResultLines = result.splitlines()
+#	print tmResultLines
+	# We sometimes get a core dump. And sometimes the structures just don't align. 
+	# So we only want to evaluate this 
+	if len(tmResultLines) > 2 and 'TM-Score' in tmResultLines[17] :
+		# we want the overall GDT-TS
+		gdt = tmResultLines[19][13:20].strip()
+		# in analogy to Maxcluster we call the "Number of residues in common" "pairs"
+		pairs = tmResultLines[14][29:34].strip()
+		maxsub = tmResultLines[18][13:20].strip()
+		# here we take the model (Structure 2) length (to which the scores are normalised)
+		length = tmResultLines[13][31:36].strip()
+		# we take the overall RMSD of the common residues for grmsd,
+		# the better one of only those that fit in TM-Score for rmsd
+		grmsd = tmResultLines[15][29:38].strip()
+		rmsd = tmResultLines[28][55:61].strip()
+		tm = tmResultLines[17][13:20].strip()
+
+#		print gdt, pairs, rmsd, maxsub, len, grmsd, tm
+		structureStatistics = {
+			prefix+'validResult': True,
+			prefix+'nReferences': 1,
+			prefix+'gdt': float(gdt),		# score based on MaxSub superposition distance threshold (-d option)
+			prefix+'pairs': int(pairs),		# Number of pairs in the MaxSub
+			prefix+'rmsd': float(rmsd),		# RMSD of the atom within the TM-score (d<5.0)
+			prefix+'maxsub': float(maxsub),	# MaxSub score
+			prefix+'len': int(length),		# Number of matched pairs (all equivalent residues)
+			prefix+'grmsd': float(grmsd),	# Global RMSD using the MaxSub superposition
+			prefix+'tm': float(tm)			# TM-score
+		}
+	elif (not "timeOut" in status and not "failed" in status):
+		structureStatistics = {
+			prefix+'validResult': True,
+			prefix+'nReferences': 1,
+			prefix+'gdt': 0.0,		# score based on MaxSub superposition distance threshold (-d option)
+			prefix+'pairs': 0,		# Number of pairs in the MaxSub
+			prefix+'rmsd': 99.9,	# RMSD of the MaxSub atoms
+			prefix+'maxsub': 0.0,	# MaxSub score
+			prefix+'len': 0,		# Number of matched pairs (all equivalent residues)
+			prefix+'grmsd': 99.9,	# Global RMSD using the MaxSub superposition
+			prefix+'tm': 0.0		# TM-score			
+		}	
+	else:
+		structureStatistics = {
+			prefix+'validResult': False
+		}
+	return structureStatistics
+
+
 
 def getCathInfoTsv(chain):
 	""" do a query to the cath tsv file to work out the Cath hierarchy code for this chain"""
@@ -373,35 +520,40 @@ def getCathInfoRest(chain, pRange):
 		pdbCode = chain
 		pdbChain = ''
 	
+	logging.debug('---- query CATH for '+baseURL+pdbCode)
 	response=requests.get(baseURL+pdbCode)
         
 	try:	
 		jData = response.json()
 	except Exception as e:
 		# if the resonse didn't have json data, we give up
-		print e
+		logging.error(e)
 		return cathCodes
 
-        # print json.dumps(jData)
-        if pdbCode in jData:
-        
-                # loop over the cath IDs to find one that covers our region	
-                for cathId in jData[pdbCode]['CATH']:
-                        # print cathId
-                        for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
-                                dChain=domain['chain_id']
-                                # print dChain + ' (searching: ' + pdbChain + ')'
-                                if dChain == pdbChain:
-                                        dName=domain['domain']
-                                        dStart=domain['start']['residue_number']
-                                        dEnd=domain['end']['residue_number']
-                                        dRange=str(dStart)+'-'+str(dEnd)
-                                        # print str(dName) + ' ' + str(dStart) +' ' + str(dEnd) + ' ' + dRange
-                                        print 'cath range ' + dRange +  ' (pdb Range: ' + pRange + ')'
-                                        if isOverlapping(pRange, dRange):
-                                                cathCodes.append(cathId)
-                                                break # (breaks inner loop, not outer)
+    # print json.dumps(jData)
+	if pdbCode in jData:
+		logging.debug('.... got back data: ')        
+		# loop over the cath IDs to find one that covers our region	
+		for cathId in jData[pdbCode]['CATH']:
+			# print cathId
+			for domain in jData[pdbCode]['CATH'][cathId]['mappings']:
+				dChain=domain['chain_id']
+				logging.debug('.... cath domain: '+dChain + ' (searching for: ' + pdbChain + ')')
+				if dChain == pdbChain:
+					dName=domain['domain']
+					dStart=domain['start']['residue_number']
+					dEnd=domain['end']['residue_number']
+					dRange=str(dStart)+'-'+str(dEnd)
+					# print str(dName) + ' ' + str(dStart) +' ' + str(dEnd) + ' ' + dRange
+					logging.debug('.....cath range ' + dRange +  ' (searching for pdb Range: ' + pRange + ')')
+					if isOverlapping(pRange, dRange):
+						logging.debug('.....cath range overlaps -> accept cath code '+cathId)
+						cathCodes.append(cathId)
+						break # (breaks inner loop, not outer)
+	else:
+		logging.debug('.... no '+pdbCode+' found in '+jData)        
 
+	logging.info('found cathCodes'+' '.join(cathCodes))
 	return cathCodes
 					
 	
@@ -521,21 +673,37 @@ def findLongestMissingRange(seqLength, coveredRanges):
 def evaluateSingle(checksum, cleanup):
 	"""evaluate the alignment for a single md5 """
 
-	# find the data for this md5 
-	# use find_cache_path to avoid having to get the config
-	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/'
-	hhrPath = (cachePath+pdbhhrfile+'.gz')
+	logging.info('starting evaluateSingle with md5: '+checksum)
+	# find the data for this md5: use the shell scripts to do this (get data from S3)
+	logging.debug('command: '+' '.join([findCachePath,'-r','-m', checksum]))
+	fp = subprocess.Popen([findCachePath, '-r', '-m', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	out, err = fp.communicate()
+	if err:
+		print err
+	preamble, resultLine, rest = out.split('\n', 2)
+	cachePath = resultLine.strip()+'/' 
+	logging.debug('got cache path: '+cachePath)
+
+# OLD:
+#	# use find_cache_path to avoid having to get the config
+#	cachePath = pssh2_cache_path+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum+'/'
+#	hhrPath = (cachePath+pdbhhrfile+'.gz')
+#   We don't zip any more
+	hhrPath = (cachePath+pdbhhrfile)
 
 	# check that we have the necessary input
 	if not (os.path.isfile(hhrPath)):
-		print('-- hhr '+hhrPath+' does not exist, check md5 checksum!\n-- stopping execution...')
+		logging.error('-- hhr '+hhrPath+' does not exist, check md5 checksum!\n-- stopping execution...')
 		return
-	print('-- hhr file found. Parsing data ...') 
+	logging.info('-- hhr file found. Parsing data ...') 
 
 	# work out how many models we want to create, get unzipped data
-	workPath = modeldir+'/'+checksum[0:2]+'/'+checksum[2:4]+'/'+checksum
+	workPath = cachePath+'/models'
+	logging.debug('models will be written to '+workPath) 
 	hhrdata = (process_hhr(hhrPath, workPath, pdbhhrfile))
 	resultStore, modelcount = hhrdata
+	logging.info('finished retrieving hhr data, number of models found: '+str(modelcount)) 
+
 
 	if test:
 		if modelcount > 5:
@@ -544,7 +712,7 @@ def evaluateSingle(checksum, cleanup):
 
 	# hhmakemodel call, creating the models
 	for model in range(1, modelcount+1):
-		print('-- building model for protein: model nr '+str(model))
+		logging.info('-- building model for protein: model nr '+str(model))
 		#  we don't need -d any more since now hhsuite is properly set up at rostlab
 		# subprocess.call([ hhPath+hhMakeModelScript, '-i '+workPath+'/'+pdbhhrfile, '-ts '+workPath+'/'+pdbhhrfile+'.'+str(model).zfill(5)+'.pdb', '-d '+dparam,'-m '+str(model)])
 		modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
@@ -561,7 +729,7 @@ def evaluateSingle(checksum, cleanup):
 #			hhmm.kill()
 #			out, err = hhmm.communicate()
 		if err:
-			print err
+			logging.error(err)
 
 	# now create the things to compare against (pdb file(s) the sequence comes from)
 	# make a fake pdb structure using the hhsuite tool
@@ -578,10 +746,11 @@ def evaluateSingle(checksum, cleanup):
 	# work out the pdb structures for this md5 sum	
 	# also get cath info for each
 	cathCodesDict = {}
+	logging.info('work out the pdb structures for this md5 sum')
 	bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = bp.communicate()
 	if err:
-		print err
+		logging.error(err)
 #	print out
 	lines = out.split('\n')
 	codesLine, rangesLine, rest = out.split('\n', 2)
@@ -591,19 +760,19 @@ def evaluateSingle(checksum, cleanup):
 		pdbChainCoveredRange[pdbChainCodes[i]] = pdbChainRanges[i]
 		cathCodesDict[pdbChainCodes[i]] = []
 		cathCodesDict[pdbChainCodes[i]].extend(getCathInfoRest(pdbChainCodes[i], pdbChainRanges[i]))
-	print '-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)+' (out of '+str(seqLength)+' residues)'
+	logging.info('-- found best pdb Codes for exprimental structure: ' + ' , '.join(pdbChainCodes) + ' covering ' + ' , '.join(pdbChainRanges)+' (out of '+str(seqLength)+' residues)')
 	
 	# check which ranges are covered 
 	# in case a significant piece of sequence has not been covered
 	# reiterate asking for the missing ranges
 	longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
-	print '---  longest missing range is ' + longestMissingRange + ' (tolerated is ' + str(toleratedMissingRangeLength) +')'
+	logging.debug('---  longest missing range is ' + longestMissingRange + ' (tolerated is ' + str(toleratedMissingRangeLength) +')')
 	while (getRangeLength(longestMissingRange) > toleratedMissingRangeLength):
 		searchRange = longestMissingRange.replace('-',':')
 		bp = subprocess.Popen([bestPdbScript, '-m', checksum, '-n', str(maxTemplate), '-p', '-r', searchRange], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out, err = bp.communicate()
 		if err:
-			print err
+			logging.error(err)
 		codesLine, rangesLine, rest = out.split('\n', 2)
 		newPdbChainCodes = codesLine.strip().split(';') 
 		newPdbChainRanges = rangesLine.strip().split(';')
@@ -612,7 +781,7 @@ def evaluateSingle(checksum, cleanup):
 		# otherwise just remove the piece we found
 		if (newPdbChainCodes[0] == '0xxx'):
 			pdbChainRanges.append(longestMissingRange)
-			print '--- no structures found for ' + searchRange
+			logging.info('--- no structures found for ' + searchRange)
 			cathCodesDict['0xxx'] = [ '' ]
 		else :
 			for i in range(len(newPdbChainCodes)):
@@ -621,34 +790,38 @@ def evaluateSingle(checksum, cleanup):
 				cathCodesDict[newPdbChainCodes[i]].extend(getCathInfoRest(newPdbChainCodes[i], newPdbChainRanges[i]))
 			pdbChainCodes.extend(newPdbChainCodes)
 			pdbChainRanges.extend(newPdbChainRanges)
-			print '--- adding pdb structures ' + ' , '.join(newPdbChainCodes) + ' covering ' +  ' , '.join(newPdbChainRanges)
+			logging.info('--- adding pdb structures ' + ' , '.join(newPdbChainCodes) + ' covering ' +  ' , '.join(newPdbChainRanges))
 
-		print '--- calling findLongestMissingRange with ' + ', '.join(pdbChainRanges)
+		logging.debug('--- calling findLongestMissingRange with ' + ', '.join(pdbChainRanges))
 		longestMissingRange = findLongestMissingRange(seqLength, pdbChainRanges)
-		print '--- longest missing range now is ' + longestMissingRange
+		logging.debug('--- longest missing range now is ' + longestMissingRange)
 		
 
 	# iterate over all chains we found and prepare files to compare against
 	for chain in pdbChainCodes:
 		pdbseqfile = tune_seqfile(seqLines, chain, checksum, workPath)
 		pdbstrucfile = getStrucReferenceFileName(workPath, chain)
-		print '-- calling ', renumberScript,  pdbseqfile, '-o ', pdbstrucfile
-		rn = subprocess.Popen([ renumberScript, pdbseqfile, '-o', pdbstrucfile])
+		logging.info('-- calling '+' '.join([hhPath+renumberScript,pdbseqfile, '-o ', pdbstrucfile]))
+		rn = subprocess.Popen([ hhPath+renumberScript, pdbseqfile, '-o', pdbstrucfile])
 		out, err = rn.communicate()
 		if err:
-			print err
+			logging.error(err)
 		
 	# iterate over all models and  do the comparison (maxcluster)
 	# store the data
 	# resultStore[m][n], m = name of chain  n: 0 = model number, 1 = GDT, 2 = TM, 3 = RMSD
-	print('-- performing maxcluster comparison')
+	logging.info('-- going to perform maxcluster/TMscore comparison')
 	for model in range(1, modelcount+1): 
+		logging.debug('.. at model'+str(model))
 
-		validChainCounter = 0
-		resultStore[model]['avrg'] = {}
-		resultStore[model]['max'] = {}
-		resultStore[model]['min'] = {}
-		resultStore[model]['range'] = {}
+		validChainCounter = {}
+		for method in evalMethods:
+			validChainCounter[method] = 0
+			resultStore[model]={}
+			resultStore[model][method]['avrg'] = {}
+			resultStore[model][method]['max'] = {}
+			resultStore[model][method]['min'] = {}
+			resultStore[model][method]['range'] = {}
 # 		t_range is the matched range in the template sequence, 
 #           BUT we need the covered model region
 #           AND we need to know that the template has coordinates in that region
@@ -674,128 +847,136 @@ def evaluateSingle(checksum, cleanup):
 		else:
 			newModelRangeEnd = getRangeEnd(modelRange)
 		newModelRange = str(newModelRangeBegin)+'-'+str(newModelRangeEnd)
-		
+	
+	
 		for chain in pdbChainCodes:
 			
 			if isOverlapping(newModelRange, pdbChainCoveredRange[chain]):
-			
-				print('-- maxCluster chain '+chain+ ' with model no. '+str(model))
-			
-				# create/find file names
-				modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
-				pdbstrucfile = getStrucReferenceFileName(workPath, chain)
 
-				# first check how the model maps onto the experimental structure
-				p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', pdbstrucfile, '-p', modelFileWithPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-				maxclStatus = ''
-
-				if check_timeout(p):
-					out = ''
-					err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
-					maxclStatus = 'timeOut'
-				else: 
-					out, err = p.communicate()
-					if p.returncode != 0:
-						maxclStatus = 'failed'
-#				try: 
-#					out, err = p.communicate(timeout=60)
-#				except subprocess.TimeoutExpired:
-#			    	p.kill()
-#   				out, err = p.communicate()
-				if err:
-					print err
-				structureStatistics = parse_maxclusterResult(out, status=maxclStatus)
-			
-			
-				# now check how the experimental structure maps onto the model 
-				# important for short models to find whether that at least agrees with the experimental structure
-				r_p = subprocess.Popen([maxclScript, '-gdt', '4', '-e', modelFileWithPath, '-p', pdbstrucfile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-				r_maxclStatus = ''
-
-				if check_timeout(r_p):
-					r_out = ''
-					r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
-					r_maxclStatus = 'timeOut'
-				else: 
-					r_out, r_err = r_p.communicate()
-					if p.returncode != 0:
-						r_maxclStatus = 'failed'
-#				try: 
-#					r_out, r_err = r_p.communicate(timeout=60)
-#				except subprocess.TimeoutExpired:
-#				    r_p.kill()
-#   				r_out, r_err = r_p.communicate()
-				if r_err:
-					print r_err
-				r_structureStatistics = parse_maxclusterResult(r_out, prefix='r_', status=r_maxclStatus)
-
-				# add the reverse values to the dictionary for the normal values
-				# and make sure that we only count this if the superpositioning worked in both directions
-				structureStatistics.update(r_structureStatistics)
-			
 				# compare cath codes
 				structureStatistics['cathSimilarity'] = getCathSimilarity(cathCodesDict[chain], resultStore[model]['cathCodes'])
 #				print structureStatistics
 				resultStore[model][chain] = structureStatistics
 			
-				if (structureStatistics['validResult'] and structureStatistics['r_validResult']):
-#					print('--- GDT: ', structureStatistics['gdt'])
-					validChainCounter += 1
-#					resultStore[model][chain] = structureStatistics
-					for valType in structureStatistics.keys():
-						if valType == 'validResult':
-							resultStore[model]['avrg'][valType] = True
-							resultStore[model]['range'][valType] = True
-							resultStore[model]['min'][valType] = True
-							resultStore[model]['max'][valType] = True
-						else:
-#							print ('----', resultStore[model]['avrg'])
-							if valType in resultStore[model]['avrg']:
-								resultStore[model]['avrg'][valType] += structureStatistics[valType] 	
+											
+				for method in evalMethods:
+				
+					logging.info('-- ' + method +' chain '+chain+ ' with model no. '+str(model))
+			
+					# create/find file names
+					modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+					pdbstrucfile = getStrucReferenceFileName(workPath, chain)
+					evalParams = getParams[method](pdbstrucfile, modelFileWithPath)
+	
+					# first check how the model maps onto the experimental structure
+					p = subprocess.Popen(evalParams, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					evalStatus = ''
+	
+					if check_timeout(p):
+						out = ''
+						err = 'Process timed out: '+evalScript[method] + ' -gdt  4 -e' + pdbstrucfile + ' -p ' + modelFileWithPath
+						evalStatus = 'timeOut'
+					else: 
+						out, err = p.communicate()
+						if p.returncode != 0:
+							evalStatus = 'failed'
+#					try: 
+#						out, err = p.communicate(timeout=60)
+#					except subprocess.TimeoutExpired:
+#				    	p.kill()
+#   					out, err = p.communicate()
+					if err:
+						print err
+					structureStatistics[method] = parseMethod[method](out, status=evalStatus)
+			
+			
+					# now check how the experimental structure maps onto the model 
+					# important for short models to find whether that at least agrees with the experimental structure
+					r_evalParams = getParams[method](modelFileWithPath, pdbstrucfile)
+					r_p = subprocess.Popen(r_evalParams, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					r_evalStatus = ''
+
+					if check_timeout(r_p):
+						r_out = ''
+						r_err = 'Process timed out: '+maxclScript + ' -gdt  4 -e' + modelFileWithPath + ' -p ' + pdbstrucfile
+						r_evalStatus = 'timeOut'
+					else: 
+						r_out, r_err = r_p.communicate()
+						if p.returncode != 0:
+							r_evalStatus = 'failed'
+#					try: 
+#						r_out, r_err = r_p.communicate(timeout=60)
+#					except subprocess.TimeoutExpired:
+#					    r_p.kill()
+#   					r_out, r_err = r_p.communicate()
+					if r_err:
+						print r_err
+					r_structureStatistics = parseMethod[method](r_out, prefix='r_', status=r_evalStatus)
+
+					# add the reverse values to the dictionary for the normal values
+					# and make sure that we only count this if the superpositioning worked in both directions
+					structureStatistics[method].update(r_structureStatistics)
+						
+					if (structureStatistics[method]['validResult'] and structureStatistics[method]['r_validResult']):
+#						print('--- GDT: ', structureStatistics['gdt'])
+						validChainCounter[method] += 1
+#						resultStore[model][chain] = structureStatistics
+						for valType in structureStatistics[method].keys():
+							if valType == 'validResult':
+								resultStore[model][method]['avrg'][valType] = True
+								resultStore[model][method]['range'][valType] = True
+								resultStore[model][method]['min'][valType] = True
+								resultStore[model][method]['max'][valType] = True
+#							else:
+#								print ('----', resultStore[model]['avrg'])
+							if valType in resultStore[model][method]['avrg']:
+								resultStore[model][method]['avrg'][valType] += structureStatistics[valType] 	
 #								print ('----- add to valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 							else:
-								resultStore[model]['avrg'][valType] = structureStatistics[valType]
+								resultStore[model][method]['avrg'][valType] = structureStatistics[valType]
 #								print ('----- intialise valType ', valType, '--> resultStore: ',  resultStore[model]['avrg'][valType])
 
-							if valType in resultStore[model]['max']:
-								if structureStatistics[valType] > resultStore[model]['max'][valType]:
-									resultStore[model]['max'][valType] = structureStatistics[valType]
+							if valType in resultStore[model][method]['max']:
+								if structureStatistics[valType] > resultStore[model][method]['max'][valType]:
+									resultStore[model][method]['max'][valType] = structureStatistics[method][valType]
 							else:
-								resultStore[model]['max'][valType] = structureStatistics[valType]
+								resultStore[model][method]['max'][valType] = structureStatistics[method][valType]
 
-							if valType in resultStore[model]['min']:
-								if structureStatistics[valType] < resultStore[model]['min'][valType]:
-									resultStore[model]['min'][valType] = structureStatistics[valType]
+							if valType in resultStore[model][method]['min']:
+								if structureStatistics[valType] < resultStore[model][method]['min'][valType]:
+									resultStore[model][method]['min'][valType] = structureStatistics[method][valType]
 							else:
-								resultStore[model]['min'][valType] = structureStatistics[valType]
-				else:
-					print('--- no valid result!')
-					structureStatistics['validResult']  = False
-					structureStatistics['r_validResult']  = False
-#					resultStore[model][chain] = structureStatistics
+								resultStore[model][method]['min'][valType] = structureStatistics[method][valType]
+					else:
+						print('--- no valid result!')
+						structureStatistics[method]['validResult']  = False
+						structureStatistics[method]['r_validResult']  = False
+#						resultStore[model][chain] = structureStatistics
 			
 			else:
 				# the model structure and the pdb chain don't overlap enough,
 				# so we cannot use the statistics
-				resultStore[model][chain]['validResult'] = False
-				resultStore[model][chain]['r_validResult'] = False
+				for method in evalMethods:
+					resultStore[model][method][chain]['validResult'] = False
+					resultStore[model][method][chain]['r_validResult'] = False
 
-
-		# calculate the average over the different pdb structures
-		print('-- maxCluster summary: ', validChainCounter, ' valid comparisons found')
-		if (validChainCounter > 0) and resultStore[model]['avrg']['validResult']:
-			for valType in resultStore[model]['avrg'].keys():
-				if valType != 'validResult':
-					resultStore[model]['avrg'][valType] /= validChainCounter 	
-					resultStore[model]['range'][valType] = resultStore[model]['max'][valType] - resultStore[model]['min'][valType]
+		for method in evalMethods:
+			# calculate the average over the different pdb structures
+			print('-- ',  method, ' summary: ', validChainCounter[method], ' valid comparisons found')
+			if (validChainCounter[method] > 0) and resultStore[model][method]['avrg']['validResult']:
+				for valType in resultStore[model][method]['avrg'].keys():
+					if valType != 'validResult':
+						resultStore[model][method]['avrg'][valType] /= validChainCounter[method] 	
+						resultStore[model][method]['range'][valType] = resultStore[model][method]['max'][valType] - resultStore[model][method]['min'][valType]
 #					print('-- ', valType, ':', resultStore[model]['avrg'][valType])
-		else:
-			resultStore[model]['avrg'] = {}
-			resultStore[model]['avrg']['validResult'] = False
-			resultStore[model]['range'] = {}
-			resultStore[model]['range']['validResult'] = False
-		resultStore[model]['avrg']['nReferences'] = validChainCounter
-		resultStore[model]['range']['nReferences'] = validChainCounter
+				else:
+					resultStore[model][method]['avrg'] = {}
+					resultStore[model][method]['avrg']['validResult'] = False
+					resultStore[model][method]['range'] = {}
+					resultStore[model][method]['range']['validResult'] = False
+		
+				resultStore[model][method]['avrg']['nReferences'] = validChainCounter[method]
+				resultStore[model][method]['range']['nReferences'] = validChainCounter[method]
 		
 	chains = []
 	chains.extend(pdbChainCodes)
@@ -810,10 +991,18 @@ def evaluateSingle(checksum, cleanup):
 #	printSummaryFile(resultStore, checksum, avrgFile, subset)
 
 	if cleanup == True: 
-		for model in range(1, modelcount+1): 
-			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
-			print('-- deleting '+modelFileWithPath)
-			subprocess.call(['rm', modelFileWithPath])
+#		for model in range(1, modelcount+1): 
+#			modelFileWithPath = getModelFileName(workPath, pdbhhrfile, model)
+#			print('-- deleting '+modelFileWithPath)
+#			subprocess.call(['rm', modelFileWithPath])
+		subprocess.call(['rm', '-r', workPath])
+	else:
+		# if we don't want to clean up, we store the resultStore
+		fp = subprocess.Popen([findCachePath, '-s', checksum], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		out, err = fp.communicate()
+		if err:
+			print err
+
 			
 #		for chain in pdbChainCodes:
 #			pdbstrucfile = getStrucReferenceFileName(workPath, chain)
@@ -826,16 +1015,17 @@ def storeSummary(resultStore, checksum, chains):
 	mysqlInsert = "INSERT INTO %s " % tableName
 	mysqlInsert += "(query_md5, query_struc, nReferences, match_md5, match_struc, match_strucAlignLength, model_id, "
 	mysqlInsert += "HH_Prob, HH_E_value, HH_P_value, HH_Score, HH_Aligned_cols, HH_Identities, HH_Similarity, CathSimilarity, "
-	mysqlInsert += "GDT, pairs, RMSD, gRMSD, maxsub, len, TM, "
-	mysqlInsert += "r_GDT, r_pairs, r_RMSD, r_gRMSD, r_maxsub, r_len, r_TM) "
+	for method in evalMethods:
+		mysqlInsert += method +"_GDT, " + method + "_pairs, " + method + "_RMSD, " + method + "_gRMSD, " + method + "_maxsub, " + method + "_len, " + method + "_TM, "
+		mysqlInsert += method + "_r_GDT, " + method + "_r_pairs, " + method + "_r_RMSD," + method + "_ r_gRMSD, " + method + "_r_maxsub, " + method + "_r_len, " + method + "_r_TM) "
 #	mysqlInsert += "VALUES (%(query_md5)s, %(source)s, %(organism_id)s, %(sequence)s, %(md5)s, %(length)s, %(description)s)"
 #	mysqlInsert += "(Primary_Accession, Source, Organism_ID, Sequence, MD5_Hash, Length, Description) "
 	mysqlInsert += "VALUES (%(query_md5)s, %(query_struc)s, %(nReferences)s, %(match_md5)s, %(match_struc)s, %(match_strucAlignLength)s, %(model_id)s, "
 	mysqlInsert += "%(HH_Prob)s, %(HH_E-value)s, %(HH_P-value)s, %(HH_Score)s, %(HH_Aligned_cols)s, %(HH_Identities)s, %(HH_Similarity)s, %(CathSimilarity)s, "
-	mysqlInsert += "%(GDT)s, %(pairs)s, %(RMSD)s, %(gRMSD)s, %(maxsub)s, %(len)s, %(TM)s,"
-	mysqlInsert += "%(r_GDT)s, %(r_pairs)s, %(r_RMSD)s, %(r_gRMSD)s, %(r_maxsub)s, %(r_len)s, %(r_TM)s)"
+	for method in evalMethods:
+		mysqlInsert += "%(" + method + "_GDT)s, %(" + method + "_pairs)s, %(" + method + "_RMSD)s, %(" + method + "_gRMSD)s, %(" + method + "_maxsub)s, %(" + method + "_len)s, %(" + method + "_TM)s,"
+		mysqlInsert += "%(" + method + "_r_GDT)s, %(" + method + "_r_pairs)s, %(" + method + "_r_RMSD)s, %(" + method + "_r_gRMSD)s, %(" + method + "_r_maxsub)s, %(" + method + "_r_len)s, %(" + method + "_r_TM)s)"
 
-	
 # 	csvWriter = csv.writer(fileHandle, delimiter=',')
 # 	if not skipHeader:
 # 		csvWriter.writerow(['query_md5', 'query_struc', 'nReferences', 'match_md5', 'model_id', 
@@ -855,7 +1045,7 @@ def storeSummary(resultStore, checksum, chains):
 	cursor = None
 	while (cursor is None):
 		try:
-			cursor = submitConnection.cursor()
+			cursor = dbConnection.cursor()
 		except (AttributeError, MySQLdb.OperationalError) as e:
 			print e
 			getConnection()
@@ -882,22 +1072,26 @@ def storeSummary(resultStore, checksum, chains):
 					'HH_Aligned_cols': resultStore[model]['aligned_cols'], 
 					'HH_Identities': resultStore[model]['identities'], 
 					'HH_Similarity': resultStore[model]['similarity'],
-					'CathSimilarity': str(resultStore[model][chain]['cathSimilarity']),
-					'GDT': str(resultStore[model][chain]['gdt']), 
-					'pairs': str(resultStore[model][chain]['pairs']), 
-					'RMSD': str(resultStore[model][chain]['rmsd']),
-					'gRMSD': str(resultStore[model][chain]['grmsd']), 
-					'maxsub': str(resultStore[model][chain]['maxsub']), 
-					'len': str(resultStore[model][chain]['len']),
-					'TM': str(resultStore[model][chain]['tm']), 
-					'r_GDT': str(resultStore[model][chain]['r_gdt']), 
-					'r_pairs': str(resultStore[model][chain]['r_pairs']), 
-					'r_RMSD': str(resultStore[model][chain]['r_rmsd']),
-					'r_gRMSD': str(resultStore[model][chain]['r_grmsd']), 
-					'r_maxsub': str(resultStore[model][chain]['r_maxsub']), 
-					'r_len': str(resultStore[model][chain]['r_len']),
-					'r_TM': str(resultStore[model][chain]['r_tm']) 
+					'CathSimilarity': str(resultStore[model][chain]['cathSimilarity'])
 				}
+				for method in evalMethods:
+					method_model_data = {
+						method+'_GDT': str(resultStore[model][method][chain]['gdt']), 
+						method+'_pairs': str(resultStore[model][method][chain]['pairs']), 
+						method+'_RMSD': str(resultStore[model][method][chain]['rmsd']),
+						method+'_gRMSD': str(resultStore[model][method][chain]['grmsd']), 
+						method+'_maxsub': str(resultStore[model][method][chain]['maxsub']), 
+						method+'_len': str(resultStore[model][method][chain]['len']),
+						method+'_TM': str(resultStore[model][method][chain]['tm']), 
+						method+'_r_GDT': str(resultStore[model][method][chain]['r_gdt']), 
+						method+'_r_pairs': str(resultStore[model][method][chain]['r_pairs']), 
+						method+'_r_RMSD': str(resultStore[model][method][chain]['r_rmsd']),
+						method+'_r_gRMSD': str(resultStore[model][method][chain]['r_grmsd']), 
+						method+'_r_maxsub': str(resultStore[model][method][chain]['r_maxsub']), 
+						method+'_r_len': str(resultStore[model][method][chain]['r_len']),
+						method+'_r_TM': str(resultStore[model][method][chain]['r_tm']) 
+					}
+					model_data.update(method_model_data)
 		
 #				print mysqlInsert, '\n', model_data
 				try:
@@ -917,61 +1111,126 @@ def cleanupConfVal(confString):
 	return confString
 	
 def getConnection():
-	global dbConnection, submitConnection
-	while (submitConnection is None or dbConnection is None):
+	global dbConnection
+	while (dbConnection is None):
 		try:
-			dbConnection = SequenceStructureDatabase.DB_Connection()
-			submitConnection = dbConnection.getConnection('pssh2','updating')
+#				print 'host: "', self.conf[db]['host'], '", port: "', self.conf[db]['port'], '"' 
+			dbConnection = mysql.connector.connect( \
+			                 user=pssh2_user, 
+		                     password=pssh2_password,
+		                     host=pssh2_host,
+		                     database=pssh2_name,
+		                     port='3306'
+		                     )
+		except mysql.connector.Error as err:
+			warnings.warn('Cannot make connection for \''+ pssh2_user + \
+		    	              '\' to db \''+ pssh2_name +'\'!')
+			if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
+				warnings.warn("Something is wrong with your user name or password")
+		  	elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
+			  	warnings.warn("Database does not exists")
+			else:
+				print(err)
 		except Exception as e:
 			print e
 			print "--- Waiting for connection ---"
 			wait(10)
 	return 
-
 	
+
 def main(argv):
 	""" here we initiate the real work"""
+
 	# get config info
+	# 1. get it from the default config defined in this script
 	config = ConfigParser.RawConfigParser()
 	config.readfp(io.BytesIO(defaultConfig))
+	# 2. get it from outside 
+	#    and do some magic so we can work with the overall config file used for the shell scripts
 	confPath = os.getenv('conf_file', '/etc/pssh2.conf')
-	confFileHandle = open(confPath)	
-#  add a fake section
-	fakeConfFileHandle = StringIO("[pssh2Config]\n" + confFileHandle.read())
+	confFileHandle = open(confPath)		
+	#  get rid of "export" statements and add a fake section
+	fakeFileString = "[pssh2Config]\n" 
+	for line in confFileHandle:
+		if (not line.startswith( 'export' ) ):
+			fakeFileString += line
+#	fakeConfFileHandle = StringIO("[pssh2Config]\n" + confFileHandle.read())
+	fakeConfFileHandle = StringIO(fakeFileString)
 	config.readfp(fakeConfFileHandle)
 #	print config.sections()
-	global pssh2_cache_path, hhPath, pdbhhrfile, seqfile
-	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
+#	global pssh2_cache_path, hhPath, binPath, pdbhhrfile, seqfile
+
+	global hhPath, binPath, pdbhhrfile, seqfile
+	# Don't get cache_path any more, work with appropriate shell scripts instead
+#	pssh2_cache_path = cleanupConfVal(config.get('pssh2Config', 'pssh2_cache'))
+#	if (len(pssh2_cache_path)<1):
+#		raise Exception('Insufficient conf info!')
+
 	hhPath = cleanupConfVal(config.get('pssh2Config', 'HHLIB'))
+	if (not hhPath.endswith('/')):
+		hhPath += '/'
+	binPath = cleanupConfVal(config.get('pssh2Config', 'bin_path'))
+	if (not binPath.endswith('/')):
+		binPath += '/'
 	pdbhhrfile = cleanupConfVal(config.get('pssh2Config', 'pdbhhrfile'))
 	seqfile = cleanupConfVal(config.get('pssh2Config', 'seqfile'))
-	print "Got config (from default and "+confPath+"): "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile + " " + seqfile
-	if (len(pssh2_cache_path)<1):
-		raise Exception('Insufficient conf info!')
+#	print "Got config (from default and "+confPath+"): "+ pssh2_cache_path + " "+ hhPath + " " + pdbhhrfile + " " + seqfile+ " " + binPath
+	print "Got config (from default and "+confPath+"): "+ hhPath + " " + pdbhhrfile + " " + seqfile+ " " + binPath
+
+	global pssh2_user, pssh2_password, pssh2_host, pssh2_name
+	pssh2_user = cleanupConfVal(config.get('pssh2Config', 'pssh2_user'))
+	pssh2_password = cleanupConfVal(config.get('pssh2Config', 'pssh2_password'))
+	pssh2_host = cleanupConfVal(config.get('pssh2Config', 'pssh2_host'))
+	pssh2_name = cleanupConfVal(config.get('pssh2Config', 'pssh2_name'))
 		
 	# parse command line arguments	
 	parser = argparse.ArgumentParser()
 	inputGroup = parser.add_mutually_exclusive_group(required=True)
 	inputGroup.add_argument("-m", "--md5", help="md5 sum of sequence to process")
 	inputGroup.add_argument("-l", "--list", help="file with list of md5 sums of sequence to process")
+	inputGroup.add_argument("-s", "--sqs", help="name of SQS queue where we retrieve md5 sums to process")
 	parser.add_argument("-t", "--table", required=True, help="name of table in mysql to write to (must exist!)")
 	parser.add_argument("-k", "--keep", action='store_true', help="keep work files (no cleanup)")
 	parser.add_argument("--test", action='store_true', help="run in test mode (only 5 models per query)")
-
-
+#	evalGroup = parser.add_mutually_exclusive_group(required=True)
+#   Don't put that in an exclusive group, we might want to use both methods, 
+# 	rather check by hand that we got at least one
+	evalGroup = parser.add_argument_group('evaluation method', 'choose at least one method to evaluate models')
+	evalGroup.add_argument("--maxcluster", action='store_true', help="evaluate the models with maxcluster")
+	evalGroup.add_argument("--tmscore", action='store_true', help="evaluate the models with TMscore")
 # later add option for different formats
 	parser.set_defaults(format=csv)
 	args = parser.parse_args()
+
+	# Find out what we are supposed to do 
+	global evalMethods
+	evalMethods = []
+	global parseMethod
+	parseMethod={}
+	global getParams
+	getParams={}
+	if args.maxcluster:
+		evalMethods.append('maxcluster')
+		parseMethod['maxcluster'] = parse_maxclusterResult
+		getParams['maxcluster'] = getParams4maxcluster
+	if args.tmscore:	
+		evalMethods.append('tmScore')
+		parseMethod['tmScore'] = parse_tmscoreResult
+		getParams['tmScore'] = getParams4tmScore
+	if not evalMethods:
+		sys.exit("ERROR: cannot run without an evaluation method, try -h for help")
+
+	# Make sure we can reach the database
 	global tableName
 	tableName = args.table
-
-	global submitConnection, dbConnection
-	submitConnection = None
+	global dbConnection
 	dbConnection = None
 	getConnection()
-	
+
+	# Find the mode we are running in 	
 	checksum = args.md5
 	list = args.list
+	sqsName = args.sqs
 	cleanup = True 
 	if args.keep:
 		cleanup = False
@@ -982,15 +1241,40 @@ def main(argv):
 
 	os.putenv('HHLIB', hhPath)
 
+	# get the actual input
 	if checksum:
+		logging.info('Started with single md5: '+checksum)
 		resultStore = evaluateSingle(checksum, cleanup)  
 	elif list:
+		logging.info('Started with list file of md5: '+md5listfile)
 		md5listfile = open(list, 'rb')
 		md5list = md5listfile.readlines()
+		logging.debug('List file has'+len(md5list)+' entries')
 		for chksm in md5list:
 			checksum = chksm.replace("\n","")
+			logging.info('\n-----------------\n Starting with md5: '+checksum)
 			resultStore = evaluateSingle(checksum, cleanup) 
-
+	elif sqs:
+		# CAVE: make sure region is set as an environment variable, 
+		# us-east-2 is just a fallback value
+		logging.info('Started with sqs queue to query: '+sqsName)
+		regionName=os.getenv('REGION', 'us-east-2')
+		sqs = boto3.client('sqs', region_name=regionName)
+		sqsUrlResponse = sqs.get_queue_url(QueueName=sqsName)
+		sqsUrl = sqsUrlResponse['QueueUrl']
+		logging.debug('Will call at: '+sqsUrl)
+		while True:
+			messages = sqs.receive_message(QueueUrl=sqsUrl, MaxNumberOfMessages=10)
+			logging.debug('Received messages '+messages)
+			if 'Messages' in messages:
+				 for message in messages['Messages']: 
+				 	checksum = message['Body']
+#				 	checksum = chksm.replace("\n","")
+				 	resultStore = evaluateSingle(checksum, cleanup)
+				 	queue.delete_message(ReceiptHandle=message['ReceiptHandle'])
+			else:
+				logging.warning("queue empty, waiting ")
+				time.sleep(60)
 
 # def main(argv):
 # 

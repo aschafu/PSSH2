@@ -14,18 +14,27 @@ hhrfile='query.uniprot20.hhr'
 pa3mfile='query.uniprot20.psipred.a3m' 
 seq219file='query.uniprot20.seq219' 
 rootDir="/mnt/project/pssh/pssh2_project/" 
+temp_work="/tmp/pssh2"
 #pdb_derived_dir=$rootDir"data/pdb_derived/"
 #pa3mdir=$pdb_derived_dir"psipred_a3m/current/"
 #hhmdir=$pdb_derived_dir"psipred_a3m/current/"
 pdb_dir="/mnt/project/rost_db/data/pdb/entries/"
+dssp_dir="/mnt/project/rost_db/data/dssp/entries/"
 pdb_pre="pdb"
 pdb_suf=".ent"
+pdbDownloadUrl="https://files.rcsb.org/download/"
 #pa3mfile_gz=$pa3mfile.gz
 hhlib=$rootDir'hhsuite-2.0.13'
 local_paths=''
 dbDate='current'
 dbName='pdb_full'
-
+build_normal_queue='build_hhblits_structure_profiles'
+build_long_queue='build_hhblits_structure_profiles_bigJobs'
+build_fail_queue='build_hhblits_structure_profiles_failed'
+# for AWS statistics (change if using local disks)
+storage='EBS'
+# change in config file if we desire to use more
+n_cpu=1
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -59,7 +68,7 @@ cat << EOT
 NAME
   build_hhblits_structure_profile - generate a hhblits alignment file (called a3m) for a pdb sequence
 SYNOPSIS
-  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D] [-d dbDate] [-n dbName] [-c cloudMode] <-m md5ToWorkOn> 
+  build_hhblits_structure_profile [-R|-F n] [-s] [-h] [-D] [-d dbDate] [-n dbName] [-c cloudMode] [-m md5ToWorkOn] 
 DESCRIPTION
   build_hhblits_profile takes an input sequence,
   calls build_hhblits_profile to scan agains uniprot20 and generate an a3m alignment, 
@@ -69,7 +78,7 @@ DESCRIPTION
 OPTIONS
   -h          The option -h displays help and exits.
   -D          Debug option: do not remove or zip output files
-  -m 		  md5 number of sequence to work on
+  -m 		  md5 number of sequence to work on (not needed in aws mode)
   -F n        Set force remaking status for making of HMM profile (run build_hhblits_profile):
      0           do not make profile unless none exists
      1           run only if the profile is older than the last update of uniprot20 (default)
@@ -110,262 +119,484 @@ done
 if [ $debug -eq 1 ]
 then
 	set -x
+	echo "conf_file: $conf_file"
 fi
 
 case $cloudMode in
   "rostlab" )
 	cachingRoutine=$rootDir'src/util/link_to_cache'
-	CC=`find_cache_path -m $md5`
 	;;
  "aws" )
 	cachingRoutine=$rootDir'src/util/copy_to_S3'
-	# here, we don't only set the path location, but also fetch the data from the cache
-	CC=`$rootDir/src/util/aws_local_cache_handler -m $md5 -r`
+
+	REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+	ACCOUNT=`wget -q 169.254.169.254/latest/dynamic/instance-identity/document -O- | grep accountId | awk -F'"' '{print $4}'`
+	instance_id=`wget 169.254.169.254/latest/meta-data/instance-id -qO-`
+	instance_type=`wget 169.254.169.254/latest/meta-data/instance-type -qO-`
+#	availability_zone=`wget 169.254.169.254/latest/meta-data/placement/availability-zone -qO-`	
+
+	# we cannot set the path yet, because we have to get the md5 first from the queue (see below)
 	;;
 esac
 
 if [ -x $cachingRoutine ]
 then
-	echo "will use $storeRoutine to store output files"
+	echo "will use $cachingRoutine to store output files"
 else
-	echo "ERROR: cannot execute '$storeRoutine'. Please fix!"
+	echo "ERROR: cannot execute '$cachingRoutine'. Please fix!"
 	exit 1
 fi
 
 if [ -z $cstranslateOptions ]
 then
-	cstranslateOptions = "-A $hhlib/data/cs219.lib -D $hhlib/data/context_data.lib -x 0.3 -c 4 "  
+	cstranslateOptions="-A $hhlib/data/cs219.lib -D $hhlib/data/context_data.lib -x 0.3 -c 4 -b "  
 fi
 
 shift $(expr $OPTIND - 1 )
 passOpt="$passOpt $@"
 
-CC=`find_cache_path -m $md5`
-input_seq_file=$CC/$seqfile
+mkdir -p $temp_work
 
-# check whether an input file already exists in $CC
-get_seq=0
-if [ -s $input_seq_file ] 
-then
-	old_md5=`cat $input_seq_file|fasta_to_md5`
-	if  [ $old_md5 == $md5 ]
-	then
-		echo "working with old file $input_seq_file, with md5: $old_md5"
-	else 
-		get_seq=1
-		echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
-	fi
-else
-	get_seq=1
-fi
+keepWorking=1
+while [ $keepWorking -gt 0 ]
+do
 
-if [ $get_seq -eq 1 ]
-then 
-	temp_fasta_file=`get_fasta_for_md5 $md5`
-	if [ -s $temp_fasta_file ]
-	then	
-		### create cachedir if not existent
-		mkdir -p $CC
-		if [ -d $CC ] 
+	startTime=$SECONDS
+	case $cloudMode in
+ 	"aws" )
+		# get the next md5 to process
+		# We receive a message (with the next md5 sum) which then gets hidden from other workers for a few hours 
+ 	    # (so that the md5 is not processed multiple times). 
+	    # The call to aws is delayed up to 20 seconds (to give AWS infrastructure time to look 
+	    # for messages in case none is readily available at the query endpoint). 
+	    # Unused messages (= md5 sums) will be discarded automatically after two weeks 
+	  	# (when no worker has taken care of them).
+		MSG=`aws --region=$REGION sqs receive-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_normal_queue --query 'Messages[*].[ReceiptHandle,Body]' --output text`
+		HANDLE=`awk '{print $1}' <<< $MSG`
+		md5=`awk '{print $2}' <<< $MSG`
+
+		# if we really received something, we process, otherwise we poll again until we are killed
+		if [ -z $md5 ]
 		then
-			cp $temp_fasta_file $input_seq_file
-		else 
-			echo "ERROR: was not able to work on cache for $CC please go fix"
+			skip_all=1	
+			skip_add=1
+			skip_build=1
+			CC='fake'
+		else
+			skip_all=0	
+			# here, we don't only set the path location, but also fetch the data from the cache
+			CC=`$rootDir/src/util/aws_local_cache_handler -m $md5 -r | tail -1`
 		fi
-	fi
-fi
+		keepWorking=1
+		;;
+	"rostlab" )
+		CC=`find_cache_path -m $md5 | tail -1`
+		mkdir -p $CC
+		keepWorking=0
+		skip_all=0
+		;;
+	esac
 
-a3m_stamp=0
-do_gunzip=0
-# now we should have input, check what needs to be done
-if [ -s $input_seq_file ] 
-then
-	cd $CC
-	skip_build=0
-	skip_add=0
-
-	if [ $force -le 1 ] 
+	if [ ! -d $CC ]
 	then
-	# check whether we already have a psipred a3m
+		echo "ERROR: was not able to work on cache for $CC please go fix"
+		skip_all=1
+		skip_add=1
+		skip_build=1
+		count=-999
+	fi
+
+	if [ $skip_all -eq 0 ]
+	then
+		
+		input_seq_file=$CC/$seqfile
+
+		# check whether an input file already exists in $CC
+		get_seq=0
+		if [ -s $input_seq_file ] 
+		then
+			old_md5=`cat $input_seq_file|fasta_to_md5`
+			if  [ $old_md5 == $md5 ]
+			then
+				echo "working with old file $input_seq_file, with md5: $old_md5"
+			else 
+				get_seq=1
+				echo "old file $input_seq_file, has different md5: $old_md5 -> retrieve again!"
+			fi
+		else
+			get_seq=1
+		fi
+
+		if [ $get_seq -eq 1 ]
+		then 
+			temp_fasta_file=`get_fasta_for_md5 $md5`
+			if [ -s $temp_fasta_file ]
+			then	
+				### create cachedir if not existent
+				mkdir -p $CC
+				if [ -d $CC ] 
+				then
+					cp $temp_fasta_file $input_seq_file
+				else 
+					echo "ERROR: was not able to work on cache for $CC please go fix"
+				fi
+			fi
+		fi
+
+		a3m_stamp=0
+		do_gunzip=0
+		# now we should have input, check what needs to be done
+		if [ -s $input_seq_file ] 
+		then
+			cd $CC
+			skip_build=0
+			skip_add=0
+
+			if [ $force -le 1 ] 
+			then
+			# check whether we already have a psipred a3m
 # temporary!!!! -----
 # 	       echo "Temporarily always remake psipred part!"
 #                 if [ -s $pa3mfile.fake ]
 # temporary!!!! ----
+				if [ -s $pa3mfile ]
+				then
+					pa3m_stamp=`stat -c%Y $pa3mfile`
+			   		if [ $force -eq 1 ] 
+	    			then
+						db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
+						if [ $pa3m_stamp -gt $db_stamp ]
+						then
+		    		    	skip_add=1
+			    		    skip_build=1
+						fi
+
+						if [ $silent -eq 0 ]
+    					then
+	    				    echo "psipred_a3m already made: $pa3m_stamp in "
+				    		pwd
+			   		 		if [ $skip_add -eq 1 ] 
+			    			then
+								echo "file will be used again"
+						    else
+								echo "file will be remade"
+							fi
+						fi
+					fi
+				elif [ -s $a3mfile_gz ]
+				then
+					a3m_stamp=`stat -c%Y $a3mfile_gz`
+					do_gunzip=1
+				elif [ -s $a3mfile ]
+				then
+					a3m_stamp=`stat -c%Y $a3mfile`
+				fi
+
+				if [ $a3m_stamp -gt 0 ]
+				then
+					if [ $force -eq 1 ] 
+				    then
+						db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
+						if [ $a3m_stamp -gt $db_stamp ]
+						then
+			    			skip_build=1
+						fi
+ 			   			if [ $silent -eq 0 ]
+	    				then
+		    				echo "a3m already made: $a3m_stamp in "
+							pwd
+							if [ $skip_build -eq 1 ] 
+							then
+								echo "file will be used again"
+							else
+								echo "file will be remade"
+							fi
+						fi
+					fi # end of checking whether the a3m file is new enough
+				fi # end of potentially comparing a3m_stamp
+			fi # end of checking whether we can skip anything at all
+		else
+			# if there is no input, we exit now with an error
+			s=`date +%s`
+			DB.pssh2_local "insert into $profile_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
+			echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
+			skip_all=1
+		fi # end of checking for required input
+	fi # end of dealing with empty input (no md5 in cloud mode)
+
+
+	maxmem=0
+	sysTime=0
+	usrTime=0
+	wallTime=0
+	if [ $skip_build -eq 0 ]
+	then
+		# 
+#		time build_hhblits_profile -f  $seqfile -m  $hmmfile -a $a3mfile -r $hhrfile $passOpt
+		profileCommand="build_hhblits_profile -f  $seqfile -m  $hmmfile -a $a3mfile -r $hhrfile $passOpt"
+		stderr=$((( command time -f ' MemTimeSUe_Stat %M %S %U %e' $profileCommand; ) 1>/dev/null; ) 2>&1; )
+		statistics=`echo $stderr | sed 's/.* MemTimeSUe_Stat \([ 0-9.]*\)$/\1/'`
+		maxmem=`echo $statistics| awk '{print $1}'`
+		sysTime=`echo $statistics| awk '{print $2}'`
+		usrTime=`echo $statistics| awk '{print $3}'`
+		wallTime=`echo $statistics| awk '{print $4}'`
+
+	else
+		if [ $skip_all -eq 0 ]
+		then
+			if [ $do_gunzip -gt 0 ]
+			then
+				gunzip $a3mfile_gz
+			fi
+			if [ $silent -eq 0 ]
+	 		then
+				echo "skip making A3M."
+			fi	
+		fi
+	fi
+
+	# Note that the hhsuite installed on the cluster is not customised to our local Rostlab setup
+	# /usr/share/hhsuite/scripts/HHPaths.pm needs to be adjusted!
+
+	if [ $skip_add -eq 0 ]
+	then
+		if [ -s $a3mfile ] 
+		then
+			# before giving the a3m with the md5 sum as input to addss.pl, we have to replace the id for the found pdb_id
+			a3mfile_pdb=$a3mfile.pdbid.a3m
+			pa3mfile_pdb=$pa3mfile.pdbid.a3m
+#			md5=`cat query.fasta|fasta_to_md5`
+        	pdb_id=`find_best_pdb_for_seqres_md5 -m $md5`
+        	pdb_id_norm=`echo $pdb_id | cut -b1-4 | tr '[:upper:]' '[:lower:]'`
+        	pdb_id_end=`echo $pdb_id | cut -b5-`
+       	 	# for addss.pl we need the chain of the pdb structure to be there
+	        pdb_id_hh=$pdb_id_norm$pdb_id_end
+#			pdb_id=`find_best_pdb_for_seqres_md5 -m $md5|cut -b1-4`
+#			pdb_id_norm=`echo $pdb_id | tr '[:upper:]' '[:lower:]'`
+
+			refer2pdb=0	
+
+			# We need to make sure that addss can find or created dssp files. 
+			# The easisest is to rsync: rsync rsync://rsync.cmbi.ru.nl/dssp/$pdb_id_norm.dssp .
+	        # If we get a dssp file, we probably don't need pdb any more... 
+			dssp_file=$pdb_id_norm".dssp"
+			if [ ! -s $dssp_dir'/'$dssp_file ]
+			then
+    	    	rsync "rsync://rsync.cmbi.ru.nl/dssp/"$dssp_file .
+	    	    mv $dssp_file $dssp_dir
+		    fi
+		
+			# If we still don't have the file, we try to get the pdb file instead
+			if [ -s $dssp_dir'/'$dssp_file ]
+			then
+				refer2pdb=1
+			else
+				# due to some mess-up between pdb formats we might not have the pdb file on the disk
+				# CAVEAT: cif files won't work!
+				# addss.pl cannot handle zipped cif files
+				pdb_sub_dir=`echo $pdb_id_norm|cut -b2,3`
+				pdb_file="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf"
+			    if [[ $pdb_suf == *pdb.gz ]]
+		    	then	
+		    		pdb_suf2=`echo $pdb_suf | sed -e "s/.gz//"`
+					pdb_file_orig="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf"			
+					pdb_file="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf2"			
+				fi
+
+				# if it is not here, then try to get it online
+				if [ ! -s $pdb_file ]
+				then
+#					wget https://files.rcsb.org/download/4hhb.cif.gz
+					wget $pdbDownloadUrl/$pdb_id_norm$pdb_suf			
+					mkdir -p $pdb_dir/$pdb_sub_dir/
+					mv $pdb_id_norm$pdb_suf $pdb_file
+					# addss.pl cannot handle zipped pdb files
+					if [[ $pdb_suf == *pdb.gz ]]
+					then	
+						gunzip $pdb_file_orig
+					fi
+				fi	
+
+				if [ -s $pdb_file ]
+				then
+					refer2pdb=1
+				fi
+
+			fi
+	
+			# now, if it is actually there, then try to add experimental secondary structure,
+			# otherwise only use predicted secondary structure
+			if [ $refer2pdb -eq 1 ]
+			then
+			    sed "s/$md5/$pdb_id_hh/g" < $a3mfile > $a3mfile_pdb
+			else
+			    # if the pdb file is not on the disk, make a copy of the a3mfile to have a fake a3mfile_pdb 
+		   		cp $a3mfile $a3mfile_pdb
+			fi
+			# addss.pl needs other scripts from HHLIB -> export that variable here
+			export HHLIB=$hhlib
+
+		
+			#$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
+			addCommand="$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb"
+			stderr=$((( command time -f ' MemTimeSUe_Stat %M %S %U %e' $addCommand; ) 1>/dev/null; ) 2>&1; )
+			statistics=`echo $stderr | sed 's/.* MemTimeSUe_Stat \([ 0-9.]*\)$/\1/'`
+			maxmem2=`echo $statistics| awk '{print $1}'`
+			sysTime2=`echo $statistics| awk '{print $2}'`
+			usrTime2=`echo $statistics| awk '{print $3}'`
+			wallTime2=`echo $statistics| awk '{print $4}'`
+			if [ $maxmem2 -gt $maxmem ]
+			then 
+				maxmem=$maxmem2
+			fi
+			sysTime3=$(python -c "print $sysTime2+$sysTime")
+			sysTime=$sysTime3
+			usrTime3=$(python -c "print $usrTime2+$usrTime")
+			usrTime=$usrTime3
+			wallTime3=$(python -c "print $wallTime2+$wallTime")
+			wallTime=$wallTime3
+							
+			# remove the pdb id from the $pa3mfile_pdb 
+			sed "s/$pdb_id_hh/$md5/g" < $pa3mfile_pdb > $pa3mfile
+			if [ $debug -eq 0 ]
+			then
+				rm -f $pa3mfile_pdb $a3mfile_pdb
+			fi
+			# do not clean up -- in the cloud that all goes into a targz anyway...
+#			gzip -f $a3mfile
+		else
+			fail=-1
+		fi
+	fi
+
+	if [ $skip_all -eq 0 ]
+	then
+		count=0
 		if [ -s $pa3mfile ]
 		then
-			pa3m_stamp=`stat -c%Y $pa3mfile`
-	   		if [ $force -eq 1 ] 
-	    		then
-				db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
-				if [ $pa3m_stamp -gt $db_stamp ]
-				then
-		    		    skip_add=1
-		    		    skip_build=1
-				fi
-			else
-			    skip_add=1
-		    	    skip_build=1
+			count=`grep -c "^>" $pa3mfile`
+#			ln -s $CC/$pa3mfile $pa3mdir/$md5.a3m
+			# after adding secondary structure to the a3m, we also want to add that to the hhm file
+			# -> run hhmake to redo that
+			$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
+			# finally, we also make the seq219 file 
+			# generating seq219 files on the nodes doesn't work due to a bug/feature in cstranslate
+#			$hhlib/bin/cstranslate $cstranslateOptions -I a3m -i $CC/$pa3mfile -o $CC/$seq219file 
+			if [ ! -s $hmmfile ]
+			then
+				count=-3
 			fi
+#			if [ ! -s $CC/$seq219file ]
+#			then
+#				count=-4
+#			fi
 
-			if [ $silent -eq 0 ]
-    			then
-	    		    echo "psipred_a3m already made: $pa3m_stamp in "
-			    pwd
-			    if [ $skip_add -eq 1 ] 
-			    then
-					echo "file will be used again"
-			    else
-					echo "file will be remade"
-				fi
-			fi
-		elif [ -s $a3mfile_gz ]
-		then
-			a3m_stamp=`stat -c%Y $a3mfile_gz`
-			do_gunzip=1
-		elif [ -s $a3mfile ]
-		then
-			a3m_stamp=`stat -c%Y $a3mfile`
-		fi
-		if [ $a3m_stamp -gt 0 ]
-		then
-			if [ $force -eq 1 ] 
-		    then
-				db_stamp=`DB.pssh2_local "select last_update_stamp from database_status where name='uniprot20' order by last_update_stamp" | tail -1`
-				if [ $a3m_stamp -gt $db_stamp ]
-				then
-			    	skip_build=1
-			    fi
-			else
-			    skip_build=1
-			fi
- 		   	if [ $silent -eq 0 ]
-    		then
-	    		echo "a3m already made: $a3m_stamp in "
-				pwd
-				if [ $skip_build -eq 1 ] 
-				then
-					echo "file will be used again"
-				else
-					echo "file will be remade"
-				fi
-			fi
-		fi
-	fi
-else
-	# if there is no input, we exit now with an error
-	s=`date +%s`
-	DB.pssh2_local "insert into pssh2_local.$profile_status_table set md5=\"$md5\" , count=-99 , stamp=$s , runtime=0" 
-	echo "ERROR: could not find sequence: $input_seq_file or $temp_fasta_file"
-	exit
-fi
-
-
-if [ $skip_build -eq 0 ]
-then
-	time build_hhblits_profile -f  $seqfile -m  $hmmfile -a $a3mfile -r $hhrfile $passOpt
-else
-	if [ $do_gunzip -gt 0 ]
-	then
-		gunzip $a3mfile_gz
-	fi
-	if [ $silent -eq 0 ]
- 	then
-		echo "skip making A3M."
-	fi	
-fi
-
-# Note that the hhsuite installed on the cluster is not customised to our local Rostlab setup
-# /usr/share/hhsuite/scripts/HHPaths.pm needs to be adjusted!
-
-if [ $skip_add -eq 0 ]
-then
-	if [ -s $a3mfile ] 
-	then
-		# before giving the a3m with the md5 sum as input to addss.pl, we have to replace the id for the found pdb_id
-		a3mfile_pdb=$a3mfile.pdbid.a3m
-		pa3mfile_pdb=$pa3mfile.pdbid.a3m
-#		md5=`cat query.fasta|fasta_to_md5`
-		pdb_id=`find_best_pdb_for_seqres_md5 -m $md5|cut -b1-4`
-		pdb_id_norm=`echo $pdb_id | tr '[:upper:]' '[:lower:]'`
-		
-		# due to some mess-up between pdb formats we might not have the pdb file on the disk,
-		pdb_sub_dir=`echo $pdb_id_norm|cut -b2,3`
-		pdb_file="$pdb_dir/$pdb_sub_dir/$pdb_pre$pdb_id_norm$pdb_suf"
-
-		# so if it is actually there, then try to add experimental secondary structure,
-		# otherwise only use predicted secondary structure
-		if [ -s $pdb_file ]
-		then
-		    sed "s/$md5/$pdb_id_norm/g" < $a3mfile > $a3mfile_pdb
-		else
-		    # if the pdb file is not on the disk, make a copy of the a3mfile to have a fake a3mfile_pdb 
-		    cp $a3mfile $a3mfile_pdb
-		fi
-		# addss.pl needs other scripts from HHLIB -> export that variable here
-		export HHLIB=$hhlib
-		$hhlib/scripts/addss.pl $a3mfile_pdb $pa3mfile_pdb
-		# remove the pdb id from the $pa3mfile_pdb 
-		sed "s/$pdb_id_norm/$md5/g" < $pa3mfile_pdb > $pa3mfile
-		rm -f $pa3mfile_pdb $a3mfile_pdb
-		# clean up
-		gzip $a3mfile
-	else
-		fail=-1
-	fi
-fi
-
-count=0
-if [ -s $pa3mfile ]
-then
-	count=`grep -c "^>" $pa3mfile`
-#	ln -s $CC/$pa3mfile $pa3mdir/$md5.a3m
-	# after adding secondary structure to the a3m, we also want to add that to the hhm file
-	# -> run hhmake to redo that
-	$hhlib/bin/hhmake -i $pa3mfile -o $hmmfile
-	# finally, we also make the seq219 file 
-	$hhlib/bin/cstranslate $cstranslateOptions -i $CC/$pa3mfile -o $CC/$seq219file 
-#	ln -s $CC/$hhmfile $hhmdir/$md5.a3m
-	# store everything in the respective caches
-	$cachingRoutine -m $md5 -p $CC/$hhmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate -n $dbName
+#			ln -s $CC/$hmmfile $hhmdir/$md5.a3m
+			# store everything in the respective caches (forget about seq219: doesn't work...)
+#			$cachingRoutine -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -c $CC/$seq219file -d $dbDate -n $dbName
+			$cachingRoutine -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -d $dbDate -n $dbName
 #
-else
-	if [ $fail -eq 0 ]
-	then
-		fail=-2
-	fi
-	count=$fail
-fi
-
-### add output to the status db
-s=`date +%s`
-runtime=$SECONDS
-DB.pssh2_local "insert into pssh2_local.$profile_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=0 ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime " 
-
-case $cloudMode in
-	'rostlab' )
-		### compress things / delete
-		if [ $debug -eq 0 ]
-		then
-			if [ -s $a3mfile ] 
+		else
+			if [ $fail -eq 0 ]
 			then
-				gzip $a3mfile  
-			fi	
-			if [ -s $logfile ]
-			then
-				rm -f $logfile
+				fail=-2
 			fi
-			if [ -s $hhrfile ]
-			then
-	 			gzip -f $hhrfile
-			fi
+			count=$fail
 		fi
-		;;
-	'aws' )
-		`$rootDir/src/util/aws_local_cache_handler -m $md5 -s`
-		if [ $debug -eq 0 ]
-		then
-			rm -r $CC
-		fi
-		# TODO: notify the AWS queue that we are finished?
-		;;
-esac
+	
+
+	### add output to the status db
+		s=`date +%s`
+		finishTime=$SECONDS
+		runtime=$(($finishTime-$startTime))
+		DB.pssh2_local "insert into $profile_status_table set md5=\"$md5\" , count=$count , stamp=$s , runtime=$runtime, maxmem=$maxmem ON DUPLICATE KEY UPDATE count=$count , stamp=$s , runtime=$runtime, maxmem=$maxmem  " 
+
+		case $cloudMode in
+			'rostlab' )
+				### compress things / delete
+				if [ $debug -eq 0 ]
+				then
+					if [ -s $a3mfile ] 
+					then
+						gzip -f $a3mfile  
+					fi	
+					if [ -s $logfile ]
+					then
+						rm -f $logfile
+					fi
+					if [ -s $hhrfile ]
+					then
+	 					gzip -f $hhrfile
+					fi
+				fi
+				;;
+			'aws' )
+				$rootDir/src/util/aws_local_cache_handler -m $md5 -s
+				cd $temp_work
+				if [ $debug -eq 0 ]
+				then
+					rm -r $CC
+				fi
+
+				# write out statistics
+				jsonFile=$temp_work$md5.json
+				cat << EOF > $jsonFile
+{
+	"sequence_md5": {"S": "$md5"},
+	"conditionString": {"S": "$instance_type-$storage-$n_cpu"},
+	"architecture": {"S": "$instance_type"},
+	"storage": {"S": "$storage"},
+	"nCpu": {"N": "$n_cpu"},
+	"maxmem": {"N": "$maxmem"},
+	"sysTime": {"N": "$sysTime"},
+	"usrTime": {"N": "$usrTime"},
+	"wallTime": {"N": "$wallTime"},
+	"scriptTime": {"N":  "$runtime"},
+	"command": {"S": "build_hhblits_structure_profile"}
+}
+EOF
+				aws dynamodb put-item --region=$REGION --table-name "runTimes" --item file://$jsonFile
+
+				# send the queue a message that this sequence has been processed
+
+				aws --region=$REGION sqs delete-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_normal_queue --receipt-handle $HANDLE
+
+				# if the count is -999 the compute node had a problem with the cache
+				# if the count is -99 the sequence has a problem
+				# if the count is -1 then building the hmm had failed -> try rerun with more memory
+				# if the count is -2 then the pa3mfile was not generated
+				# if the count is -3 then the hhmfile was not generated
+				# if the count is -4 then the seq219file was not generated
+
+				failed=0
+				redo_large=0
+
+				if [ $count -eq -1 ]
+				then
+					redo_large=1
+				elif [ $count -lt -1 ]
+				then				
+					failed=1
+					aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_failed_queue --message-body $md5
+					# TODO: submit to failed queue
+				fi
+		
+				if [ $redo_large -eq 1 ]
+				then
+					# TODO: submit to longer queue 
+					aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_long_queue --message-body $md5
+				fi 
+				;;				
+		esac
+
+	fi	
+	# reset the variables so we don't accidentally use them again
+	md5=""
+	HANDLE=""
+	maxmem=0
+	sysTime=0
+	usrTime=0
+	wallTime=0
+	
+	
+done

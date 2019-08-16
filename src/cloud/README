@@ -1,0 +1,16 @@
+What to run to regenerate PSSH2
+
+1.	Make sure the pdb and uniprot tables on the Aquaria MySQL on AWS have been updated.
+2.	Use the Autoscaling group "submitToQueue_pdbFull_startByHand" to start an instance
+2.1	Log in to the instance
+2.2 Edit /home/ec2-user/pssh2.aws.conf to update dbDate, and upload to S3 `REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`; aws --region=$REGION  s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/`
+2.3 `source /home/ec2-user/pssh2.aws.conf` OR set dbDate to the new date (`dbDate=...)
+2.4 `export dbDate`
+2.4	Start submitting: `./startProcesses.sh`
+3.	Old: Use the Autoscaling group "build_structure_profiles_group" to start instances
+	New: Use the LaunchTemplate "build_structure_profiles_noDebug" to start spot instances
+		Autoscaling doesn't work at the moment, 
+		so just use "Create Spot Fleet" not with the "maintain" option, monitor yourself,
+		remember to cap the price
+4. Use the LaunchTemplate "build_pdb_full_40ct_200G" to start an instance for assembling the pdb_full database
+		

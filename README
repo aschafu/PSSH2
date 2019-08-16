@@ -2,6 +2,23 @@ Summary
 -------
 PSSH2 is a collection of tools for creating the sequence-to-structure alignment database PSSH2.
 
+The system has recently seen a huge overhaul, since we have moved to AWS and hhblits3. 
+
+In the src/cloud directory, there are start-up scripts to copy into the user-data on AWS.
+These will automatically start processes that run hhblits to generate data for building 
+a custom database or to scan structures against that custom database.
+
+hhsuite is now automatically installed from GitHub rather than from any package.
+
+Parameters are collecected in pssh2.conf. Two examples of how that could look like are in
+src/pssh2/. Most of the scripts look of a conf file either in a location specified as 
+an environment variable (conf_file) or in /etc/pssh2.conf. 
+
+
+
+This was the old README:
+------------------------
+
 For convenience, the hhsuite, that is used in PSSH2, is also included in this repository. 
 The hhsuite is developed and maintained by Soeding and his team at ftp://toolkit.genzentrum.lmu.de/pub/HH-suite/
 or as a debian package.
@@ -13,17 +30,8 @@ which directories exist at Rostlab.
 The src directory contains two main subdirectories, the one for generating and updating pdb_full,
 and the one for generating and updating pssh2. 
 
-
-Setup
-------
-
-For pdb_full: Change paths in the scripts if you move to another place! 
+Setup for pdb_full: Change paths in the scripts if you move to another place! 
 (set in the beginning of renew_pdb_full.sh)
-
-
-
-Usage
-------
 
 Updating pdb_full:
 src/pdb_full/renew_pdb_full.sh -u -d <db_name> > & update_pdb_full.log &
