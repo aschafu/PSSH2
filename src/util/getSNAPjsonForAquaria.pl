@@ -2,6 +2,7 @@
 use strict;
 use feature qw(say);
 use Getopt::Long;
+#use lib glob("/mnt/project/pssh/pssh2_project/src/util/");
 use lib glob("/mnt/project/snap2web/");
 use Snap2Cache;
 use DBI;
@@ -191,9 +192,12 @@ sub getSeqFromAquaria{
 #	my $db_user= $cfg->param('mysql.db_user');
 #	my $db_pass= $cfg->param('mysql.db_pass');
 	my $dbname = 'aquaria';
-	my $host='192.168.1.47';
-	my $db_user='aquaria-ro';
-	my $db_pass='qsepKW8povr9ZBM';
+#	my $host='192.168.1.47';
+#	my $db_user='aquaria-ro';
+#	my $db_pass='qsepKW8povr9ZBM';
+	my $host='database.aquaria.ws';
+ 	my $db_user='read_only';
+ 	my $db_pass='Aquaria_4_the_win!';
 
 	# if ($debug) {print "\nOpen connection to database\n\n"};
 	my $dbh=DBI->connect("DBI:mysql:$dbname:$host;mysql_local_infile=1", $db_user, $db_pass, {'mysql_enable_utf8'=>1});
