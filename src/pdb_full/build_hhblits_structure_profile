@@ -110,7 +110,7 @@ do
 	m) md5=$OPTARG;;
 	F) force=$OPTARG;;
 	R) force=0;;
-	P) force_psipred='psipred'
+	P) force_psipred='psipred';;
 	c) cloudMode=$OPTARG;;
 	d) dbDate=$OPTARG;;
 	n) dbName=$OPTARG;;
@@ -283,7 +283,9 @@ do
 							fi
 						fi
 					fi
-				elif [ -s $a3mfile ]
+				fi
+				
+				if [ -s $a3mfile ]
 				then
 					a3m_stamp=`stat -c%Y $a3mfile`
 				elif [ -s $a3mfile_gz ]
