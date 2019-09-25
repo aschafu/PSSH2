@@ -1,6 +1,6 @@
 #!/bin/bash
 # script to carry out a one-time fix on the headers of a3m and hhm files
-set -x
+#set -x
 # get config data
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 
@@ -20,7 +20,7 @@ dbDate='current'
 dbName='pdb_full'
 n_cpu=1
 build_fail_queue='build_hhblits_structure_profiles_failed'
-debug=1
+debug=0
 
 # get configurable options, e.g. local file paths
 if [ -s $conf_file ]
@@ -62,6 +62,10 @@ do
 		then
 			rm -r $CC
 		fi
+
+		# send the queue a message that this sequence has been processed
+		aws --region=$REGION sqs delete-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_fail_queue --receipt-handle $HANDLE
+
 	fi
 	
 done
