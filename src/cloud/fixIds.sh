@@ -64,7 +64,7 @@ do
 		$rootDir/src/util/copy_to_S3 -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -d $dbDate -n $dbName
 		$rootDir/src/util/aws_local_cache_handler -m $md5 -s
 		cp $pa3mfile $a3mDir/$md5
-		cp $hhmfile $hhmDir/$md5
+		cp $hmmfile $hhmDir/$md5
 		echo $hhmDir/$md5
 		cd $temp_work
 		if [ $debug -eq 0 ]
