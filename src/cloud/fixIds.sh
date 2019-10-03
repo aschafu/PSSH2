@@ -59,6 +59,7 @@ do
 		else
 			sed -i "1s;^;# $md5 \n;" $pa3mfile
 		fi
+		sed -i "s/>[1-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]_[a-zA-Z0-9]/>$md5/" $hhmfile
 		sed -i "s/NAME  [1-9][a-zA-Z0-9][a-zA-Z0-9][a-zA-Z0-9]_[a-zA-Z0-9]/NAME  $md5/" $hmmfile
 		$rootDir/src/util/copy_to_S3 -m $md5 -p $CC/$hmmfile -a $CC/$pa3mfile -d $dbDate -n $dbName
 		$rootDir/src/util/aws_local_cache_handler -m $md5 -s
