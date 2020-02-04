@@ -70,8 +70,8 @@ chmod -R a+X /mnt/resultData/pssh_cache/
 
 # from here on to "finally" only needed for making pdb_full 
 cd /home/ec2-user
-wget http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/psipred.4.01.tar.gz
-tar -xvzf psipred.4.01.tar.gz
+wget http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/psipred.4.02.tar.gz
+tar -xvzf psipred.4.02.tar.gz
 cd psipred/src
 make
 make install
@@ -108,6 +108,19 @@ aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/e
 conf_file=/home/ec2-user/pssh2.aws.conf
 export conf_file
 echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc 
+source $conf_file
+echo 'source $conf_file'>> /home/ec2-user/.bashrc
+if [ $local_paths ]
+then
+	PATH=$local_paths:$PATH
+	export PATH
+fi
+echo 'export PATH=$PATH:/usr/share/hhsuite/scripts/:/usr/share/hhsuite/bin/' >> /home/ec2-user/.bashrc
+export PATH=/usr/lib64/openmpi/bin:$PATH
+echo 'export PATH=/usr/lib64/openmpi/bin:$PATH' >> /home/ec2-user/.bashrc
+export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib
+echo 'export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib' >> /home/ec2-user/.bashrc
+
 
 
 # finally, start the processes that actually do the work

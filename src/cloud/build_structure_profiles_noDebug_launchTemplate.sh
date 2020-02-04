@@ -22,14 +22,21 @@ mount /dev/xvdc /mnt/data/
 chmod a+tw /mnt/data/
 chmod a+tw /mnt/resultData/
 
+# get config data
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/ec2-user/pssh2.aws.conf
+conf_file=/home/ec2-user/pssh2.aws.conf
+export conf_file
+echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc 
+source $conf_file
+
 mkdir /mnt/data/hhblits/
 chmod a+tw /mnt/data/hhblits/
-REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 # write this into ec2-user bashrc to make it easier to work as ec2-user
 echo "export REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`" >> /home/ec2-user/.bashrc
 
 cd /mnt/data/hhblits/
-aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/uniprot20.tgz - | tar -xvz
+aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/$u20_name.tgz - | tar -xvz
 ##tar -xvzf uniprot20.tgz
 ##rm uniprot20.tgz
 ##chmod a+x /mnt/data//hhblits/uniprot20_2016_02/
@@ -64,6 +71,8 @@ INSTALL_BASE_DIR='/usr/share/hhsuite/'
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${INSTALL_BASE_DIR} ..
 make
 make install
+# get custom config for hhblits
+aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
 
 cd  /home/ec2-user/git
 git clone https://github.com/aschafu/PSSH2.git
@@ -74,8 +83,8 @@ chmod -R a+X /mnt/resultData/pssh_cache/
 
 # from here on only need for making pdb_full 
 cd /home/ec2-user
-wget http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/psipred.4.01.tar.gz
-tar -xvzf psipred.4.01.tar.gz
+wget http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/psipred.4.02.tar.gz
+tar -xvzf psipred.4.02.tar.gz
 cd psipred/src
 make
 make install
@@ -102,17 +111,10 @@ chmod -R a+tw /mnt/data/dssp
 chmod -R a+rX /mnt/data/dssp
 cd /mnt/data/dssp/bin
 #wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
-wget ftp://ftp.cmbi.umcn.nl/molbio/software/dssp-2/dssp-2.0.4-linux-i386
+wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
+#wget ftp://ftp.cmbi.umcn.nl/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 chmod a+rx dssp-2.0.4-linux-i386
 ln -s dssp-2.0.4-linux-i386 dsspcmbi
-
-# get config data
-aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
-aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/ec2-user/pssh2.aws.conf
-conf_file=/home/ec2-user/pssh2.aws.conf
-export conf_file
-echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc 
-
 
 # finally, start the processes that actually do the work
 # for i in `seq 1 $(nproc)`; do /home/ec2-user/git/PSSH/pssh2_aws & done
