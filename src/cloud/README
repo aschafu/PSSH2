@@ -3,7 +3,13 @@ What to run to regenerate PSSH2
 1.	Make sure the pdb and uniprot tables on the Aquaria MySQL on AWS have been updated.
 2.	Use the Autoscaling group "submitToQueue_pdbFull_startByHand" to start an instance
 2.1	Log in to the instance
-2.2 Edit /home/ec2-user/pssh2.aws.conf to update dbDate, and upload to S3 `REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`; aws --region=$REGION  s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/`
+2.2 Edit /home/ec2-user/pssh2.aws.conf to update 
+      dbDate and (if necessary)
+      aquaria_name
+      u20 (if the uniclust30 has changed, 
+           don't foreget to also update the table database_status if this has changed!)
+    and upload to S3: 
+	REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`; aws --region=$REGION  s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/
 2.3 `source /home/ec2-user/pssh2.aws.conf` OR set dbDate to the new date (`dbDate=...)
 2.4 `export dbDate`
 2.4	Start submitting: `./startProcesses.sh`
@@ -12,5 +18,18 @@ What to run to regenerate PSSH2
 		Autoscaling doesn't work at the moment, 
 		so just use "Create Spot Fleet" not with the "maintain" option, monitor yourself,
 		remember to cap the price
+	UPDATE (2019): 
+		Autoscaling works again -> use Autoscaling "build_structure_profiles_group_r" 
+			(based on LaunchTemplate "build_structure_profiles_noDebug"")
+		HHblits uses too much memory for m instances, we need r
+		larger instances are more expensive but need fewer EBS volumes	
+3.1 When Autoscaling group has finished (scaled back to a handfull of instances)
+    log into the instances and:
+    	kill the processes
+    	add lines to config:
+    	echo 'build_normal_queue="build_hhblits_structure_profiles_bigJobs"' >> $conf_file
+    	echo 'build_long_queue="build_hhblits_structure_profiles_failed"' >> $conf_file
+		modify startProcesses to launch fewer concurrent jobs
+		restart startProcesses.sh
 4. Use the LaunchTemplate "build_pdb_full_40ct_200G" to start an instance for assembling the pdb_full database
 		
