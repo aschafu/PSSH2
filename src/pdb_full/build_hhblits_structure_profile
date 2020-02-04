@@ -254,6 +254,8 @@ do
 			cd $CC
 			skip_build=0
 			skip_add=0
+			fail=0
+			count=0
 
 			if [ $force -le 1 ] 
 			then
@@ -602,6 +604,8 @@ EOF
 	sysTime=0
 	usrTime=0
 	wallTime=0
+	count=0
+	fail=0
 	
 	
 done
