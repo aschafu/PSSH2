@@ -584,7 +584,7 @@ EOF
 				elif [ $count -lt -1 ]
 				then				
 					failed=1
-					aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_failed_queue --message-body $md5
+					aws --region=$REGION sqs send-message --queue-url https://sqs.$REGION.amazonaws.com/$ACCOUNT/$build_fail_queue --message-body $md5
 					# TODO: submit to failed queue
 				fi
 		
