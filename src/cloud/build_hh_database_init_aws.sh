@@ -73,7 +73,8 @@ chmod -R a+X /mnt/resultData/pdb_full_$dbDate/
 cd /mnt/resultData/pdb_full_$dbDate/a3m/
 #find . -type f  -name '*.[gG][zZ]' -exec gunzip {} +
 export NUM_THREADS=$(nproc)
-find . -type f  -name '*.[gG][zZ]' | xargs -0 -n 1 -P $NUM_THREADS gunzip
+#find . -type f  -name '*.[gG][zZ]' | xargs -0 -n 1 -P $NUM_THREADS gunzip
+find . -type f  -name '*.[gG][zZ]' | xargs -n 1 -P $NUM_THREADS gunzip
 cd /mnt/resultData/pdb_full_$dbDate/
 /home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run_aws.sh $dbDate
 aws  --region=$REGION  s3 cp pdb_full_$dbDate.tgz s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/ 
