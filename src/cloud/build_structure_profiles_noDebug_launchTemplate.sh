@@ -24,6 +24,8 @@ chmod a+tw /mnt/resultData/
 
 # get config data
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
+# not here, but later: HHPaths need to be retrieved AFTER installing hhblits!
+#aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
 aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/ec2-user/pssh2.aws.conf
 conf_file=/home/ec2-user/pssh2.aws.conf
 export conf_file
@@ -32,6 +34,7 @@ source $conf_file
 
 mkdir /mnt/data/hhblits/
 chmod a+tw /mnt/data/hhblits/
+REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 # write this into ec2-user bashrc to make it easier to work as ec2-user
 echo "export REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`" >> /home/ec2-user/.bashrc
 
@@ -71,7 +74,8 @@ INSTALL_BASE_DIR='/usr/share/hhsuite/'
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${INSTALL_BASE_DIR} ..
 make
 make install
-# get custom config for hhblits
+
+#HHPaths need to be retrieved AFTER installing hhblits!
 aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
 
 cd  /home/ec2-user/git
@@ -110,7 +114,6 @@ mkdir -p /mnt/data/dssp/data
 chmod -R a+tw /mnt/data/dssp
 chmod -R a+rX /mnt/data/dssp
 cd /mnt/data/dssp/bin
-#wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 #wget ftp://ftp.cmbi.umcn.nl/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 chmod a+rx dssp-2.0.4-linux-i386
