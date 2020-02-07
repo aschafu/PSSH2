@@ -29,7 +29,13 @@ What to run to regenerate PSSH2
     	add lines to config:
     	echo 'build_normal_queue="build_hhblits_structure_profiles_bigJobs"' >> $conf_file
     	echo 'build_long_queue="build_hhblits_structure_profiles_failed"' >> $conf_file
-		modify startProcesses to launch fewer concurrent jobs
+		modify startProcesses to launch fewer concurrent jobs and add '-- -b' for big jobs
 		restart startProcesses.sh
 4. Use the LaunchTemplate "build_pdb_full_40ct_200G" to start an instance for assembling the pdb_full database
-		
+   The latest version does only the download and decompression.
+   log into the instance and start the rest by hand:
+   		(source $conf_file)
+        cd /mnt/resultData/pdb_full_$dbDate/
+		/home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run_aws.sh $dbDate
+		aws  --region=$REGION  s3 cp pdb_full_$dbDate.tgz s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/
+5. 
