@@ -9,20 +9,23 @@ yum groupinstall -y "Development Tools"
 yum install -y python-pip lvm2 git ruby 
 yum install -y cmake mysql
 #yum install -y openmpi
+# for multi thread unpacking:
+yum install -y  pigz
+
 
 mkdir /mnt/resultData
-mkfs -t ext4 /dev/xvdb
-mount /dev/xvdb /mnt/resultData/
+mkfs -t ext4 /dev/sdg
+mount /dev/sdg /mnt/resultData/
 
 mkdir /mnt/data
-mkfs -t ext4 /dev/xvdc
-mount /dev/xvdc /mnt/data/
+mkfs -t ext4 /dev/sdf
+mount /dev/sdf /mnt/data/
 #mount /dev/xvdf /mnt/data/
 
 chmod a+tw /mnt/data/
 chmod a+tw /mnt/resultData/
 
-# get config data
+# get config data 
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
 # not here, but later: HHPaths need to be retrieved AFTER installing hhblits!
 #aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
@@ -39,7 +42,9 @@ REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O-
 echo "export REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`" >> /home/ec2-user/.bashrc
 
 cd /mnt/data/hhblits/
-aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/$u20_name.tgz - | tar -xvz
+mkdir $u20_name
+cd $u20_name
+aws --region=$REGION s3 cp s3://pssh3cache/hhblits_dbs/$u20_name.tgz - |  tar -xv -I pigz
 ##tar -xvzf uniprot20.tgz
 ##rm uniprot20.tgz
 ##chmod a+x /mnt/data//hhblits/uniprot20_2016_02/
@@ -118,6 +123,7 @@ wget ftp://ftp.cmbi.ru.nl/pub/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 #wget ftp://ftp.cmbi.umcn.nl/molbio/software/dssp-2/dssp-2.0.4-linux-i386
 chmod a+rx dssp-2.0.4-linux-i386
 ln -s dssp-2.0.4-linux-i386 dsspcmbi
+
 
 # finally, start the processes that actually do the work
 # for i in `seq 1 $(nproc)`; do /home/ec2-user/git/PSSH/pssh2_aws & done
