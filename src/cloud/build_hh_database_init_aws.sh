@@ -64,11 +64,12 @@ echo 'export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib' >> /home/ec2-user/.bashrc
 
 # get the data from S3 
 mkdir -p /mnt/resultData/pdb_full_$dbDate/
-chmod a+tw /mnt/resultData/pdb_full_$dbDate/
+chmod a+w /mnt/resultData/pdb_full_$dbDate/
+chmod a-t /mnt/resultData/pdb_full_$dbDate/
 # dbDate should be set in conf_file
 aws  --region=$REGION  s3 sync s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/ /mnt/resultData/pdb_full_$dbDate/ 
-chmod -R a+tw /mnt/resultData/pdb_full_$dbDate/
-chmod -R a+X /mnt/resultData/pdb_full_$dbDate/
+chmod -R a+wX /mnt/resultData/pdb_full_$dbDate/
+chmod -R a-t /mnt/resultData/pdb_full_$dbDate/
 
 cd /mnt/resultData/pdb_full_$dbDate/a3m/
 #find . -type f  -name '*.[gG][zZ]' -exec gunzip {} +

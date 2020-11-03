@@ -12,6 +12,12 @@ then
 	source $conf_file
 fi
 
+otherFile=otherSequences.md5
+submitted=lastSubmitted.list
+pssh_normal_queue='pssh'
+pssh_long_queue='pssh_bigJobs'
+pssh_fail_queue='pssh_failed'
+
 if [ -z $dbDate ]
 then
 	dbDate='active'
@@ -24,12 +30,7 @@ REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O-
 
 swissFile=swissprot.uniq.$dbDate.md5
 pdbFile=pdbChain.uniq.xlt50.clgt10.$dbDate.md5
-otherFile=otherSequences.md5
 allFile=allSequences.$dbDate.md5
-submitted=lastSubmitted.list
-pssh_normal_queue='pssh'
-pssh_long_queue='pssh_bigJobs'
-pssh_fail_queue='pssh_failed'
 
 
 aws  --region=$REGION  s3 cp s3://pssh3cache/hhblits_db_creation/pssh2/$dbDate/$allFile .

@@ -8,7 +8,7 @@ yum groupinstall -y "Development Tools"
 yum install -y python-pip lvm2 git ruby
 yum install -y cmake mysql
 # in case we want to run cstranslate on this node in parallel
-yum install -y openmpi-devel
+#yum install -y openmpi-devel
 #yum install -y openmpi
 
 mkdir /home/ec2-user/git
@@ -18,10 +18,10 @@ git clone https://github.com/aschafu/PSSH2.git
 
 # get config data
 REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`
-aws --region=$REGION s3 cp s3://pssh3cache/software/HHpaths.pm /usr/share/hhsuite/scripts/HHPaths.pm
 aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/ec2-user/pssh2.aws.conf
-conf_file=/home/ec2-user/pssh2.aws.conf
-export conf_file
+export conf_file=/home/ec2-user/pssh2.aws.conf
+# write this into ec2-user bashrc to make it easier to work as ec2-user
+echo "export REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`" >> /home/ec2-user/.bashrc
 echo 'export conf_file="/home/ec2-user/pssh2.aws.conf"'>> /home/ec2-user/.bashrc 
 
 echo "#!/bin/bash" > /home/ec2-user/startProcesses.sh
