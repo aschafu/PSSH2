@@ -1,0 +1,245 @@
+What to run to regenerate PSSH2
+
+1.	Make sure the pdb and uniprot tables on the Aquaria MySQL on AWS have been updated.
+2.	Use the Autoscaling group "submitToQueue_pdbFull_startByHand" to start an instance
+2.1	Log in to the instance
+2.2 Edit /home/ec2-user/pssh2.aws.conf to update 
+      dbDate (202003_extra)
+      aquaria_name (Aquaria_new2)
+    possibly upload to S3 (see later): 
+	REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`; aws --region=$REGION  s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/
+2.3 `source /home/ec2-user/pssh2.aws.conf` OR set dbDate to the new date (`dbDate=...)
+2.4 `export dbDate`
+2.5 Make a subset of only new pdb sequences
+	create table tmp_pdb_chain_clean_seqres_202003_extra as  select MD5_Hash, group_concat(pdb_id, Chain separator ', ') as pdb_ids, SEQRES, length,  Replace (SEQRES, 'X', '') as clean_seqres, length(Replace (SEQRES, 'X', '')) as c_length,  ((length - length(Replace (SEQRES, 'X', ''))) / length) as x_ratio from Aquaria_new2.PDB_chain c where c.type='Protein' and c.length>10 and 
+exists (select Last_Revised_date from Aquaria_new2.PDB p where p.Published > '2020-02-05' and p.`PDB_ID`=c.`PDB_ID`)
+group by MD5_Hash;
+2.6 modify submitToQueue_aws_pdbFull.sh to leave out the table creation (see 2.5)
+2.7	Start submitting: `./startProcesses.sh`
+-->  1607 entries in pdbChain.uniq.xlt50.clgt10.202003_extra.md5
+
+3.   Autoscaling works again -> use Autoscaling "build_structure_profiles_group" 
+			(based on LaunchTemplate "build_structure_profiles_noDebug"")
+		HHblits uses too much memory for m instances, we need r
+		larger instances are more expensive but need fewer EBS volumes	
+    Reuse instances that are still running
+3.1 Modify pssh2.aws.conf to update
+	
+
+3.1 When Autoscaling group has finished (scaled back to a handfull of instances)
+    log into the instances and:
+    	kill the processes
+    	add lines to config:
+    	echo 'build_normal_queue="build_hhblits_structure_profiles_bigJobs"' >> $conf_file
+    	echo 'build_long_queue="build_hhblits_structure_profiles_failed"' >> $conf_file
+		modify startProcesses to launch fewer concurrent jobs and add '-- -b' for big jobs
+		restart startProcesses.sh
+4 Check for stuff that has gone wrong and resubmit
+4.1 Find misssing md5s:
+		# based on database (use appropriate time stamp!)
+		~/git/PSSH2/src/util/DB.pssh2_local "select md5 from build_hhblits_structure_profile_status where stamp >  1580700000 and count>0" > pdbChain.uniq.xlt50.clgt10.$dbDate.done.md5
+		sort pdbChain.uniq.xlt50.clgt10.$dbDate.md5 pdbChain.uniq.xlt50.clgt10.$dbDate.done.md5 | uniq -u  > pdbChain.uniq.xlt50.clgt10.$dbDate.missing_counts.md5
+		# based on S3
+		aws s3 ls s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/hhm/ > allHhms.$dbDate.list
+		cut -c 32-63 allHhms.$dbDate.list > allHhms.$dbDate.md5
+		sort pdbChain.uniq.xlt50.clgt10.$dbDate.md5 allHmms.$dbDate.md5 | uniq -u  > pdbChain.uniq.xlt50.clgt10.$dbDate.missing_hhm.md5
+4.2 Resubmit
+		log in to "submitToQueue_pdbFull_startByHand" (see 2.)
+		modify startProcesses and the submission script to use the lists from 4.1
+
+
+aws s3 ls s3://pssh3cache/hhblits_db_creation/pdb_full/202003_extra/hhm/ > allHhms.202003_extra.list
+~/git/PSSH2/src/util/DB.pssh2_local "select MD5_Hash from tmp_pdb_chain_clean_seqres_$dbDate t where t.x_ratio < 0.5 and t.c_length > 10" > pdbChain.uniq.xlt50.clgt10.202003_extra.md5
+cut -c 32-63 allHhms.202003_extra.list > allHhms.$dbDate.md5
+sort pdbChain.uniq.xlt50.clgt10.$dbDate.md5 allHhms.$dbDate.md5 | uniq -u  > pdbChain.uniq.xlt50.clgt10.$dbDate.missing_hhm.md5
+cp ~/git/PSSH2/src/cloud/submitToQueue_aws_pdbFull.sh .
+echo 'export conf_file=/home/ec2-user/pssh2.aws.conf' >> /home/ec2-user/startProcesses.submit.sh
+echo 'nohup /home/ec2-user/submitToQueue_aws_pdbFull.sh > submitToQueue.log  2>&1 & '  >>  /home/ec2-user/startProcesses.submit.sh
+nano submitToQueue_aws_pdbFull.sh
+chmod ug+rx submitToQueue_aws_pdbFull.sh
+chmod ug+rx startProcesses.submit.sh
+./startProcesses.submit.sh
+sudo nano pssh2.aws.conf
+./startProcesses.sh
+
+		
+5. Use the LaunchTemplate "build_pdb_full_40ct_200G" to start an instance for assembling the pdb_full database
+   The latest version does only the download and decompression (better for debugging).
+   log into the instance and start the rest by hand:
+   		(source $conf_file)
+        cd /mnt/resultData/pdb_full_$dbDate/
+		/home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run_aws.sh $dbDate
+		aws  --region=$REGION  s3 cp pdb_full_$dbDate.tgz s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/
+6. Use the Autoscaling group "submitToQueue_pssh_autoscale" to start an instance
+		if there are any sequences to be processed besides swissprot and pdb
+			make a list of their md5 sums ('otherSequences.md5') and upload them:
+			aws  --region=$REGION  s3 cp otherSequences.md5 s3://pssh3cache/hhblits_db_creation/pssh2/$dbDate/
+		run startProcesses.sh 
+			(or run the content of submitToQueue_aws_pssh2.sh by hand since there might be a bug somewhere)
+7. Prepare the MySQL database:
+	Update the view pssh_active to point to a new pssh2 table
+	update the view pssh_active_counts to point to a new pssh2_counts table
+8. Use the Autoscaling group "run_pssh2_aws" sto start instances 
+	(maybe test launch configuration 'run_pssh2_aws_No_debug' first...)
+...
+?. Check for stuff that has gone wrong and resubmit
+	# based on database
+	# failed
+	~/git/PSSH2/src/util/DB.pssh2_local "select md5 from pssh2_202002_counts where count>0" > pssh2_202002.done_20200219.md5
+	sort pssh2_202002.done_20200219.md5 allSequences.202002.plus_nCoV.md5 | uniq -u  > pssh2_202002.missing_20200219.md5
+	# non processed	
+	~/git/PSSH2/src/util/DB.pssh2_local "select md5 from pssh2_202002_counts" > pssh2_202002.processed_20200219.md5
+	sort pssh2_202002.processed_20200219.md5 allSequences.202002.plus_nCoV.md5 | uniq -u  > 	pssh2_202002.nonProcessed_20200219.md5
+
+---------------------------
+
+Just processing new sequences, first against normal pdb_full, then against increment
+rerun Covid-19 related sequences from Uniprot  (WHERE `Phylum` = 'Nidovirale’)
+run against pdb_full 202003_extra and 202002
+write to pssh2_202004_extra
+
+-> edit pssh2.aws.conf
+dbDate='202002'
+#dbDate='202003_extra'
+aquaria_name="Aquaria_new2"
+sequence_tables="protein_sequence"
+status_table="pssh2_202004_extra_counts"
+table_name="pssh2_202004_extra"
+
+aws --region=$REGION s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/pssh2.aws.conf
+
+- make list of sequences to process:
+~/git/PSSH2/src/util/DB.aquaria_local "select distinct md5_hash from protein_sequence where Phylum = 'Nidovirale'" > otherSequences.md5
+# 500 otherSequences.md5
+
+- modify submitToQueue_aws_pssh2.sh:
+  get rid of most stuff before 
+  for md5 in 
+  modify that to 
+  for md5 in `cat $otherFile`
+
+- log in to PSSH processing machine (still one running from autoscaling group run_pssh2_aws )
+  - stop jobs
+  - update config
+   aws --region=$REGION s3 cp s3://pssh3cache/private_config/pssh2.aws.conf /home/ec2-user/pssh2.aws.conf
+
+- start submission of jobs
+
+- start processing
+first run against 202003_extra because the other pdb_full still needs to be downloaded
+change dbDate in config, run start_processes, then run
+aws --region=$REGION s3 cp s3://pssh3cache/hhblits_db_creation/pdb_full/202002/pdb_full_202002.tgz - | tar -xv -I pigz
+
+
+generate otherSequences.md5 externally
+
+=====================================================
+ New run, starting May 28th  ==> 202005_extra
+=====================================================
+2.	Use the Autoscaling group "submitToQueue_pdbFull_startByHand" to start an instance
+2.1	Log in to the instance
+2.2 Edit /home/ec2-user/pssh2.aws.conf to update 
+      dbDate (202005_extra)
+      aquaria_name (Aquaria_new3)
+    possibly upload to S3 (see later): 
+	REGION=`wget -q 169.254.169.254/latest/meta-data/placement/availability-zone -O- | sed 's/.$//'`; aws --region=$REGION  s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/
+2.3 `source /home/ec2-user/pssh2.aws.conf` OR set dbDate to the new date (`dbDate=...)
+2.4 `export dbDate`
+2.5 Make a subset of only new pdb sequences
+	create table tmp_pdb_chain_clean_seqres_202005_extra as  select MD5_Hash, group_concat(pdb_id, Chain separator ', ') as pdb_ids, SEQRES, length,  Replace (SEQRES, 'X', '') as clean_seqres, length(Replace (SEQRES, 'X', '')) as c_length,  ((length - length(Replace (SEQRES, 'X', ''))) / length) as x_ratio from Aquaria_new3.PDB_chain c where c.type='Protein' and c.length>10 and 
+exists (select Last_Revised_date from Aquaria_new3.PDB p where p.Published > '2020-02-05' and p.`PDB_ID`=c.`PDB_ID`)
+group by MD5_Hash;
+2.6 modify submitToQueue_aws_pdbFull.sh to leave out the table creation (see 2.5)
+2.7	Start submitting: `./startProcesses.sh`
+#### 3789 entries in pdbChain.uniq.xlt50.clgt10.202005_extra.md5
+#### 1585431668 newest time stamp in last round -- needed for checking in build_hhblits_structure_profile_status 
+3.   Autoscaling works use Autoscaling "build_structure_profiles_group" (not "build_structure_profiles_group_r")
+			(based on LaunchTemplate "build_structure_profiles_noDebug"")
+3.0  Reuse instances if any are still running (NOT the case THIS TIME)
+     Then: !Modify pssh2.aws.conf to update!
+3.01 Sean made Aquaria_new3 unreadable for read_only -> change config:
+	# HACK to work around Sean's changes...
+	aquaria_user=read_all
+	aquaria_password=.... password
+3.02 Resubmit:
+	modify submitToQueue_aws_pdbFull.sh to get sequences with status -99:
+	file=pdbChain.resubmit.$dbDate.md5
+	~/git/PSSH2/src/util/DB.pssh2_local "select md5 from build_hhblits_structure_profile_status where count< 0 and stamp>1585431668" > $file
+	for md5 in `cat $file`
+3.1 When Autoscaling group has finished (scaled back to a handfull of instances)
+    log into the instances and:
+    	kill the processes
+    	add lines to config:
+    	echo 'build_normal_queue="build_hhblits_structure_profiles_bigJobs"' >> $conf_file
+    	echo 'build_long_queue="build_hhblits_structure_profiles_failed"' >> $conf_file
+		modify startProcesses to launch fewer concurrent jobs and add '-- -b -c 2' for big jobs on 2 cpus each
+		for i in `seq 1 7`; do nohup /home/ec2-user/git/PSSH2/src/pdb_full/build_hhblits_structure_profile -c aws -- -b -c 2 > /home/ec2-user/build_hhblits_structure_profile.$i.log  2>&1 & done
+		restart startProcesses.sh
+3.2 Check completion
+	aws s3 ls s3://pssh3cache/hhblits_db_creation/pdb_full/202005_extra/hhm/ > allHhms.202005_extra.list
+	cut -c 32-63 allHhms.202005_extra.list > allHhms.202005_extra.md5
+	sort pdbChain.uniq.xlt50.clgt10.$dbDate.md5 allHhms.$dbDate.md5 | uniq -u  > pdbChain.uniq.xlt50.clgt10.$dbDate.missing_hhm.md5
+	--> nothing missing
+# --------------	
+4. 	Build new database:	
+	Use the LaunchTemplate "build_pdb_full_40ct_200G" to start an instance for assembling the pdb_full database
+   The latest version does only the download and decompression (better for debugging).
+4.0 ** Restart stopped instance from last time ** 
+   	log in
+   	source $conf_file
+4.01 check there is space on the device
+	 sudo mount /dev/xvdb /mnt/resultData/
+	 df -h  /mnt/resultData/
+	 # get the data from S3 
+	mkdir -p /mnt/resultData/pdb_full_$dbDate/
+	chmod a+tw /mnt/resultData/pdb_full_$dbDate/
+4.02 # download data
+	aws  --region=$REGION  s3 sync s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/ /mnt/resultData/pdb_full_$dbDate/ 	
+	chmod -R a+w /mnt/resultData/pdb_full_$dbDate/
+	chmod -R a+X /mnt/resultData/pdb_full_$dbDate/
+	chmod -R a-t /mnt/resultData/pdb_full_$dbDate/
+	# unpack data
+	cd /mnt/resultData/pdb_full_$dbDate/a3m/
+	export NUM_THREADS=$(nproc)
+	find . -type f  -name '*.[gG][zZ]' | xargs -n 1 -P $NUM_THREADS gunzip
+4.1 start db generation (for only 3k files not necessary to run in the background):
+	cd /mnt/resultData/pdb_full_$dbDate/
+	/home/ec2-user/git/PSSH2/src/cloud/build_hh_database_run_aws.sh $dbDate
+	aws  --region=$REGION  s3 cp pdb_full_$dbDate.tgz s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/
+# --------------	
+5. Process sequences, first against normal pdb_full, then against increment 
+	rerun Covid-19 related sequences from Uniprot  
+	run against 202002 and later pdb_full 202005_extra 
+	write to pssh2_202005_extra
+5.1	make list of sequences to process:
+	`~/git/PSSH2/src/util/DB.aquaria_local "select distinct md5_hash from protein_sequence where Phylum = 'Nidovirale'" > Nidovirale.md5`
+	`~/git/PSSH2/src/util/DB.aquaria_local "select distinct p.md5_hash from protein_sequence p where p.Primary_Accession in (select c.Accession from 	 PSSH2.covid_related_uniprot c)" > covid_related_uniprot.md5` 
+	`cat covid_related_uniprot.md5 Nidovirale.md5 | sort | uniq > covid_related_all.md5`
+#### 511 covid_related_all.md5
+5.1.1 submit on queue submission node:
+	 copy submitToQueue_aws_pdbFull.sh and modify:
+	 file=covid_related_all.$dbDate.md5
+	 aws  --region=$REGION  s3 cp $file s3://pssh3cache/hhblits_db_creation/pssh2/$dbDate/
+5.2 running against pdb_full can happen while pdb_full increment is being built -- DIDN'T WORK - DO AGAIN!
+5.2.0 use Autoscaling group run_pssh2_aws (resuse running instance if available)
+5.2.1 edit pssh2.aws.conf: Switch dbDate back to 202002
+	dbDate='202002'
+	#dbDate='202005_extra'
+	Possibly copy to S3, if we need more instances, but would conflict with running 3.
+	aws --region=$REGION s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/pssh2.aws.conf
+5.2.2 get the data!
+    aws --region=$REGION s3 cp s3://pssh3cache/hhblits_db_creation/pdb_full/$dbDate/pdb_full_$dbDate.tgz - | tar -xv -I pigz
+5.2.2 start the processes  
+5.3.0 when incremental pdb_full is finished, 
+	stop pssh2 processes
+	retrieve incremental pdb_full from S3 to PSSH node
+5.3.1 edit pssh2.aws.conf: Switch dbDate back to 202005_extra
+	#dbDate='202002'
+	dbDate='202005_extra'
+	Possibly copy to S3, if we need more instances
+	aws --region=$REGION s3 cp /home/ec2-user/pssh2.aws.conf s3://pssh3cache/private_config/pssh2.aws.conf
+5.1.2 submit again *on queue submission node*:
+	 no changes needed
+5.2.2 start the processes
+#### started after time stamp 1590767078
+	 
