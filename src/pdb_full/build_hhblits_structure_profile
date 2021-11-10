@@ -20,6 +20,9 @@ temp_work="/tmp/pssh2"
 #hhmdir=$pdb_derived_dir"psipred_a3m/current/"
 pdb_dir="/mnt/project/rost_db/data/pdb/entries/"
 dssp_dir="/mnt/project/rost_db/data/dssp/entries/"
+dssp_bin="/mnt/data/dssp/bin/dsspcmbi"
+s3Bucket="s3://pssh2/"
+s3dsspPath="hhblits_db_creation/dssp/"
 pdb_pre="pdb"
 pdb_suf=".ent"
 pdbDownloadUrl="https://files.rcsb.org/download/"
@@ -383,12 +386,23 @@ do
 			# We need to make sure that addss can find or created dssp files. 
 			# The easisest is to rsync: rsync rsync://rsync.cmbi.ru.nl/dssp/$pdb_id_norm.dssp .
 	        # If we get a dssp file, we probably don't need pdb any more... 
+			# Does not work any more!
+#			dssp_file=$pdb_id_norm".dssp"
+#			if [ ! -s $dssp_dir'/'$dssp_file ]
+#			then
+ #   	    	rsync "rsync://rsync.cmbi.ru.nl/dssp/"$dssp_file .
+#	    	    mv $dssp_file $dssp_dir
+#		    fi
+
+			# NEW: cache dssp files in S3
+			# try to get it from S3
 			dssp_file=$pdb_id_norm".dssp"
 			if [ ! -s $dssp_dir'/'$dssp_file ]
 			then
-    	    	rsync "rsync://rsync.cmbi.ru.nl/dssp/"$dssp_file .
+    	    	aws --region=$REGION s3 cp $s3Bucket$s3dsspPath$dssp_file .
 	    	    mv $dssp_file $dssp_dir
 		    fi
+
 		
 			# If we still don't have the file, we try to get the pdb file instead
 			if [ -s $dssp_dir'/'$dssp_file ]
@@ -413,7 +427,7 @@ do
 #					wget https://files.rcsb.org/download/4hhb.cif.gz
 					wget $pdbDownloadUrl/$pdb_id_norm$pdb_suf			
 					mkdir -p $pdb_dir/$pdb_sub_dir/
-					mv $pdb_id_norm$pdb_suf $pdb_file
+					mv $pdb_id_norm$pdb_suf $pdb_dir/$pdb_sub_dir/
 					# addss.pl cannot handle zipped pdb files
 					if [[ $pdb_suf == *pdb.gz ]]
 					then	
@@ -424,6 +438,13 @@ do
 				if [ -s $pdb_file ]
 				then
 					refer2pdb=1
+					$dssp_bin -i $pdb_file -o $dssp_dir'/'$dssp_file 
+					
+					if [ -s $dssp_dir'/'$dssp_file  ]
+					then 
+			   	    	aws --region=$REGION s3 cp $dssp_dir'/'$dssp_file $s3Bucket$s3dsspPath
+					fi
+					
 				fi
 
 			fi
