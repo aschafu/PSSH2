@@ -1,17 +1,17 @@
 Source: pssh2
-Section: unknown
+Section: science
 Priority: extra
 Maintainer: Andrea Schafferhans <andrea.schafferhans@rostlab.org>
 Build-Depends: debhelper (>= 8.0.0)
-Standards-Version: 3.9.3
+Standards-Version: 3.9.8
 Homepage: www.rostlab.org
-#Vcs-Git: git://git.debian.org/collab-maint/pssh2.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/pssh2.git;a=summary
+#Vcs-Svn: svn://anonscm.debian.org/
+#Vcs-Browser: http://anonscm.debian.org/viewvc/debian-med/trunk/packages/rostlab/pssh2/trunk/debian/
 
 Package: pssh2
-Architecture: any
+Architecture: all
 Depends: bash, perl, ruby, hhsuite
-Description: set of scripts for mapping protein sequence to structure
+Description: scripts for mapping protein sequence to structure
  pssh2 creates sequence-to-structure alignments based on
  hhblits profiles built for the query sequence.
  pssh2 consists of scripts to run the hhblits queries 
@@ -24,4 +24,3 @@ Description: set of scripts for mapping protein sequence to structure
  They are all called in the correct order in pp_pssh2.
  It also contains scripts to run independent of PredictProtein.
  It assumes you have a mysql database to store information.
- The configuration information is kept in pssh2.conf
